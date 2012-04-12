@@ -192,7 +192,8 @@ public abstract class Dao<T> {
      * @param classe Nom de la classe
      * @return Une ArrayList de Object contenant toutes les données
      */
-    public List<T> getTous() { 	
+    @SuppressWarnings("unchecked")
+	public List<T> getTous() { 	
         Criteria crit = session.createCriteria(classe);
         return crit.list(); // On exécute
     }    
@@ -208,6 +209,7 @@ public abstract class Dao<T> {
         crit.setMaxResults(1);
         crit.add(Restrictions.idEq(id));
         
+		@SuppressWarnings("unchecked")
 		List<T> liste = crit.list();
 
         T resultat = null;
