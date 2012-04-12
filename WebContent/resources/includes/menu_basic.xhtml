@@ -12,13 +12,12 @@
 		<li><a href="#">QuickList</a></li>
 		<li><a href="#">Historique</a></li>
 		<li><a href="#">Créer un compte</a></li>
-		<f:verbatim rendered="#{!beanConnexion.isConnected}">
+		<h:panelGroup rendered="#{!beanConnexion.isConnected}">
 			<li><a href="connexion.jsf" class="current">Connexion</a></li>
-		</f:verbatim>
-		<f:verbatim rendered="#{beanConnexion.isConnected}">
-			<h:outputText value="test" /> 
+		</h:panelGroup>
+		<h:panelGroup rendered="#{beanConnexion.isConnected}">
 			<li><h:link styleClass="current" value="Deconnexion"  target="#{beanConnexion.seDeconnecter()}"/></li>
-		</f:verbatim>
+		</h:panelGroup>
 	</ul>
 </h:body> 
 </html>

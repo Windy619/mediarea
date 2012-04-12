@@ -8,17 +8,10 @@
       xmlns:ui="http://java.sun.com/jsf/facelets"> 
       
 <ui:composition template="/templates/standard.xhtml">
-	<ui:define name="pageTitle">Identification</ui:define>
+	<ui:define name="pageTitle">Lecture media</ui:define>
 	<ui:define name="content">
 		<section class="group1">
-			<h:form>
-				<h:outputLabel value="Identifiant : " />
-				<h:inputText value="#{beanConnexion.identifiant}" />
-				<h:outputLabel value="Password : " />
-				<h:inputText value="#{beanConnexion.password}" />
-				<h:commandButton action="#{beanConnexion.seConnecter()}" value="Se connecter" />		
-			</h:form>
-				
+			Implementer un lecteur de media				
 		</section>
 	</ui:define>
 </ui:composition> 
