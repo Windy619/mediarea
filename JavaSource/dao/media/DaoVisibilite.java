@@ -5,12 +5,12 @@ import java.util.List;
 import metier.media.Visibilite;
 import dao.Dao;
 
-public class Dao_Visibilite extends Dao<Visibilite> {
+public class DaoVisibilite extends Dao<Visibilite> {
 
 	/**
 	 * Constructeur
 	 */
-	public Dao_Visibilite() {
+	public DaoVisibilite() {
 		super(Visibilite.class);
 	}
 	

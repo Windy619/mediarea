@@ -3,12 +3,12 @@ package dao.media;
 import metier.media.Commentaire;
 import dao.Dao;
 
-public class Dao_Commentaire extends Dao<Commentaire>{
+public class DaoCommentaire extends Dao<Commentaire>{
 
 	/**
 	 * Constructeur
 	 */
-	public Dao_Commentaire() {
+	public DaoCommentaire() {
 		super(Commentaire.class);
 	}
 	

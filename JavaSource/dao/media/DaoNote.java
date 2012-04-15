@@ -3,12 +3,12 @@ package dao.media;
 import metier.media.Note;
 import dao.Dao;
 
-public class Dao_Note extends Dao<Note>{
+public class DaoNote extends Dao<Note>{
 
 	/**
 	 * Constructeur
 	 */
-	public Dao_Note() {
+	public DaoNote() {
 		super(Note.class);
 	}
 }

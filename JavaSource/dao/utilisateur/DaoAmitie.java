@@ -3,12 +3,12 @@ package dao.utilisateur;
 import metier.utilisateur.Amitie;
 import dao.Dao;
 
-public class Dao_Amitie extends Dao<Amitie>{
+public class DaoAmitie extends Dao<Amitie>{
 
 	/**
 	 * Constructeur
 	 */
-	public Dao_Amitie() {
+	public DaoAmitie() {
 		super(Amitie.class);
 	}
 }

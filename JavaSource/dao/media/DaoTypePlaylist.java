@@ -5,12 +5,12 @@ import java.util.List;
 import metier.media.Type_Playlist;
 import dao.Dao;
 
-public class Dao_Type_Playlist extends Dao<Type_Playlist>{
+public class DaoTypePlaylist extends Dao<Type_Playlist>{
 
 	/**
 	 * Constructeur
 	 */
-	public Dao_Type_Playlist() {
+	public DaoTypePlaylist() {
 		super(Type_Playlist.class);
 	}
 	

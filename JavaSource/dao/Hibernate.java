@@ -47,7 +47,6 @@ public class Hibernate {
 	 */
 	protected void finalize() throws Throwable {
 		fermerSession(); // On ferme la session avant de supprimer l'objet
-		super.finalize();
     } 	
 	
 	

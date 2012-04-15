@@ -3,12 +3,12 @@ package dao.media;
 import metier.media.Regarder;
 import dao.Dao;
 
-public class Dao_Regarder extends Dao<Regarder>{
+public class DaoRegarder extends Dao<Regarder>{
 
 	/**
 	 * Constructeur
 	 */
-	public Dao_Regarder() {
+	public DaoRegarder() {
 		super(Regarder.class);
 	}	
 }

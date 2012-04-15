@@ -5,12 +5,12 @@ import java.util.List;
 import metier.media.Categorie;
 import dao.Dao;
 
-public class Dao_Categorie extends Dao<Categorie> {
+public class DaoCategorie extends Dao<Categorie> {
 
 	/**
 	 * Constructeur
 	 */
-	public Dao_Categorie() {
+	public DaoCategorie() {
 		super(Categorie.class);
 	}
 	

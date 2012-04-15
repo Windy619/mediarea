@@ -5,12 +5,12 @@ import java.util.List;
 import metier.utilisateur.Utilisateur;
 import dao.Dao;
 
-public class Dao_Utilisateur extends Dao<Utilisateur> {
+public class DaoUtilisateur extends Dao<Utilisateur> {
 	
 	/**
 	 * Constructeur
 	 */
-	public Dao_Utilisateur() {
+	public DaoUtilisateur() {
 		super(Utilisateur.class);
 	}
 	
