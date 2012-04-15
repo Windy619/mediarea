@@ -50,6 +50,7 @@ import metier.media.Visibilite;
  */
 public class Utilisateur {
 
+
 	/** Récupération des utilisateurs valides (non bannis, non supprimés) **/
 	public static final String NQ_VALIDES = "utilisateur_valides";
 	

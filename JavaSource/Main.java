@@ -160,35 +160,35 @@ public class Main {
 	public static void lister_utilisateurs() {
 
         System.out.println("Utilisateurs valides : ");
-        List<?> lst2 = daoUtilisateur.valides();
+        List<?> lst2 = daoUtilisateur.getValides();
         for (Object object : lst2) {
         	System.out.println(((Utilisateur)object).getAdrMail());
 		}
         System.out.println("");
         
         System.out.println("Utilisateurs non valides : ");
-        List<?> lst3 = daoUtilisateur.nonValides();
+        List<?> lst3 = daoUtilisateur.getNonValides();
         for (Object object : lst3) {
         	System.out.println(((Utilisateur)object).getAdrMail());
 		}
         System.out.println("");
         
         System.out.println("Utilisateurs admins : ");
-        List<?> lst4 = daoUtilisateur.administrateurs();
+        List<?> lst4 = daoUtilisateur.getAdministrateurs();
         for (Object object : lst4) {
         	System.out.println(((Utilisateur)object).getAdrMail());
 		}
         System.out.println("");          
         
         System.out.println("Utilisateurs avec le pseudo Benjamin : ");
-        List<?> lst5 = daoUtilisateur.pseudo("Benjamin");
+        List<?> lst5 = daoUtilisateur.getPseudo("Benjamin");
         for (Object object : lst5) {
         	System.out.println(((Utilisateur)object).getAdrMail());
 		}
         System.out.println("");          
         
         System.out.println("Utilisateurs avec l'adrmail Luc@gmail.com : ");
-        List<?> lst6 = daoUtilisateur.mail("Luc@gmail.com");
+        List<?> lst6 = daoUtilisateur.getMail("Luc@gmail.com");
         for (Object object : lst6) {
         	System.out.println(((Utilisateur)object).getAdrMail());
 		}

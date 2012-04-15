@@ -1,4 +1,3 @@
-import dao.utilisateur.DaoUtilisateur;
 
 /**
  * 
@@ -43,7 +42,6 @@ public class BeanConnexion {
 	
 	public String seConnecter() {
 		
-		DaoUtilisateur dao = new DaoUtilisateur();
 		
 		if(identifiant.equals("david") && password.equals("dada")) {
 			isConnected = true;
