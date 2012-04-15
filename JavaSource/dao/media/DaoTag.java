@@ -3,12 +3,12 @@ package dao.media;
 import metier.media.Tag;
 import dao.Dao;
 
-public class Dao_Tag extends Dao<Tag>{
+public class DaoTag extends Dao<Tag>{
 
 	/**
 	 * Constructeur
 	 */
-	public Dao_Tag() {
+	public DaoTag() {
 		super(Tag.class);
 	}
 	

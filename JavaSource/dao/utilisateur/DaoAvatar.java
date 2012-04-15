@@ -3,12 +3,12 @@ package dao.utilisateur;
 import metier.utilisateur.Avatar;
 import dao.Dao;
 
-public class Dao_Avatar extends Dao<Avatar> {
+public class DaoAvatar extends Dao<Avatar> {
 
 	/**
 	 * Constructeur
 	 */
-	public Dao_Avatar() {
+	public DaoAvatar() {
 		super(Avatar.class);
 	}
 	

@@ -15,12 +15,12 @@ import org.hibernate.criterion.Restrictions;
 
 import dao.Dao;
 
-public class Dao_Media extends Dao<Media> {
+public class DaoMedia extends Dao<Media> {
 	
 	/**
 	 * Constructeur
 	 */
-	public Dao_Media() {
+	public DaoMedia() {
 		super(Media.class);
 	}
 	

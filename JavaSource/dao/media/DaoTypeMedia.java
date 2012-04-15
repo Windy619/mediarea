@@ -5,12 +5,12 @@ import java.util.List;
 import metier.media.Type_Media;
 import dao.Dao;
 
-public class Dao_Type_Media extends Dao<Type_Media>{
+public class DaoTypeMedia extends Dao<Type_Media>{
 
 	/**
 	 * Constructeur
 	 */
-	public Dao_Type_Media() {
+	public DaoTypeMedia() {
 		super(Type_Media.class);
 	}
 	

@@ -21,27 +21,27 @@ import metier.utilisateur.Message_Prive;
 import metier.utilisateur.Notification;
 import metier.utilisateur.Signalement_Utilisateur;
 import metier.utilisateur.Utilisateur;
-import dao.media.Dao_Categorie;
-import dao.media.Dao_Commentaire;
-import dao.media.Dao_Media;
-import dao.media.Dao_Photo_Couverture;
-import dao.media.Dao_Playlist;
-import dao.media.Dao_Type_Media;
-import dao.media.Dao_Type_Playlist;
-import dao.media.Dao_Visibilite;
-import dao.utilisateur.Dao_Utilisateur;
+import dao.media.DaoCategorie;
+import dao.media.DaoCommentaire;
+import dao.media.DaoMedia;
+import dao.media.DaoPhotoCouverture;
+import dao.media.DaoPlaylist;
+import dao.media.DaoTypeMedia;
+import dao.media.DaoTypePlaylist;
+import dao.media.DaoVisibilite;
+import dao.utilisateur.DaoUtilisateur;
 
 public class Main {
 
-	public static Dao_Utilisateur daoUtilisateur = new Dao_Utilisateur();
-	public static Dao_Media daoMedia = new Dao_Media();
-	public static Dao_Visibilite daoVisibilite = new Dao_Visibilite();
-	public static Dao_Categorie daoCategorie = new Dao_Categorie();
-	public static Dao_Photo_Couverture daoPhoto = new Dao_Photo_Couverture();
-	public static Dao_Type_Media daoTypeMedia = new Dao_Type_Media();
-	public static Dao_Type_Playlist daoTypePlaylist = new Dao_Type_Playlist();
-	public static Dao_Playlist daoPlaylist = new Dao_Playlist();
-	public static Dao_Commentaire daoCommentaire = new Dao_Commentaire();
+	public static DaoUtilisateur daoUtilisateur = new DaoUtilisateur();
+	public static DaoMedia daoMedia = new DaoMedia();
+	public static DaoVisibilite daoVisibilite = new DaoVisibilite();
+	public static DaoCategorie daoCategorie = new DaoCategorie();
+	public static DaoPhotoCouverture daoPhoto = new DaoPhotoCouverture();
+	public static DaoTypeMedia daoTypeMedia = new DaoTypeMedia();
+	public static DaoTypePlaylist daoTypePlaylist = new DaoTypePlaylist();
+	public static DaoPlaylist daoPlaylist = new DaoPlaylist();
+	public static DaoCommentaire daoCommentaire = new DaoCommentaire();
 	
 	
 	public static void init_types() {
