@@ -1,53 +1,54 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<faces-config version="2.0" xmlns="http://java.sun.com/xml/ns/javaee"
- xmlns:xi="http://www.w3.org/2001/XInclude"
- xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-facesconfig_2_0.xsd">
+<faces-config xmlns="http://java.sun.com/xml/ns/javaee"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-facesconfig_2_1.xsd"
+	version="2.1">
 
- <managed-bean>
-  <managed-bean-name>beanConnexion</managed-bean-name>
-  <managed-bean-class>BeanConnexion</managed-bean-class>
-  <managed-bean-scope>session</managed-bean-scope>
-  <managed-property>
-   <property-name>identifiant</property-name>
-   <property-class>java.lang.String</property-class>
-   <value/>
-  </managed-property>
-  <managed-property>
-   <property-name>password</property-name>
-   <property-class>java.lang.String</property-class>
-   <value/>
-  </managed-property>
-  <managed-property>
-   <property-name>isConnected</property-name>
-   <property-class>java.lang.Boolean</property-class>
-   <value>false</value>
-  </managed-property>
- </managed-bean>
- <managed-bean>
-  <managed-bean-name>beanInscription</managed-bean-name>
-  <managed-bean-class>BeanInscription</managed-bean-class>
-  <managed-bean-scope>request</managed-bean-scope>
- </managed-bean>
- <managed-bean>
-  <managed-bean-name>beanAmis</managed-bean-name>
-  <managed-bean-class>BeanAmis</managed-bean-class>
-  <managed-bean-scope>request</managed-bean-scope>
-  <managed-property>
-   <property-name>recherche</property-name>
-   <property-class>java.lang.String</property-class>
-   <value/>
-  </managed-property>
-  <managed-property>
-   <property-name>resultats</property-name>
-   <property-class>java.util.List</property-class>
-   <value/>
-  </managed-property>
- </managed-bean>
- <navigation-rule>
-  <from-view-id>/pages/connexion.xhtml</from-view-id>
-  <navigation-case>
-   <from-outcome>connected</from-outcome>
-   <to-view-id>/pages/home.xhtml</to-view-id>
-  </navigation-case>
- </navigation-rule>
+	<managed-bean>
+		<managed-bean-name>beanConnexion</managed-bean-name>
+		<managed-bean-class>BeanConnexion</managed-bean-class>
+		<managed-bean-scope>session</managed-bean-scope>
+		<managed-property>
+			<property-name>identifiant</property-name>
+			<property-class>java.lang.String</property-class>
+			<value />
+		</managed-property>
+		<managed-property>
+			<property-name>password</property-name>
+			<property-class>java.lang.String</property-class>
+			<value />
+		</managed-property>
+		<managed-property>
+			<property-name>isConnected</property-name>
+			<property-class>java.lang.Boolean</property-class>
+			<value>false</value>
+		</managed-property>
+	</managed-bean>
+	<managed-bean>
+		<managed-bean-name>beanInscription</managed-bean-name>
+		<managed-bean-class>BeanInscription</managed-bean-class>
+		<managed-bean-scope>request</managed-bean-scope>
+	</managed-bean>
+	<managed-bean>
+		<managed-bean-name>beanAmis</managed-bean-name>
+		<managed-bean-class>BeanAmis</managed-bean-class>
+		<managed-bean-scope>request</managed-bean-scope>
+		<managed-property>
+			<property-name>recherche</property-name>
+			<property-class>java.lang.String</property-class>
+			<value />
+		</managed-property>
+		<managed-property>
+			<property-name>resultats</property-name>
+			<property-class>java.util.List</property-class>
+			<value />
+		</managed-property>
+	</managed-bean>
+	<navigation-rule>
+		<from-view-id>/pages/connexion.xhtml</from-view-id>
+		<navigation-case>
+			<from-outcome>connected</from-outcome>
+			<to-view-id>/pages/home.xhtml</to-view-id>
+		</navigation-case>
+	</navigation-rule>
 </faces-config>
