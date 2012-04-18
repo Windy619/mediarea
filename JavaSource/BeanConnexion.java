@@ -46,7 +46,7 @@ public class BeanConnexion {
 
 			Utilisateur util = new Utilisateur("julien@metzmeyer", true,
 					"juju", "juju");
-			daoUtilisateur.ajouter(util);
+			daoUtilisateur.sauvegarder(util);
 
 			return "connected";
 		} else
