@@ -24,7 +24,7 @@ public class DaoVisibilite extends Dao<Visibilite> {
 
 		if (liste.size() == 0) {
 			// Si le type n'existe pas encore, on le créer
-			this.ajouter(new Visibilite("visible"));
+			this.sauvegarder(new Visibilite("visible"));
 			liste = session.getNamedQuery(Visibilite.NQ_VISIBLE).list();
 		}		
 		
@@ -41,7 +41,7 @@ public class DaoVisibilite extends Dao<Visibilite> {
 		
 		if (liste.size() == 0) {
 			// Si le type n'existe pas encore, on le créer
-			this.ajouter(new Visibilite("non_visible"));
+			this.sauvegarder(new Visibilite("non_visible"));
 			liste = session.getNamedQuery(Visibilite.NQ_NON_VISIBLE).list();
 		}
 				

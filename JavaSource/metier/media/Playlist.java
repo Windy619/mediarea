@@ -46,7 +46,7 @@ public class Playlist {
 	@ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
 	private Visibilite visibilite;
 	
-	@OneToMany(cascade = {CascadeType.ALL}, fetch = FetchType.EAGER)
+	@OneToMany(cascade = {CascadeType.ALL})
 	private Set<Media> medias;
 
 	/**

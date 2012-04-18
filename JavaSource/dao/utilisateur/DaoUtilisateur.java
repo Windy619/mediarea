@@ -74,7 +74,10 @@ public class DaoUtilisateur extends Dao<Utilisateur> {
 	public List<?> recherche(String recherche) {
 		String param = "%" + recherche + "%";
 		
-		Query q = session.createQuery("FROM Utilisateur WHERE adrMail like :recherche or pseudo like :recherche or prenomUtilisateur like :recherche or nomUtilisateur like :recherche");
+		Query q = session.createQuery("" +
+				"FROM Utilisateur " +
+				"WHERE adrMail like :recherche or pseudo like :recherche or prenomUtilisateur like :recherche or nomUtilisateur like :recherche " +
+				"AND dateBanissement IS NULL AND dateSuppressionUtilisateur IS NULL");
 		q.setParameter("recherche", param);		
 		
 		return q.list();

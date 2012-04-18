@@ -24,7 +24,7 @@ public class DaoTypePlaylist extends Dao<Type_Playlist>{
 
 		if (liste.size() == 0) {
 			// Si le type n'existe pas encore, on le créer
-			this.ajouter(new Type_Playlist("favoris"));
+			this.sauvegarder(new Type_Playlist("favoris"));
 			liste = session.getNamedQuery(Type_Playlist.NQ_FAVORIS).list();
 		}	
 		
@@ -41,7 +41,7 @@ public class DaoTypePlaylist extends Dao<Type_Playlist>{
 
 		if (liste.size() == 0) {
 			// Si le type n'existe pas encore, on le créer
-			this.ajouter(new Type_Playlist("en_cours"));
+			this.sauvegarder(new Type_Playlist("en_cours"));
 			liste = session.getNamedQuery(Type_Playlist.NQ_EN_COURS).list();
 		}	
 		
@@ -58,7 +58,7 @@ public class DaoTypePlaylist extends Dao<Type_Playlist>{
 
 		if (liste.size() == 0) {
 			// Si le type n'existe pas encore, on le créer
-			this.ajouter(new Type_Playlist("autre"));
+			this.sauvegarder(new Type_Playlist("autre"));
 			liste = session.getNamedQuery(Type_Playlist.NQ_AUTRE).list();
 		}	
 		

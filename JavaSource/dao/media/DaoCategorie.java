@@ -24,7 +24,7 @@ public class DaoCategorie extends Dao<Categorie> {
 
 		if (liste.size() == 0) {
 			// Si la categorie n'existe pas encore, on la créer
-			this.ajouter(new Categorie(nom));
+			this.sauvegarder(new Categorie(nom));
 			liste = session.getNamedQuery(Categorie.NQ_CATEGORIE).setParameter("nom", nom).list();
 		}	
 		

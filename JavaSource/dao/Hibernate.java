@@ -160,7 +160,7 @@ public class Hibernate {
 
         try {
             if (o != null && session.isConnected() && session.isOpen()) { // On vérifie que la session est prète
-                session.merge(o); // On sauvegarde l'objet
+                session.saveOrUpdate(o); // On sauvegarde l'objet
                 resultat = 1;
             }
         } catch (Exception e) { //TODO Créer une bonne Exception
@@ -170,7 +170,7 @@ public class Hibernate {
 
         return resultat;
     }
-
+    
     /**
      * Suppression d'un Object en base de donnÃ©es
      * @param o un Object
