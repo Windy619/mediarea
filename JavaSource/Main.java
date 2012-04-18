@@ -1,5 +1,6 @@
 
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -58,43 +59,43 @@ public class Main {
 		Visibilite visible = daoVisibilite.typeVisible();
 		Visibilite nonVisible = daoVisibilite.typeNonVisible();
 		
-		daoMedia.ajouter(new Media(true, daoUtilisateur.getUn(1),"Description1",false,null,"La terre est Ronde",visible,null));
-		daoMedia.ajouter(new Media(true, daoUtilisateur.getUn(1),"Description2",false,null,"Thor HD",visible,null));
-		daoMedia.ajouter(new Media(true, daoUtilisateur.getUn(2),"Description3",false,null,"Hulk",nonVisible,null));
-		daoMedia.ajouter(new Media(true, daoUtilisateur.getUn(3),"Description4",false,null,"Titre",nonVisible,null));
-		daoMedia.ajouter(new Media(true, daoUtilisateur.getUn(4),"Description5",false,null,"Youtube1",visible,null));
-		daoMedia.ajouter(new Media(true, daoUtilisateur.getUn(5),"Description6",false,null,"Dailymotion",visible,null));
+		daoMedia.sauvegarder(new Media(true, daoUtilisateur.getUn(1),"Description1",false,null,"La terre est Ronde",visible,null));
+		daoMedia.sauvegarder(new Media(true, daoUtilisateur.getUn(1),"Description2",false,null,"Thor HD",visible,null));
+		daoMedia.sauvegarder(new Media(true, daoUtilisateur.getUn(2),"Description3",false,null,"Hulk",nonVisible,null));
+		daoMedia.sauvegarder(new Media(true, daoUtilisateur.getUn(3),"Description4",false,null,"Titre",nonVisible,null));
+		daoMedia.sauvegarder(new Media(true, daoUtilisateur.getUn(4),"Description5",false,null,"Youtube1",visible,null));
+		daoMedia.sauvegarder(new Media(true, daoUtilisateur.getUn(5),"Description6",false,null,"Dailymotion",visible,null));
 	}
 	
 	public static void creer_utilisateurs() {
         
         Utilisateur utilAdmin = new Utilisateur("admin@gmail.com",true,"admin","password");
         utilAdmin.setEstAministrateur(true);
-        daoUtilisateur.ajouter(utilAdmin);
+        daoUtilisateur.sauvegarder(utilAdmin);
         
-        daoUtilisateur.ajouter(new Utilisateur("Benjamin.Marzolf@gmail.com",false,"Benjamin","password"));
-        daoUtilisateur.ajouter(new Utilisateur("Jean@gmail.com",false,"Jean","password"));
-        daoUtilisateur.ajouter(new Utilisateur("Marc@gmail.com",false,"Marc","password"));
-        daoUtilisateur.ajouter(new Utilisateur("Luc@gmail.com",false,"Luc","password"));
-        daoUtilisateur.ajouter(new Utilisateur("Isabelle@gmail.com",false,"Isabelle","password"));
-        daoUtilisateur.ajouter(new Utilisateur("Louise@gmail.com",false,"Louise","password"));
+        daoUtilisateur.sauvegarder(new Utilisateur("Benjamin.Marzolf@gmail.com",false,"Benjamin","password"));
+        daoUtilisateur.sauvegarder(new Utilisateur("Jean@gmail.com",false,"Jean","password"));
+        daoUtilisateur.sauvegarder(new Utilisateur("Marc@gmail.com",false,"Marc","password"));
+        daoUtilisateur.sauvegarder(new Utilisateur("Luc@gmail.com",false,"Luc","password"));
+        daoUtilisateur.sauvegarder(new Utilisateur("Isabelle@gmail.com",false,"Isabelle","password"));
+        daoUtilisateur.sauvegarder(new Utilisateur("Louise@gmail.com",false,"Louise","password"));
         
         Utilisateur utilBanni = new Utilisateur("Banni@gmail.com",true,"Banni","password");
         utilBanni.setDateBanissement(new Date());
-        daoUtilisateur.ajouter(utilBanni);		
+        daoUtilisateur.sauvegarder(utilBanni);		
 	}
 	
 	public static void creer_Playlist() {
 		
-		daoPlaylist.ajouter(new Playlist("Ma playlist","Musique de rock", "Description",daoTypePlaylist.typeAutre(),daoVisibilite.typeVisible()));
-		daoPlaylist.ajouter(new Playlist("Mes favoris","Favoris", "Description",daoTypePlaylist.typeFavoris(),daoVisibilite.typeVisible()));
-		daoPlaylist.ajouter(new Playlist("En cours de lecture","En cours", "Description",daoTypePlaylist.typeEnCours(),daoVisibilite.typeVisible()));
-		daoPlaylist.ajouter(new Playlist("Ma playlist2","Videos fun", "Description",daoTypePlaylist.typeAutre(),daoVisibilite.typeVisible()));
+		daoPlaylist.sauvegarder(new Playlist("Ma playlist","Musique de rock", "Description",daoTypePlaylist.typeAutre(),daoVisibilite.typeVisible()));
+		daoPlaylist.sauvegarder(new Playlist("Mes favoris","Favoris", "Description",daoTypePlaylist.typeFavoris(),daoVisibilite.typeVisible()));
+		daoPlaylist.sauvegarder(new Playlist("En cours de lecture","En cours", "Description",daoTypePlaylist.typeEnCours(),daoVisibilite.typeVisible()));
+		daoPlaylist.sauvegarder(new Playlist("Ma playlist2","Videos fun", "Description",daoTypePlaylist.typeAutre(),daoVisibilite.typeVisible()));
 	}
 	
 	public static void creer_Commentaire() {
 		
-		daoCommentaire.ajouter(new Commentaire("Tous pourri -_-", daoUtilisateur.getUn(2)));
+		daoCommentaire.sauvegarder(new Commentaire("Tous pourri -_-", daoUtilisateur.getUn(2)));
 	}	
 	
 	public static void ajouter_objets_commentaire() {
@@ -103,7 +104,7 @@ public class Main {
 		
 		commentaire.getCommentairesFils().add(daoCommentaire.getUn(1));
 		
-		daoCommentaire.modifier(commentaire);
+		daoCommentaire.sauvegarder(commentaire);
 	}
 	
 	public static void ajouter_objets_media() {
@@ -119,7 +120,7 @@ public class Main {
 		
 		media.setPhoto(new Photo_Couverture("RepPhoto","MaPhoto.png"));		
 		
-		daoMedia.modifier(media);
+		daoMedia.sauvegarder(media);
 	}
 	
 	public static void ajouter_objets_playlist() {
@@ -129,7 +130,7 @@ public class Main {
 		playlist.getMedias().add(daoMedia.getUn(2));
 		playlist.getMedias().add(daoMedia.getUn(3));
 		
-		daoPlaylist.modifier(playlist);
+		daoPlaylist.sauvegarder(playlist);
 	}
 	
 	public static void ajouter_objets_utilisateur() {
@@ -141,7 +142,9 @@ public class Main {
         util.getMessagesMurauxEnvoyes().add(new Message_Mural("Contenu", util, daoUtilisateur.getUn(2)));
         util.getMessagesPrives().add(new Message_Prive());
         util.getNotifications().add(new Notification());
+        util.getAmis().add(new Amitie(daoUtilisateur.getUn(2)));
         util.getAmis().add(new Amitie(daoUtilisateur.getUn(3)));
+        util.getAmis().add(new Amitie(daoUtilisateur.getUn(4)));
         util.getSignalementsUtilisateurs().add(new Signalement_Utilisateur("Pas gentil!",daoUtilisateur.getUn(4)));
         util.getMedias().add(new Media());
         util.getPlaylists().add(new Playlist());
@@ -154,7 +157,7 @@ public class Main {
         util.setAvatar(new Avatar("Fleur.jpg"));
         util.setVisibilite(daoVisibilite.typeVisible());
         
-        daoUtilisateur.modifier(util);		
+        daoUtilisateur.sauvegarder(util);		
 	}
 	
 	public static void lister_utilisateurs() {
@@ -240,10 +243,18 @@ public class Main {
         ajouter_objets_playlist();
         ajouter_objets_commentaire();
         
-        
+        /*
         lister_utilisateurs();
         lister_medias();
-
+		*/
+        
+        Utilisateur u = daoUtilisateur.getUn(1);
+        
+        System.out.println("Amis : ");
+        List<?> liste = new ArrayList<Object>(u.getAmis());
+        for (Object object : liste) {
+			System.out.println(((Amitie)object).getAmi().getPseudo());
+		}       
         
         
         System.out.println("=============");

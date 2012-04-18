@@ -120,58 +120,58 @@ public class Utilisateur {
 	
 	private String ville;
 	
-	@ManyToOne(cascade = {CascadeType.PERSIST,CascadeType.MERGE})
+	@ManyToOne(cascade = {CascadeType.ALL})
 	private Avatar avatar;
 	
-	@ManyToOne(cascade = {CascadeType.PERSIST,CascadeType.MERGE})
+	@ManyToOne(cascade = {CascadeType.ALL})
 	private Visibilite visibilite;	
 	
-	@OneToMany(mappedBy = "ami", cascade = {CascadeType.ALL}, fetch = FetchType.EAGER)
+	@OneToMany(cascade = {CascadeType.ALL})
 	private Set<Amitie> amis;
 	
-	@OneToMany(mappedBy = "signale",cascade = {CascadeType.ALL}, fetch = FetchType.EAGER)
+	@OneToMany(cascade = {CascadeType.ALL})
 	private Set<Signalement_Utilisateur> signalementsUtilisateurs;
 	
-	@OneToMany(mappedBy = "media", cascade = {CascadeType.ALL}, fetch = FetchType.EAGER)
+	@OneToMany(cascade = {CascadeType.ALL})
 	private Set<Signalement_Media> signalementsMedias;	
 	
-	@OneToMany(mappedBy = "commentaire",cascade = {CascadeType.ALL}, fetch = FetchType.EAGER)
+	@OneToMany(cascade = {CascadeType.ALL})
 	private Set<Signalement_Commentaire> signalementsCommentaires;		
 	
-	@OneToMany(cascade = {CascadeType.ALL}, fetch = FetchType.EAGER)
+	@OneToMany(cascade = {CascadeType.ALL})
 	private Set<Notification> notifications;
 	
-	@OneToMany(cascade = {CascadeType.ALL}, fetch = FetchType.EAGER)
+	@OneToMany(cascade = {CascadeType.ALL})
 	private Set<Media> medias;
 	
-	@OneToMany(cascade = {CascadeType.ALL}, fetch = FetchType.EAGER)
+	@OneToMany(cascade = {CascadeType.ALL})
 	private Set<Playlist> playlists;
 	
-	@OneToMany(cascade = {CascadeType.ALL}, fetch = FetchType.EAGER)
+	@OneToMany(cascade = {CascadeType.ALL})
 	private Set<Commentaire> commentaires;
 	
-	@OneToMany(cascade = {CascadeType.ALL}, fetch = FetchType.EAGER)
+	@OneToMany(cascade = {CascadeType.ALL})
 	private Set<Aimer> aimeMedias;
 	
-	@OneToMany(cascade = {CascadeType.ALL}, fetch = FetchType.EAGER)
+	@OneToMany(cascade = {CascadeType.ALL})
 	private Set<Regarder> regardeMedias;
 	
 	
-	@OneToMany(cascade = {CascadeType.ALL}, fetch = FetchType.EAGER)
+	@OneToMany(cascade = {CascadeType.ALL})
 	private Set<Note> noteMedias;
 	
-	@OneToMany(cascade = {CascadeType.ALL}, fetch = FetchType.EAGER)
+	@OneToMany(cascade = {CascadeType.ALL})
 	@JoinTable(name = "message_prive_envoi")
 	private Set<Message_Prive> messagesPrivesEnvoyes;
 	
-	@OneToMany(cascade = {CascadeType.ALL}, fetch = FetchType.EAGER)
+	@OneToMany(cascade = {CascadeType.ALL})
 	@JoinTable(name = "message_mural_envoi")
 	private Set<Message_Mural> messagesMurauxEnvoyes;	
 	
-	@OneToMany(cascade = {CascadeType.ALL}, fetch = FetchType.EAGER)
+	@OneToMany(cascade = {CascadeType.ALL})
 	private Set<Message_Mural> messagesMuraux;
 	
-	@OneToMany(cascade = {CascadeType.ALL}, fetch = FetchType.EAGER)
+	@OneToMany(cascade = {CascadeType.ALL})
 	private Set<Message_Prive> messagesPrives;
 		
 	

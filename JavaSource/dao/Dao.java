@@ -50,7 +50,7 @@ public abstract class Dao<T> {
      * @param o un Object
      * @return Un int spécifiant le nombre de ligne modifiées
      */
-    public int ajouter(T o) {
+    public int sauvegarder(T o) {
         int resultat = -1;
 
         try {
@@ -71,54 +71,7 @@ public abstract class Dao<T> {
      * @param o une Set d'Object
      * @return Un int spécifiant le nombre de ligne modifiées
      */
-    public int ajouterListe(ArrayList<T> liste) {
-        int resultat = 0;
-
-        try {
-            if (liste != null) {
-            	hibernate.demarrerTransaction(); // On démarre une transaction
-
-                Iterator<T> it = liste.iterator();
-                while(it.hasNext()) {
-                    resultat += hibernate.save(it.next()); // On sauvegarde l'objet
-                }
-
-                hibernate.commitTransaction(); // On Commit la transaction
-            }
-        } catch(Exception e) {
-        	hibernate.rollBackTransaction(); // on rollBack en cas de problème
-        }
-
-        return resultat;
-    }
-
-    /**
-     * Ajoute un Object en base de données
-     * @param o un Object
-     * @return Un int spécifiant le nombre de ligne modifiées
-     */
-    public int modifier(T o) {
-        int resultat = -1;
-
-        try {
-            if (o != null) { // Vérification
-            	hibernate.demarrerTransaction(); // On démarre une transaction
-                resultat = hibernate.save(o); // On ajoute l'objet
-                hibernate.commitTransaction(); // On Commit la transaction
-            }
-        } catch(Exception e) {
-        	hibernate.rollBackTransaction(); // on rollBack en cas de problème
-        }
-
-        return resultat;
-    }
-
-    /**
-     * Ajoute ou modifie une Set d'Object en base de données
-     * @param o une Set d'Object
-     * @return Un int spécifiant le nombre de ligne modifiées
-     */
-    public int modifierListe(ArrayList<T> liste) {
+    public int sauvegarderListe(ArrayList<T> liste) {
         int resultat = 0;
 
         try {

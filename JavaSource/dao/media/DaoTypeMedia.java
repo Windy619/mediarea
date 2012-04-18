@@ -24,7 +24,7 @@ public class DaoTypeMedia extends Dao<Type_Media>{
 
 		if (liste.size() == 0) {
 			// Si le type n'existe pas encore, on le créer
-			this.ajouter(new Type_Media("video"));
+			this.sauvegarder(new Type_Media("video"));
 			liste = session.getNamedQuery(Type_Media.NQ_VIDEO).list();
 		}	
 		
@@ -41,7 +41,7 @@ public class DaoTypeMedia extends Dao<Type_Media>{
 
 		if (liste.size() == 0) {
 			// Si le type n'existe pas encore, on le créer
-			this.ajouter(new Type_Media("son"));
+			this.sauvegarder(new Type_Media("son"));
 			liste = session.getNamedQuery(Type_Media.NQ_SON).list();
 		}	
 		

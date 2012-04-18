@@ -42,7 +42,7 @@ public class Commentaire {
 
 	private long nbVotes;
 	
-	@OneToMany(cascade = {CascadeType.ALL}, fetch = FetchType.EAGER)
+	@OneToMany(cascade = {CascadeType.ALL})
 	private Set<Commentaire> commentairesFils;
 
 	/**

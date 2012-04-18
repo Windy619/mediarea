@@ -46,25 +46,25 @@ public class Media {
 	
 	private String titreMedia;
 	
-	@ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+	@ManyToOne(cascade = {CascadeType.ALL})
 	private Utilisateur auteurMedia;
 	
-	@ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+	@ManyToOne(cascade = {CascadeType.ALL})
 	private Visibilite visibilite;
 	
-	@ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+	@ManyToOne(cascade = {CascadeType.ALL})
 	private Photo_Couverture photo;
 	
-	@ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+	@ManyToOne(cascade = {CascadeType.ALL})
 	private Type_Media type;	
 	
-	@OneToMany(cascade = {CascadeType.ALL}, fetch = FetchType.EAGER)
+	@OneToMany(cascade = {CascadeType.ALL})
 	private Set<Categorie> categories;
 	
-	@OneToMany(cascade = {CascadeType.ALL}, fetch = FetchType.EAGER)
+	@OneToMany(cascade = {CascadeType.ALL})
 	private Set<Tag> tags;
 	
-	@OneToMany(cascade = {CascadeType.ALL}, fetch = FetchType.EAGER)
+	@OneToMany(cascade = {CascadeType.ALL})
 	private Set<Commentaire> commentaires;
 
 	/**
