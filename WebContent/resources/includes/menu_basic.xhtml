@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html>
+<html  xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+>
+<h:body>
+	<ul>
+		<li><a href="#">Parcourir</a></li>
+		<li><a href="#">Ajout Media</a></li>
+		<li><a href="#">QuickList</a></li>
+		<li><a href="#">Historique</a></li>
+		<li><a href="#">Créer un compte</a></li>
+		<h:panelGroup rendered="#{!beanConnexion.isConnected}">
+			<li><a href="connexion.jsf" class="current">Connexion</a></li>
+		</h:panelGroup>
+		<h:panelGroup rendered="#{beanConnexion.isConnected}">
+			<li><h:link styleClass="current" value="Deconnexion" /></li>
+		</h:panelGroup>
+	</ul>
+</h:body> 
+</html>
