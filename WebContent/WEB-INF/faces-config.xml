@@ -25,11 +25,6 @@
 		</managed-property>
 	</managed-bean>
 	<managed-bean>
-		<managed-bean-name>beanInscription</managed-bean-name>
-		<managed-bean-class>BeanInscription</managed-bean-class>
-		<managed-bean-scope>request</managed-bean-scope>
-	</managed-bean>
-	<managed-bean>
 		<managed-bean-name>beanAmis</managed-bean-name>
 		<managed-bean-class>BeanAmis</managed-bean-class>
 		<managed-bean-scope>request</managed-bean-scope>
@@ -43,6 +38,11 @@
 			<property-class>java.util.List</property-class>
 			<value />
 		</managed-property>
+	</managed-bean>
+	<managed-bean>
+		<managed-bean-name>beanInscription</managed-bean-name>
+		<managed-bean-class>BeanInscription</managed-bean-class>
+		<managed-bean-scope>request</managed-bean-scope>
 	</managed-bean>
 	<navigation-rule>
 		<from-view-id>/pages/connexion.xhtml</from-view-id>
