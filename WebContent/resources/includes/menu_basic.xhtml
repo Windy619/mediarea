@@ -1,23 +1,67 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE html>
-<html  xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:h="http://java.sun.com/jsf/html"
-      xmlns:f="http://java.sun.com/jsf/core"
-      xmlns:ui="http://java.sun.com/jsf/facelets"
->
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:a4j="http://richfaces.org/a4j"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets">
 <h:body>
-	<ul>
-		<li><a href="#">Parcourir</a></li>
-		<li><a href="#">Ajout Media</a></li>
-		<li><a href="#">QuickList</a></li>
-		<li><a href="#">Historique</a></li>
-		<li><a href="#">Créer un compte</a></li>
-		<h:panelGroup rendered="#{!beanConnexion.isConnected}">
-			<li><a href="connexion.jsf" class="current">Connexion</a></li>
-		</h:panelGroup>
-		<h:panelGroup rendered="#{beanConnexion.isConnected}">
-			<li><h:link styleClass="current" value="Deconnexion"  target="#{beanConnexion.seDeconnecter()}"/></li>
-		</h:panelGroup>
-	</ul>
-</h:body> 
+	<h:outputStylesheet>
+        .menuBar{
+        	background:#534741;
+        }
+        .menuLink{
+        	color:#F15A24;
+        }
+        .menuLink:hover{
+			color: white;
+			text-decoration:underline;
+			cursor:  pointer;
+		}
+		.selected{
+			background:#FFFFFF;
+		}
+    </h:outputStylesheet>
+
+	<h:form>
+
+		<rich:toolbar height="40px" styleClass="menuBar">
+			<rich:toolbarGroup location="left">
+				<rich:menuItem onclick="document.location.href='home.jsf'">
+					<h:outputLink value="home.jsf">
+						<h:outputText value="Actualités" styleClass="menuLink"></h:outputText>
+					</h:outputLink>
+				</rich:menuItem>
+				<rich:menuItem onclick="document.location.href='#'">
+					<h:outputLink value="#">
+						<h:outputText value="Parcourir" styleClass="menuLink"></h:outputText>
+					</h:outputLink>
+				</rich:menuItem>
+				<rich:menuItem onclick="document.location.href='#'">
+					<h:outputLink value="#">
+						<h:outputText value="Ajout Media" styleClass="menuLink"></h:outputText>
+					</h:outputLink>
+				</rich:menuItem>
+			</rich:toolbarGroup>
+			<rich:toolbarGroup location="right">
+				<rich:menuItem onclick="document.location.href='#'">
+					<h:outputLink value="#">
+						<h:outputText value="QuickList" styleClass="menuLink"></h:outputText>
+					</h:outputLink>
+				</rich:menuItem>
+				<rich:menuItem id="connexion"
+					rendered="#{!beanConnexion.isConnected}"
+					onclick="document.location.href='connexion.jsf'">
+					<h:outputLink value="connexion.jsf">
+						<h:outputText value="Mon Compte" styleClass="menuLink"></h:outputText>
+					</h:outputLink>
+				</rich:menuItem>
+				<rich:menuItem id="deconnexion" styleClass="menuLink"
+					rendered="#{beanConnexion.isConnected}"
+					action="#{beanConnexion.seDeconnecter()}" label="Déconnexion" />
+			</rich:toolbarGroup>
+		</rich:toolbar>
+	</h:form>
+</h:body>
 </html>

@@ -1,6 +1,14 @@
+import java.util.List;
+
 import dao.utilisateur.DaoUtilisateur;
 import metier.utilisateur.Utilisateur;
 import dao.Hibernate;
+
+import javax.faces.application.FacesMessage;
+import javax.faces.context.FacesContext;
+import javax.validation.constraints.AssertTrue;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
 
 /**
  * @author Administrateur
@@ -8,11 +16,12 @@ import dao.Hibernate;
  */
 public class BeanConnexion {
 	public DaoUtilisateur daoUtilisateur = new DaoUtilisateur();
-
-	private java.lang.String identifiant;
-	private java.lang.String password;
 	private java.lang.Boolean isConnected;
-
+	@Pattern(regexp = "^[\\w\\-]([\\.\\w])+[\\w]+@([\\w\\-]+\\.)+[a-zA-Z]{2,4}$" , message="Mauvaise adresse mail - Veuillez corriger")
+	private java.lang.String identifiant = null;
+	@Size(min=3, max=12)
+	private java.lang.String password = null;
+	
 	public BeanConnexion() {
 	}
 
@@ -39,18 +48,27 @@ public class BeanConnexion {
 	public void setIsConnected(java.lang.Boolean isConnected) {
 		this.isConnected = isConnected;
 	}
-
-	public String seConnecter() {
-		if (identifiant.equals("david") && password.equals("dada")) {
-			isConnected = true;
-
-			Utilisateur util = new Utilisateur("julien@metzmeyer", true,
-					"juju", "juju");
-			daoUtilisateur.sauvegarder(util);
-
-			return "connected";
-		} else
-			return "nconnected";
+	
+	
+	
+	@AssertTrue(message = "Comptes inexistant!")
+	public boolean isAccountOk() {
+		List<Utilisateur> listUser = (List<Utilisateur>) daoUtilisateur
+				.recherche(identifiant);
+		if (listUser.isEmpty()) {
+			isConnected = false;
+		} else {
+			for (Utilisateur user : listUser) {
+				if (user.getAdrMail().contentEquals(identifiant)) {
+					if (user.getMdp().contentEquals(password)) {
+						isConnected = true;
+					}
+				} else {
+					isConnected = false;
+				}
+			}
+		}
+		return isConnected;
 	}
 
 	public String seDeconnecter() {
