@@ -1,14 +1,11 @@
 import java.util.List;
 
-import dao.utilisateur.DaoUtilisateur;
-import metier.utilisateur.Utilisateur;
-import dao.Hibernate;
-
-import javax.faces.application.FacesMessage;
-import javax.faces.context.FacesContext;
 import javax.validation.constraints.AssertTrue;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
+
+import metier.utilisateur.Utilisateur;
+import dao.utilisateur.DaoUtilisateur;
 
 /**
  * @author Administrateur
