@@ -29,10 +29,9 @@ public class BeanMedia {
 	//méthodes
 	public String afficherTitre() {
 		
-		titre = mediaVisualise.getTitreMedia();
-		
-		//return mediaVisualise.getTitreMedia();
-		return "afficherTitre";
+		//titre = mediaVisualise.getTitreMedia();
+		return mediaVisualise.getTitreMedia();
+		//return "afficherTitre";
 	}
 	
 	public String nbCommentairesMedia() {
