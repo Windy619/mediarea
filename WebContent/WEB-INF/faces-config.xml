@@ -25,6 +25,11 @@
 		</managed-property>
 	</managed-bean>
 	<managed-bean>
+		<managed-bean-name>beanInscription</managed-bean-name>
+		<managed-bean-class>BeanInscription</managed-bean-class>
+		<managed-bean-scope>request</managed-bean-scope>
+	</managed-bean>
+	<managed-bean>
 		<managed-bean-name>beanAmis</managed-bean-name>
 		<managed-bean-class>BeanAmis</managed-bean-class>
 		<managed-bean-scope>request</managed-bean-scope>
@@ -44,10 +49,16 @@
 		<managed-bean-class>BeanInscription</managed-bean-class>
 		<managed-bean-scope>request</managed-bean-scope>
 	</managed-bean>
+	<managed-bean>
+		<description>Détail d'un média</description>
+		<managed-bean-name>beanMedia</managed-bean-name>
+		<managed-bean-class>BeanMedia</managed-bean-class>
+		<managed-bean-scope>request</managed-bean-scope>
+	</managed-bean>
 	<navigation-rule>
 		<from-view-id>/pages/connexion.xhtml</from-view-id>
 		<navigation-case>
-			<from-outcome>true</from-outcome>
+			<from-outcome>connected</from-outcome>
 			<to-view-id>/pages/home.xhtml</to-view-id>
 			<redirect/>
 		</navigation-case>
