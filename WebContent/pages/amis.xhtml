@@ -38,8 +38,10 @@
 		                    <h:panelGrid columns="2">
 		                        <h:outputText value="#{utilisateur.avatar}" />
 		                        <br />
-		                        	
-		                        <h:commandButton value="Ajouter" action="#{beanAmis.ajouterAmis}"/>
+		                        	 			                        		                        	
+		                        <h:commandButton value="Ajouter" action="#{beanAmis.ajouterAmis}">
+		                        	<f:param name="u" value="#{utilisateur}" />
+		                        </h:commandButton>
 		                    </h:panelGrid>
 		                </rich:panel>
 		                <f:facet name="footer">

@@ -67,7 +67,7 @@ public class DaoUtilisateur extends Dao<Utilisateur> {
 	}		
 	
 	/**
-	 * Recherche simple à partir d'une String
+	 * Recherche simple à partir d'un String
 	 * @param mot
 	 * @return Une liste d'utilisateur
 	 */
@@ -82,5 +82,4 @@ public class DaoUtilisateur extends Dao<Utilisateur> {
 		
 		return q.list();
 	}	
-
 }

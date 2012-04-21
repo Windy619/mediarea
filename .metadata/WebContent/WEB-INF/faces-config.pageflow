@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<pageflow:Pageflow xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:pageflow="http://www.sybase.com/suade/pageflow" id="pf13349053702990" configfile="/MediArea/WebContent/WEB-INF/faces-config.xml">
+  <nodes xsi:type="pageflow:PFPage" name="pages/connexion.xhtml" x="122" y="178" id="pf13349435038380" referenceLink="//@navigationRule.0/@navigationCase.1/@toViewId|" outlinks="pf13349435038381 pf13349435038382" inlinks="pf13349435038382" path="/pages/connexion.xhtml"/>
+  <nodes xsi:type="pageflow:PFPage" name="pages/home.xhtml" x="338" y="178" id="pf13349435038383" referenceLink="//@navigationRule.0/@navigationCase.0/@toViewId|" inlinks="pf13349435038381" path="/pages/home.xhtml"/>
+  <links id="pf13349435038381" target="pf13349435038383" source="pf13349435038380" outcome="true" redirect="true"/>
+  <links id="pf13349435038382" target="pf13349435038380" source="pf13349435038380" outcome="false">
+    <bendPoints d1Height="-36" d2Height="-36"/>
+    <bendPoints d1Width="-64" d1Height="-36" d2Width="-64" d2Height="-36"/>
+    <bendPoints d1Width="-64" d2Width="-64"/>
+  </links>
+</pageflow:Pageflow>
