@@ -15,11 +15,8 @@ public class BeanAmis {
 	private String recherche;
 	private List resultats;
 	private List amis;
-	
 	private Utilisateur nouvelAmis;
-	
 	private DaoUtilisateur daoUtilisateur;
-	
 	private Utilisateur utilisateurConnecte;
 	
 	public BeanAmis() {
@@ -42,7 +39,6 @@ public class BeanAmis {
 
 	public String ajouterAmis() {
 		
-		nouvelAmis = daoUtilisateur.getUn(5);
 		utilisateurConnecte.getAmis().add(new Amitie(nouvelAmis));
 		daoUtilisateur.sauvegarder(utilisateurConnecte);
 
