@@ -12,6 +12,8 @@ import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.LogicalExpression;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
+import org.hibernate.Query;
+
 
 import dao.Dao;
 
@@ -93,5 +95,33 @@ public class DaoMedia extends Dao<Media> {
 	public List<?> totalVues(Media media) {
 		return new ArrayList<Media>();
 	}		
+	
+	
+	
+	
+	
+	
+	
+	
+	/**
+	 * Recupération du nombre de commentaires total écrits
+	 * @param idMedia
+	 * @return Un entier
+	 */
+	public int commentairesMedia(int idMedia) {
+		String param = "%" + idMedia + "%";
+		
+		/*Query q = session.createQuery("" +
+				"SELECT COUNT(*) " +
+				"FROM media_commentaire " +
+				"WHERE Media_idMedia = :idMedia");*/
+		
+		int q = ( (Integer) session.createQuery("SELECT COUNT(*) FROM media_commentaire WHERE Media_idMedia = :idMedia").iterate().next() ).intValue();
+		
+		/*q.setParameter("idMedia", param);*/
+		
+		//return q.list().size();
+		return q;
+	}
 	
 }
