@@ -31,7 +31,7 @@
 			<br/>
 			<h4>
 				Titre : 
-				<h:outputText value="#{beansMedia.afficherTitre}" />
+				<h:outputText value="#{beanMedia.afficherTitre}" />
 			</h4>
 			
 			<!-- *** Lecteur audio/vidéo *** -->
@@ -120,7 +120,30 @@
 			
 			<br /><br /><br /><br /><br />
 		
-		
+			<a4j:commandButton value="J'aime" />
+			<a4j:commandButton value="Je n'aime pas" />
+			
+			<!--<rich:panel style="width:220px;">
+	            <f:facet name="header">
+	                <h:outputText value="Select with manual input"></h:outputText>
+	            </f:facet>-->
+	            <rich:select enableManualInput="true" defaultLabel="Ajouter à >">
+	            	<f:selectItem itemValue="1" itemLabel="Ajouter à >" />
+	                <f:selectItem itemValue="2" itemLabel="Favori" />
+	                <f:selectItem itemValue="3" itemLabel="Playlist" />
+	            </rich:select>
+	        <!--</rich:panel>-->
+        
+        		<rich:select  enableManualInput="true" defaultLabel="Partager >">
+	                <f:selectItem itemValue="1" itemLabel="Exporter" />
+	                <f:selectItem itemValue="2" itemLabel="Facebook" />
+	                <f:selectItem itemValue="3" itemLabel="Twitter" />
+	                <f:selectItem itemValue="4" itemLabel="Emails et amis" />
+	            </rich:select>
+	            
+	            <a4j:commandButton value="Signaler" />
+        
+			<br /><br /><br /><br /><br />
 			
 			<h5>
 				Commentaires 
@@ -128,6 +151,8 @@
 			</h5>
 			
 			
+			
+			<h:graphicImage library="images" name="JaceEverett.jpg"  width="150" height="99" alt="Avatar"/>
 			
 			<!-- *** Editor *** -->	
 			<h:form>
