@@ -1,0 +1,210 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html>
+	 
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:f="http://java.sun.com/jsf/core" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:a4j="http://richfaces.org/a4j"
+    xmlns:rich="http://richfaces.org/rich">
+
+<ui:composition template="/templates/standard.xhtml">
+	  
+	<ui:define name="pageTitle">Détail d'un média</ui:define>
+	<ui:define name="content">
+		<section class="group1"> <!-- à placer dans style.css -->
+			<h:outputStylesheet>
+		    	h4
+		    	{
+		    		background-color: #FFAD87;
+		    		padding: 5px;
+		    		border-bottom: 5px solid #F15A24;
+		    	}
+		    	
+		    	
+		    	.rf-dt{
+		       		width:400px;
+		        }
+		        .acent{
+		        	text-align: center;
+		        }
+		    </h:outputStylesheet>
+    
+			<h3>Détail d'un média</h3>
+			<br/>
+			<h4>
+				Titre : 
+				<h:outputText value="#{beanMedia.afficherTitre}" />
+			</h4>
+			
+			<!-- *** Lecteur audio/vidéo *** -->
+			
+			<!-- surrounding element with class - needed!! -->
+			<div class="leanback-player-video">
+			    <!-- HTML5 <video> element -->
+			    <video width="622" height="414" preload="metadata" poster="../resources/videos/elephants_dream_640x360.jpg"> <!--  width="472" height="264" -->
+			        <!-- HTML5 <video> sources -->
+			        <source src="../resources/videos/elephants_dream_640x360_2.30.mp4" type='video/mp4; codecs="avc1.42E01E, mp4a.40.2"'/>
+	<!--		    <source src="../resources/videos/360p/elephants_dream_640x360_2.30.mp4" type='video/mp4; codecs="avc1.42E01E, mp4a.40.2"'/>
+	 	       		<source src="../resources/videos/480p/elephants_dream_856x480_2.30.mp4" type='video/mp4; codecs="avc1.42E01E, mp4a.40.2"'/>
+			        <source src="../resources/videos/720p/elephants_dream_1280x720_2.30.mp4" type='video/mp4; codecs="avc1.42E01E, mp4a.40.2"'/>
+	-->
+					<source src="../resources/videos/elephants_dream_640x360_2.30.webm" type='video/webm; codecs="vp8, vorbis"'/>       
+	<!--			<source src="../resources/videos/360p/elephants_dream_640x360_2.30.webm" type='video/webm; codecs="vp8, vorbis"'/>
+			    	<source src="../resources/videos/480p/elephants_dream_856x480_2.30.webm" type='video/webm; codecs="vp8, vorbis"'/>
+			        <source src="../resources/videos/720p/elephants_dream_1280x720_2.30.webm" type='video/webm; codecs="vp8, vorbis"'/>
+	-->		        
+					<source src="../resources/videos/elephants_dream_640x360_2.30.ogv" type='video/ogg; codecs="theora, vorbis"'/>
+	 <!--		    <source src="../resources/videos/360p/elephants_dream_640x360_2.30.ogv" type='video/ogg; codecs="theora, vorbis"'/>
+	 		  		<source src="../resources/videos/480p/elephants_dream_856x480_2.30.ogv" type='video/ogg; codecs="theora, vorbis"'/>
+		    		<source src="../resources/videos/720p/elephants_dream_1280x720_2.30.ogv" type='video/ogg; codecs="theora, vorbis"'/>
+	-->	
+			    	<!-- subtitle-references with <track>-element -->
+	 				<track enabled="true" kind="subtitles" label="عربي" srclang="ar" type="text/x-srt" src="../resources/subtitles/elephants_dream/arabic_ar.srt"></track>
+					<track enabled="true" kind="subtitles" label="中文" srclang="zh" type="text/x-srt" src="../resources/subtitles/elephants_dream/chinese_zh.srt"></track>
+					<track enabled="true" kind="subtitles" label="Deutsch" srclang="de" type="text/x-srt" src="../resources/subtitles/elephants_dream/german_de.srt"></track>
+					<track enabled="true" kind="subtitles" label="English" srclang="en" type="text/x-srt" src="../resources/subtitles/elephants_dream/english_en.srt"></track>
+	 				<track enabled="true" kind="subtitles" label="Español" srclang="es" type="text/x-srt" src="../resources/subtitles/elephants_dream/spanish_es.srt"></track>
+					<track enabled="true" kind="subtitles" label="Français" srclang="fr" type="text/x-srt" src="../resources/subtitles/elephants_dream/french_fr.srt"></track>
+					<track enabled="true" kind="subtitles" label="日本語" srclang="ja" type="text/x-srt" src="../resources/subtitles/elephants_dream/japanese_ja.srt"></track>
+					<track enabled="true" kind="subtitles" label="Svenska" srclang="sv" type="text/x-srt" src="../resources/subtitles/elephants_dream/svenska_sv.srt"></track>
+				    
+				    <!-- Flash-Fallback -->
+			   		<object class="leanback-player-flash-fallback" width="472" height="259" type="application/x-shockwave-flash" data="../resources/flash/flowplayer-3.2.7.swf">
+			            <param name="movie" value="../resources/videos/flash/flowplayer-3.2.7.swf" />
+						<param name="allowfullscreen" value="true" />
+						<param name="bgcolor" value="#000000" />
+						<param name="flashvars" value='config={"clip":{"url":"../resources/videos/elephants_dream_640x360_2.30.mp4","autoPlay":false,"autoBuffering":false}}' />
+						<!--<param name="flashvars" value='config={"clip":{"url":"../resources/videos/360p/elephants_dream_640x360_2.30.mp4","autoPlay":false,"autoBuffering":false}}' />-->
+			        </object>
+			 
+			        <!-- HTML-Fallback - Download Links -->
+			        <div class="leanback-player-html-fallback">
+			            <img src="../resources/videos/elephants_dream_640x360.jpg" width="360" height="240" alt="Poster Image" 
+			                title="No HTML5 media playback capabilities available." />
+			            <div>
+			                <strong>Download Video:</strong>
+			                <a href="../resources/videos/elephants_dream_640x360_2.30.mp4">.mp4</a>,
+			                <a href="../resources/videos/elephants_dream_640x360_2.30.webm">.webm</a>,
+			                <a href="../resources/videos/elephants_dream_640x360_2.30.ogv">.ogv</a>
+			                <!--<a href="../resources/videos/360p/elephants_dream_640x360_2.30.mp4">.mp4</a>,
+			                <a href="../resources/videos/360p/elephants_dream_640x360_2.30.webm">.webm</a>,
+			                <a href="../resources/videos/360p/elephants_dream_640x360_2.30.ogv">.ogv</a>-->
+			            </div>
+			        </div>
+			    </video>
+			</div>
+			
+			
+			<br /><br /><br />
+				
+		
+			<!-- surrounding element with class - needed!! -->
+			<div class="leanback-player-audio" style="width:622px"><!-- width="350px" -->
+			    <!-- HTML5 <audio> element -->
+			    <audio preload="metadata">
+			        <!-- HTML5 <audio> sources -->
+			        <source src="../resources/audios/03_Snowflake_GiveItUp_4.19.mp4" type='audio/mp4; codecs="mp4a.40.2"'/>
+			        <source src="../resources/audios/03_Snowflake_GiveItUp_4.19.mp3" type='audio/mpeg; codecs="vorbis"'/>
+			        <source src="../resources/audios/03_Snowflake_GiveItUp_4.19.oga" type='audio/ogg; codecs="vorbis"'/>
+			    
+			    	<!-- HTML-Fallback - Download Links -->
+			        <div class="leanback-player-html-fallback">
+			            <div>
+			                <strong>Download Audio:</strong>
+			                <a href="../resources/audios/03_Snowflake_GiveItUp_4.19.mp4">.mp4</a>
+			                <a href="../resources/audios/03_Snowflake_GiveItUp_4.19.mp3">.mp3</a>
+			                <a href="../resources/audios/03_Snowflake_GiveItUp_4.19.oga">.oga</a>
+			            </div>
+			        </div>
+			    </audio>
+			</div>
+			
+			
+			<br /><br /><br /><br /><br />
+		
+			<a4j:commandButton value="J'aime" />
+			<a4j:commandButton value="Je n'aime pas" />
+			
+			<!--<rich:panel style="width:220px;">
+	            <f:facet name="header">
+	                <h:outputText value="Select with manual input"></h:outputText>
+	            </f:facet>-->
+	            <rich:select enableManualInput="true" defaultLabel="Ajouter à >">
+	            	<f:selectItem itemValue="1" itemLabel="Ajouter à >" />
+	                <f:selectItem itemValue="2" itemLabel="Favori" />
+	                <f:selectItem itemValue="3" itemLabel="Playlist" />
+	            </rich:select>
+	        <!--</rich:panel>-->
+        
+        		<rich:select  enableManualInput="true" defaultLabel="Partager >">
+	                <f:selectItem itemValue="1" itemLabel="Exporter" />
+	                <f:selectItem itemValue="2" itemLabel="Facebook" />
+	                <f:selectItem itemValue="3" itemLabel="Twitter" />
+	                <f:selectItem itemValue="4" itemLabel="Emails et amis" />
+	            </rich:select>
+	            
+	            <a4j:commandButton value="Signaler" />
+        
+			<br /><br /><br /><br /><br />
+			
+			<h5>
+				Commentaires 
+				(<h:outputLabel value="#{beanMedia.nbCommentairesMedia}" /> )
+			</h5>
+			
+			
+			
+			<h:graphicImage library="images" name="JaceEverett.jpg"  width="150" height="99" alt="Avatar"/>
+			
+			<!-- *** Editor *** -->	
+			<h:form>
+		        <rich:editor id="editor" toolbar="full" value="test" style="margin-bottom: 1em">
+		            <a4j:ajax event="change" render="panel" status="panelUpdateStatus" />
+		            <a4j:ajax event="dirty" render="panel" status="panelUpdateStatus">
+		                <a4j:attachQueue requestDelay="1000" />
+		            </a4j:ajax>
+		        </rich:editor>
+		         
+		        <rich:panel id="panel">
+		            <f:facet name="header">
+		                Output from Editor
+		                <a4j:status name="panelUpdateStatus">
+		                    <f:facet name="start">
+		                        (Updating)
+		                    </f:facet>
+		                </a4j:status>
+		            </f:facet>
+		            <h:outputText escape="false" value="" />
+		        </rich:panel>
+		    </h:form>
+		    
+		    
+		    <br/><br/><br/><br/><br/>
+    
+    
+    
+    		<!-- *** dataScroller *** -->	
+			<h:form id="form">
+		        <h:panelGrid columnClasses="acent">
+		            <rich:dataScroller for="table" maxPages="5" />
+		            <rich:dataTable value="#{testBean.alltestItems}" var="commentaire" id="table" rows="10">
+		                <rich:column accept="#{testFiteringBean.accepttest}">
+		                    <f:facet name="header">
+		                        <h:outputText value="---" />
+		                    </f:facet>
+		                    <h:outputText value="#{commentaire.contenu}" />
+		                </rich:column>
+		                <rich:column>
+		                    <f:facet name="header">
+		                        <h:outputText value="Floflo il y a 1 jour" />
+		                    </f:facet>
+		                    <h:outputText value="Ceci est mon commentaire." />
+		                </rich:column>
+		            </rich:dataTable>
+		            <rich:dataScroller for="table" maxPages="5" />
+		        </h:panelGrid>
+		    </h:form>
+		    
+		</section>
+	</ui:define>
+</ui:composition> 
+</html>
+ 
