@@ -10,6 +10,8 @@ import dao.media.*;
  */
 
 public class BeanMedia {
+	String titre = null; //Initialization
+	
 	private DaoMedia daoMedia;
 	
 	private Media mediaVisualise;
@@ -18,22 +20,25 @@ public class BeanMedia {
 	public BeanMedia() {
 		
 		daoMedia = new DaoMedia();
+		mediaVisualise = daoMedia.getUn(2);
 	}
 	
 	//getter et setter
 	
 
 	//méthodes
-	public String afficherTitre() { //Media idMedia
-		mediaVisualise = daoMedia.getUn(1);
+	public String afficherTitre() {
 		
-		return mediaVisualise.getTitreMedia();
+		titre = mediaVisualise.getTitreMedia();
+		
+		//return mediaVisualise.getTitreMedia();
+		return "afficherTitre";
 	}
 	
-	
-	
-	
-	
-	
-	
+	public String nbCommentairesMedia() {
+		
+		//utiliser la fonction commentairesMedia(int idMedia) dans DaoMedia
+		
+		return "nbCommentairesMedia";
+	}
 }
