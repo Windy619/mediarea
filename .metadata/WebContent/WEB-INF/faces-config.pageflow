@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <pageflow:Pageflow xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:pageflow="http://www.sybase.com/suade/pageflow" id="pf13349388593620" configfile="/MediArea/WebContent/WEB-INF/faces-config.xml">
-  <nodes xsi:type="pageflow:PFPage" name="pages/connexion.xhtml" x="122" y="178" id="pf13349390689701" referenceLink="//@navigationRule.0/@fromViewId|" outlinks="pf13349390689702" path="/pages/connexion.xhtml"/>
+  <nodes xsi:type="pageflow:PFPage" name="pages/connexion.xhtml" x="122" y="178" id="pf13349390689701" referenceLink="//@navigationRule.0/@navigationCase.1/@toViewId|" outlinks="pf13349390689702 pf13350249085160" inlinks="pf13350249085160" path="/pages/connexion.xhtml"/>
   <nodes xsi:type="pageflow:PFPage" name="pages/home.xhtml" x="338" y="178" id="pf13349390689713" referenceLink="//@navigationRule.0/@navigationCase.0/@toViewId|" inlinks="pf13349390689702" path="/pages/home.xhtml"/>
-  <links id="pf13349390689702" target="pf13349390689713" source="pf13349390689701" outcome="connected"/>
+  <links id="pf13349390689702" target="pf13349390689713" source="pf13349390689701" outcome="true" redirect="true"/>
+  <links id="pf13350249085160" target="pf13349390689701" source="pf13349390689701" outcome="false">
+    <bendPoints d1Height="-36" d2Height="-36"/>
+    <bendPoints d1Width="-64" d1Height="-36" d2Width="-64" d2Height="-36"/>
+    <bendPoints d1Width="-64" d2Width="-64"/>
+  </links>
 </pageflow:Pageflow>
