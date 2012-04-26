@@ -36,7 +36,7 @@ html, body{
 	color: black;
 	margin:0 0 1px;
 	line-height: 1.5;
-   background-image:url(../images/bg1.png); 
+   	background-image:url("#{resource['images:bg1.png']}"); 
 	background-position:left top;
 	background-repeat:repeat;
 }
@@ -174,14 +174,25 @@ h4 span{
 	margin-left:30px;
 }
 
+.group3 {
+	position: relative;
+	background:white;
+	padding:15px;
+	margin-bottom:10px;
+}
+
 	
 .group_bannner_left {
-	width: 490px;
+	width: 530px;
 	position: absolute;
 	top:100px;
 	right: -10px;
 	background:transparent;
 	margin-top:15px;
+}
+
+.inputRecherche{
+	font-size:14px !important;
 }
 			
 header{
@@ -196,7 +207,7 @@ header{
 ***************************************************/	
 	
 	#intro{
-	width: 460px;
+	width: 500px;
 	position: relative;
 	float: right;
 	height:30px;
@@ -339,6 +350,27 @@ footer{
 	color:#fff;
 }
 
+#FooterTree a{
+	font-size: 12px;
+	font-family: arial,sans-serif;
+	text-transform:capitalize;
+	font-weight:normal;
+	background-color:transparent;
+	margin-top:0px;
+	margin-right:6px;
+	margin-left:6px;
+    text-decoration:none;
+}
+
+#FooterTree a:hover{
+	color: white;
+	text-decoration:underline;
+}
+
+#FooterTree a.current{
+	background-color: white;
+}
+
 .container{
     width:980px;
     margin:0 auto;
@@ -349,9 +381,13 @@ footer{
 				       MENU
 ***************************************************/
 
+.elementG{
+	margin-right:59px;
+}
+
 nav{
 	position:absolute;
-	width:480px;
+	width:520px;
 	top:25px;
 	right:0;
 	text-shadow: 0 1px 1px rgba(0,0,0,.3);
@@ -362,6 +398,36 @@ nav{
 	-moz-box-shadow: 0 1px 2px rgba(0,0,0,.2);
 	box-shadow: 0 1px 2px rgba(0,0,0,.2);
 	background:#534741;
+}
+
+ssnav{
+	position:absolute;
+	width:520px;
+	top:75px;
+	right:0;
+}
+
+ssnav a{
+	font-size: 12px;
+	font-family: arial,sans-serif;
+	text-transform:capitalize;
+	font-weight:normal;
+	display:block;	/* IE6, IE7 line height fix */
+	padding-bottom:8px;
+	background-color:transparent;
+	margin-top:0px;
+	margin-right:6px;
+    text-decoration:none;
+    float: right;
+}
+
+ssnav a:hover{
+	color: #534741;
+	text-decoration:underline;
+}
+
+ssnav a.current{
+	background-color:#534741;
 }
 
 nav ul li{
@@ -478,7 +544,6 @@ nav ul li a.current{
 	cursor: pointer;
 	text-align: center;
 	text-decoration: none;
-	font: 16px/100% Arial, sans-serif;
 	padding: .5em 2em .55em;
 	text-shadow: 0 1px 1px rgba(0,0,0,.3);
 	-webkit-border-radius: .5em; 
@@ -516,4 +581,5 @@ nav ul li a.current{
  
 .black a {
    color: #ffffff;
+   font-size:10pt;
 }   

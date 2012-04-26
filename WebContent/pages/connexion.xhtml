@@ -1,89 +1,33 @@
-<?xml version="1.0" encoding="UTF-8" ?>
-<!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml"
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
 	xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:a4j="http://richfaces.org/a4j"
 	xmlns:rich="http://richfaces.org/rich"
 	xmlns:f="http://java.sun.com/jsf/core"
 	xmlns:ui="http://java.sun.com/jsf/facelets">
 
-<ui:composition template="/templates/standard.xhtml">
-	<ui:define name="pageTitle">Identification</ui:define>
-	<ui:define name="content">
-		<section class="group1">
-		<h3>Inscription</h3>
-			<h:form>
-				<rich:graphValidator  id="gvInscription">
-					<rich:panel header="Nouveau sur MediArea ?">
-						<rich:messages for="gvInscription"/>
-						<h:panelGrid columns="3">
-							<h:outputText value="Nom :" />
-							<h:inputText  id="nomUtilisateur">
-								<rich:validator />
-							</h:inputText>
-							<rich:message for="nomUtilisateur" />
-							
-							<h:outputText value="Prénom :" />
-							<h:inputText  id="prenomUtilisateur">
-								<rich:validator />
-							</h:inputText>
-							<rich:message for="prenomUtilisateur" />
-							
-							<h:outputText value="Pseudo :" />
-							<h:inputText  id="pseudo">
-								<rich:validator />
-							</h:inputText>
-							<rich:message for="pseudo" />
-							
-							<h:outputText value="Adresse Mail :" />
-							<h:inputText  id="adrMail">
-								<rich:validator />
-							</h:inputText>
-							<rich:message for="adrMail" />
-							
-							<h:outputText value="Password :" />
-							<h:inputSecret  id="mdp">
-								<rich:validator />
-							</h:inputSecret>
-							<rich:message for="mdp" />
-							
-							<h:outputText value="Confirmation Password :" />
-							<h:inputSecret id="confirm">
-								<rich:validator />
-							</h:inputSecret>
-							<rich:message for="confirm" />
-						</h:panelGrid>
-						<a4j:commandButton value="S'inscrire"
-							 />
-					</rich:panel>
-				</rich:graphValidator>
-			</h:form>
-		</section>
-		
-		 <aside class="group2">
-			<h3>Connexion</h3>
-			<h:form>
-				<rich:graphValidator value="#{beanConnexion}" id="gvConnexion">
-					<rich:panel header="Déjà Membre ?">
-						<rich:messages for="gvConnexion"/>
-						<rich:message for="identifiant" />
-						<rich:message for="password" />
-						<h:panelGrid columns="2">
-							<h:outputText value="Identifiant :" />
-							<h:inputText value="#{beanConnexion.identifiant}" id="identifiant">
-								<rich:validator />
-							</h:inputText>
-							<h:outputText value="Password :" />
-							<h:inputSecret value="#{beanConnexion.password}" id="password">
-								<rich:validator />
-							</h:inputSecret>
-						</h:panelGrid>
-						<a4j:commandButton value="Se connecter"
-							action="#{beanConnexion.isAccountOk}" />
-					</rich:panel>
-				</rich:graphValidator>
-			</h:form>
-		</aside>
-	</ui:define>
+	<aside class="group2">
+		<h3>Connexion</h3>
+		<h:form id="form-login">
+			<rich:graphValidator value="#{beanConnexion}">
+				<rich:panel header="D&#233;j&#224; Membre ?">
+					<rich:message for="identifiant" />
+					<rich:message for="password" />
+					<h:panelGrid columns="2">
+						<h:outputText value="Adresse Mail :" />
+						<h:inputText value="#{beanConnexion.identifiant}" id="identifiant"
+							showMessages="true">
+							<rich:validator />
+						</h:inputText>
+						<h:outputText value="Password :" />
+						<h:inputSecret value="#{beanConnexion.password}" id="password"
+							showMessages="true">
+							<rich:validator />
+						</h:inputSecret>
+					</h:panelGrid>
+					<br />
+					<h:commandButton id="Login" action="#{beanConnexion.getIsAccountOk}" value="Se connecter" />
+				</rich:panel>
+			</rich:graphValidator>
+		</h:form>
+	</aside>
 </ui:composition>
-</html>

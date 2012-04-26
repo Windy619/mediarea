@@ -81,5 +81,29 @@ public class DaoUtilisateur extends Dao<Utilisateur> {
 		q.setParameter("recherche", param);		
 		
 		return q.list();
+	}
+	
+	public Utilisateur rechercheSurAdrMail(String recherche) {
+		String param = recherche;
+		
+		Query q = session.createQuery("" +
+				"FROM Utilisateur " +
+				"WHERE adrMail = :recherche " +
+				"AND dateBanissement IS NULL AND dateSuppressionUtilisateur IS NULL");
+		q.setParameter("recherche", param);		
+		
+		return (Utilisateur) q.uniqueResult();
 	}	
+	
+	public Utilisateur rechercheSurPseudo(String recherche) {
+		String param = recherche;
+		
+		Query q = session.createQuery("" +
+				"FROM Utilisateur " +
+				"WHERE pseudo = :recherche " +
+				"AND dateBanissement IS NULL AND dateSuppressionUtilisateur IS NULL");
+		q.setParameter("recherche", param);		
+		
+		return (Utilisateur) q.uniqueResult();
+	}
 }
