@@ -94,5 +94,54 @@ public class DaoMedia extends Dao<Media> {
 	 */
 	public List<?> totalVues(Media media) {
 		return new ArrayList<Media>();
-	}	
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+
+	
+	
+	
+	
+	
+	
+	/**
+	 * Nombre de personnes ayant aimé un média
+	 * @param idMedia
+	 * @return L'id d'un média
+	 */
+	public List<?> nbAimeMedia(long idMedia) {
+		long param = idMedia;
+		
+		Query q = session.createQuery("" +
+				"FROM Aimer " +
+				"WHERE media.idMedia = :idMedia " +
+				"AND aAime = true");
+		
+		q.setParameter("idMedia", param);		
+		
+		return q.list();
+	}
+	
+	/**
+	 * Nombre de personnes n'ayant pas aimé un média
+	 * @param idMedia
+	 * @return Liste
+	 */
+	public List<?> nbAimeNAimePas(long idMedia) {
+		long param = idMedia;
+		
+		Query q = session.createQuery("" +
+				"FROM Aimer " +
+				"WHERE media.idMedia = :idMedia ");
+		
+		q.setParameter("idMedia", param);		
+		
+		return q.list();
+	}
 }
