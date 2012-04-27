@@ -115,15 +115,12 @@ public class Commentaire {
 	}
 
 	public Utilisateur getAuteur() {
+		
 		return auteur;
 	}
 
 	public void setAuteur(Utilisateur auteur) {
+		
 		this.auteur = auteur;
 	}
-	
-	
-
-
-
 }
