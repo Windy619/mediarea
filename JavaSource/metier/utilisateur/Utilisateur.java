@@ -440,10 +440,12 @@ public class Utilisateur {
 	}
 
 	public String getNomUtilisateur() {
+		
 		return nomUtilisateur;
 	}
 
 	public void setNomUtilisateur(String nomUtilisateur) {
+		
 		this.nomUtilisateur = nomUtilisateur;
 	}
 
