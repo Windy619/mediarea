@@ -16,7 +16,29 @@
 		    		background-color: #FFAD87;
 		    		padding: 5px;
 		    		border-bottom: 5px solid #F15A24;
+		    		-webkit-border-radius: .5em; 
+					-moz-border-radius: .5em;
+					border-radius: .5em;
 		    	}
+		    	
+		    	.gauche {
+					float: left;
+					width: 420px;
+					position: relative;
+					background:white;
+					padding:5px;
+					margin-bottom:10px;
+				}
+					
+				.droite {
+					float: right;
+					width: 150px;
+					position: relative;
+					background:white;
+					padding:10px;
+					margin-bottom:10px;
+					/*margin-left:5px;*/
+				}
 		    	
 		    	
 		    	.rf-dt{
@@ -26,12 +48,24 @@
 		        	text-align: center;
 		        }
 		    </h:outputStylesheet>
+		    
+		    
+		    <div id="fb-root"></div>
+			<script>(function(d, s, id) {
+			  var js, fjs = d.getElementsByTagName(s)[0];
+			  if (d.getElementById(id)) return;
+			  js = d.createElement(s); js.id = id;
+			  js.src = "//connect.facebook.net/fr_FR/all.js#xfbml=1";
+			  fjs.parentNode.insertBefore(js, fjs);
+			}(document, 'script', 'facebook-jssdk'));</script>
+		    
+		    
     
 			<h3>Détail d'un média</h3>
 			<br/>
 			<h4>
-				Titre : 
-				<h:outputText value="#{beanMedia.afficherTitre}" />
+				<h:outputText value="#{beanMedia.titreMedia}" />
+					
 			</h4>
 			
 			<!-- *** Lecteur audio/vidéo *** -->
@@ -39,7 +73,7 @@
 			<!-- surrounding element with class - needed!! -->
 			<div class="leanback-player-video">
 			    <!-- HTML5 <video> element -->
-			    <video width="622" height="414" preload="metadata" poster="../resources/videos/elephants_dream_640x360.jpg"> <!--  width="472" height="264" -->
+			    <video width="612" height="404" preload="metadata" poster="../resources/videos/elephants_dream_640x360.jpg"> <!--  width="472" height="264" -->
 			        <!-- HTML5 <video> sources -->
 			        <source src="../resources/videos/elephants_dream_640x360_2.30.mp4" type='video/mp4; codecs="avc1.42E01E, mp4a.40.2"'/>
 	<!--		    <source src="../resources/videos/360p/elephants_dream_640x360_2.30.mp4" type='video/mp4; codecs="avc1.42E01E, mp4a.40.2"'/>
@@ -97,7 +131,7 @@
 				
 		
 			<!-- surrounding element with class - needed!! -->
-			<div class="leanback-player-audio" style="width:622px"><!-- width="350px" -->
+			<div class="leanback-player-audio" style="width:612px"><!-- width="350px" -->
 			    <!-- HTML5 <audio> element -->
 			    <audio preload="metadata">
 			        <!-- HTML5 <audio> sources -->
@@ -118,8 +152,9 @@
 			</div>
 			
 			
-			<br /><br /><br /><br /><br />
+			<br /><br /><br /><br />
 		
+			<rich:panel styleClass="gauche">
 			<a4j:commandButton value="J'aime" />
 			<a4j:commandButton value="Je n'aime pas" />
 			
@@ -127,27 +162,118 @@
 	            <f:facet name="header">
 	                <h:outputText value="Select with manual input"></h:outputText>
 	            </f:facet>-->
-	            <rich:select enableManualInput="true" defaultLabel="Ajouter à >">
-	            	<f:selectItem itemValue="1" itemLabel="Ajouter à >" />
+	            
+	            <rich:select enableManualInput="true" defaultLabel="+ Ajouter à" listWidth="50">
 	                <f:selectItem itemValue="2" itemLabel="Favori" />
 	                <f:selectItem itemValue="3" itemLabel="Playlist" />
 	            </rich:select>
 	        <!--</rich:panel>-->
         
-        		<rich:select  enableManualInput="true" defaultLabel="Partager >">
+        		<rich:select  enableManualInput="true" defaultLabel="+ Partager">
 	                <f:selectItem itemValue="1" itemLabel="Exporter" />
 	                <f:selectItem itemValue="2" itemLabel="Facebook" />
 	                <f:selectItem itemValue="3" itemLabel="Twitter" />
 	                <f:selectItem itemValue="4" itemLabel="Emails et amis" />
 	            </rich:select>
 	            
-	            <a4j:commandButton value="Signaler" />
-        
-			<br /><br /><br /><br /><br />
+	            <h:graphicImage library="images" name="icones/drapeau-rouge-icone-6492-16.png" alt="Peut offenser" />
+	            <h:commandButton value="Signaler2">
+	           		<rich:componentControl target="popup" operation="show" />
+	            </h:commandButton>
+	            <rich:popupPanel id="popup" modal="false" autosized="true"
+			        resizeable="false" style="width: 400px; overflow: hidden;">
+			        <f:facet name="header">
+			            <h:outputText value="Signaler cette vidéo (contenu pouvant offenser)" title="" />
+			        </f:facet>
+			        <f:facet name="controls">
+			            <h:outputLink value="#"
+			                onclick="#{rich:component('popup')}.hide(); return false;">
+			                    X
+			            </h:outputLink>
+			        </f:facet>
+			        <h:form>
+			        <p>Décrivez la raison qui décrit le mieux le problème lié au média. Nous procéderons à un examen afin de déterminer si celle-ci enfreint le Règlement de la communauté ou si elle risque d'offenser certaines personnes. L'usage abusif de cette fonctionnalité constitue également une violation du Règlement de la communauté. Ne l'utilisez pas de manière inadéquate.</p>
+			        <p>
+			       		<!--<rich:panel style="width:320px;">
+					        <f:facet name="header">
+					            <h:outputText value="Raison du signalement"></h:outputText>
+					        </f:facet>
+					        <h:panelGrid columns="2">-->
+					            <h:outputText value="Raison du signalement : " styleClass="bold" />
+					            <br/>
+					            <h:inputTextarea value="#{beanMedia.raison}" id="raison" rows="5" cols="100"></h:inputTextarea>
+					            
+					        <!--</h:panelGrid>
+					    </rich:panel>-->
+			       	</p>
+			       	<p>
+	           			<h:commandButton value="Envoyer le rapport" action="#{beanMedia.envoyerRapport}" style="float: left;"/><!-- h:commandButton et champs utilisés obligatoirement entre h:form-->
+			    		
+			        	<a href="#" onclick="#{rich:component('popup')}.hide()" style="float: right;">Fermer</a>
+			       	</p>
+			       	</h:form>
+			    </rich:popupPanel>
+			    
+			    
+	            <br /><br />
+	            
+	            <span class="bold">Ajouté par <h:outputText value="#{beanMedia.auteur}" /> DreamTeam le <h:outputText value="#{beanMedia.datePublication}" /></span>
+	            <br />
+	            <h:outputText value="#{beanMedia.description}" />
+	            
+        		<br /><br />
+        	</rich:panel>
+        	
+        	<rich:panel styleClass="droite bold">
+        		<h:outputText value="#{beanMedia.nbVues}" /> vues
+        		<h:graphicImage library="images" name="icones/bar-tableau-graphique-rapport-icone-5031-32.png" alt="Avatar"/>
+        		<br/>
+        		50 TODO fois téléchargéee
+        		<br/>
+        		<br/>
+        		
+        		
+        		<input name="star1" type="radio" class="star"/>
+				<input name="star1" type="radio" class="star"/>
+				<input name="star1" type="radio" class="star"/>
+				<input name="star1" type="radio" class="star"/>
+				<input name="star1" type="radio" class="star"/>
+        		
+        		<br/><br/>
+        		
+				<rich:progressBar value="500" minValue="400" maxValue="900">
+				<h:outputText value="1020 aiment, 44 n'aiment pas"/>
+				</rich:progressBar>
+        		
+        		
+        		<br/><br/>
+        		Artiste : [artiste]<br />
+        		
+        		<h:graphicImage library="images" name="icones/panier-ajouter-icone-5924-32.png" alt="Avatar"/>Ajouter [titre] au panier
+        		
+        	</rich:panel>
+        	
+        	<div style="clear: both;"></div>
+        			
+			<rich:collapsiblePanel header="Plus" switchType="client"> 
+	                Catégorie :<br/>
+	                Musique<br/>
+	               	Tags :<br/>
+	                Tag1 Tag2 Tag3<br/>
+	        </rich:collapsiblePanel>
+			
+			<br /><br />
+			
+			
+			<div class="fb-like" data-send="false" data-width="450" data-show-faces="true"></div>
+			
+			
+			<br /><br />
+			
 			
 			<h5>
 				Commentaires 
-				(<h:outputLabel value="#{beanMedia.nbCommentairesMedia}" /> )
+				( <h:outputText value="#{beanMedia.nbCommentaires}" /> )
 			</h5>
 			
 			
