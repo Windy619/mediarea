@@ -1,6 +1,5 @@
-import java.util.List;
-
-import javax.validation.constraints.AssertTrue;
+import javax.faces.application.FacesMessage;
+import javax.faces.context.FacesContext;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
@@ -13,13 +12,52 @@ import dao.utilisateur.DaoUtilisateur;
  */
 public class BeanConnexion {
 	public DaoUtilisateur daoUtilisateur = new DaoUtilisateur();
-	private java.lang.Boolean isConnected;
-	@Pattern(regexp = "^[\\w\\-]([\\.\\w])+[\\w]+@([\\w\\-]+\\.)+[a-zA-Z]{2,4}$" , message="Mauvaise adresse mail - Veuillez corriger")
+	private java.lang.String connected = "";
+	private java.lang.Boolean isConnected = false;
+	private FacesMessage message;
+	private Utilisateur User = null;
+	@Pattern(regexp = "^[\\w\\-]([\\.\\w])+[\\w]+@([\\w\\-]+\\.)+[a-zA-Z]{2,4}$", message = "Mauvaise adresse mail - Veuillez corriger")
 	private java.lang.String identifiant = null;
-	@Size(min=3, max=12)
+	@Size(min = 3, max = 12, message = "La taille du Password doit être entre 3 et 12")
 	private java.lang.String password = null;
-	
+
 	public BeanConnexion() {
+	}
+
+	public String getIsAccountOk() {
+		if (identifiant == null) {
+		} else {
+			Utilisateur user = daoUtilisateur.rechercheSurAdrMail(identifiant);
+			if (user == null) {
+				connected = "isNotConnected";
+				isConnected = false;
+				message = new FacesMessage("Adresse mail inconnu");
+				message.setSeverity(FacesMessage.SEVERITY_ERROR);
+				FacesContext.getCurrentInstance().addMessage(
+						"form-login:identifiant", message);
+			} else {
+				if (user.getMdp().contentEquals(password)) {
+					connected = "isConnected";
+					isConnected = true;
+					User = user;
+				} else {
+					connected = "isNotConnected";
+					isConnected = false;
+					message = new FacesMessage("Mot de passe incorrect");
+					message.setSeverity(FacesMessage.SEVERITY_ERROR);
+					FacesContext.getCurrentInstance().addMessage(
+							"form-login:password", message);
+				}
+			}
+		}
+		return connected;
+	}
+
+	public String seDeconnecter() {
+		connected = "isNotConnected";
+		isConnected = false;
+		User = null;
+		return connected;
 	}
 
 	public java.lang.String getIdentifiant() {
@@ -38,6 +76,14 @@ public class BeanConnexion {
 		this.password = password;
 	}
 
+	public java.lang.String getConnected() {
+		return connected;
+	}
+
+	public void setConnected(java.lang.String connected) {
+		this.connected = connected;
+	}
+
 	public java.lang.Boolean getIsConnected() {
 		return isConnected;
 	}
@@ -45,31 +91,14 @@ public class BeanConnexion {
 	public void setIsConnected(java.lang.Boolean isConnected) {
 		this.isConnected = isConnected;
 	}
-	
-	
-	
-	@AssertTrue(message = "Comptes inexistant!")
-	public boolean isAccountOk() {
-		List<Utilisateur> listUser = (List<Utilisateur>) daoUtilisateur
-				.recherche(identifiant);
-		if (listUser.isEmpty()) {
-			isConnected = false;
-		} else {
-			for (Utilisateur user : listUser) {
-				if (user.getAdrMail().contentEquals(identifiant)) {
-					if (user.getMdp().contentEquals(password)) {
-						isConnected = true;
-					}
-				} else {
-					isConnected = false;
-				}
-			}
-		}
-		return isConnected;
+
+	public Utilisateur getUser() {
+		return User;
 	}
 
-	public String seDeconnecter() {
-		isConnected = false;
-		return "deconnected";
+	public void setUser(Utilisateur user) {
+		User = user;
 	}
+
+	
 }
