@@ -1,10 +1,21 @@
-<?xml version="1.0" encoding="UTF-8" ?>
-<!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml">
-<body> 
+<ui:composition
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:a4j="http://richfaces.org/a4j"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets">
+	
+	
 	<div class="container">  
-		<div id="FooterTwo"> © 2012 MediArea </div>
-		<div id="FooterTree"><a href="#">Aide</a> || <a href="#">A propos</a> || <a href="#">Conditions d'utilisation</a> || <a href="#">Signaler un bug</a></div> 
-	</div>
-</body> 
-</html>
+		<div id="FooterTwo"> &#169; 2012 MediArea </div>
+		<h:form>
+			<div id="FooterTree">
+				<h:outputLink value="#">Aide</h:outputLink> || 
+				<h:outputLink value="#">A propos</h:outputLink> || 
+				<h:outputLink value="#">Conditions d'utilisation</h:outputLink> || 
+				<h:outputLink value="#">Signaler un bug</h:outputLink>
+			</div> 
+		</h:form>
+	</div> 
+</ui:composition>

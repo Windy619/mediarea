@@ -94,9 +94,16 @@ public class DaoMedia extends Dao<Media> {
 	 */
 	public List<?> totalVues(Media media) {
 		return new ArrayList<Media>();
-	}		
+	}
 	
 	
+	
+	
+	
+	
+	
+	
+
 	
 	
 	
@@ -104,35 +111,37 @@ public class DaoMedia extends Dao<Media> {
 	
 	
 	/**
-	 * Recupération du nombre de commentaires total écrits
+	 * Nombre de personnes ayant aimé un média
 	 * @param idMedia
-	 * @return Un entier
+	 * @return L'id d'un média
 	 */
-	public int commentairesMedia(int idMedia) {
-		String param = "%" + idMedia + "%";
+	public List<?> nbAimeMedia(long idMedia) {
+		long param = idMedia;
 		
-		/*Query q = session.createQuery("" +
-				"SELECT COUNT(*) " +
-				"FROM media_commentaire " +
-				"WHERE Media_idMedia = :idMedia");*/
+		Query q = session.createQuery("" +
+				"FROM Aimer " +
+				"WHERE media.idMedia = :idMedia " +
+				"AND aAime = true");
 		
-		int q = ( (Integer) session.createQuery("SELECT COUNT(*) FROM media_commentaire WHERE Media_idMedia = :idMedia").iterate().next() ).intValue();
+		q.setParameter("idMedia", param);		
 		
-		/*q.setParameter("idMedia", param);*/
-
-		//int result=query.UniqueResult<int>();
-		
-		//return q.list().size();
-		//i = list.get(0).intValue();
-		return q;
-		
-		
-		/*ICriteria criteria = Session.CreateCriteria<Post>()
-		    .SetProjection(Projections.Count("Media_idMedia"))
-		    .CreateAlias("media_commentaire", "mc")
-		    .Add(Restrictions.Eq("Media_idMedia", idMedia));
-		 
-		int result = criteria.UniqueResult<int>();*/
+		return q.list();
 	}
 	
+	/**
+	 * Nombre de personnes n'ayant pas aimé un média
+	 * @param idMedia
+	 * @return Liste
+	 */
+	public List<?> nbAimeNAimePas(long idMedia) {
+		long param = idMedia;
+		
+		Query q = session.createQuery("" +
+				"FROM Aimer " +
+				"WHERE media.idMedia = :idMedia ");
+		
+		q.setParameter("idMedia", param);		
+		
+		return q.list();
+	}
 }

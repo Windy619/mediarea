@@ -82,31 +82,31 @@ public class DaoUtilisateur extends Dao<Utilisateur> {
 		q.setParameter("recherche", param);		
 
 		return q.list();
-	}	
+	}
 	
-	/**
-	 * Recherche simple d'un amis à partir d'un String
-	 * @param mot
-	 * @return Une liste d'amitie
-	 */
-	public List<?> rechercheAmis(String recherche, Utilisateur u) {
-		String param = "%" + recherche + "%";
+	public Utilisateur rechercheSurAdrMail(String recherche) {
+		String param = recherche;
 		
 		Query q = session.createQuery("" +
-				"FROM Amitie as a " + 
-				"WHERE (a.ami.adrMail like :recherche or a.ami.pseudo like :recherche or a.ami.prenomUtilisateur like :recherche or a.ami.nomUtilisateur like :recherche) " + 
-					"AND dateBanissement IS NULL AND dateSuppressionUtilisateur IS NULL " + 
-					"AND a.utilisateur.idUtilisateur = :idConnecte");
+				"FROM Utilisateur " +
+				"WHERE adrMail = :recherche " +
+				"AND dateBanissement IS NULL AND dateSuppressionUtilisateur IS NULL");
 		q.setParameter("recherche", param);		
-		q.setParameter("idConnecte", u.getIdUtilisateur());	
-
-		return q.list();
+		
+		return (Utilisateur) q.uniqueResult();
 	}	
 	
-	/**
-	 * Recherche simple à partir d'un String (sans les amis)
-	 * @return Une liste d'utilisateur
-	 */
+	public Utilisateur rechercheSurPseudo(String recherche) {
+		String param = recherche;
+		
+		Query q = session.createQuery("" +
+				"FROM Utilisateur " +
+				"WHERE pseudo = :recherche " +
+				"AND dateBanissement IS NULL AND dateSuppressionUtilisateur IS NULL");
+		q.setParameter("recherche", param);		
+		
+		return (Utilisateur) q.uniqueResult();
+	}
 	public List<?> rechercheNonAmis(String recherche, Utilisateur u) {
 		String param = "%" + recherche + "%";
 		

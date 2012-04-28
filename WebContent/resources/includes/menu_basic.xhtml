@@ -1,12 +1,9 @@
-<?xml version="1.0" encoding="UTF-8" ?>
-<!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml"
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
 	xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:a4j="http://richfaces.org/a4j"
 	xmlns:rich="http://richfaces.org/rich"
 	xmlns:f="http://java.sun.com/jsf/core"
 	xmlns:ui="http://java.sun.com/jsf/facelets">
-<h:body>
 	<h:outputStylesheet>
         .menuBar{
         	background:#534741;
@@ -25,12 +22,11 @@
     </h:outputStylesheet>
 
 	<h:form>
-
 		<rich:toolbar height="40px" styleClass="menuBar">
 			<rich:toolbarGroup location="left">
 				<rich:menuItem onclick="document.location.href='home.jsf'">
 					<h:outputLink value="home.jsf">
-						<h:outputText value="Actualités" styleClass="menuLink"></h:outputText>
+						<h:outputText value="Actualit&#233;s" styleClass="menuLink"></h:outputText>
 					</h:outputLink>
 				</rich:menuItem>
 				<rich:menuItem onclick="document.location.href='#'">
@@ -50,18 +46,17 @@
 						<h:outputText value="QuickList" styleClass="menuLink"></h:outputText>
 					</h:outputLink>
 				</rich:menuItem>
-				<rich:menuItem id="connexion"
-					rendered="#{!beanConnexion.isConnected}"
-					onclick="document.location.href='connexion.jsf'">
-					<h:outputLink value="connexion.jsf">
+				<rich:menuItem rendered="#{!beanConnexion.isConnected}" onclick="document.location.href='monCompte.jsf'">
+					<h:outputLink value="monCompte.jsf">
 						<h:outputText value="Mon Compte" styleClass="menuLink"></h:outputText>
 					</h:outputLink>
 				</rich:menuItem>
-				<rich:menuItem id="deconnexion" styleClass="menuLink"
-					rendered="#{beanConnexion.isConnected}"
-					action="#{beanConnexion.seDeconnecter()}" label="Déconnexion" />
+				<rich:menuItem rendered="#{beanConnexion.isConnected}" onclick="document.location.href='profil.jsf'">
+					<h:outputLink value="profil.jsf">
+						<h:outputText value="Mon Compte" styleClass="menuLink"></h:outputText>
+					</h:outputLink>
+				</rich:menuItem>
 			</rich:toolbarGroup>
 		</rich:toolbar>
 	</h:form>
-</h:body>
-</html>
+</ui:composition>
