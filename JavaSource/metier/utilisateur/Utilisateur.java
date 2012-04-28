@@ -126,7 +126,7 @@ public class Utilisateur {
 	@ManyToOne(cascade = {CascadeType.ALL})
 	private Visibilite visibilite;	
 	
-	@OneToMany(cascade = {CascadeType.ALL})
+	@OneToMany(mappedBy="utilisateur", cascade = {CascadeType.ALL})
 	private Set<Amitie> amis;
 	
 	@OneToMany(cascade = {CascadeType.ALL})
@@ -161,14 +161,6 @@ public class Utilisateur {
 	private Set<Note> noteMedias;
 	
 	@OneToMany(cascade = {CascadeType.ALL})
-	@JoinTable(name = "message_prive_envoi")
-	private Set<Message_Prive> messagesPrivesEnvoyes;
-	
-	@OneToMany(cascade = {CascadeType.ALL})
-	@JoinTable(name = "message_mural_envoi")
-	private Set<Message_Mural> messagesMurauxEnvoyes;	
-	
-	@OneToMany(cascade = {CascadeType.ALL})
 	private Set<Message_Mural> messagesMuraux;
 	
 	@OneToMany(cascade = {CascadeType.ALL})
@@ -182,16 +174,6 @@ public class Utilisateur {
 
 	public void setEstAdministrateur(boolean estAdministrateur) {
 		this.estAdministrateur = estAdministrateur;
-	}
-
-
-	public Set<Message_Mural> getMessagesMurauxEnvoyes() {
-		return messagesMurauxEnvoyes;
-	}
-
-
-	public void setMessagesMurauxEnvoyes(Set<Message_Mural> messagesMurauxEnvoyes) {
-		this.messagesMurauxEnvoyes = messagesMurauxEnvoyes;
 	}
 
 
@@ -234,8 +216,6 @@ public class Utilisateur {
 		signalementsMedias = new HashSet<Signalement_Media>();
 		noteMedias = new HashSet<Note>();
 		signalementsCommentaires = new HashSet<Signalement_Commentaire>();
-		messagesMurauxEnvoyes = new HashSet<Message_Mural>();
-		messagesPrivesEnvoyes = new HashSet<Message_Prive>();
 		messagesMuraux = new HashSet<Message_Mural>();
 		messagesPrives = new HashSet<Message_Prive>();
 		
@@ -270,20 +250,9 @@ public class Utilisateur {
 		signalementsCommentaires = new HashSet<Signalement_Commentaire>();		
 		notificationAutomatique = false;
 		notificationParMail = false;	
-		messagesMurauxEnvoyes = new HashSet<Message_Mural>();
-		messagesPrivesEnvoyes = new HashSet<Message_Prive>();
 		messagesMuraux = new HashSet<Message_Mural>();
 		messagesPrives = new HashSet<Message_Prive>();
 	}	
-
-	public Set<Message_Prive> getMessagesPrivesEnvoyes() {
-		return messagesPrivesEnvoyes;
-	}
-
-
-	public void setMessagesPrivesEnvoyes(Set<Message_Prive> messagesPrivesEnvoyes) {
-		this.messagesPrivesEnvoyes = messagesPrivesEnvoyes;
-	}
 
 
 	public Set<Message_Mural> getMessagesMuraux() {

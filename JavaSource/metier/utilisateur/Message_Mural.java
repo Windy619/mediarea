@@ -21,7 +21,7 @@ public class Message_Mural extends Message {
 
 	@ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
 	private Utilisateur destinataire;
-
+	
 	/**
 	 * Constructeur vide
 	 */

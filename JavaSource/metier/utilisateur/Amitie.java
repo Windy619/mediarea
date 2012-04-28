@@ -7,6 +7,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 
 /**
  * @author mediarea
@@ -31,6 +32,9 @@ public class Amitie {
 	
 	@ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
 	private Utilisateur ami;
+	
+	@ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+	private Utilisateur utilisateur;
 
 	/**
 	 * Constructeur vide
@@ -41,7 +45,8 @@ public class Amitie {
 	 * Constructeur par défaut
 	 * @param ami
 	 */
-	public Amitie(Utilisateur ami){
+	public Amitie(Utilisateur u,Utilisateur ami){
+		this.utilisateur = u;
 		this.ami = ami;
 		dateAmitie = new Date();
 	}	
@@ -79,6 +84,12 @@ public class Amitie {
 		this.idAmitie = idAmitie;
 	}
 
+	public Utilisateur getUtilisateur() {
+		return utilisateur;
+	}
 
+	public void setUtilisateur(Utilisateur utilisateur) {
+		this.utilisateur = utilisateur;
+	}
 
 }

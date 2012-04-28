@@ -22,6 +22,7 @@ public class Message_Prive extends Message {
 	
 	@ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
 	private Utilisateur destinataire;
+	
 
 	/**
 	 * Constructeur vide
