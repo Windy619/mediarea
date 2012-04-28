@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<faces-config xmlns="http://java.sun.com/xml/ns/javaee"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-facesconfig_2_1.xsd"
+	version="2.1">
+
+	<managed-bean>
+		<managed-bean-name>beanConnexion</managed-bean-name>
+		<managed-bean-class>BeanConnexion</managed-bean-class>
+		<managed-bean-scope>session</managed-bean-scope>
+		<managed-property>
+			<property-name>identifiant</property-name>
+			<property-class>java.lang.String</property-class>
+			<value />
+		</managed-property>
+		<managed-property>
+			<property-name>password</property-name>
+			<property-class>java.lang.String</property-class>
+			<value />
+		</managed-property>
+		<managed-property>
+			<property-name>isConnected</property-name>
+			<property-class>java.lang.Boolean</property-class>
+			<value>false</value>
+		</managed-property>
+	</managed-bean>
+	<managed-bean>
+		<managed-bean-name>beanAmis</managed-bean-name>
+		<managed-bean-class>BeanAmis</managed-bean-class>
+		<managed-bean-scope>session</managed-bean-scope>
+	</managed-bean>
+	<managed-bean>
+		<managed-bean-name>beanInscription</managed-bean-name>
+		<managed-bean-class>BeanInscription</managed-bean-class>
+		<managed-bean-scope>request</managed-bean-scope>
+	</managed-bean>
+	<managed-bean>
+		<managed-bean-name>beanMedia</managed-bean-name>
+		<managed-bean-class>BeanMedia</managed-bean-class>
+		<managed-bean-scope>request</managed-bean-scope>
+		<managed-property>
+			<property-name>mediaVisualise</property-name>
+			<property-class>metier.media.Media</property-class>
+			<value></value>
+		</managed-property>
+	</managed-bean>
+	<managed-bean>
+		<managed-bean-name>beanMessagesPrives</managed-bean-name>
+		<managed-bean-class>BeanMessagesPrives</managed-bean-class>
+		<managed-bean-scope>session</managed-bean-scope>
+	</managed-bean>
+	<navigation-rule>
+		<from-view-id>/pages/connexion.xhtml</from-view-id>
+		<navigation-case>
+			<from-outcome>true</from-outcome>
+			<to-view-id>/pages/home.xhtml</to-view-id>
+			<redirect/>
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>false</from-outcome>
+			<to-view-id>/pages/connexion.xhtml</to-view-id>
+		</navigation-case>
+	</navigation-rule>
+</faces-config>
