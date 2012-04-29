@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import metier.media.Categorie;
+import metier.media.Commentaire;
 import metier.media.Media;
 import metier.media.Type_Media;
 

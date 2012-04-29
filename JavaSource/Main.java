@@ -114,7 +114,22 @@ public class Main {
 		
 		media.setType(daoTypeMedia.typeVideo());
 		
-		media.getTags().add(new Tag("Tag"));
+		/*Tag tag1 = new Tag("Tag1");
+		Tag tag2 = new Tag("Tag2");
+		Tag tag3 = new Tag("Tag3");
+		Tag tag4 = new Tag("Tag4");
+		Tag tag5 = new Tag("Tag5");
+		Tag tag6 = new Tag("Tag6");*/
+		daoMedia.getUn(1).getTags().add(new Tag("Tag1")); //NE PAS METTRE tags_idTag en PRIMARY KEY TODO
+		daoMedia.getUn(1).getTags().add(new Tag("Tag2"));
+		daoMedia.getUn(1).getTags().add(new Tag("Tag3"));
+		media.getTags().add(new Tag("Tag4"));
+		media.getTags().add(new Tag("Tag1"));
+		media.getTags().add(new Tag("Tag3"));
+		daoMedia.getUn(3).getTags().add(new Tag("Tag1"));
+		daoMedia.getUn(3).getTags().add(new Tag("Tag5"));
+		daoMedia.getUn(3).getTags().add(new Tag("Tag6"));
+		
 		
 		media.getCommentaires().add(new Commentaire("Bonjour!",daoUtilisateur.getUn(0)));
 		
@@ -254,37 +269,37 @@ public class Main {
         
         DaoUtilisateur dao = new DaoUtilisateur();
         Utilisateur u = dao.getUn(3);
-        Avatar a = new Avatar("http://127.0.0.1:8080/MediArea/resources/avatar/8.png");
+        Avatar a = new Avatar("http://127.0.0.1:8085/MediArea/resources/avatar/8.png");
         u.setAvatar(a);
         dao.sauvegarder(u);
         
         u = dao.getUn(4);
-        a = new Avatar("http://127.0.0.1:8080/MediArea/resources/avatar/2.png");
+        a = new Avatar("http://127.0.0.1:8085/MediArea/resources/avatar/2.png");
         u.setAvatar(a);
         dao.sauvegarder(u);  
         
         u = dao.getUn(5);
-        a = new Avatar("http://127.0.0.1:8080/MediArea/resources/avatar/3.png");
+        a = new Avatar("http://127.0.0.1:8085/MediArea/resources/avatar/3.png");
         u.setAvatar(a);
         dao.sauvegarder(u); 
         
         u = dao.getUn(6);
-        a = new Avatar("http://127.0.0.1:8080/MediArea/resources/avatar/4.png");
+        a = new Avatar("http://127.0.0.1:8085/MediArea/resources/avatar/4.png");
         u.setAvatar(a);
         dao.sauvegarder(u);         
         
         u = dao.getUn(7);
-        a = new Avatar("http://127.0.0.1:8080/MediArea/resources/avatar/5.png");
+        a = new Avatar("http://127.0.0.1:8085/MediArea/resources/avatar/5.png");
         u.setAvatar(a);
         dao.sauvegarder(u);
         
         u = dao.getUn(1);
-        a = new Avatar("http://127.0.0.1:8080/MediArea/resources/avatar/6.png");
+        a = new Avatar("http://127.0.0.1:8085/MediArea/resources/avatar/6.png");
         u.setAvatar(a);
         dao.sauvegarder(u);       
         
         u = dao.getUn(2);
-        a = new Avatar("http://127.0.0.1:8080/MediArea/resources/avatar/7.png");
+        a = new Avatar("http://127.0.0.1:8085/MediArea/resources/avatar/7.png");
         u.setAvatar(a);
         dao.sauvegarder(u);
         

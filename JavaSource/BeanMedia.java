@@ -1,5 +1,6 @@
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -12,7 +13,10 @@ import metier.utilisateur.*;
 import dao.utilisateur.*;
 
 
-
+/**
+ * @author Florence
+ *
+ */
 public class BeanMedia {
 	private DaoMedia daoMedia;
 	private Media mediaVisualise;
@@ -68,9 +72,14 @@ public class BeanMedia {
 	public void setEstVisible(boolean estVisible) {
 		this.estVisible = estVisible;
 	}
+	
+	//*****
+	
+	List<Media> listeMediasSuggeres = new ArrayList<Media>();
 
-
-
+	
+	
+	
 	//constructeur
 	public BeanMedia() {
 		//Media
@@ -104,7 +113,7 @@ public class BeanMedia {
 		while(tagCompteur.hasNext())
 		{
 			//System.out.println(i.next().getNomCategorie());
-			tags = tagCompteur.next().getNomTag();
+			tags += tagCompteur.next().getNomTag() + " ";
 		}
 		//System.out.println("Tags : " + tags);
 		
@@ -137,20 +146,72 @@ public class BeanMedia {
 		
 		//***********************************************		
 		
+		//Aimer
 		daoAimer = new DaoAimer();
 		resultatNbAime = daoMedia.nbAimeMedia(mediaVisualise.getIdMedia()).size();
-		resultatNbAimeNAimePas = daoMedia.nbAimeMedia(mediaVisualise.getIdMedia()).size();
+		resultatNbAimeNAimePas = daoMedia.nbAimeNAimePas(mediaVisualise.getIdMedia()).size();
 		
 		//***********************************************
 		
+		//Avatar
 		nomAvatar = util.getAvatar().getNomAvatar();
+		
+		//***********************************************
+		
+		//Tag
+		Set<Tag> tagMedia = daoMedia.getUn(2).getTags(); //tags du média visualisé
+		
+		List<Media> listeMedia = daoMedia.getTous();
+		
+		HashMap<Media, Integer> map = new HashMap<Media, Integer>(); //HashMap contenant le nb d'occurrences de tags correspondants dans les médias
+		
+		Iterator<Tag> iteratorMedia = tagMedia.iterator();
+		while(iteratorMedia.hasNext()) { //parcours des tags du média visualisé
+			//System.out.println("Set tagMedia : " + i.next());
+			Tag svg = iteratorMedia.next();
+			for(Media elMedia : listeMedia) { //parcours de tous les médias
+				if(! elMedia.equals(daoMedia.getUn(2))) {//tout sauf le média actuellement visualisé
+					Set<Tag> setTagMediaCourant = daoMedia.getUn(elMedia.getIdMedia()).getTags();
+					for(Tag tagMediaCourant : setTagMediaCourant) {
+						//System.out.println(svg + "***" + tagMediaCourant + " (" + elMedia.getIdMedia() + ")");
+						if(svg.toString().equals(tagMediaCourant.toString())) {
+							if(map.containsKey(elMedia)) {
+								map.put(elMedia, map.get(elMedia) + 1); //tag correspond supplémentaire
+							}
+							else
+							{
+								map.put(elMedia, 1);
+							}
+						}
+					}
+				}
+			}
+		}
+		
+		/*//Affichage de la HashMap
+		Set cles = map.keySet();
+		Iterator it = cles.iterator();
+		while (it.hasNext()){
+		   Object cle = it.next();
+		   Object valeur = map.get(cle);
+		   System.out.println(cle + " => " + valeur);
+		}*/
+
+		listeMediasSuggeres = new ArrayList<Media>(map.keySet());
+		//System.out.println("size listeMediasSuggeres : " + listeMediasSuggeres.size());
+		if(listeMediasSuggeres.size() < 20) {
+			listeMediasSuggeres = listeMediasSuggeres.subList(0, listeMediasSuggeres.size());
+		}
+		else {
+			listeMediasSuggeres = listeMediasSuggeres.subList(0, 20);
+		}		
 	}
 
 
 
 	//getter et setter
 	public Media getMediaVisualise() {
-		//System.out.println("Getter mediavisualise");
+		//System.out.println("Getter mediavisualise");		
 		return mediaVisualise;
 	}
 	
@@ -291,12 +352,17 @@ public class BeanMedia {
 		return commentaireSaisi;
 	}
 
-
-
 	public void setCommentaireSaisi(String commentaireSaisi) {
 		this.commentaireSaisi = commentaireSaisi;
 	}
 
+	public List<Media> getListeMediasSuggeres() {
+		return listeMediasSuggeres;
+	}
+	
+	public void setListeMediasSuggeres(List<Media> listeMediasSuggeres) {
+		this.listeMediasSuggeres = listeMediasSuggeres;
+	}
 
 	
 	
@@ -356,11 +422,4 @@ public class BeanMedia {
 		
 		return "rendreVisible";
 	}
-	
-	public String chercherMediasSuggeres() {
-		
-		
-		return "chercherMediasSuggeres";
-	}
-	
 }
