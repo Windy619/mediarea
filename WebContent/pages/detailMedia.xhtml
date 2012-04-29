@@ -62,6 +62,16 @@
 		    
 		    
     
+    
+    
+    
+    <h:form>
+    	<h:commandButton value="" />
+    </h:form>
+    		
+    
+    
+    
 			<h3>Détail d'un média</h3>
 			<br/>
 			<span class="titre">
@@ -206,6 +216,8 @@
 	                <f:selectItem itemValue="4" itemLabel="Emails et amis" />
 	            </rich:select>
 	            
+	            <br/>
+	            
 	            <!-- https://dev.twitter.com/docs/tweet-button : Tweet Button -->
 				<a href="https://twitter.com/share" class="twitter-share-button" data-via="twitterapi" data-lang="en">Tweet</a>
 				<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="//platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
@@ -216,6 +228,8 @@
 				<!-- https://developers.google.com/+/plugins/+1button/ : +1 Button -->
 				<script type="text/javascript" src="https://apis.google.com/js/plusone.js"></script>
 				<div class="g-plusone" data-size="medium"></div>
+				
+				<br/>
 				
 				<!-- http://en.skyrock.com/developer/tools.php : Share on Skyrock -->
 				<a href="http://www.skyrock.com/m/blog/share.php?js=0" class="skysocial-s skyrocksocialshare_classic24" title="Share on Skyrock" style="display:inline-block;text-indent:-999em;overflow:hidden;width:57px;height:24px;background:url(http://share.static.skyrock.net/img/api/skyrocksocialshare_classic24.png) no-repeat 0 0 transparent;"><p style="display:none;">Share on Skyrock</p></a>
@@ -348,7 +362,8 @@
 	                <br/>
 	                
 	                <h:outputText value="Tags : " styleClass="bold" />
-	               	<h:outputText value="#{beanMedia.tags}" /><br/>
+	                <h:outputLink value="/TODO/"><h:outputText value="#{beanMedia.tags}"/></h:outputLink>
+	                <br/>
 	        </rich:collapsiblePanel>
 			
 			<br /><br />
@@ -381,9 +396,10 @@
 					<!-- <textarea id="elm1" name="elm1" rows="2" cols="2" style="width: 10%">
 						Réagir à propos de ce média.
 					</textarea> -->
-					<h:inputTextarea id="elm1" name="content" rows="2" cols="2" style="width: 10%" value="#{beanMedia.commentaireSaisi}">
+					<h:inputTextarea id="elm1" name="content" rows="2" cols="2" style="width: 10%" value="#{beanMedia.commentaireSaisi}" label="test">
 						Réagir à propos de ce média.
 					</h:inputTextarea>
+					
 				</div>
 			   	
 			   	<br/>
@@ -458,48 +474,35 @@
 		<aside class="group2">
 			<h3>Suggestions</h3>
 			<article class="holder_news">
-			
-			
-			
-			<h:form>
-	        <h:panelGrid columns="1">
-	            <a4j:outputPanel id="panel" layout="block">
-	                <a4j:repeat value="chercherMediasSuggeres" var="mediaSuggere" rows="20"
-	                    id="repeat">
-	                    <rich:panel style="float:left; width:200px; padding:5px;">
-	                        <f:facet name="header">
-	                            <h:panelGroup>
-	                                <h:graphicImage value="" alt="flag" />
-	                                <h:outputText value="" style="font-weight:bold" />
-	                            </h:panelGroup>
-	                        </f:facet>
-	                        <h:panelGrid columns="2">
-	                            <h:outputText value="TODO" style="font-weight:bold" />
-	                            <h:outputText value="" />
-	                            <h:outputText value="TODO" style="font-weight:bold" />
-	                            <h:outputText value="" />
-	                        </h:panelGrid>
-	                    </rich:panel>
-	                </a4j:repeat>
-	            </a4j:outputPanel>
-	            <!-- <a4j:outputPanel layout="block">
-	                <rich:dataScroller for="repeat" render="panel" />
-	            </a4j:outputPanel> -->
-	        </h:panelGrid>
-	    </h:form>
-			
-			
-				<h4>
-					Lorem ipsum<span>10.09.2011</span>
-				</h4>
-				<p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Donec molestie. Sed aliquam sem ut arcu.<span class="readmore">
-				<a href="#">Read more..</a></span></p>
-				
-				<h4>
-					Lorem ipsum<span>10.09.2011</span>
-				</h4>
-				<p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Donec molestie. Sed aliquam sem ut arcu.<span class="readmore">
-				<a href="#">Read more..</a></span></p>
+				<h:form>
+			        <h:panelGrid columns="1">
+			            <a4j:outputPanel id="panel" layout="block">
+			                <a4j:repeat value="#{beanMedia.listeMediasSuggeres}" var="mediaSuggere" rows="20"
+			                    id="repeat">
+			                    <rich:panel style="float:left; width:200px; padding:5px;">
+			                        <f:facet name="header">
+			                            <h:panelGroup>
+			                                <h:outputText value="#{mediaSuggere.titreMedia}" style="font-weight:bold" />
+			                            </h:panelGroup>
+			                        </f:facet>
+			                        <h:panelGrid columns="2">	                            
+			                            <h:graphicImage value="#{mediaSuggere.photo}" alt="flag" style="float: left;"/>
+			                            de
+			                            <div style="float: right;">
+				                            <h:outputText value="#{mediaSuggere.auteurMedia.pseudo}" style="font-weight:bold;" />
+				                            <br/><br/>
+				                            ...
+				                        	vues
+			                        	</div>
+			                        </h:panelGrid>
+			                    </rich:panel>
+			                </a4j:repeat>
+			            </a4j:outputPanel>
+			            <!-- <a4j:outputPanel layout="block">
+			                <rich:dataScroller for="repeat" render="panel" />
+			            </a4j:outputPanel> -->
+			        </h:panelGrid>
+			    </h:form>
 			</article> 
 		</aside>
 		

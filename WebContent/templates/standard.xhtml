@@ -14,6 +14,12 @@
 	<h:outputStylesheet library="css" name="styles.css" />
 	<title>MediArea - <ui:insert name="pageTitle" /></title>
 
+	<!-- <h:outputScript library="js" name="tinymce/jscripts/tiny_mce/tiny_mce.js" />
+	<h:outputScript library="js" name="tinyMCEinit.js" /> -->
+	<script type="text/javascript" src="/MediArea/resources/js/tinymce/jscripts/tiny_mce/tiny_mce.js"></script>
+	<script type="text/javascript" src="/MediArea/resources/js/tinyMCEinit.js"></script>
+	
+	<!-- Lecteur audio/vidéo -->
 	<!-- first: the CSS layout of LeanBack Player -->
 	<h:outputStylesheet library="css" name="leanbackPlayer.default.css" />
 
@@ -25,6 +31,7 @@
 	<h:outputScript library="js" name="leanbackPlayer.en.js" />
 	<h:outputScript library="js" name="leanbackPlayer.de.js" />
 	<h:outputScript library="js" name="LBPoption.js" />
+
 
 	<!-- Estimation d'étoile -->
 	<h:outputScript name='star-rating/jquery.js' library="js"></h:outputScript>
@@ -38,9 +45,6 @@
 	<h:outputScript name='star-rating/jquery.MetaData.js' library="js"></h:outputScript>
  	<h:outputScript name='star-rating/jquery.rating.js' library="js"></h:outputScript>
  	<h:outputStylesheet name='star-rating/jquery.rating.css' library="js"/>
-	
-	
-	
 </h:head>
 
 <h:body>
