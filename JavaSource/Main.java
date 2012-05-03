@@ -72,6 +72,7 @@ public class Main {
 	public static void creer_utilisateurs() {
         
         Utilisateur utilAdmin = new Utilisateur("admin@gmail.com",true,"admin","password");
+        utilAdmin.setNomUtilisateur("DreamTeam");
         utilAdmin.setEstAministrateur(true);
         daoUtilisateur.sauvegarder(utilAdmin);
         
@@ -165,8 +166,8 @@ public class Main {
         util.getAmis().add(new Amitie(util,daoUtilisateur.getUn(4)));
         
         util.getSignalementsUtilisateurs().add(new Signalement_Utilisateur("Pas gentil!",daoUtilisateur.getUn(4)));
-        util.getMedias().add(new Media());
-        util.getPlaylists().add(new Playlist());
+        util.getMedias().add(daoMedia.getUn(4));
+        util.getPlaylists().add(daoPlaylist.getUn(4));
         util.getCommentaires().add(new Commentaire());
         util.getAimeMedias().add(new Aimer(true,daoMedia.getUn(2)));
         util.getRegardeMedias().add(new Regarder(daoMedia.getUn(1)));
