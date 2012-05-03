@@ -6,6 +6,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+//import org.richfaces.component.SortOrder;
+
 import metier.media.*;
 import dao.media.*;
 
@@ -22,23 +24,27 @@ public class BeanMedia {
 	private Media mediaVisualise;
 	
 	private String titreMedia; //nécessaire de faire appel à l'objet car #{beanMedia.mediaVisualise.titreMedia} ne fonctionne pas
-	private int nbCommentaires;
+	private long nbCommentaires;
 	private String auteur;
 	private String datePublication;
 	private String description;
-	private String categories = "";
+	private List<Categorie> listeCategories;
 	private String tags;
+	private List<Tag> listeTags;
 	private List<Commentaire> commentaires;
 	private int note;
 	private String nomTypeMedia;
 	private String commentaireSaisi;
+	List<Media> listeMediasSuggeres = new ArrayList<Media>();
 	
 	//****
 
 	private DaoRegarder daoRegarder;
 	private Regarder regarder;
 	
-	private int nbVues;
+	//private int nbVues;
+	private long resultatTotalVuesMedia;
+
 	private String motVues = "";
 	
 	//****
@@ -56,8 +62,8 @@ public class BeanMedia {
 	
 	private DaoAimer daoAimer;
 	private Aimer aimer;
-	private int resultatNbAime;
-	private int resultatNbAimeNAimePas;
+	private long resultatNbAime;
+	private long resultatNbAimeNAimePas;
 
 	//*****
 	
@@ -75,10 +81,24 @@ public class BeanMedia {
 	
 	//*****
 	
-	List<Media> listeMediasSuggeres = new ArrayList<Media>();
+	public static DaoTypePlaylist daoTypePlaylist = new DaoTypePlaylist();
+	public static DaoPlaylist daoPlaylist = new DaoPlaylist();
+	private String txtFavori;
+	private List<Playlist> listePlaylistUt;
 
+	//*****
+
+	public static DaoVisibilite daoVisibilite = new DaoVisibilite();
 	
+	//*****
 	
+	/*private SortOrder statesOrder = SortOrder.unsorted;
+	public SortOrder getStatesOrder() {
+		return statesOrder;
+	}
+	public void setStatesOrder(SortOrder statesOrder) {
+		this.statesOrder = statesOrder;
+	}*/
 	
 	//constructeur
 	public BeanMedia() {
@@ -99,23 +119,24 @@ public class BeanMedia {
 		
 		description = mediaVisualise.getDescriptionMedia();
 		
+		listeCategories = new ArrayList<Categorie>();
 		Set<Categorie> setCategories = mediaVisualise.getCategories();
 		Iterator<Categorie> i=setCategories.iterator(); // on crée un Iterator pour parcourir notre Set
 		while(i.hasNext()) // tant qu'on a un suivant
 		{
 			//System.out.println(i.next().getNomCategorie()); // on affiche le suivant
-			categories = i.next().getNomCategorie();
+			listeCategories.add(i.next());
 		}
 		//System.out.println("Categories : " + categories);
 		
+		listeTags = new ArrayList<Tag>();
 		Set<Tag> setTags = mediaVisualise.getTags();
 		Iterator<Tag> tagCompteur=setTags.iterator();
 		while(tagCompteur.hasNext())
 		{
 			//System.out.println(i.next().getNomCategorie());
-			tags += tagCompteur.next().getNomTag() + " ";
+			listeTags.add(tagCompteur.next());
 		}
-		//System.out.println("Tags : " + tags);
 		
 		commentaires = new ArrayList<Commentaire>(mediaVisualise.getCommentaires());
 		
@@ -125,18 +146,25 @@ public class BeanMedia {
 		//***********************************************
 		
 		//Regarder
-		daoRegarder = new DaoRegarder();
+		/*daoRegarder = new DaoRegarder();
 		
-		List<?> listeRegarder = daoRegarder.getTous();
+		List<Regarder> listeRegarder = daoRegarder.getTous();
 		int nbVues = 0;
-        for (Object object : listeRegarder) {
-        	if(((Regarder) object).getMedia() == mediaVisualise) { //faire une requete HQL TODO
+        for (Regarder object : listeRegarder) {
+        	if(object.getMedia() == mediaVisualise) {
         		nbVues += ((Regarder) object).getNbVues();
         	}
 		}
 		if(nbVues > 0) {
 			motVues = "s"; //"vues" au pluriel
+		}*/
+		
+		resultatTotalVuesMedia = daoMedia.totalVues(mediaVisualise);
+		if(resultatTotalVuesMedia > 0)
+		{
+			motVues = "s"; //"vues" au pluriel
 		}
+		
 		
 		//***********************************************
 		
@@ -197,6 +225,8 @@ public class BeanMedia {
 		   System.out.println(cle + " => " + valeur);
 		}*/
 
+		//***********************************************
+		
 		listeMediasSuggeres = new ArrayList<Media>(map.keySet());
 		//System.out.println("size listeMediasSuggeres : " + listeMediasSuggeres.size());
 		if(listeMediasSuggeres.size() < 20) {
@@ -204,7 +234,25 @@ public class BeanMedia {
 		}
 		else {
 			listeMediasSuggeres = listeMediasSuggeres.subList(0, 20);
-		}		
+		}
+		
+		//***********************************************
+		
+		//Playlist
+		Set<Playlist> playlistsUtilisateur = daoUtilisateur.getUn(1).getPlaylists();
+		for(Playlist pl : playlistsUtilisateur) {
+			if(pl.getType().equals(daoTypePlaylist.getUn(2))) {
+				if(pl.getMedias().contains(daoMedia.getUn(2))) {
+					txtFavori = "Retirer des favoris";
+				}
+				else
+				{
+					txtFavori = "Favori";
+				}
+			}
+		}
+		
+		listePlaylistUt = new ArrayList<Playlist>(daoUtilisateur.getUn(1).getPlaylists());
 	}
 
 
@@ -228,11 +276,11 @@ public class BeanMedia {
 		this.titreMedia = titreMedia;
 	}
 
-	public int getNbCommentaires() {
+	public long getNbCommentaires() {
 		return nbCommentaires;
 	}
 
-	public void setNbCommentaires(int nbCommentaires) {
+	public void setNbCommentaires(long nbCommentaires) {
 		this.nbCommentaires = nbCommentaires;
 	}
 	
@@ -250,14 +298,6 @@ public class BeanMedia {
 
 	public void setDatePublication(String datePublication) {
 		this.datePublication = datePublication;
-	}
-
-	public int getNbVues() {
-		return nbVues;
-	}
-
-	public void setNbVues(int nbVues) {
-		this.nbVues = nbVues;
 	}
 
 	public String getDescription() {
@@ -292,12 +332,11 @@ public class BeanMedia {
 		this.note = note;
 	}
 	
-	public String getCategories() {
-		return categories;
+	public List<Categorie> getListeCategories() {
+		return listeCategories;
 	}
-	
-	public void setCategories(String categories) {
-		this.categories = categories;
+	public void setListeCategories(List<Categorie> listeCategories) {
+		this.listeCategories = listeCategories;
 	}
 
 	public String getTags() {
@@ -316,19 +355,19 @@ public class BeanMedia {
 		this.commentaires = commentaires;
 	}
 
-	public int getResultatNbAime() {
+	public long getResultatNbAime() {
 		return resultatNbAime;
 	}
 
-	public void setResultatNbAime(int resultatNbAime) {
+	public void setResultatNbAime(long resultatNbAime) {
 		this.resultatNbAime = resultatNbAime;
 	}
 
-	public int getResultatNbAimeNAimePas() {
+	public long getResultatNbAimeNAimePas() {
 		return resultatNbAimeNAimePas;
 	}
 
-	public void setResultatNbAimeNAimePas(int resultatNbAimeNAimePas) {
+	public void setResultatNbAimeNAimePas(long resultatNbAimeNAimePas) {
 		this.resultatNbAimeNAimePas = resultatNbAimeNAimePas;
 	}
 
@@ -363,7 +402,38 @@ public class BeanMedia {
 	public void setListeMediasSuggeres(List<Media> listeMediasSuggeres) {
 		this.listeMediasSuggeres = listeMediasSuggeres;
 	}
+	
+	public List<Tag> getListeTags() {
+		return listeTags;
+	}
+	
+	public void setListeTags(List<Tag> listeTags) {
+		this.listeTags = listeTags;
+	}
 
+	public String getTxtFavori() {
+		return txtFavori;
+	}
+	
+	public void setTxtFavori(String txtFavori) {
+		this.txtFavori = txtFavori;
+	}
+
+	public long getResultatTotalVuesMedia() {
+		return resultatTotalVuesMedia;
+	}
+	
+	public void setResultatTotalVuesMedia(long resultatTotalVuesMedia) {
+		this.resultatTotalVuesMedia = resultatTotalVuesMedia;
+	}
+	
+	public List<Playlist> getListePlaylistUt() {
+		return listePlaylistUt;
+	}
+	
+	public void setListePlaylistUt(List<Playlist> listePlaylistUt) {
+		this.listePlaylistUt = listePlaylistUt;
+	}
 	
 	
 	
@@ -421,5 +491,96 @@ public class BeanMedia {
 		System.out.println("est visible : " + estVisible);
 		
 		return "rendreVisible";
+	} //TODO
+	
+	public String incrNbVues() { //incrémenter seulement si clic sur Play et par utilisateur TODO
+		//System.out.println("Incrémentation du nombre de vues");
+						
+		List<Regarder> listeRegarder = daoRegarder.getTous();
+		boolean existeRegMedia = false;
+		for(Regarder reg : listeRegarder) {
+			if(reg.getMedia() == daoMedia.getUn(2))	{
+				System.out.println("Incrémentation (existe)");
+				reg.setNbVues(reg.getNbVues() + 1);
+				daoRegarder.sauvegarder(reg);
+				
+				existeRegMedia = true;
+				break;
+			}
+		}
+		
+		if(!existeRegMedia) { //il crée un objet Regarder correspond au média visualisé
+			//System.out.println("Incrémentation (n'existe pas)");
+			util.getRegardeMedias().add(new Regarder(daoMedia.getUn(2)));
+			daoUtilisateur.sauvegarder(util);
+		}
+		
+		return "incrNbVues";
 	}
+	
+	public String ajouterAFavori() {
+		Set<Playlist> playlistsUtilisateur = daoUtilisateur.getUn(1).getPlaylists();
+		
+		if(txtFavori == "Favori")
+		{
+			//System.out.println("Ajout au favori");
+			Playlist plFavoris = new Playlist();
+			
+			
+			boolean possedeFavori = false;
+			for(Playlist pl : playlistsUtilisateur) {
+				//System.out.println("nom playlist : " + pl.getNomPlaylist());
+				//vérification si l'utilisateur possède déjà une playlist ayant pour type "Favoris"
+				//System.out.println(pl.getType() + " * " + daoTypePlaylist.getUn(2));
+				if(pl.getType().equals(daoTypePlaylist.getUn(2))) { //daoTypePlaylist.getUn(2) <=> favoris
+					possedeFavori = true;
+					plFavoris = pl;
+					break;
+				}
+			}
+			
+			if(!possedeFavori) { //si la playlist de type Favori n'existe pas
+				//création d'une playlist de type Favoris pour l'utilisateur connecté
+				plFavoris = new Playlist("Mes favoris2","Favoris","Description",daoTypePlaylist.typeFavoris(),daoVisibilite.typeVisible());
+				//daoPlaylist.sauvegarder(plFavoris);
+				daoUtilisateur.getUn(1).getPlaylists().add(plFavoris);
+				daoUtilisateur.sauvegarder(daoUtilisateur.getUn(1));
+			}
+			
+			plFavoris.getMedias().add(daoMedia.getUn(2)); //ajout du média visualisé à la playlist de type Favori de l'utilisateur
+			daoPlaylist.sauvegarder(plFavoris);
+			
+			txtFavori = "Retirer des favoris";
+		}
+		else
+		{
+			//System.out.println("Retrait au favori");
+			for(Playlist pl : playlistsUtilisateur) {
+				if(pl.getType().equals(daoTypePlaylist.getUn(2))) { //possède déjà une playlist de type Favori
+					pl.getMedias().remove(daoMedia.getUn(2)); //suppression du média visualisé de la liste des favoris
+					daoPlaylist.sauvegarder(pl);
+				}
+			}
+		}
+		
+		return "ajouterAFavori";
+	}
+	
+	public String ajouterMediAPlaylist() {
+		System.out.println("Ajouter une vidéo à une playlist");
+		
+		return "ajouterMediAPlaylist";
+	}
+	
+	public void sortByNom() {
+		System.out.println("SORT BY");
+		
+        /*statesOrder = SortOrder.unsorted; //SortOrder.unsorted;
+        //timeZonesOrder = SortOrder.unsorted;
+        if (statesOrder.equals(SortOrder.ascending)) {
+            setStatesOrder(SortOrder.descending);
+        } else {
+            setStatesOrder(SortOrder.ascending);
+        }*/
+    }
 }

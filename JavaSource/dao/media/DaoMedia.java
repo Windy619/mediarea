@@ -93,8 +93,19 @@ public class DaoMedia extends Dao<Media> {
 	 * Recuperation du total des vues
 	 * @return Une liste de média
 	 */
-	public List<?> totalVues(Media media) {
-		return new ArrayList<Media>();
+	public long totalVues(Media media) {		
+		//long param = media.getIdMedia();
+		Media param = media;
+		
+		Query q = session.createQuery("" +
+				"SELECT SUM(r.nbVues) " +
+				"FROM Regarder r " +
+				"WHERE r.media = :media");
+		//( (Integer) session.createQuery("select count(*) from ....").iterate().next() ).intValue()
+		
+		q.setParameter("media", param);		
+		
+		return (Long) q.uniqueResult();
 	}
 	
 	
