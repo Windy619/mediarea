@@ -1,0 +1,349 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+	  xmlns:a4j="http://richfaces.org/a4j"
+	  xmlns:rich="http://richfaces.org/rich">
+	  
+      
+<ui:composition template="/templates/standard.xhtml">
+		
+	<ui:define name="pageTitle">Messages Prives</ui:define>
+	<ui:define name="content">
+		<section class="group1">
+			<h3> Messages Prives </h3>    	
+			<br />
+			
+			<h:outputText rendered="#{empty beanMessagesPrives.utilisateurConnecte}" value="L'envoi de message privé est reservé aux utilisateurs inscrits" />			
+			
+			<h:form id="formNouveauMessage" rendered="#{beanMessagesPrives.afficherNouveauMessage}">	
+			
+				<h4> Nouveau Message </h4>    	
+				<br />
+				
+				<rich:panel id="modalNouveauMessage">	
+						
+					<h:outputText value="De : "/>
+					<h:inputText value="#{beanMessagesPrives.utilisateurConnecte.adrMail}" size="30" disabled="true"/>
+					<br /><br />
+								
+					<h:outputText value=" A : "/>
+					<rich:autocomplete id="destinataire" mode="ajax" value="#{beanMessagesPrives.destinataire}"
+					tokens=", " minChars="1" autoFill="false" autocompleteMethod="#{beanMessagesPrives.autoCompletion}" 
+					autocompleteList="#{beanMessagesPrives.suggestionUtilisateurs}"/>
+					<br /><br />
+					
+					<h:outputText value=" Objet : "/>
+					<h:inputText id="objet" value="#{beanMessagesPrives.objet}" size="100"/>
+					<br /><br />					
+					
+					<rich:editor value="#{beanMessagesPrives.contenu}" 
+					theme="advanced" width="580" height="250" viewMode="visual">	
+					</rich:editor>		
+								
+					<br />
+					
+					<h:commandButton value="Envoyer le message" action="#{beanMessagesPrives.envoyerMessage}" >
+						<f:setPropertyActionListener target="#{beanMessagesPrives.afficherNouveauMessage}" value="false" />
+					</h:commandButton>
+					
+					<h:commandButton value="Vider formulaire">
+						<f:setPropertyActionListener target="#{beanMessagesPrives.destinataire}" value="#{message.destinataire.adrMail}" />
+						<f:setPropertyActionListener target="#{beanMessagesPrives.objet}" value="" />
+						<f:setPropertyActionListener target="#{beanMessagesPrives.contenu}" value="" />					
+					</h:commandButton>					
+				
+				</rich:panel>
+				
+				<br />
+				
+				<h:form>
+					<h:commandButton value="Fermer formulaire">				
+						<f:setPropertyActionListener target="#{beanMessagesPrives.afficherNouveauMessage}" value="false" />
+					</h:commandButton>
+				</h:form>				
+				
+				<br /><br />
+			</h:form>	
+						
+			<h:form id="formReponseMessage" rendered="#{beanMessagesPrives.afficherReponseMessage}">	
+			
+				<h4> Réponse Message </h4>    	
+				<br />
+				
+				<rich:panel id="modalReponseMessage">	
+						
+					<h:outputText value="De : "/>
+					<h:inputText value="#{beanMessagesPrives.utilisateurConnecte.adrMail}" size="30" disabled="true"/>
+					<br /><br />
+					
+					<rich:message for="destinataire" />				
+					<h:outputText value=" A : "/>
+					<rich:autocomplete id="destinataire" mode="ajax" value="#{beanMessagesPrives.destinataire}"
+					tokens=", " minChars="1" autoFill="false" autocompleteMethod="#{beanMessagesPrives.autoCompletion}" 
+					autocompleteList="#{beanMessagesPrives.suggestionUtilisateurs}" disabled="true"/>
+					<br /><br />
+					
+					<h:outputText value=" Objet : "/>
+					<h:inputText id="objet" value="#{beanMessagesPrives.objet}" size="100" disabled="true"/>
+					<br /><br />					
+					
+					<rich:editor value="#{beanMessagesPrives.contenu}" 
+					theme="advanced" width="580" height="250" viewMode="visual">	
+					</rich:editor>		
+								
+					<br />
+					
+					<h:commandButton value="Envoyer le message" action="#{beanMessagesPrives.repondreMessage}" >
+						<f:setPropertyActionListener target="#{beanMessagesPrives.afficherReponseMessage}" value="false" />
+					</h:commandButton>
+						
+					<h:commandButton value="Vider formulaire">
+						<f:setPropertyActionListener target="#{beanMessagesPrives.destinataire}" value="#{message.destinataire.adrMail}" />
+						<f:setPropertyActionListener target="#{beanMessagesPrives.objet}" value="" />
+						<f:setPropertyActionListener target="#{beanMessagesPrives.contenu}" value="" />					
+					</h:commandButton>	
+				
+				</rich:panel>
+				
+				<br />
+				
+				<h:form>
+					<h:commandButton value="Fermer formulaire">				
+						<f:setPropertyActionListener target="#{beanMessagesPrives.afficherReponseMessage}" value="false" />
+					</h:commandButton>
+				</h:form>				
+				
+				<br /><br />
+			</h:form>							
+				
+			<h:form id="formDetailMessage" rendered="#{beanMessagesPrives.afficherDetailMessage}">
+			
+				<h4> Détails d'un message </h4>    		
+				<h:outputText value="Conversation entre #{beanMessagesPrives.mpSelectionneDetail.emetteur.pseudo} et #{beanMessagesPrives.mpSelectionneDetail.destinataire.pseudo} " />
+				<br />			
+				<h:outputText value="Objet : #{beanMessagesPrives.mpSelectionneDetail.objet}" />
+				<br />
+				<br />
+				<rich:panel id="panelMessage">
+					<f:facet name="header">
+						Message : 
+					</f:facet>
+					<f:facet name="header">
+						<h:commandLink value="Supprimer" action="#{beanMessagesPrives.supprimerMessage}" >
+							<f:setPropertyActionListener target="#{beanMessagesPrives.mpSelectionne}" value="#{beanMessagesPrives.mpSelectionneDetail}" />
+						</h:commandLink>,
+						<h:commandLink value="Répondre" action="#{beanMessagesPrives.afficherFormulaireReponseMessage}">
+							<f:setPropertyActionListener target="#{beanMessagesPrives.mpSelectionne}" value="#{beanMessagesPrives.mpSelectionneDetail}" />						
+						</h:commandLink>,		
+						<h:commandLink value="Signaler" action="#{beanMessagesPrives.afficherFormulaireReponseMessage}">
+							<f:setPropertyActionListener target="#{beanMessagesPrives.mpSelectionne}" value="#{beanMessagesPrives.mpSelectionneDetail}" />
+							<rich:componentControl target="popupSignalement" operation="show" />						
+						</h:commandLink>																
+					</f:facet>
+					<table>
+						<tr>
+							<td>
+								<center>
+									<h:outputText value="#{beanMessagesPrives.mpSelectionneDetail.emetteur.pseudo}" />
+									<br />
+									<h:graphicImage value="#{beanMessagesPrives.mpSelectionneDetail.emetteur.avatar.nomAvatar}" />	
+									<br />
+									Envoyé le :
+									<br />
+									<h:outputText value="#{beanMessagesPrives.mpSelectionneDetail.dateEnvoi}" />																						
+								</center>
+							</td>
+							<td>
+								<h:outputText escape="false" value="#{beanMessagesPrives.mpSelectionneDetail.contenuMessage}" />
+							</td>
+						</tr>
+					</table>
+				</rich:panel>
+				
+				<br />
+				
+				<a4j:repeat value="#{beanMessagesPrives.reponses}" var="reponse" id="repeatReponse" rows="10">
+					<rich:panel id="panelReponseMessage">
+						<f:facet name="header">
+							Reponse : 
+						</f:facet>
+						<f:facet name="header">
+							<h:commandLink value="Supprimer" action="#{beanMessagesPrives.supprimerMessage}" >
+								<f:setPropertyActionListener target="#{beanMessagesPrives.mpSelectionne}" value="#{reponse}" />
+							</h:commandLink>,
+							<h:commandLink value="Répondre" action="#{beanMessagesPrives.afficherFormulaireReponseMessage}">
+								<f:setPropertyActionListener target="#{beanMessagesPrives.mpSelectionne}" value="#{beanMessagesPrives.mpSelectionneDetail}" />						
+							</h:commandLink>										
+						</f:facet>
+						<table>
+							<tr>
+								<td>
+									<center>
+										<h:outputText value="#{reponse.emetteur.pseudo}" />
+										<br />
+										<h:graphicImage value="#{reponse.emetteur.avatar.nomAvatar}" />													
+									</center>
+								</td>
+								<td>
+									<h:outputText escape="false" value="#{reponse.contenuMessage}" />
+								</td>
+							</tr>
+						</table>
+
+					</rich:panel>		
+						
+					<br />
+					
+				</a4j:repeat>					
+							
+				<br />
+				
+				<h:form>
+					<h:commandButton value="Fermer formulaire">				
+						<f:setPropertyActionListener target="#{beanMessagesPrives.afficherDetailMessage}" value="false" />
+						<f:setPropertyActionListener target="#{beanMessagesPrives.afficherListeMessage}" value="true" />
+					</h:commandButton>
+				</h:form>				
+													
+			</h:form>
+			
+			<h:form rendered="#{not empty beanMessagesPrives.utilisateurConnecte and beanMessagesPrives.afficherListeMessage}">
+			
+				<h4> Messages </h4>    	
+				<br />							
+
+				<h:panelGrid width="100%">
+
+						<a4j:repeat value="#{beanMessagesPrives.messages}" var="message" id="repeat" rows="10">
+
+							<rich:collapsiblePanel switchType="client" 
+							expanded="false" style="#{empty message.dateLecture ? 'border-color: red' : ''}"
+							header="De : #{message.emetteur.pseudo} A :  #{message.destinataire.pseudo} Objet : #{message.objet} ">
+							
+								<f:facet name="header">
+									<h:commandLink value="Afficher conversation" action="#{beanMessagesPrives.afficherFormulaireDetailMessage}">
+										<f:setPropertyActionListener target="#{beanMessagesPrives.mpSelectionneDetail}" value="#{message}" />
+										<f:setPropertyActionListener target="#{beanMessagesPrives.mpSelectionne}" value="#{message}" />
+									</h:commandLink>										
+								</f:facet>	
+									
+								<table>
+									<tr>
+										<td>
+											<center>
+												<h:outputText value="#{message.emetteur.pseudo}" />
+												<br />
+												<h:graphicImage value="#{message.emetteur.avatar.nomAvatar}" />													
+											</center>
+										</td>
+										<td>
+											<center>
+												<h:outputText value="#{message.destinataire.pseudo}" />
+												<br />
+												<h:graphicImage value="#{message.destinataire.avatar.nomAvatar}" />													
+											</center>
+										</td>	
+									</tr>	
+									<tr>						
+										<td>
+											<h4><h:outputText value="#{message.objet}" /></h4>
+										</td>
+									</tr>
+								</table>
+															
+								<br />
+								
+								<h:commandLink value="Afficher conversation" action="#{beanMessagesPrives.afficherFormulaireDetailMessage}">
+									<f:setPropertyActionListener target="#{beanMessagesPrives.mpSelectionneDetail}" value="#{message}" />
+									<f:setPropertyActionListener target="#{beanMessagesPrives.mpSelectionne}" value="#{message}" />
+								</h:commandLink>									
+														
+								<br />
+												
+							</rich:collapsiblePanel>
+							<br />
+							
+						</a4j:repeat>
+					
+					<br />
+					<a4j:outputPanel layout="inline">
+						<rich:dataScroller for="repeat" render="panelMessages" />
+					</a4j:outputPanel>			
+				</h:panelGrid>				
+			
+
+				<br />
+				
+				<h:outputFormat value="Messages trouvés : #{beanMessagesPrives.nbMessages}" />
+				
+				<br />
+				
+			</h:form>
+			
+			<rich:popupPanel id="popupSignalement" modal="false" autosized="true" resizeable="false">
+		        <f:facet name="header">
+		            <h:outputText value="Attention !" />
+		        </f:facet>
+		        <f:facet name="controls">
+		            <h:outputLink value="#" onclick="#{rich:component('popupSignalement')}.hide(); return false;">
+		                X
+		            </h:outputLink>
+		        </f:facet>	
+		        <h:form>
+		        	<h:outputText value="Etes-vous sur de vouloir signaler ce message ?" />
+				    <h:commandButton value="Oui" action="#{beanMessagesPrives.signalerMessage}"/>
+				    <h:commandButton value="Annuler">
+				        <rich:componentControl target="popupSignalement" operation="hide" />
+				    </h:commandButton>					    	        	
+		        </h:form>	
+			</rich:popupPanel>
+											
+		</section>
+
+		
+		<aside class="group2">	
+		
+			<h3> Controle </h3>
+			
+			<br />
+			<h:outputFormat value="Vous avez #{beanMessagesPrives.nbMessagesNonLus} messages non lus" />
+			<br />
+			<br />
+			
+			<rich:panel header="Actions" rendered="#{not empty beanMessagesPrives.utilisateurConnecte}">
+				<h:form>
+					<h:commandButton value="Nouveau Message" action="#{beanMessagesPrives.afficherFormulaireNouveauMessage}" />
+				</h:form>
+				
+				<br />
+					
+				<h:form>
+					<h:commandButton value="Messages non lus" action="#{beanMessagesPrives.chargerMessagesNonLus}" />
+				</h:form>	
+				<br />
+										
+				<h:form>
+					<h:commandButton value="Mes Messages" action="#{beanMessagesPrives.chargerMessages}" />
+				</h:form>	
+				<br />
+												
+				<h:form>
+					<h:commandButton value="Messages envoyés" action="#{beanMessagesPrives.chargerMessagesEnvoyes}" />
+				</h:form>	
+				<br />
+				
+				<h:form>
+					<h:commandButton value="Messages recus" action="#{beanMessagesPrives.chargerMessagesRecus}" />
+				</h:form>	
+			</rich:panel>
+						
+		</aside>
+		
+	</ui:define>
+</ui:composition> 
+</html>
+ 
