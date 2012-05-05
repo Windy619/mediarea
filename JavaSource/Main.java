@@ -2,6 +2,7 @@
 
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 import metier.media.Aimer;
 import metier.media.Commentaire;
@@ -307,32 +308,32 @@ public class Main {
         Message_Prive mp3 = new Message_Prive("Bonjour, Cordialement",u1,u4,"Objet");
         Message_Prive mp4 = new Message_Prive("Bonjour, Cordialement",u1,u2,"Objet");
         Message_Prive mp5 = new Message_Prive("Bonjour, Cordialement",u1,u2,"Objet");
-        
-        Message_Prive mp6 = new Message_Prive("Bonjour, Cordialement",u2,u1,"Objet");
-        Message_Prive mp7 = new Message_Prive("Bonjour, Cordialement",u2,u3,"Objet");
-        Message_Prive mp8 = new Message_Prive("Bonjour, Cordialement",u2,u4,"Objet");
-
-        Message_Prive mp9 = new Message_Prive("Bonjour, Cordialement",u3,u1,"Objet");
-        Message_Prive mp10 = new Message_Prive("Bonjour, Cordialement",u3,u2,"Objet");
-        Message_Prive mp11 = new Message_Prive("Bonjour, Cordialement",u3,u4,"Objet");        
+               
         
         u1.getMessagesPrives().add(mp1);
         u1.getMessagesPrives().add(mp2);
         u1.getMessagesPrives().add(mp3);
         u1.getMessagesPrives().add(mp4);
         u1.getMessagesPrives().add(mp5);
-        
-        u2.getMessagesPrives().add(mp6);
-        u2.getMessagesPrives().add(mp7);
-        u2.getMessagesPrives().add(mp8);
-        
-        u3.getMessagesPrives().add(mp9);
-        u3.getMessagesPrives().add(mp10);
-        u3.getMessagesPrives().add(mp11);        
+             
         
         daoUtilisateur.sauvegarder(u1);
         daoUtilisateur.sauvegarder(u2);
         daoUtilisateur.sauvegarder(u3);
+        
+        /*Utilisateur u = daoUtilisateur.getUn(2);
+        
+    	System.out.println(u.getMessagesPrives().size());
+        
+        Message_Prive mp = daoMessagePive.getUn(5);
+        System.out.println(mp);
+        u.getMessagesPrives().remove(mp);
+        daoUtilisateur.sauvegarder(u);
+        
+    	System.out.println(u.getMessagesPrives().size());*/
+    	
+        //daoMessagePive.supprimer(mp);
+        
         
         
         System.out.println("=============");

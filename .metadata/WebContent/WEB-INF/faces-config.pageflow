@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <pageflow:Pageflow xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:pageflow="http://www.sybase.com/suade/pageflow" id="pf13349388593620" configfile="/MediArea/WebContent/WEB-INF/faces-config.xml">
-  <nodes xsi:type="pageflow:PFPage" name="pages/monCompte.xhtml" x="264" y="132" id="pf13354298275780" referenceLink="//@navigationRule.2/@navigationCase.1/@toViewId|" outlinks="pf13354298275781 pf13354298275782 pf13354325503377 pf13354325503378" inlinks="pf13354325503377 pf13354325503378" path="/pages/monCompte.xhtml"/>
+  <nodes xsi:type="pageflow:PFPage" name="pages/monCompte.xhtml" x="264" y="132" id="pf13354298275780" referenceLink="//@navigationRule.1/@navigationCase.1/@toViewId|" outlinks="pf13354298275781 pf13354298275782 pf13354325503377 pf13354325503378" inlinks="pf13354325503377 pf13354325503378" path="/pages/monCompte.xhtml"/>
   <nodes xsi:type="pageflow:PFPage" name="pages/home.xhtml" x="24" y="132" id="pf13354298275783" referenceLink="//@navigationRule.0/@navigationCase.0/@toViewId|" inlinks="pf13354298275781" path="/pages/home.xhtml"/>
   <nodes xsi:type="pageflow:PFPage" name="pages/suiteInscription.xhtml" x="504" y="132" id="pf13354298275784" referenceLink="//@navigationRule.2/@fromViewId|" outlinks="pf13354743421923" inlinks="pf13354298275782" path="/pages/suiteInscription.xhtml"/>
-  <nodes xsi:type="pageflow:PFPage" name="pages/profil.xhtml" x="768" y="132" id="pf13354743421924" referenceLink="//@navigationRule.2/@navigationCase.1/@toViewId|" inlinks="pf13354743421923" path="/pages/profil.xhtml"/>
+  <nodes xsi:type="pageflow:PFPage" name="pages/profil.xhtml" x="768" y="132" id="pf13354743421924" referenceLink="//@navigationRule.2/@navigationCase.0/@toViewId|" inlinks="pf13354743421923" path="/pages/profil.xhtml"/>
   <links id="pf13354298275781" target="pf13354298275783" source="pf13354298275780" outcome="isConnected" redirect="true"/>
   <links id="pf13354298275782" target="pf13354298275784" source="pf13354298275780" outcome="isCreated" redirect="true"/>
   <links id="pf13354325503377" target="pf13354298275780" source="pf13354298275780" outcome="isNotConnected"/>

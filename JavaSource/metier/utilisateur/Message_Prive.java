@@ -1,8 +1,14 @@
 package metier.utilisateur;
 
+import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 
 /**
  * @author Florence
@@ -23,12 +29,21 @@ public class Message_Prive extends Message {
 	@ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
 	private Utilisateur destinataire;
 	
+	private Boolean isMessageMere;
+	
+	@OneToMany(cascade = {CascadeType.ALL})
+	private Set<Message_Prive> reponses;
+		
+	private Date dateSuppressionMessageDestinataire;	
+
 
 	/**
 	 * Constructeur vide
 	 */
 	public Message_Prive(){
 		super();
+		isMessageMere = true;
+		reponses = new HashSet<Message_Prive>();
 	}
 
 	/**
@@ -42,6 +57,8 @@ public class Message_Prive extends Message {
 		super(contenu,emetteur);
 		this.destinataire = destinataire;
 		this.objet = objet;
+		this.isMessageMere = true;
+		reponses = new HashSet<Message_Prive>();
 	}
 
 	/**
@@ -68,6 +85,33 @@ public class Message_Prive extends Message {
 	public void setDestinataire(Utilisateur destinataire) {
 		this.destinataire = destinataire;
 	}
+
+	public Set<Message_Prive> getReponses() {
+		return reponses;
+	}
+
+	public void setReponses(Set<Message_Prive> reponses) {
+		this.reponses = reponses;
+	}
+
+	public Date getDateSuppressionMessageDestinataire() {
+		return dateSuppressionMessageDestinataire;
+	}
+
+	public void setDateSuppressionMessageDestinataire(
+			Date dateSuppressionMessageDestinataire) {
+		this.dateSuppressionMessageDestinataire = dateSuppressionMessageDestinataire;
+	}
+
+	public Boolean getIsMessageMere() {
+		return isMessageMere;
+	}
+
+	public void setIsMessageMere(Boolean isMessageMere) {
+		this.isMessageMere = isMessageMere;
+	}
+
+
 
 
 

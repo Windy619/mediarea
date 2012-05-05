@@ -8,11 +8,12 @@ import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.JoinTable;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
+
+import org.hibernate.annotations.Cascade;
 
 import metier.media.Aimer;
 import metier.media.Commentaire;
@@ -155,14 +156,13 @@ public class Utilisateur {
 	@OneToMany(cascade = {CascadeType.ALL})
 	private Set<Regarder> regardeMedias;
 	
-	
 	@OneToMany(cascade = {CascadeType.ALL})
 	private Set<Note> noteMedias;
 	
 	@OneToMany(cascade = {CascadeType.ALL})
 	private Set<Message_Mural> messagesMuraux;
 	
-	@OneToMany(cascade = {CascadeType.ALL})
+	@OneToMany(mappedBy = "emetteur", cascade = {CascadeType.ALL})
 	private Set<Message_Prive> messagesPrives;
 		
 	

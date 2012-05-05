@@ -32,5 +32,6 @@
   <mapping class="metier.utilisateur.Message_Prive"/>
   <mapping class="metier.utilisateur.Signalement_Utilisateur"/>
   <mapping class="metier.utilisateur.Utilisateur"/>
+  <mapping class="metier.utilisateur.Signalement_MessagePrive"/>
  </session-factory>
 </hibernate-configuration>

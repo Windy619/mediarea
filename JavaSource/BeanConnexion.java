@@ -11,6 +11,7 @@ import dao.utilisateur.DaoUtilisateur;
  * 
  */
 public class BeanConnexion {
+	
 	public DaoUtilisateur daoUtilisateur = new DaoUtilisateur();
 	private java.lang.String connected = "";
 	private java.lang.Boolean isConnected = false;
@@ -50,6 +51,7 @@ public class BeanConnexion {
 				}
 			}
 		}
+		
 		return connected;
 	}
 
