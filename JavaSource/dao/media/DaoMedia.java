@@ -108,6 +108,20 @@ public class DaoMedia extends Dao<Media> {
 		return (Long) q.uniqueResult();
 	}
 	
+	public long totalVotes(Media media) {		
+		//long param = media.getIdMedia();
+		Media param = media;
+		
+		Query q = session.createQuery("" +
+				"SELECT COUNT(*) " +
+				"FROM Note n " +
+				"WHERE n.media = :media");
+		
+		q.setParameter("media", param);
+		
+		return (Long) q.uniqueResult();
+	}
+	
 	
 	
 	

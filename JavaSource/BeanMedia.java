@@ -1,12 +1,17 @@
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
-
 //import org.richfaces.component.SortOrder;
+import javax.faces.application.FacesMessage;
+import javax.faces.context.FacesContext;
+import javax.validation.constraints.AssertTrue;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
+
+import org.primefaces.event.RateEvent;
 
 import metier.media.*;
 import dao.media.*;
@@ -32,7 +37,7 @@ public class BeanMedia {
 	private String tags;
 	private List<Tag> listeTags;
 	private List<Commentaire> commentaires;
-	private int note;
+	private double note;
 	private String nomTypeMedia;
 	private String commentaireSaisi;
 	List<Media> listeMediasSuggeres = new ArrayList<Media>();
@@ -44,7 +49,7 @@ public class BeanMedia {
 	
 	//private int nbVues;
 	private long resultatTotalVuesMedia;
-
+	
 	private String motVues = "";
 	
 	//****
@@ -71,7 +76,7 @@ public class BeanMedia {
 	
 	//*****
 	
-	boolean estVisible = false; // TODO
+	boolean estVisible = false; //TODO
 	public boolean isEstVisible() {
 		return estVisible;
 	}
@@ -84,11 +89,29 @@ public class BeanMedia {
 	public static DaoTypePlaylist daoTypePlaylist = new DaoTypePlaylist();
 	public static DaoPlaylist daoPlaylist = new DaoPlaylist();
 	private String txtFavori;
+	
 	private List<Playlist> listePlaylistUt;
+	private String imgAjoutPlaylist;
+	private boolean estAjouteAPlaylist = false;
+	
+	@Size(min = 0, message = "Ce champ est requis.")
+    private String nomPlaylistACreer;
+	private String descriptionPlaylistACreer;
+	private String visibilitePlaylistACreer;
+	private FacesMessage message;
 
 	//*****
 
 	public static DaoVisibilite daoVisibilite = new DaoVisibilite();
+	private List<Visibilite> listeVisibilite;
+	private List<String> listeNomVisibilite;
+	//private Map<Visibilite, String> items; // +getter
+	
+	//*****
+	
+	private long resultatTotalVotesMedia;
+	
+	private String motVotes;
 	
 	//*****
 	
@@ -99,6 +122,20 @@ public class BeanMedia {
 	public void setStatesOrder(SortOrder statesOrder) {
 		this.statesOrder = statesOrder;
 	}*/
+	
+	
+	private String value;  
+	  
+    public String getValue() {  
+        return value;  
+    }  
+  
+    public void setValue(String value) {  
+        this.value = value;  
+    }
+	
+	
+	
 	
 	//constructeur
 	public BeanMedia() {
@@ -225,7 +262,6 @@ public class BeanMedia {
 		   System.out.println(cle + " => " + valeur);
 		}*/
 
-		//***********************************************
 		
 		listeMediasSuggeres = new ArrayList<Media>(map.keySet());
 		//System.out.println("size listeMediasSuggeres : " + listeMediasSuggeres.size());
@@ -235,6 +271,7 @@ public class BeanMedia {
 		else {
 			listeMediasSuggeres = listeMediasSuggeres.subList(0, 20);
 		}
+		//suggestion en tenant compte du titre et catégories TODO
 		
 		//***********************************************
 		
@@ -253,6 +290,36 @@ public class BeanMedia {
 		}
 		
 		listePlaylistUt = new ArrayList<Playlist>(daoUtilisateur.getUn(1).getPlaylists());
+	
+		
+		Set<Playlist> setPlaylistUt = util.getPlaylists();
+		for(Playlist playlistUt : setPlaylistUt)
+		{
+			if(playlistUt.getMedias().contains(daoMedia.getUn(2))) {
+				imgAjoutPlaylist = "fermer-croix-supprimer-erreurs-sortie-icone-4368-16.png"; //mime TODO
+				estAjouteAPlaylist = true;
+				break;
+			}
+		}
+		
+		listeVisibilite = daoVisibilite.getTous();
+		listeNomVisibilite = new ArrayList<String>();
+		//items = new LinkedHashMap<Visibilite, String>();
+		//SelectItem optionVisibilite = new SelectItem("ch1", "choice1", "This bean is for selectItems tag", true);
+		for(Visibilite visible : listeVisibilite)
+		{
+			listeNomVisibilite.add(visible.getNomVisibilite());
+			//items.put(visible, visible.getNomVisibilite());
+		}
+		
+		//***********************************************
+		
+		//Note
+		resultatTotalVotesMedia = daoMedia.totalVotes(mediaVisualise);
+		if(resultatTotalVotesMedia > 0)
+		{
+			motVotes = "s"; //"vues" au pluriel
+		}
 	}
 
 
@@ -324,11 +391,11 @@ public class BeanMedia {
 		this.motVues = motVues;
 	}
 		
-	public int getNote() {
+	public double getNote() {
 		return note;
 	}
 
-	public void setNote(int note) {
+	public void setNote(double note) {
 		this.note = note;
 	}
 	
@@ -435,6 +502,65 @@ public class BeanMedia {
 		this.listePlaylistUt = listePlaylistUt;
 	}
 	
+	public String getImgAjoutPlaylist() {
+		return imgAjoutPlaylist;
+	}
+	
+	public void setImgAjoutPlaylist(String imgAjoutPlaylist) {
+		this.imgAjoutPlaylist = imgAjoutPlaylist;
+	}
+	
+	public List<String> getListeNomVisibilite() {
+		return listeNomVisibilite;
+	}
+	
+	public void setListeNomVisibilite(List<String> listeNomVisibilite) {
+		this.listeNomVisibilite = listeNomVisibilite;
+	}
+	
+	public String getDescriptionPlaylistACreer() {
+		return descriptionPlaylistACreer;
+	}
+	
+	public void setDescriptionPlaylistACreer(String descriptionPlaylistACreer) {
+		this.descriptionPlaylistACreer = descriptionPlaylistACreer;
+	}
+
+	public String getNomPlaylistACreer() {
+		return nomPlaylistACreer;
+	}
+	
+	public void setNomPlaylistACreer(String nomPlaylistACreer) {
+		this.nomPlaylistACreer = nomPlaylistACreer;
+	}
+
+	public String getVisibilitePlaylistACreer() {
+		return visibilitePlaylistACreer;
+	}
+	
+	public void setVisibilitePlaylistACreer(String visibilitePlaylistACreer) {
+		this.visibilitePlaylistACreer = visibilitePlaylistACreer;
+	}
+	
+	public long getResultatTotalVotesMedia() {
+		return resultatTotalVotesMedia;
+	}
+	
+	public void setResultatTotalVotesMedia(long resultatTotalVotesMedia) {
+		this.resultatTotalVotesMedia = resultatTotalVotesMedia;
+	}
+	
+	public String getMotVotes() {
+		return motVotes;
+	}
+	public void setMotVotes(String motVotes) {
+		this.motVotes = motVotes;
+	}
+	
+	
+	
+	
+	
 	
 	
 	//méthodes
@@ -465,11 +591,19 @@ public class BeanMedia {
 		return "envoyerRapport";
 	}
 	
+	public void handleRate(RateEvent rateEvent) {  
+        FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Notation", "Votre note : " + ((Double) rateEvent.getRating()).intValue());  
+  
+        FacesContext.getCurrentInstance().addMessage(null, message);
+        
+        vote();
+    }
+	
 	public String vote() {
-		//System.out.println("Méthode vote");
+		System.out.println("Méthode vote");
 		//System.out.println("Note : "+note);
 		
-		util.getNoteMedias().add(new Note(note, mediaVisualise)); //media_idMedia + interdire de noter plusieurs fois TODO
+		util.getNoteMedias().add(new Note((int) note, mediaVisualise)); //media_idMedia + interdire de noter plusieurs fois TODO
 		daoUtilisateur.sauvegarder(util);
 		
 		return "vote";
@@ -566,12 +700,6 @@ public class BeanMedia {
 		return "ajouterAFavori";
 	}
 	
-	public String ajouterMediAPlaylist() {
-		System.out.println("Ajouter une vidéo à une playlist");
-		
-		return "ajouterMediAPlaylist";
-	}
-	
 	public void sortByNom() {
 		System.out.println("SORT BY");
 		
@@ -583,4 +711,58 @@ public class BeanMedia {
             setStatesOrder(SortOrder.ascending);
         }*/
     }
+	
+	public String ajouterMediAPlaylist() {
+		Set<Playlist> setPlaylistUt = util.getPlaylists();
+		if(!estAjouteAPlaylist) {
+			System.out.println("Ajouter une vidéo à une playlist");
+			for(Playlist playlistUt : setPlaylistUt)
+			{
+				//System.out.println(FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("idPlaylist"));
+				if(playlistUt.getIdPlaylist() == Long.parseLong(FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("idPlaylist"))) {
+					playlistUt.getMedias().add(daoMedia.getUn(2));
+					daoPlaylist.sauvegarder(playlistUt);
+					break;
+				}
+			}
+		}
+		else { //retirer
+			System.out.println("Retirer une vidéo à une playlist");
+			for(Playlist playlistUt : setPlaylistUt)
+			{
+				if(playlistUt.getIdPlaylist() == Long.parseLong(FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("idPlaylist"))) {
+					playlistUt.getMedias().remove(daoMedia.getUn(2));
+					daoPlaylist.sauvegarder(playlistUt);
+					break;
+				}
+			}
+
+			imgAjoutPlaylist = "accepter-check-ok-oui-icone-4851-16.png"; //TODO
+		}
+		
+		return "ajouterMediAPlaylist";
+	}
+	
+	public String creerPlaylist() { //TODO à tester
+		System.out.println("Création d'une playlist");
+		
+		Playlist nvlPlaylist = new Playlist(nomPlaylistACreer, descriptionPlaylistACreer, "", daoTypePlaylist.typeAutre(), daoVisibilite.typeVisible()); //visibilité TODO
+		
+		if(!daoUtilisateur.getUn(1).getPlaylists().contains(nvlPlaylist))
+		{
+			daoUtilisateur.getUn(1).getPlaylists().add(nvlPlaylist);
+			daoUtilisateur.sauvegarder(daoUtilisateur.getUn(1));
+			FacesContext.getCurrentInstance().addMessage(null,
+	                new FacesMessage(FacesMessage.SEVERITY_INFO, "Mission accomplie !", "Ce média a été ajouté à votre playlist: ...")); //XXX en pop-up ?
+		}
+		else //playlist déjà existante
+		{
+			message = new FacesMessage("La playlist existe déjà");
+			message.setSeverity(FacesMessage.SEVERITY_ERROR);
+			FacesContext.getCurrentInstance().addMessage(
+					"...", message);
+		}
+		
+		return "creerPlaylist";
+	}
 }

@@ -4,52 +4,12 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html"
     xmlns:f="http://java.sun.com/jsf/core" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:a4j="http://richfaces.org/a4j"
     xmlns:rich="http://richfaces.org/rich"
-    xmlns:ckeditor="http://ckeditor.com">
+    xmlns:p="http://primefaces.org/ui">
 
 <ui:composition template="/templates/standard.xhtml">
 	<ui:define name="pageTitle">Détail d'un média</ui:define>
 	<ui:define name="content">
-		<section class="group1">
-			<h:outputStylesheet>
-		    	.titre
-		    	{
-		    		background-color: #FFAD87;
-		    		padding: 5px;
-		    		border-bottom: 5px solid #F15A24;
-		    		-webkit-border-radius: .5em; 
-					-moz-border-radius: .5em;
-					border-radius: .5em;
-					font-size: 15px;
-		    	}
-		    	
-		    	.gauche {
-					float: left;
-					width: 420px;
-					position: relative;
-					background:white;
-					padding:5px;
-					margin-bottom:10px;
-				}
-					
-				.droite {
-					float: right;
-					width: 150px;
-					position: relative;
-					background:white;
-					padding:10px;
-					margin-bottom:10px;
-					/*margin-left:5px;*/
-				}
-		    	
-		    	
-		    	.rf-dt{
-		       		width:400px;
-		        }
-		        .acent{
-		        	text-align: center;
-		        }
-		    </h:outputStylesheet>
-		    
+		<section class="group1">   
 		    
 		    <div id="fb-root"></div>
 			<script>(function(d, s, id) {
@@ -59,19 +19,13 @@
 			  js.src = "//connect.facebook.net/fr_FR/all.js#xfbml=1";
 			  fjs.parentNode.insertBefore(js, fjs);
 			}(document, 'script', 'facebook-jssdk'));</script>
-		    
-		    
-    <h:form>
-    	<h:commandButton id="item7" onclick="document.getElementById('numAvatar').value='7';" image="/resources/avatar/7.png" />
-		<h:inputHidden id="numAvatar" value="test" />
-    </h:form>
-    
-    
+		      
 			<h3>Détail d'un média</h3>
 			<br/>
 			<span class="titre">
 				<h:outputText value="#{beanMedia.titreMedia}" />
 			</span>
+			
 			<br/><br/><br/><br/>
 			
 			<!-- *** Lecteur audio/vidéo *** -->
@@ -194,7 +148,7 @@
 			<h:form>
 				<h:graphicImage library="images" name="icones/triste-smiley-icone-7611-16.png" alt="Je n'aime pas ce contenu" />
 				<a4j:commandButton value="Je n'aime pas" title="Je n'aime pas ce contenu" action="#{beanMedia.jeNAimePas}"/>
-				<!-- pop-up TODO -->			
+				<!-- pop-up + action TODO -->			
 			</h:form>
 			
 			<h:form>
@@ -207,9 +161,10 @@
                		  <f:selectItem itemValue="F" itemLabel="#{beanMedia.txtFavori}" />
                       <f:selectItem itemValue="P" itemLabel="Playlist"/>
                       <a4j:ajax event="change" render="selectAjouter" execute="@this" listener="#{beanMedia.ajouterAFavori}"/>              
-                </h:selectOneMenu>
+                </h:selectOneMenu><!-- TODO 2 event différents -->
 	        <!--</rich:panel>-->
 	        
+	            
 	        <h:commandButton value="Call the popup">
 		        <rich:componentControl target="popup" operation="show" />
 		    </h:commandButton>
@@ -221,32 +176,73 @@
 		            <h:outputLink value="#" onclick="#{rich:component('popup')}.hide(); return false;">
 		                X
 		            </h:outputLink>
-		        </f:facet>		 
+		        </f:facet>
 		        <p>
-		        
+		        	Cliquez sur une playlist pour ajouter ou retirer cette vidéo
+		        	
 			        <rich:dataTable value="#{beanMedia.listePlaylistUt}" var="play" id="table">
 			            <rich:column sortBy="#{play.nomPlaylist}" id="nomPlaylist" sortOrder="">
 			                <f:facet name="header">
-			                    <a4j:commandLink value="Nom" render="table" action="#{beanMedia.sortByNom}" />
+			                	<a4j:commandLink value="Nom" render="table" action="#{beanMedia.sortByNom}" />
 			                </f:facet>
-			                <h:outputText value="#{play.nomPlaylist}" />
+			                <h:graphicImage library="images" name="icones/#{beanMedia.imgAjoutPlaylist}" alt="Ajouter" />
+	        				<h:commandLink value="#{play.nomPlaylist}" action="#{beanMedia.ajouterMediAPlaylist}">
+			                	<f:param name="idPlaylist" value="#{play.idPlaylist}"/>
+							</h:commandLink>
 			                (
-			                	nb TODO
-			                )
+					        nb TODO
+					        )
 			            </rich:column>
 			            <rich:column sortBy="#{play.visibilite}" id="state" sortOrder="#{play.visibilite}">
 			                <f:facet name="header">
-			                    <a4j:commandLink value="Visibilité" render="table" action="#{capitalsSortingBean.sortByStates}" />
+			                	<a4j:commandLink value="Visibilité" render="table" action="#{capitalsSortingBean.sortByStates}" />
 			                </f:facet>
 			                <h:outputText value="#{play.visibilite.nomVisibilite}" />
 			            </rich:column>
 			        </rich:dataTable>
 		            <br/>
-		            Saisir le nom de la nouvelle playlist<br/>
-		            Créer
+		            <h:commandButton value="Créer une playlist">
+		            	<rich:componentControl target="popupCreerPlaylist" operation="show" />
+		            </h:commandButton>
 		            <br/>
 		            <a href="#" onclick="#{rich:component('popup')}.hide()">Fermer</a>
 		        </p>
+		    </rich:popupPanel>
+	        
+	        <rich:popupPanel id="popupCreerPlaylist" modal="false" autosized="true" resizeable="false">
+						<f:facet name="header">
+				            <h:outputText value="Créer une nouvelle playlist" />
+				        </f:facet>
+				        <f:facet name="controls">
+				            <h:outputLink value="#" onclick="#{rich:component('popupCreerPlaylist')}.hide(); return false;">
+				                X
+				            </h:outputLink>
+				        </f:facet>
+				        <p>
+					<rich:graphValidator value="" id="gv">
+			                <rich:messages for="gv" />
+			                <rich:messages globalOnly="true" />
+			                <h:panelGrid>
+			                    <h:outputText value="Nom :" />
+			                    <h:inputText value="#{beanMedia.nomPlaylistACreer}" id="nomPlaylistACreer" />
+			                    <rich:message for="nomPlaylistACreer" />
+			                    <br/>
+			                    <h:outputText value="Visibilité :" />
+			                    <rich:select value="#{bean.visibilitePlaylistACreer}">
+					                <f:selectItems value="#{beanMedia.listeNomVisibilite}" />
+					            </rich:select>
+					            <br/>
+			                    <h:outputText value="Description :" />
+			                    <h:inputTextarea rows="2" cols="2" value="#{beanMedia.descriptionPlaylistACreer}" id="descriptionPlaylistACreer">
+		           				</h:inputTextarea><!-- TODO pouvoir écrire -->
+			                    <rich:message for="descriptionPlaylistACreer" />
+			                </h:panelGrid>
+			                <a4j:commandButton value="Sauvegarder" action="#{beanMedia.creerPlaylist}" /><!-- TODO rentrer dans fonction -->
+			            	<br/>
+				            <br/>
+				            <a href="#" onclick="#{rich:component('popupCreerPlaylist')}.hide()">Fermer</a>
+			        </rich:graphValidator>
+			        </p>
 		    </rich:popupPanel>
 	        
 	        </h:form>
@@ -342,42 +338,61 @@
         			<f:convertNumber integerOnly="true"/>
         		</h:outputText>
         		<h:outputText value=" vue#{beanMedia.motVues}" />
-        		<h:graphicImage library="images" name="icones/bar-tableau-graphique-rapport-icone-5031-32.png" alt="Avatar"/>
-        		<br/>
+        		
+        		<h:form>
+	        		<h:commandLink>
+	        			<h:graphicImage library="images" name="icones/bar-tableau-graphique-rapport-icone-5031-32.png" alt="Avatar"/>
+	        			<rich:componentControl target="popupStatistiques" operation="show" />
+	        		</h:commandLink>
+	        		
+	        		<rich:popupPanel id="popupStatistiques" modal="false" autosized="true" resizeable="false">
+				        <f:facet name="header">
+				            <h:outputText value="Statistiques" />
+				        </f:facet>
+				        <f:facet name="controls">
+				            <h:outputLink value="#" onclick="#{rich:component('popupStatistiques')}.hide(); return false;">
+				                X
+				            </h:outputLink>
+				        </f:facet>
+				        <p>
+				        <h:outputText value="#{beanMedia.resultatTotalVuesMedia}"/> vue<h:outputText value="#{beanMedia.motVues}"/> - <h:outputText value="#{beanMedia.nbCommentaires}"/> com. - TODO fav. - <h:outputText value="#{beanMedia.resultatTotalVotesMedia}"/> vote<h:outputText value="#{beanMedia.motVotes}"/>
+				        <br/>
+				        
+						    
+				            
+				            
+				            
+				            
+				            
+				            
+				            
+				            
+				            
+				            
+				            <a href="#" onclick="#{rich:component('popupStatistiques')}.hide()">Fermer</a>
+				        </p>
+				    </rich:popupPanel>
+				</h:form>
+        		
+        		
+        		
+        		
+        		
+        		
+        		
+        		<br/>        		
         		50 TODO fois téléchargé
         		<br/>
         		<br/>
         	
-        	<h:form>		
-        		<input name="star1" type="radio" class="star"/><!-- class="auto-submit-star" -->
-				<input name="star1" type="radio" class="star"/>
-				<input name="star1" type="radio" class="star"/>
-				<input name="star1" type="radio" class="star"/>
-				<input name="star1" type="radio" class="star"/>
-        		<!-- <rich:jQuery selector="#input" query="rating();" /> -->
-        		
-        		<a4j:commandButton action="#{beanMedia.vote}"
-                	value="Votez !">
-               		<a4j:param name="h" value="getSelectedMark()"
-                		assignTo="#{beanMedia.note}" noEscape="true" />
-                </a4j:commandButton>
-
+        	<h:form>
+        		<p:growl id="messages" showDetail="true"/> 
         	
-			    <script type="text/javascript" language="javascript">
-				        //<![CDATA[
-				    function getSelectedMark() {
-				        var rates = document.getElementsByName("star1");
-				        for (i = 0; i < rates.length; i++) {
-				            if(rates[i].checked == true) {
-				                //return rates[i].value;
-				            	return i+1;
-				            }
-				        }
-						
-				        return 0;
-				    }
-				    //]]>    
-				</script>
+        		<h:panelGrid columns="2" cellpadding="5">
+			        <p:rating value="#{beanMedia.note}">  
+			            <p:ajax event="rate" listener="#{beanMedia.handleRate}" update="messages" />  
+			        </p:rating>
+			    </h:panelGrid>
         	</h:form>
         	
         	
@@ -391,6 +406,7 @@
         		<!-- Artiste : <h:outputText value="" /><br /> -->
         		
         		<h:graphicImage library="images" name="icones/panier-ajouter-icone-5924-32.png" alt="Avatar"/>Ajouter <h:outputText value="#{beanMedia.titreMedia}" /> au panier
+        		<!-- TODO panier -->
         		
         		<h:form>
         			<h:outputLink value="/MediArea/resources/#{beanMedia.nomTypeMedia}s/#{beanMedia.titreMedia}.mp3">
@@ -441,30 +457,42 @@
 				</h:outputText>
 				)
 			</h5>
-			
-			<h:form>
-				<!-- Gets replaced with TinyMCE, remember HTML in a textarea should be encoded -->
-				<div>
+		   	
+		   	<h:form>  
+  				<!-- Gets replaced with TinyMCE, remember HTML in a textarea should be encoded -->
+				<!--<div>-->
 					<!-- <textarea id="elm1" name="elm1" rows="2" cols="2" style="width: 10%">
 						Réagir à propos de ce média.
 					</textarea> -->
 					<h:inputTextarea id="elm1" name="content" rows="2" cols="2" style="width: 10%" value="#{beanMedia.commentaireSaisi}" label="test">
 						Réagir à propos de ce média.
 					</h:inputTextarea>
-					
-				</div>
-			   	
-			   	<br/>
+				<!--</div>-->
+				
+			    <!-- <p:editor id="editor" value="#{beanMedia.value}" width="600"/>  
+			  
+			    <h:panelGrid columns="2" style="margin-top:10px">  
+			        <p:commandButton id="submitButton" value="Submit" update="display" oncomplete="dlg.show()"  
+			                        icon="ui-icon-disk" />  
+			        <p:commandButton id="clearButton" type="button" value="Clear" onclick="editor.clear()"  
+			                        icon="ui-icon-close" />  
+			    </h:panelGrid>  
+			  
+			    <p:dialog header="Content" widgetVar="dlg" showEffect="fade" hideEffect="fade" modal="true">  
+			        <h:outputText id="display" value="#{beanMedia.value}" escape="false" />  
+			    </p:dialog>-->
+			  
+			  	<br/>
 			   	<a4j:commandButton value="Publier" render="out" execute="@form"/>
-		   	</h:form>
+			</h:form>
+		   	
 		   	
 		    <br />
+		    
 		    <!-- <a4j:outputPanel id="out">
 		        <h:outputText value="Hello #{beanMedia.commentaireSaisi} !"
 		            rendered="#{not empty beanMedia.commentaireSaisi}" />
 		    </a4j:outputPanel> -->
-
-
 
    			<a4j:outputPanel id="out">
 		        <h:outputText value="Hello #{beanMedia.commentaireSaisi} !"
@@ -478,7 +506,7 @@
     		
     
     		<!-- *** dataScroller *** -->	
-			<h:form id="form">
+			<h:form id="form2">
 		        <h:panelGrid columnClasses="acent">
 		            <rich:dataScroller for="table" maxPages="5" />
 		            <rich:dataTable value="#{beanMedia.commentaires}" var="commentaire" id="table" rows="10">
