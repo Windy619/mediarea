@@ -6,12 +6,17 @@ import java.util.List;
 import java.util.Set;
 //import org.richfaces.component.SortOrder;
 import javax.faces.application.FacesMessage;
+import javax.faces.component.html.HtmlSelectBooleanCheckbox;
 import javax.faces.context.FacesContext;
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.constraints.AssertTrue;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
+import javax.faces.event.AjaxBehaviorEvent;
 
-import org.primefaces.event.RateEvent;
+import org.primefaces.event.*;
+import org.primefaces.model.chart.CartesianChartModel;
+import org.primefaces.model.chart.LineChartSeries;
 
 import metier.media.*;
 import dao.media.*;
@@ -26,6 +31,7 @@ import dao.utilisateur.*;
  */
 public class BeanMedia {
 	private DaoMedia daoMedia;
+	private String idMediaVisualise = "";
 	private Media mediaVisualise;
 	
 	private String titreMedia; //nécessaire de faire appel à l'objet car #{beanMedia.mediaVisualise.titreMedia} ne fonctionne pas
@@ -123,25 +129,33 @@ public class BeanMedia {
 		this.statesOrder = statesOrder;
 	}*/
 	
-	
-	private String value;  
+	//*****
 	  
-    public String getValue() {  
-        return value;  
-    }  
-  
-    public void setValue(String value) {  
-        this.value = value;  
-    }
-	
-	
+    private CartesianChartModel linearModel;
+    
+    private String codeIntegration;
+    private String lien;
+    private String url;
+    private String tailleLecteur = "";
+    int largeur = 320;
+    int hauteur = 180;
+    
+    
 	
 	
 	//constructeur
 	public BeanMedia() {
 		//Media
 		daoMedia = new DaoMedia();
-		mediaVisualise = daoMedia.getUn(2);
+		HttpServletRequest request = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
+		idMediaVisualise = request.getParameter("v");
+		if(idMediaVisualise == null) {
+			
+		}
+		else {			
+			mediaVisualise = daoMedia.getUn(Long.parseLong(idMediaVisualise));
+		}
+        
 		
 		titreMedia = mediaVisualise.getTitreMedia();
 		//System.out.println(mediaVisualise.getTitreMedia());
@@ -320,9 +334,17 @@ public class BeanMedia {
 		{
 			motVotes = "s"; //"vues" au pluriel
 		}
-	}
-
-
+		
+		//***********************************************
+		
+		//Autre
+        createLinearModel();
+        
+        HttpServletRequest req = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
+        url = req.getRequestURL().toString();
+        
+        codeIntegration = "<iframe width='320' height='180' src='" + url + "' frameborder='0' allowfullscreen></iframe>";
+    }
 
 	//getter et setter
 	public Media getMediaVisualise() {
@@ -553,11 +575,38 @@ public class BeanMedia {
 	public String getMotVotes() {
 		return motVotes;
 	}
+	
 	public void setMotVotes(String motVotes) {
 		this.motVotes = motVotes;
 	}
 	
+	public CartesianChartModel getLinearModel() {  
+        return linearModel;  
+    }
 	
+	public String getCodeIntegration() {
+		return codeIntegration;
+	}
+	
+	public void setCodeIntegration(String codeIntegration) {
+		this.codeIntegration = codeIntegration;
+	}
+	
+	public String getLien() {
+		return lien;
+	}
+	
+	public void setLien(String lien) {
+		this.lien = lien;
+	}
+	
+	public String getTailleLecteur() {
+		return tailleLecteur;
+	}
+	
+	public void setTailleLecteur(String tailleLecteur) {
+		this.tailleLecteur = tailleLecteur;
+	}
 	
 	
 	
@@ -764,5 +813,75 @@ public class BeanMedia {
 		}
 		
 		return "creerPlaylist";
+	}
+	
+	private void createLinearModel() {  
+        linearModel = new CartesianChartModel();  
+  
+        LineChartSeries series1 = new LineChartSeries();  
+        series1.setLabel("Series 1");  
+  
+        series1.set(1, 2);  
+        series1.set(2, 1);  
+        series1.set(3, 3);  
+        series1.set(4, 6);  
+        series1.set(5, 8);  
+  
+        LineChartSeries series2 = new LineChartSeries();  
+        series2.setLabel("Series 2");  
+        series2.setMarkerStyle("diamond");  
+  
+        series2.set(1, 6);  
+        series2.set(2, 3);  
+        series2.set(3, 2);  
+        series2.set(4, 7);  
+        series2.set(5, 9);  
+  
+        linearModel.addSeries(series1);  
+        linearModel.addSeries(series2);  
+    }
+	
+	public void desactiverLecteurIframe(AjaxBehaviorEvent e) {
+		System.out.println("desactiverLecteurIframe");
+		
+		//UIComponent source = (UIComponent)e.getSource();
+	    //System.out.println("Value:"+((HtmlSelectBooleanCheckbox)source).getValue());
+		//UIInput input = (UIInput) e.getComponent();
+		//Object contentValue = (Content) input.getValue();
+		//System.out.println("Value : "+contentValue);
+		//Object value = ((UIInput) e.getSource()).getSubmittedValue();
+		HtmlSelectBooleanCheckbox check=(HtmlSelectBooleanCheckbox)e.getSource();
+		Object checkvar = check.getValue();
+		System.out.println("Value : "+checkvar); //false true TODO
+		
+	    if(! Boolean.parseBoolean(checkvar.toString()))
+		{
+			codeIntegration = "<object width='" + largeur + "' height='" + hauteur + "'><param name='movie' value='" + url + "'></param><param name='allowFullScreen' value='true'></param><param name='allowscriptaccess' value='always'></param><embed src='http://www.youtube.com/v/ZQ2nCGawrSY?version=3&amp;hl=fr_FR' type='application/x-shockwave-flash' width='" + largeur + "' height='" + hauteur + "' allowscriptaccess='always' allowfullscreen='true'></embed></object>";	
+		}
+		else //!
+		{
+			codeIntegration = "<iframe width='" + largeur + "' height='" + hauteur + "' src='" + url + "' frameborder='0' allowfullscreen></iframe>";
+		}
+	}
+	
+	public void changerTailleLecteur(AjaxBehaviorEvent e) {
+		System.out.println("changerTailleLecteur");
+		
+		if(tailleLecteur.equals("petit")) { //TODO tailleLecteur
+        	largeur = 320;
+        	hauteur = 180;
+        }
+        else if(tailleLecteur.equals("moyen")) {
+        	largeur = 480;
+        	hauteur = 270;
+        }
+        else if(tailleLecteur.equals("grand")) {
+        	largeur = 560;
+        	hauteur = 315;
+        }
+		//taille personnalisée TODO
+		System.out.println("/" + tailleLecteur + " ==> " + largeur + "***" + hauteur);
+		codeIntegration = "<object width='" + largeur + "' height='" + hauteur + "'><param name='movie' value='" + url + "'></param><param name='allowFullScreen' value='true'></param><param name='allowscriptaccess' value='always'></param><embed src='http://www.youtube.com/v/ZQ2nCGawrSY?version=3&amp;hl=fr_FR' type='application/x-shockwave-flash' width='" + largeur + "' height='" + hauteur + "' allowscriptaccess='always' allowfullscreen='true'></embed></object>";	
+		//code object aussi TODO
 	}
 }
