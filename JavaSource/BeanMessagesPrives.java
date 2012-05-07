@@ -30,6 +30,7 @@ public class BeanMessagesPrives {
 	private ArrayList<Message_Prive> messages;	
 	private ArrayList<Message_Prive> reponses;	
 	private ArrayList<String> suggestionUtilisateurs;
+	private String rechercheMessage;
 	
 	// Compteur
 	private Integer nbMessagesTotal;
@@ -69,7 +70,7 @@ public class BeanMessagesPrives {
 			utilisateurConnecte = beanConnexion.getUser();	
 			// Si on trouve l'utilisateur, on charge ses messages
 			if (utilisateurConnecte != null)
-				chargerMessages();
+				chargerMessagesNonLus();
 		}
 		
 	}
@@ -109,6 +110,26 @@ public class BeanMessagesPrives {
 		return "chargerResponses";
 	}
 	
+	/**
+	 * Recherche d'un message
+	 * @return
+	 */
+	public String rechercherMessages() {
+		
+		// On charge la liste des messages
+		messages = new ArrayList(daoMessagePrive.rechercherMessage(rechercheMessage));
+		
+		// On calcul la taille
+		nbMessages = messages.size();
+		
+		// Règles d'affichages dans la page
+		afficherListeMessage = true;
+		afficherDetailMessage = false;
+		afficherNouveauMessage = false;
+		afficherReponseMessage = false;
+		
+		return "chargerMessages";
+	}	
 	
 	/**
 	 * Chargement des messages envoyés
@@ -502,6 +523,14 @@ public class BeanMessagesPrives {
 
 	public void setNbMessagesNonLus(Integer nbMessagesNonLus) {
 		this.nbMessagesNonLus = nbMessagesNonLus;
+	}
+
+	public String getRechercheMessage() {
+		return rechercheMessage;
+	}
+
+	public void setRechercheMessage(String rechercheMessage) {
+		this.rechercheMessage = rechercheMessage;
 	}	
 	
 	

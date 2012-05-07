@@ -68,13 +68,31 @@ public class DaoMessagePrive extends Dao<Message_Prive>{
 		return q.list();		
 	}		
 	
+	public List<?> rechercherMessage(String recherche) {
+		
+		String param = "%" + recherche + "%";
+		
+		Query q = session.createQuery("" +
+				"FROM Message_Prive as mp " +
+				"WHERE (mp.destinataire.pseudo LIKE :recherche " +
+				"	OR mp.emetteur.pseudo LIKE :recherche " +
+				"	OR mp.objet LIKE :recherche) " +
+				"	AND mp.dateSuppressionMessage IS NULL " +
+				"	AND mp.isMessageMere = true " +
+				"	AND mp.dateLecture IS NULL " +			
+				"");
+		q.setParameter("recherche", param);	
+		
+		return q.list();		
+	}
+	
 	public List<?> getMessagesNonLus(Utilisateur u) {
 		Query q = session.createQuery("" +
 				"FROM Message_Prive as mp " +
-				"WHERE mp.emetteur.idUtilisateur = :idConnecte " +
+				"WHERE mp.destinataire.idUtilisateur = :idConnecte " +
 				"	AND mp.dateSuppressionMessage IS NULL " +
 				"	AND mp.isMessageMere = true " +
-				"	AND mp.dateLecture IS NULL " +
+				"	AND mp.dateLecture IS NULL " +			
 				"");
 		q.setParameter("idConnecte", u.getIdUtilisateur());	
 		

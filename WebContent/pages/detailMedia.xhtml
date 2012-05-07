@@ -10,6 +10,10 @@
 	<ui:define name="pageTitle">Détail d'un média</ui:define>
 	<ui:define name="content">
 		<section class="group1">
+		
+			<rich:editor value="#{beanMessagesPrives.contenu}" 
+			toolbar="full" width="500" height="250" viewMode="visual">	
+			</rich:editor>			
 			<h:outputStylesheet>
 		    	.titre
 		    	{
