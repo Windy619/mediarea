@@ -36,7 +36,7 @@ html, body{
 	color: black;
 	margin:0 0 1px;
 	line-height: 1.5;
-   	background-image:url("#{resource['images:bg1.png']}"); 
+   	background-image:url("#{resource['images:bg1.png']}")  !important;
 	background-position:left top;
 	background-repeat:repeat;
 }
@@ -586,4 +586,86 @@ nav ul li a.current{
 .black a {
    color: #ffffff;
    font-size:10pt;
-}   
+}
+
+
+
+
+
+
+
+
+
+
+/***************************************************
+				       MENU
+***************************************************/
+
+.menuBar{
+	background:#534741  !important;
+}
+.menuLink{
+	color:#F15A24;
+}
+.menuLink:hover{
+	color: white;
+	text-decoration:underline;
+	cursor:  pointer;
+}
+.selected{
+	background:#FFFFFF;
+}
+
+
+
+
+/***************************************************
+				       DETAIL
+***************************************************/
+
+.titre
+{
+	background-color: #FFAD87;
+	padding: 5px;
+	border-bottom: 5px solid #F15A24;
+	-webkit-border-radius: .5em; 
+	-moz-border-radius: .5em;
+	border-radius: .5em;
+	font-size: 15px;
+}
+		    	
+.gauche {
+	float: left;
+	width: 420px;
+	position: relative;
+	background:white;
+	padding:5px;
+	margin-bottom:10px;
+}
+					
+.droite {
+	float: right;
+	width: 150px;
+	position: relative;
+	background:white;
+	padding:10px;
+	margin-bottom:10px;
+	/*margin-left:5px;*/
+}
+		    	
+		    	
+.rf-dt{
+	width:400px;
+}
+
+.acent{
+	text-align: center;
+}
+
+.red {
+	color: red;
+}
+		 
+.green {
+	color: green;
+}
