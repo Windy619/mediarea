@@ -110,4 +110,28 @@
 	// seeking, seeked, timeupdate, ended; ratechange, durationchange,
 	// volumechange
 	triggerHTML5Events : [ "play", "pause" ],
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	/*** Google Analytics Tracker Extension ***/
+	/*// do: define Google Analytics Tracker extension option(s)
+    LBP.gaTracker.options = {
+        addJSCode: true, // true if extension should add
+                            // Google Analytics async Javascript source code
+        profileID: "UA-1234567-8", // profile ID (web property ID, website ID)
+                                        // events should be tracked for
+        debug: true, // true if tracked events should be written to console
+    }
+    // do: define category to track for
+    LBP.gaTracker.trackCategory = "LBP-Tracking";
+    // do: define events to be tracked
+    LBP.gaTracker.trackEvents = 
+        ["VolumeChange", "RateChange", "Seeking", "Seeked", "Ended", "Play", "Pause"];*/
 };
