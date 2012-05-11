@@ -9,6 +9,7 @@ import dao.utilisateur.DaoUtilisateur;
 
 public class BeanInscription {
 	public DaoUtilisateur daoUtilisateur = new DaoUtilisateur();
+	public BeanConnexion beanConnexion = new BeanConnexion();
 	private FacesMessage message;
 	private java.lang.String created = "";
 	@Pattern(regexp = "^[\\w\\-]([\\.\\w])+[\\w]+@([\\w\\-]+\\.)+[a-zA-Z]{2,4}$" , message="Mauvaise adresse mail")
@@ -28,6 +29,7 @@ public class BeanInscription {
 	public String createAccount() {
 		if (checkAdrMail()) {
 			daoUtilisateur.sauvegarder(new Utilisateur(adrMail, false, null, password));
+			beanConnexion.seConnecter(adrMail);
 			created = "isCreated";
 		} else {
 			created = "isNotCreated";

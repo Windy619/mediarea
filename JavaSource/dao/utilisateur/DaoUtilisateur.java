@@ -107,6 +107,7 @@ public class DaoUtilisateur extends Dao<Utilisateur> {
 		
 		return (Utilisateur) q.uniqueResult();
 	}
+	
 	public List<?> rechercheNonAmis(String recherche, Utilisateur u) {
 		String param = "%" + recherche + "%";
 		

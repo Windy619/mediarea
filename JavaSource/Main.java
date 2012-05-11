@@ -158,7 +158,14 @@ public class Main {
         util.getSignalementsMedias().add(new Signalement_Media("Pas conforme à la charte", daoMedia.getUn(3)));
         util.getNoteMedias().add(new Note(5,daoMedia.getUn(4)));
         util.getSignalementsCommentaires().add(new Signalement_Commentaire("Pas conforme a la charte !",daoCommentaire.getUn(1)));
-        util.setAvatar(new Avatar("Fleur.jpg"));
+        util.setAvatar(new Avatar("/resources/avatar/","1.png"));
+        util.setAvatar(new Avatar("/resources/avatar/","2.png"));
+        util.setAvatar(new Avatar("/resources/avatar/","3.png"));
+        util.setAvatar(new Avatar("/resources/avatar/","4.png"));
+        util.setAvatar(new Avatar("/resources/avatar/","5.png"));
+        util.setAvatar(new Avatar("/resources/avatar/","6.png"));
+        util.setAvatar(new Avatar("/resources/avatar/","7.png"));
+        util.setAvatar(new Avatar("/resources/avatar/","8.png"));
         util.setVisibilite(daoVisibilite.typeVisible());
         
         daoUtilisateur.sauvegarder(util);		

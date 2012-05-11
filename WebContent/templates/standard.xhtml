@@ -58,7 +58,7 @@
 			</nav>
 			<ssnav>
 				<h:form>
-					<h:commandLink rendered="#{beanConnexion.isConnected}" action="#{beanConnexion.seDeconnecter}" value="D&#233;connexion" />	
+					<h:commandLink rendered="#{beanConnexion.isConnected}" action="#{beanConnexion.seDeconnecter}" value="#{beanConnexion.user.adrMail} - D&#233;connexion" />	
 				</h:form>
 			</ssnav>
 		</header>
