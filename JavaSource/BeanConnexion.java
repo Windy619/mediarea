@@ -14,9 +14,9 @@ public class BeanConnexion {
 	
 	public DaoUtilisateur daoUtilisateur = new DaoUtilisateur();
 	private java.lang.String connected = "";
-	private java.lang.Boolean isConnected = false;
+	private static java.lang.Boolean isConnected = false;
 	private FacesMessage message;
-	private Utilisateur User = null;
+	private static Utilisateur User = null;
 	@Pattern(regexp = "^[\\w\\-]([\\.\\w])+[\\w]+@([\\w\\-]+\\.)+[a-zA-Z]{2,4}$", message = "Mauvaise adresse mail - Veuillez corriger")
 	private java.lang.String identifiant = null;
 	@Size(min = 3, max = 12, message = "La taille du Password doit être entre 3 et 12")
@@ -32,6 +32,7 @@ public class BeanConnexion {
 			if (user == null) {
 				connected = "isNotConnected";
 				isConnected = false;
+				System.out.println("=================DEDANS++++++++++++++++++++++");
 				message = new FacesMessage("Adresse mail inconnu");
 				message.setSeverity(FacesMessage.SEVERITY_ERROR);
 				FacesContext.getCurrentInstance().addMessage(
@@ -52,6 +53,14 @@ public class BeanConnexion {
 			}
 		}
 		
+		return connected;
+	}
+	
+	public String seConnecter(String aMail) {
+		Utilisateur user = daoUtilisateur.rechercheSurAdrMail(aMail);
+		connected = "isConnected";
+		isConnected = true;
+		User = user;
 		return connected;
 	}
 
@@ -91,7 +100,7 @@ public class BeanConnexion {
 	}
 
 	public void setIsConnected(java.lang.Boolean isConnected) {
-		this.isConnected = isConnected;
+		BeanConnexion.isConnected = isConnected;
 	}
 
 	public Utilisateur getUser() {

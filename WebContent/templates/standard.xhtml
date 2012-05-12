@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE html>
-<!-- <%@ taglib uri="http://ckeditor.com" prefix="ckeditor" %> -->
 <html xmlns="http://www.w3.org/1999/xhtml"
 	xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:a4j="http://richfaces.org/a4j"
 	xmlns:rich="http://richfaces.org/rich"
 	xmlns:f="http://java.sun.com/jsf/core"
-	xmlns:ui="http://java.sun.com/jsf/facelets">
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
 
 <h:head>
 	<meta http-equiv="Content-Type"
@@ -14,6 +14,8 @@
 	<h:outputStylesheet library="css" name="styles.css" />
 	<title>MediArea - <ui:insert name="pageTitle" /></title>
 
+
+	<!-- Lecteur audio/vidéo -->
 	<!-- first: the CSS layout of LeanBack Player -->
 	<h:outputStylesheet library="css" name="leanbackPlayer.default.css" />
 
@@ -25,22 +27,9 @@
 	<h:outputScript library="js" name="leanbackPlayer.en.js" />
 	<h:outputScript library="js" name="leanbackPlayer.de.js" />
 	<h:outputScript library="js" name="LBPoption.js" />
-
-	<!-- Estimation d'étoile -->
-	<h:outputScript name='star-rating/jquery.js' library="js"></h:outputScript>
-	<h:outputScript name='star-rating/documentation/documentation.js' library="js"></h:outputScript>
- 	<h:outputStylesheet name='star-rating/documentation/documentation.css' library="js"/>
- 	<!--// code-highlighting //-->
-	<h:outputScript library="js" name="star-rating/documentation/chili/jquery.chili-2.0.js"></h:outputScript> 
-	<!--//documentation/chili-toolbar/jquery.chili-toolbar.pack.js//-->
- 	<h:outputScript library="js">try{ChiliBook.recipeFolder="documentation/chili/"}catch(e){}</h:outputScript>
- 	<!--// plugin-specific resources //-->
-	<h:outputScript name='star-rating/jquery.MetaData.js' library="js"></h:outputScript>
- 	<h:outputScript name='star-rating/jquery.rating.js' library="js"></h:outputScript>
- 	<h:outputStylesheet name='star-rating/jquery.rating.css' library="js"/>
 	
 	
-	
+	<h:outputScript library="js" name="redirection.js"/>
 </h:head>
 
 <h:body>
@@ -58,7 +47,7 @@
 			</nav>
 			<ssnav>
 				<h:form>
-					<h:commandLink rendered="#{beanConnexion.isConnected}" action="#{beanConnexion.seDeconnecter}" value="D&#233;connexion" />	
+					<h:commandLink rendered="#{beanConnexion.isConnected}" action="#{beanConnexion.seDeconnecter}" value="#{beanConnexion.user.adrMail} - D&#233;connexion" />	
 				</h:form>
 			</ssnav>
 		</header>
@@ -71,7 +60,7 @@
 
 		<header class="group_bannner_left">
 
-			<input type="text" class="inputRecherche" size="56" name="recherche" />
+			<input type="text" class="inputRecherche" size="53" name="recherche" />
 			<div class="button black">
 				<a href="#">Rechercher</a>
 			</div>
@@ -90,10 +79,7 @@
 			<ui:include src="../resources/includes/footer_basic.xhtml" />
 		</ui:insert>
 	</footer>
-	
-	
-	<!-- <ckeditor:replace replace="editor1" basePath="/MediArea/resources/js/ckeditor/" />  -->
-	
+		
 </h:body>
 
 </html>
