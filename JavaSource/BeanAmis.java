@@ -2,6 +2,7 @@
 
 import java.util.ArrayList;
 
+import javax.faces.context.FacesContext;
 import javax.validation.constraints.Size;
 
 import metier.utilisateur.Amitie;
@@ -42,6 +43,9 @@ public class BeanAmis {
 	// Datagrid
 	private int nbColonneRecherche;
 	private int nbColonneSuggestion;
+	
+	// Bean
+	private BeanConnexion beanConnexion;
 
 	// Utilisateur connecté actuellement
 	private Utilisateur utilisateurConnecte;
@@ -50,6 +54,7 @@ public class BeanAmis {
 	 * Constructeur du bean
 	 */
 	public BeanAmis() {
+		
 		// Initialisation des dao
 		daoUtilisateur = new DaoUtilisateur();
 		daoAmitie = new DaoAmitie();
@@ -58,23 +63,31 @@ public class BeanAmis {
 		panelSuggestionAffiche = false;
 		panelRechercheAffiche = false;
 		
+		nombreAmis = 0;
+		nombreUtilisateursTrouves = 0;
+		nombreSuggestions = 0;	
+		
 		nbColonneRecherche = 5;
 		nbColonneSuggestion = 5;		
 		
 		// Chargement de l'utilisateur connecte
-		utilisateurConnecte = daoUtilisateur.getUn(1);	
+		beanConnexion = (BeanConnexion) FacesContext.getCurrentInstance().getCurrentInstance().getExternalContext().getSessionMap().get("beanConnexion");
 		
-		// Chargement des amis
-		chargerAmis();
+		if (beanConnexion != null) {
+			utilisateurConnecte = beanConnexion.getUser();
+			if (utilisateurConnecte != null)
+				chargerAmis();			
+		}
+
+
 	}
-	
 	
 	/**
 	 * Recherche d'un utilisateur
 	 */
 	public String rechercherUtilisateur() {
 		
-		if (!rechercheUtilisateur.isEmpty()) {
+		if (rechercheUtilisateur != null && !rechercheUtilisateur.isEmpty()) {
 			resultatsRechercheUtilisateur = new ArrayList(daoUtilisateur.rechercheNonAmis(rechercheUtilisateur, utilisateurConnecte));
 			nombreUtilisateursTrouves = resultatsRechercheUtilisateur.size();
 			
@@ -151,8 +164,13 @@ public class BeanAmis {
 		
 		utilisateurConnecte.getAmis().add(new Amitie(utilisateurConnecte,nouvelAmis));
 		daoUtilisateur.sauvegarder(utilisateurConnecte);
+		
 		chargerAmis();
 		rechercherUtilisateur();	
+		
+		if (panelSuggestionAffiche) {
+			chargerSuggestion();
+		}
 		
 		return "ajouteramis";
 	}	
@@ -161,9 +179,7 @@ public class BeanAmis {
 	 * Supprimer un amis
 	 */
 	public String supprimerAmis() {
-				
-		System.out.println("AdrMail : " + ancienAmis.getAmi().getAdrMail());
-	
+					
 		utilisateurConnecte.getAmis().remove(ancienAmis);
 		// On sauvegarde l'utilisateur
 		daoUtilisateur.sauvegarder(utilisateurConnecte);
@@ -171,7 +187,11 @@ public class BeanAmis {
 		daoAmitie.supprimer(ancienAmis);
 		
 		chargerAmis();
-		rechercherUtilisateur();	
+		rechercherUtilisateur();
+		
+		if (panelSuggestionAffiche) {
+			chargerSuggestion();
+		}		
 
 		return "supprimeramis";
 	}	
@@ -210,6 +230,7 @@ public class BeanAmis {
 
 
 	public Utilisateur getUtilisateurConnecte() {
+		utilisateurConnecte = beanConnexion.getUser();
 		return utilisateurConnecte;
 	}
 
