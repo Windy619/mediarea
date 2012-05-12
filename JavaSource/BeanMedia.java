@@ -1,3 +1,4 @@
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -31,7 +32,7 @@ import dao.utilisateur.*;
  */
 public class BeanMedia {
 	private DaoMedia daoMedia;
-	private String idMediaVisualise = "";
+	private String idMediaVisualise;
 	private Media mediaVisualise;
 	
 	private String titreMedia; //nécessaire de faire appel à l'objet car #{beanMedia.mediaVisualise.titreMedia} ne fonctionne pas
@@ -47,6 +48,7 @@ public class BeanMedia {
 	private String nomTypeMedia;
 	private String commentaireSaisi;
 	List<Media> listeMediasSuggeres = new ArrayList<Media>();
+	SimpleDateFormat dateFormat;
 	
 	//****
 
@@ -56,13 +58,13 @@ public class BeanMedia {
 	//private int nbVues;
 	private long resultatTotalVuesMedia;
 	
-	private String motVues = "";
+	private String motVues;
 	
 	//****
 
 	private DaoSignalementMedia daoSignalementMedia;
 	private Signalement_Media signalementMedia;
-	private String raison = ""; //récupéré de la vue
+	private String raison; //récupéré de la vue
 	
 	//*****
 	
@@ -92,8 +94,8 @@ public class BeanMedia {
 	
 	//*****
 	
-	public static DaoTypePlaylist daoTypePlaylist = new DaoTypePlaylist();
-	public static DaoPlaylist daoPlaylist = new DaoPlaylist();
+	public static DaoTypePlaylist daoTypePlaylist;
+	public static DaoPlaylist daoPlaylist;
 	private String txtFavori;
 	
 	private List<Playlist> listePlaylistUt;
@@ -108,7 +110,7 @@ public class BeanMedia {
 
 	//*****
 
-	public static DaoVisibilite daoVisibilite = new DaoVisibilite();
+	public static DaoVisibilite daoVisibilite;
 	private List<Visibilite> listeVisibilite;
 	private List<String> listeNomVisibilite;
 	//private Map<Visibilite, String> items; // +getter
@@ -145,206 +147,228 @@ public class BeanMedia {
 	
 	//constructeur
 	public BeanMedia() {
-		//Media
 		daoMedia = new DaoMedia();
-		HttpServletRequest request = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
-		idMediaVisualise = request.getParameter("v");
-		if(idMediaVisualise == null) {
-			
-		}
-		else {			
-			mediaVisualise = daoMedia.getUn(Long.parseLong(idMediaVisualise));
-		}
-        
-		
-		titreMedia = mediaVisualise.getTitreMedia();
-		//System.out.println(mediaVisualise.getTitreMedia());
-		
-		//nbCommentaires = String.valueOf(mediaVisualise.getCommentaires().size()); //toujours renseigné une chaîne de caractères pour un outputText
-		nbCommentaires = mediaVisualise.getCommentaires().size(); //Converter en JSF
-		
-		auteur = mediaVisualise.getAuteurMedia().getNomUtilisateur();
-		
-		SimpleDateFormat dateFormat = new SimpleDateFormat("dd MMMM yyyy H:m");
-		datePublication = dateFormat.format(mediaVisualise.getDatePublication());
-		
-		description = mediaVisualise.getDescriptionMedia();
-		
-		listeCategories = new ArrayList<Categorie>();
-		Set<Categorie> setCategories = mediaVisualise.getCategories();
-		Iterator<Categorie> i=setCategories.iterator(); // on crée un Iterator pour parcourir notre Set
-		while(i.hasNext()) // tant qu'on a un suivant
-		{
-			//System.out.println(i.next().getNomCategorie()); // on affiche le suivant
-			listeCategories.add(i.next());
-		}
-		//System.out.println("Categories : " + categories);
-		
-		listeTags = new ArrayList<Tag>();
-		Set<Tag> setTags = mediaVisualise.getTags();
-		Iterator<Tag> tagCompteur=setTags.iterator();
-		while(tagCompteur.hasNext())
-		{
-			//System.out.println(i.next().getNomCategorie());
-			listeTags.add(tagCompteur.next());
-		}
-		
-		commentaires = new ArrayList<Commentaire>(mediaVisualise.getCommentaires());
-		
-		nomTypeMedia = mediaVisualise.getType().getNomTypeMedia();
-
-		
-		//***********************************************
-		
-		//Regarder
-		/*daoRegarder = new DaoRegarder();
-		
-		List<Regarder> listeRegarder = daoRegarder.getTous();
-		int nbVues = 0;
-        for (Regarder object : listeRegarder) {
-        	if(object.getMedia() == mediaVisualise) {
-        		nbVues += ((Regarder) object).getNbVues();
-        	}
-		}
-		if(nbVues > 0) {
-			motVues = "s"; //"vues" au pluriel
-		}*/
-		
-		resultatTotalVuesMedia = daoMedia.totalVues(mediaVisualise);
-		if(resultatTotalVuesMedia > 0)
-		{
-			motVues = "s"; //"vues" au pluriel
-		}
-		
-		
-		//***********************************************
-		
-		//Utilisateur (connecté)
 		daoUtilisateur = new DaoUtilisateur();
-		util = daoUtilisateur.getUn(1);
-		
-		//***********************************************		
-		
-		//Aimer
+		daoRegarder = new DaoRegarder();
+		daoSignalementMedia = new DaoSignalementMedia();
+		daoUtilisateur = new DaoUtilisateur();
 		daoAimer = new DaoAimer();
-		resultatNbAime = daoMedia.nbAimeMedia(mediaVisualise.getIdMedia()).size();
-		resultatNbAimeNAimePas = daoMedia.nbAimeNAimePas(mediaVisualise.getIdMedia()).size();
+		daoTypePlaylist = new DaoTypePlaylist();
+		daoPlaylist = new DaoPlaylist();
+		daoVisibilite = new DaoVisibilite();
 		
-		//***********************************************
+		util = daoUtilisateur.getUn(1);
+	}
+	
+
+	//fonction appelée avant l'affichage de la page
+	public void processRecherche() throws IOException
+	{
+		if(idMediaVisualise == null || idMediaVisualise == "")
+		{
+			FacesContext.getCurrentInstance().getExternalContext().redirect("/MediArea/pages/erreur.jsf"); //redirection vers la page d'erreur
+			//TODO redirection vers page media indisponible
+		}
+		else
+		{
+			mediaVisualise = daoMedia.getUn(Long.parseLong(idMediaVisualise));
+			if(mediaVisualise == null) { //id de media passé en paramètre GET n'existe pas
+				FacesContext.getCurrentInstance().getExternalContext().redirect("/MediArea/pages/erreur.jsf"); //redirection vers la page d'erreur
+			}
+		}
 		
-		//Avatar
-		nomAvatar = util.getAvatar().getNomAvatar();
-		
-		//***********************************************
-		
-		//Tag
-		Set<Tag> tagMedia = daoMedia.getUn(2).getTags(); //tags du média visualisé
-		
-		List<Media> listeMedia = daoMedia.getTous();
-		
-		HashMap<Media, Integer> map = new HashMap<Media, Integer>(); //HashMap contenant le nb d'occurrences de tags correspondants dans les médias
-		
-		Iterator<Tag> iteratorMedia = tagMedia.iterator();
-		while(iteratorMedia.hasNext()) { //parcours des tags du média visualisé
-			//System.out.println("Set tagMedia : " + i.next());
-			Tag svg = iteratorMedia.next();
-			for(Media elMedia : listeMedia) { //parcours de tous les médias
-				if(! elMedia.equals(daoMedia.getUn(2))) {//tout sauf le média actuellement visualisé
-					Set<Tag> setTagMediaCourant = daoMedia.getUn(elMedia.getIdMedia()).getTags();
-					for(Tag tagMediaCourant : setTagMediaCourant) {
-						//System.out.println(svg + "***" + tagMediaCourant + " (" + elMedia.getIdMedia() + ")");
-						if(svg.toString().equals(tagMediaCourant.toString())) {
-							if(map.containsKey(elMedia)) {
-								map.put(elMedia, map.get(elMedia) + 1); //tag correspond supplémentaire
-							}
-							else
-							{
-								map.put(elMedia, 1);
+				//Media
+				//mediaVisualise = daoMedia.getUn(2);
+						
+				titreMedia = mediaVisualise.getTitreMedia();
+				
+				//nbCommentaires = String.valueOf(mediaVisualise.getCommentaires().size()); //toujours renseigné une chaîne de caractères pour un outputText
+				nbCommentaires = mediaVisualise.getCommentaires().size(); //Converter en JSF
+				
+				auteur = mediaVisualise.getAuteurMedia().getNomUtilisateur();
+				
+				SimpleDateFormat dateFormat = new SimpleDateFormat("dd MMMM yyyy H:m");
+				datePublication = dateFormat.format(mediaVisualise.getDatePublication());
+				
+				description = mediaVisualise.getDescriptionMedia();
+				
+				listeCategories = new ArrayList<Categorie>();
+				Set<Categorie> setCategories = mediaVisualise.getCategories();
+				Iterator<Categorie> i=setCategories.iterator(); // on crée un Iterator pour parcourir notre Set
+				while(i.hasNext()) // tant qu'on a un suivant
+				{
+					//System.out.println(i.next().getNomCategorie()); // on affiche le suivant
+					listeCategories.add(i.next());
+				}
+				//System.out.println("Categories : " + categories);
+				
+				listeTags = new ArrayList<Tag>();
+				Set<Tag> setTags = mediaVisualise.getTags();
+				Iterator<Tag> tagCompteur=setTags.iterator();
+				while(tagCompteur.hasNext())
+				{
+					//System.out.println(i.next().getNomCategorie());
+					listeTags.add(tagCompteur.next());
+				}
+				
+				commentaires = new ArrayList<Commentaire>(mediaVisualise.getCommentaires());
+				
+				nomTypeMedia = mediaVisualise.getType().getNomTypeMedia();
+
+				
+				//***********************************************
+				
+				//Regarder
+				/*List<Regarder> listeRegarder = daoRegarder.getTous();
+				int nbVues = 0;
+		        for (Regarder object : listeRegarder) {
+		        	if(object.getMedia() == mediaVisualise) {
+		        		nbVues += ((Regarder) object).getNbVues();
+		        	}
+				}
+				if(nbVues > 0) {
+					motVues = "s"; //"vues" au pluriel
+				}*/
+				
+				resultatTotalVuesMedia = daoMedia.totalVues(mediaVisualise);
+				if(resultatTotalVuesMedia > 0)
+				{
+					motVues = "s"; //"vues" au pluriel
+				}
+				
+				
+				//***********************************************
+				
+				//Utilisateur (connecté)
+				//daoUtilisateur = new DaoUtilisateur();
+				//util = daoUtilisateur.getUn(1);
+				
+				//***********************************************		
+				
+				//Aimer
+				//daoAimer = new DaoAimer();
+				resultatNbAime = daoMedia.nbAimeMedia(mediaVisualise.getIdMedia()).size();
+				resultatNbAimeNAimePas = daoMedia.nbAimeNAimePas(mediaVisualise.getIdMedia()).size();
+				
+				//***********************************************
+				
+				//Avatar
+				nomAvatar = util.getAvatar().getNomAvatar();
+				
+				//***********************************************
+				
+				//Tag
+				Set<Tag> tagMedia = mediaVisualise.getTags(); //tags du média visualisé
+				
+				List<Media> listeMedia = daoMedia.getTous();
+				
+				HashMap<Media, Integer> map = new HashMap<Media, Integer>(); //HashMap contenant le nb d'occurrences de tags correspondants dans les médias
+				
+				Iterator<Tag> iteratorMedia = tagMedia.iterator();
+				while(iteratorMedia.hasNext()) { //parcours des tags du média visualisé
+					//System.out.println("Set tagMedia : " + i.next());
+					Tag svg = iteratorMedia.next();
+					for(Media elMedia : listeMedia) { //parcours de tous les médias
+						if(! elMedia.equals(mediaVisualise)) {//tout sauf le média actuellement visualisé
+							Set<Tag> setTagMediaCourant = daoMedia.getUn(elMedia.getIdMedia()).getTags();
+							for(Tag tagMediaCourant : setTagMediaCourant) {
+								//System.out.println(svg + "***" + tagMediaCourant + " (" + elMedia.getIdMedia() + ")");
+								if(svg.toString().equals(tagMediaCourant.toString())) {
+									if(map.containsKey(elMedia)) {
+										map.put(elMedia, map.get(elMedia) + 1); //tag correspond supplémentaire
+									}
+									else
+									{
+										map.put(elMedia, 1);
+									}
+								}
 							}
 						}
 					}
 				}
-			}
-		}
-		
-		/*//Affichage de la HashMap
-		Set cles = map.keySet();
-		Iterator it = cles.iterator();
-		while (it.hasNext()){
-		   Object cle = it.next();
-		   Object valeur = map.get(cle);
-		   System.out.println(cle + " => " + valeur);
-		}*/
+				
+				/*//Affichage de la HashMap
+				Set cles = map.keySet();
+				Iterator it = cles.iterator();
+				while (it.hasNext()){
+				   Object cle = it.next();
+				   Object valeur = map.get(cle);
+				   System.out.println(cle + " => " + valeur);
+				}*/
 
-		
-		listeMediasSuggeres = new ArrayList<Media>(map.keySet());
-		//System.out.println("size listeMediasSuggeres : " + listeMediasSuggeres.size());
-		if(listeMediasSuggeres.size() < 20) {
-			listeMediasSuggeres = listeMediasSuggeres.subList(0, listeMediasSuggeres.size());
-		}
-		else {
-			listeMediasSuggeres = listeMediasSuggeres.subList(0, 20);
-		}
-		//suggestion en tenant compte du titre et catégories TODO
-		
-		//***********************************************
-		
-		//Playlist
-		Set<Playlist> playlistsUtilisateur = daoUtilisateur.getUn(1).getPlaylists();
-		for(Playlist pl : playlistsUtilisateur) {
-			if(pl.getType().equals(daoTypePlaylist.getUn(2))) {
-				if(pl.getMedias().contains(daoMedia.getUn(2))) {
-					txtFavori = "Retirer des favoris";
+				
+				listeMediasSuggeres = new ArrayList<Media>(map.keySet());
+				//System.out.println("size listeMediasSuggeres : " + listeMediasSuggeres.size());
+				if(listeMediasSuggeres.size() < 20) {
+					listeMediasSuggeres = listeMediasSuggeres.subList(0, listeMediasSuggeres.size());
 				}
-				else
+				else {
+					listeMediasSuggeres = listeMediasSuggeres.subList(0, 20);
+				}
+				//suggestion en tenant compte du titre et catégories TODO
+				
+				//***********************************************
+				
+				//Playlist
+				Set<Playlist> playlistsUtilisateur = daoUtilisateur.getUn(1).getPlaylists();
+				for(Playlist pl : playlistsUtilisateur) {
+					if(pl.getType().equals(daoTypePlaylist.getUn(2))) {
+						if(pl.getMedias().contains(mediaVisualise)) {
+							txtFavori = "Retirer des favoris";
+						}
+						else
+						{
+							txtFavori = "Favori";
+						}
+					}
+				}
+				
+				listePlaylistUt = new ArrayList<Playlist>(daoUtilisateur.getUn(1).getPlaylists());
+			
+				
+				Set<Playlist> setPlaylistUt = util.getPlaylists();
+				for(Playlist playlistUt : setPlaylistUt)
 				{
-					txtFavori = "Favori";
+					if(playlistUt.getMedias().contains(mediaVisualise)) {
+						imgAjoutPlaylist = "fermer-croix-supprimer-erreurs-sortie-icone-4368-16.png"; //mime TODO
+						estAjouteAPlaylist = true;
+						break;
+					}
 				}
-			}
-		}
-		
-		listePlaylistUt = new ArrayList<Playlist>(daoUtilisateur.getUn(1).getPlaylists());
+				
+				listeVisibilite = daoVisibilite.getTous();
+				listeNomVisibilite = new ArrayList<String>();
+				//items = new LinkedHashMap<Visibilite, String>();
+				//SelectItem optionVisibilite = new SelectItem("ch1", "choice1", "This bean is for selectItems tag", true);
+				for(Visibilite visible : listeVisibilite)
+				{
+					listeNomVisibilite.add(visible.getNomVisibilite());
+					//items.put(visible, visible.getNomVisibilite());
+				}
+				
+				//***********************************************
+				
+				//Note
+				resultatTotalVotesMedia = daoMedia.totalVotes(mediaVisualise);
+				if(resultatTotalVotesMedia > 0)
+				{
+					motVotes = "s"; //"vues" au pluriel
+				}
+				
+				//***********************************************
+				
+				//Autre
+		        createLinearModel();
+		        
+		        HttpServletRequest req = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
+		        url = req.getRequestURL().toString();
+		        
+		        codeIntegration = "<iframe width='320' height='180' src='" + url + "' frameborder='0' allowfullscreen></iframe>";
+			
+	}
 	
-		
-		Set<Playlist> setPlaylistUt = util.getPlaylists();
-		for(Playlist playlistUt : setPlaylistUt)
-		{
-			if(playlistUt.getMedias().contains(daoMedia.getUn(2))) {
-				imgAjoutPlaylist = "fermer-croix-supprimer-erreurs-sortie-icone-4368-16.png"; //mime TODO
-				estAjouteAPlaylist = true;
-				break;
-			}
-		}
-		
-		listeVisibilite = daoVisibilite.getTous();
-		listeNomVisibilite = new ArrayList<String>();
-		//items = new LinkedHashMap<Visibilite, String>();
-		//SelectItem optionVisibilite = new SelectItem("ch1", "choice1", "This bean is for selectItems tag", true);
-		for(Visibilite visible : listeVisibilite)
-		{
-			listeNomVisibilite.add(visible.getNomVisibilite());
-			//items.put(visible, visible.getNomVisibilite());
-		}
-		
-		//***********************************************
-		
-		//Note
-		resultatTotalVotesMedia = daoMedia.totalVotes(mediaVisualise);
-		if(resultatTotalVotesMedia > 0)
-		{
-			motVotes = "s"; //"vues" au pluriel
-		}
-		
-		//***********************************************
-		
-		//Autre
-        createLinearModel();
-        
-        HttpServletRequest req = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
-        url = req.getRequestURL().toString();
-        
-        codeIntegration = "<iframe width='320' height='180' src='" + url + "' frameborder='0' allowfullscreen></iframe>";
-    }
+	
+	
 
 	//getter et setter
 	public Media getMediaVisualise() {
@@ -608,7 +632,14 @@ public class BeanMedia {
 		this.tailleLecteur = tailleLecteur;
 	}
 	
+	public String getIdMediaVisualise() {
+		return idMediaVisualise;
+	}
 	
+	public void setIdMediaVisualise(String idMediaVisualise) {
+		this.idMediaVisualise = idMediaVisualise;
+	}
+
 	
 	
 	
@@ -652,8 +683,8 @@ public class BeanMedia {
 		System.out.println("Méthode vote");
 		//System.out.println("Note : "+note);
 		
-		util.getNoteMedias().add(new Note((int) note, mediaVisualise)); //media_idMedia + interdire de noter plusieurs fois TODO
-		daoUtilisateur.sauvegarder(util);
+		util.getNoteMedias().add(new Note((int) note, daoMedia.getUn(2))); //media_idMedia + interdire de noter plusieurs fois TODO
+		/////daoUtilisateur.sauvegarder(util);
 		
 		return "vote";
 	}

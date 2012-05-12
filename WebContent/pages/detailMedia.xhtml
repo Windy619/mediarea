@@ -4,13 +4,18 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html"
     xmlns:f="http://java.sun.com/jsf/core" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:a4j="http://richfaces.org/a4j"
     xmlns:rich="http://richfaces.org/rich"
-    xmlns:p="http://primefaces.org/ui">
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:c="http://java.sun.com/jstl/core">
+    
+<f:metadata>
+	<f:viewParam name="v" value="#{beanMedia.idMediaVisualise}"/>
+	<f:event type="preRenderView" listener="#{beanMedia.processRecherche()}"/>
+</f:metadata>
 
 <ui:composition template="/templates/standard.xhtml">
 	<ui:define name="pageTitle">Détail d'un média</ui:define>
 	<ui:define name="content">
-		<section class="group1">   
-		    
+		<section class="group1">
 		    <div id="fb-root"></div>
 			<script>(function(d, s, id) {
 			  var js, fjs = d.getElementsByTagName(s)[0];
@@ -31,85 +36,89 @@
 			<!-- *** Lecteur audio/vidéo *** -->
 			
 			<!-- surrounding element with class - needed!! -->
-			<div onclick="incrementerNbVues()" class="leanback-player-video" style="z-index: 0;">
+			<h:panelGroup rendered="#{beanMedia.nomTypeMedia == 'video' }">
+				<div onclick="incrementerNbVues()" class="leanback-player-video" style="z-index: 0;">
 			    <!-- HTML5 <video> element -->
-			    <video width="612" height="404" preload="metadata" poster="../resources/videos/elephants_dream_640x360.jpg"> <!--  width="472" height="264" -->
-			        <!-- HTML5 <video> sources -->
-			        <source src="../resources/videos/elephants_dream_640x360_2.30.mp4" type='video/mp4; codecs="avc1.42E01E, mp4a.40.2"'/>
-	<!--		    <source src="../resources/videos/360p/elephants_dream_640x360_2.30.mp4" type='video/mp4; codecs="avc1.42E01E, mp4a.40.2"'/>
-	 	       		<source src="../resources/videos/480p/elephants_dream_856x480_2.30.mp4" type='video/mp4; codecs="avc1.42E01E, mp4a.40.2"'/>
-			        <source src="../resources/videos/720p/elephants_dream_1280x720_2.30.mp4" type='video/mp4; codecs="avc1.42E01E, mp4a.40.2"'/>
-	-->
-					<source src="../resources/videos/elephants_dream_640x360_2.30.webm" type='video/webm; codecs="vp8, vorbis"'/>       
-	<!--			<source src="../resources/videos/360p/elephants_dream_640x360_2.30.webm" type='video/webm; codecs="vp8, vorbis"'/>
-			    	<source src="../resources/videos/480p/elephants_dream_856x480_2.30.webm" type='video/webm; codecs="vp8, vorbis"'/>
-			        <source src="../resources/videos/720p/elephants_dream_1280x720_2.30.webm" type='video/webm; codecs="vp8, vorbis"'/>
-	-->		        
-					<source src="../resources/videos/elephants_dream_640x360_2.30.ogv" type='video/ogg; codecs="theora, vorbis"'/>
-	 <!--		    <source src="../resources/videos/360p/elephants_dream_640x360_2.30.ogv" type='video/ogg; codecs="theora, vorbis"'/>
-	 		  		<source src="../resources/videos/480p/elephants_dream_856x480_2.30.ogv" type='video/ogg; codecs="theora, vorbis"'/>
-		    		<source src="../resources/videos/720p/elephants_dream_1280x720_2.30.ogv" type='video/ogg; codecs="theora, vorbis"'/>
-	-->	
-			    	<!-- subtitle-references with <track>-element -->
-	 				<track enabled="true" kind="subtitles" label="عربي" srclang="ar" type="text/x-srt" src="../resources/subtitles/elephants_dream/arabic_ar.srt"></track>
-					<track enabled="true" kind="subtitles" label="中文" srclang="zh" type="text/x-srt" src="../resources/subtitles/elephants_dream/chinese_zh.srt"></track>
-					<track enabled="true" kind="subtitles" label="Deutsch" srclang="de" type="text/x-srt" src="../resources/subtitles/elephants_dream/german_de.srt"></track>
-					<track enabled="true" kind="subtitles" label="English" srclang="en" type="text/x-srt" src="../resources/subtitles/elephants_dream/english_en.srt"></track>
-	 				<track enabled="true" kind="subtitles" label="Español" srclang="es" type="text/x-srt" src="../resources/subtitles/elephants_dream/spanish_es.srt"></track>
-					<track enabled="true" kind="subtitles" label="Français" srclang="fr" type="text/x-srt" src="../resources/subtitles/elephants_dream/french_fr.srt"></track>
-					<track enabled="true" kind="subtitles" label="日本語" srclang="ja" type="text/x-srt" src="../resources/subtitles/elephants_dream/japanese_ja.srt"></track>
-					<track enabled="true" kind="subtitles" label="Svenska" srclang="sv" type="text/x-srt" src="../resources/subtitles/elephants_dream/svenska_sv.srt"></track>
-				    
-				    <!-- Flash-Fallback -->
-			   		<object class="leanback-player-flash-fallback" width="472" height="259" type="application/x-shockwave-flash" data="../resources/flash/flowplayer-3.2.7.swf">
-			            <param name="movie" value="../resources/videos/flash/flowplayer-3.2.7.swf" />
-						<param name="allowfullscreen" value="true" />
-						<param name="bgcolor" value="#000000" />
-						<param name="flashvars" value='config={"clip":{"url":"../resources/videos/elephants_dream_640x360_2.30.mp4","autoPlay":false,"autoBuffering":false}}' />
-						<!--<param name="flashvars" value='config={"clip":{"url":"../resources/videos/360p/elephants_dream_640x360_2.30.mp4","autoPlay":false,"autoBuffering":false}}' />-->
-			        </object>
-			 
-			        <!-- HTML-Fallback - Download Links -->
-			        <div class="leanback-player-html-fallback">
-			            <img src="../resources/videos/elephants_dream_640x360.jpg" width="360" height="240" alt="Poster Image" 
-			                title="No HTML5 media playback capabilities available." />
-			            <div>
-			                <strong>Download Video:</strong>
-			                <a href="../resources/videos/elephants_dream_640x360_2.30.mp4">.mp4</a>,
-			                <a href="../resources/videos/elephants_dream_640x360_2.30.webm">.webm</a>,
-			                <a href="../resources/videos/elephants_dream_640x360_2.30.ogv">.ogv</a>
-			                <!--<a href="../resources/videos/360p/elephants_dream_640x360_2.30.mp4">.mp4</a>,
-			                <a href="../resources/videos/360p/elephants_dream_640x360_2.30.webm">.webm</a>,
-			                <a href="../resources/videos/360p/elephants_dream_640x360_2.30.ogv">.ogv</a>-->
-			            </div>
-			        </div>
-			    </video>
+			       <video width="612" height="404" preload="metadata" poster="../resources/videos/elephants_dream_640x360.jpg"> <!--  width="472" height="264" -->
+				        <!-- HTML5 <video> sources -->
+				        <source src="../resources/videos/elephants_dream_640x360_2.30.mp4" type='video/mp4; codecs="avc1.42E01E, mp4a.40.2"'/>
+		<!--		    <source src="../resources/videos/360p/elephants_dream_640x360_2.30.mp4" type='video/mp4; codecs="avc1.42E01E, mp4a.40.2"'/>
+		 	       		<source src="../resources/videos/480p/elephants_dream_856x480_2.30.mp4" type='video/mp4; codecs="avc1.42E01E, mp4a.40.2"'/>
+				        <source src="../resources/videos/720p/elephants_dream_1280x720_2.30.mp4" type='video/mp4; codecs="avc1.42E01E, mp4a.40.2"'/>
+		-->
+						<source src="../resources/videos/elephants_dream_640x360_2.30.webm" type='video/webm; codecs="vp8, vorbis"'/>       
+		<!--			<source src="../resources/videos/360p/elephants_dream_640x360_2.30.webm" type='video/webm; codecs="vp8, vorbis"'/>
+				    	<source src="../resources/videos/480p/elephants_dream_856x480_2.30.webm" type='video/webm; codecs="vp8, vorbis"'/>
+				        <source src="../resources/videos/720p/elephants_dream_1280x720_2.30.webm" type='video/webm; codecs="vp8, vorbis"'/>
+		-->		        
+						<source src="../resources/videos/elephants_dream_640x360_2.30.ogv" type='video/ogg; codecs="theora, vorbis"'/>
+		 <!--		    <source src="../resources/videos/360p/elephants_dream_640x360_2.30.ogv" type='video/ogg; codecs="theora, vorbis"'/>
+		 		  		<source src="../resources/videos/480p/elephants_dream_856x480_2.30.ogv" type='video/ogg; codecs="theora, vorbis"'/>
+			    		<source src="../resources/videos/720p/elephants_dream_1280x720_2.30.ogv" type='video/ogg; codecs="theora, vorbis"'/>
+		-->	
+				    	<!-- subtitle-references with <track>-element -->
+		 				<track enabled="true" kind="subtitles" label="عربي" srclang="ar" type="text/x-srt" src="../resources/subtitles/elephants_dream/arabic_ar.srt"></track>
+						<track enabled="true" kind="subtitles" label="中文" srclang="zh" type="text/x-srt" src="../resources/subtitles/elephants_dream/chinese_zh.srt"></track>
+						<track enabled="true" kind="subtitles" label="Deutsch" srclang="de" type="text/x-srt" src="../resources/subtitles/elephants_dream/german_de.srt"></track>
+						<track enabled="true" kind="subtitles" label="English" srclang="en" type="text/x-srt" src="../resources/subtitles/elephants_dream/english_en.srt"></track>
+		 				<track enabled="true" kind="subtitles" label="Español" srclang="es" type="text/x-srt" src="../resources/subtitles/elephants_dream/spanish_es.srt"></track>
+						<track enabled="true" kind="subtitles" label="Français" srclang="fr" type="text/x-srt" src="../resources/subtitles/elephants_dream/french_fr.srt"></track>
+						<track enabled="true" kind="subtitles" label="日本語" srclang="ja" type="text/x-srt" src="../resources/subtitles/elephants_dream/japanese_ja.srt"></track>
+						<track enabled="true" kind="subtitles" label="Svenska" srclang="sv" type="text/x-srt" src="../resources/subtitles/elephants_dream/svenska_sv.srt"></track>
+					    
+					    <!-- Flash-Fallback -->
+				   		<object class="leanback-player-flash-fallback" width="472" height="259" type="application/x-shockwave-flash" data="../resources/flash/flowplayer-3.2.7.swf">
+				            <param name="movie" value="../resources/videos/flash/flowplayer-3.2.7.swf" />
+							<param name="allowfullscreen" value="true" />
+							<param name="bgcolor" value="#000000" />
+							<param name="flashvars" value='config={"clip":{"url":"../resources/videos/elephants_dream_640x360_2.30.mp4","autoPlay":false,"autoBuffering":false}}' />
+							<!--<param name="flashvars" value='config={"clip":{"url":"../resources/videos/360p/elephants_dream_640x360_2.30.mp4","autoPlay":false,"autoBuffering":false}}' />-->
+				        </object>
+				 
+				        <!-- HTML-Fallback - Download Links -->
+				        <div class="leanback-player-html-fallback">
+				            <img src="../resources/videos/elephants_dream_640x360.jpg" width="360" height="240" alt="Poster Image" 
+				                title="No HTML5 media playback capabilities available." />
+				            <div>
+				                <strong>Download Video:</strong>
+				                <a href="../resources/videos/elephants_dream_640x360_2.30.mp4">.mp4</a>,
+				                <a href="../resources/videos/elephants_dream_640x360_2.30.webm">.webm</a>,
+				                <a href="../resources/videos/elephants_dream_640x360_2.30.ogv">.ogv</a>
+				                <!--<a href="../resources/videos/360p/elephants_dream_640x360_2.30.mp4">.mp4</a>,
+				                <a href="../resources/videos/360p/elephants_dream_640x360_2.30.webm">.webm</a>,
+				                <a href="../resources/videos/360p/elephants_dream_640x360_2.30.ogv">.ogv</a>-->
+				            </div>
+				        </div>
+				    </video>
 			</div>
+			</h:panelGroup>
 			
 			
 			<br /><br /><br />
 				
 		
-			<!-- surrounding element with class - needed!! -->
-			<div onclick="incrementerNbVues()" class="leanback-player-audio" style="width:612px; z-index: -1;"><!-- width="350px" -->
-			    <!-- HTML5 <audio> element -->
-			    <audio preload="metadata">
-			        <!-- HTML5 <audio> sources -->
-			        <source src="../resources/audios/03_Snowflake_GiveItUp_4.19.mp4" type='audio/mp4; codecs="mp4a.40.2"'/>
-			        <source src="../resources/audios/03_Snowflake_GiveItUp_4.19.mp3" type='audio/mpeg; codecs="vorbis"'/>
-			        <source src="../resources/audios/03_Snowflake_GiveItUp_4.19.oga" type='audio/ogg; codecs="vorbis"'/>
-			    
-			    	<!-- HTML-Fallback - Download Links -->
-			        <div class="leanback-player-html-fallback">
-			            <div>
-			                <strong>Download Audio:</strong>
-			                <a href="../resources/audios/03_Snowflake_GiveItUp_4.19.mp4">.mp4</a>
-			                <a href="../resources/audios/03_Snowflake_GiveItUp_4.19.mp3">.mp3</a>
-			                <a href="../resources/audios/03_Snowflake_GiveItUp_4.19.oga">.oga</a>
-			            </div>
-			        </div>
-			    </audio>
-			</div>
+			<h:panelGroup rendered="#{beanMedia.nomTypeMedia == 'audio' }">
+				<!-- surrounding element with class - needed!! -->
+				<div onclick="incrementerNbVues()" class="leanback-player-audio" style="width:612px; z-index: 0;"><!-- width="350px" -->
+				    <!-- HTML5 <audio> element -->
+				    <audio preload="metadata">
+				        <!-- HTML5 <audio> sources -->
+				        <source src="../resources/audios/03_Snowflake_GiveItUp_4.19.mp4" type='audio/mp4; codecs="mp4a.40.2"'/>
+				        <source src="../resources/audios/03_Snowflake_GiveItUp_4.19.mp3" type='audio/mpeg; codecs="vorbis"'/>
+				        <source src="../resources/audios/03_Snowflake_GiveItUp_4.19.oga" type='audio/ogg; codecs="vorbis"'/>
+				    
+				    	<!-- HTML-Fallback - Download Links -->
+				        <div class="leanback-player-html-fallback">
+				            <div>
+				                <strong>Download Audio:</strong>
+				                <a href="../resources/audios/03_Snowflake_GiveItUp_4.19.mp4">.mp4</a>
+				                <a href="../resources/audios/03_Snowflake_GiveItUp_4.19.mp3">.mp3</a>
+				                <a href="../resources/audios/03_Snowflake_GiveItUp_4.19.oga">.oga</a>
+				            </div>
+				        </div>
+				    </audio>
+				</div>
+			</h:panelGroup>
 			
 			<h:form>
 		        <a4j:jsFunction name="incrementerNbVues" action="#{beanMedia.incrNbVues}">
@@ -126,7 +135,7 @@
 				<rich:componentControl target="popupJAime" operation="show" />
 			</h:commandButton>
 			<rich:popupPanel id="popupJAime" modal="false" autosized="true"
-		        resizeable="false" style="width: 150px;">
+		        resizeable="false" style="width: 150px; z-index: 99999;">
 		        <f:facet name="header">
 		            <h:outputText value="J'aime ce contenu" />
 		        </f:facet>
@@ -168,7 +177,7 @@
 	        <h:commandButton value="Call the popup">
 		        <rich:componentControl target="popupPlaylist" operation="show" />
 		    </h:commandButton>
-		    <rich:popupPanel id="popup" modal="false" autosized="true" resizeable="false">
+		    <rich:popupPanel id="popup" modal="false" autosized="true" resizeable="false" style="z-index: 99999;">
 		        <f:facet name="header">
 		            <h:outputText value="Ajouter à une playlist" />
 		        </f:facet>
@@ -209,7 +218,7 @@
 		        </p>
 		    </rich:popupPanel>
 	        
-	        <rich:popupPanel id="popupCreerPlaylist" modal="false" autosized="true" resizeable="false">
+	        <rich:popupPanel id="popupCreerPlaylist" modal="false" autosized="true" resizeable="false" style="z-index: 99999;">
 						<f:facet name="header">
 				            <h:outputText value="Créer une nouvelle playlist" />
 				        </f:facet>
@@ -275,7 +284,7 @@
 	            <h:commandButton value="Call the popup Exporter">
 			        <rich:componentControl target="popupExporter" operation="show" />
 			    </h:commandButton>
-			    <rich:popupPanel id="popupExporter" modal="false" autosized="true" resizeable="false">
+			    <rich:popupPanel id="popupExporter" modal="false" autosized="true" resizeable="false" style="z-index: 99999;">
 			        <f:facet name="header">
 			            <h:outputText value="Personnaliser le lecteur exportable" />
 			        </f:facet>
@@ -332,7 +341,7 @@
 			    <h:commandButton value="Call the popup Email">
 			        <rich:componentControl target="popupEmail" operation="show" />
 			    </h:commandButton>
-			    <rich:popupPanel id="popupEmail" modal="false" autosized="true" resizeable="false">
+			    <rich:popupPanel id="popupEmail" modal="false" autosized="true" resizeable="false" style="z-index: 99999;">
 			        <f:facet name="header">
 			            <h:outputText value="Choisissez vos destinataires" />
 			        </f:facet>
@@ -385,7 +394,7 @@
 	           		<rich:componentControl target="popupSignaler" operation="show" />
 	            </h:commandButton>
 	            <rich:popupPanel id="popupSignaler" modal="false" autosized="true"
-			        resizeable="false" style="width: 400px; overflow: hidden;">
+			        resizeable="false" style="width: 400px; overflow: hidden; z-index: 99999;">
 			        <f:facet name="header">
 			            <h:outputText value="Signaler cette vidéo (contenu pouvant offenser)" title="" />
 			        </f:facet>
@@ -446,7 +455,7 @@
 	        			<rich:componentControl target="popupStatistiques" operation="show" />
 	        		</h:commandLink>
 	        		
-	        		<rich:popupPanel id="popupStatistiques" modal="false" autosized="true" resizeable="false">
+	        		<rich:popupPanel id="popupStatistiques" modal="false" autosized="true" resizeable="false" style="z-index: 99999;">
 				        <f:facet name="header">
 				            <h:outputText value="Statistiques" />
 				        </f:facet>
@@ -561,7 +570,7 @@
 			</h5>
 		   	
 		   	<h:form>
-					<rich:editor id="editor" toolbar="full" value="#{editorBean.value}" style="margin-bottom: 1em">
+					<rich:editor id="editor" value="#{editorBean.value}" style="margin-bottom: 1em" theme="advanced">
 			            <a4j:ajax event="change" render="panel" status="panelUpdateStatus" />
 			            <a4j:ajax event="dirty" render="panel" status="panelUpdateStatus">
 			                <a4j:attachQueue requestDelay="1000" />
@@ -579,7 +588,7 @@
 			                </a4j:status>
 			            </f:facet>
 			            <h:outputText escape="false" value="#{editorBean.value}" />
-			        </rich:panel>			  
+			        </rich:panel>
 			  	<br/>
 			   	<a4j:commandButton value="Publier" render="out" execute="@form"/>
 			</h:form>
@@ -605,6 +614,10 @@
     
     		<!-- *** dataScroller *** -->	
 			<h:form id="form2">
+			
+				
+			
+			
 		        <h:panelGrid columnClasses="acent">
 		            <rich:dataScroller for="table" maxPages="5" />
 		            <rich:dataTable value="#{beanMedia.commentaires}" var="commentaire" id="table" rows="10">
