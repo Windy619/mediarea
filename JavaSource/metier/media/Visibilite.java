@@ -13,8 +13,8 @@ import javax.persistence.NamedQuery;
  */
 @Entity
 @NamedQueries({
-	@NamedQuery(name = Visibilite.NQ_VISIBLE, query = "FROM Visibilite WHERE nomVisibilite = 'visible'"),
-	@NamedQuery(name = Visibilite.NQ_NON_VISIBLE, query = "FROM Visibilite WHERE nomVisibilite = 'non_visible'")
+	@NamedQuery(name = Visibilite.NQ_VISIBLE, query = "FROM Visibilite WHERE nomVisibilite = 'Visible'"),
+	@NamedQuery(name = Visibilite.NQ_NON_VISIBLE, query = "FROM Visibilite WHERE nomVisibilite = 'Non visible'")
 })
 /**
  * Class Visibilite
