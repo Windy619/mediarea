@@ -37,12 +37,12 @@ public class DaoTypeMedia extends Dao<Type_Media>{
 	 */
 	public Type_Media typeSon() {
 		
-		List<?> liste = session.getNamedQuery(Type_Media.NQ_SON).list();
+		List<?> liste = session.getNamedQuery(Type_Media.NQ_AUDIO).list();
 
 		if (liste.size() == 0) {
 			// Si le type n'existe pas encore, on le créer
 			this.sauvegarder(new Type_Media("son"));
-			liste = session.getNamedQuery(Type_Media.NQ_SON).list();
+			liste = session.getNamedQuery(Type_Media.NQ_AUDIO).list();
 		}	
 		
 		return (Type_Media)liste.get(0);

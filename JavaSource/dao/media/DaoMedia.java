@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import metier.media.Categorie;
+import metier.media.Commentaire;
 import metier.media.Media;
 import metier.media.Type_Media;
 
@@ -92,8 +93,33 @@ public class DaoMedia extends Dao<Media> {
 	 * Recuperation du total des vues
 	 * @return Une liste de média
 	 */
-	public List<?> totalVues(Media media) {
-		return new ArrayList<Media>();
+	public long totalVues(Media media) {		
+		//long param = media.getIdMedia();
+		Media param = media;
+		
+		Query q = session.createQuery("" +
+				"SELECT SUM(r.nbVues) " +
+				"FROM Regarder r " +
+				"WHERE r.media = :media");
+		//( (Integer) session.createQuery("select count(*) from ....").iterate().next() ).intValue()
+		
+		q.setParameter("media", param);		
+		
+		return (Long) q.uniqueResult();
+	}
+	
+	public long totalVotes(Media media) {		
+		//long param = media.getIdMedia();
+		Media param = media;
+		
+		Query q = session.createQuery("" +
+				"SELECT COUNT(*) " +
+				"FROM Note n " +
+				"WHERE n.media = :media");
+		
+		q.setParameter("media", param);
+		
+		return (Long) q.uniqueResult();
 	}
 	
 	

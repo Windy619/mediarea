@@ -12,7 +12,70 @@
 	<ui:define name="content">
 		<section class="group3">
 			<h3>Mon Profil</h3>
-			<h:outputText value="Bienvenue" />
+			<br />
+			<h:form id="form-profil">
+				<rich:tabPanel switchType="client">
+					<rich:tab header="Alias">
+						<h:graphicImage
+							value="#{beanProfil.user.avatar.cheminAvatar}#{beanProfil.user.avatar.nomAvatar}"
+							style="float:right;background-image:url('../resources/avatar/0.png');width:64px;height:64px;" />
+						<h4>
+							<h:outputText value="#{beanProfil.user.pseudo}" />
+						</h4>
+						<h:panelGrid columns="2" width="300">
+							<p>
+								<b>@ mail</b>
+								<h:outputText value="#{beanProfil.user.adrMail}" />
+								<b>Autre @ mail</b>
+								<h:outputText value="#{beanProfil.user.autreAdrMail}" />
+							</p>
+						</h:panelGrid>
+					</rich:tab>
+					<rich:tab header="Informations">
+						<h4>
+							<h:outputText value="#{beanProfil.user.sexe} " />
+							<h:outputText value="#{beanProfil.user.prenomUtilisateur} " />
+							<h:outputText value="#{beanProfil.user.nomUtilisateur}" />
+						</h4>
+						<h:panelGrid columns="2" width="500">
+							<b>Date de naissance</b>
+							<h:outputText value="#{beanProfil.user.dateNaissance}" />
+							<b>Profession</b>
+							<h:outputText value="#{beanProfil.user.profession}" />
+							<b>Adresse</b>
+							<h:outputText
+								value="#{beanProfil.user.rue} #{beanProfil.user.cp} #{beanProfil.user.ville} - #{beanProfil.user.pays}" />
+							<b>Numéro de Mobile</b>
+							<h:outputText value="#{beanProfil.user.numTelMobile}" />
+							<b>Intérêts</b>
+							<h:outputText value="#{beanProfil.user.interets}" />
+						</h:panelGrid>
+					</rich:tab>
+					<rich:tab header="Options">
+						<h:panelGrid columns="2" width="500">
+							<h:selectBooleanCheckbox value="#{beanProfil.user.estPublique}"
+								disabled="true" />
+							<h:outputText
+								value="Je souhaite que mon profil soit visible par tous" />
+
+							<h:selectBooleanCheckbox
+								value="#{beanProfil.user.notificationAutomatique}"
+								disabled="true" />
+							<h:outputText
+								value="Je souhaite mettre les notifications en mode automatique" />
+
+							<h:selectBooleanCheckbox
+								value="#{beanProfil.user.notificationParMail}" disabled="true" />
+							<h:outputText
+								value="Je souhaite recevoir les notifications par mails" />
+						</h:panelGrid>
+					</rich:tab>
+				</rich:tabPanel>
+				<br/>
+				<h:commandButton id="update"
+							action="#{beanProfil.update}"
+							value="Modifier le profil" />
+			</h:form>
 		</section>
 	</ui:define>
 </ui:composition>

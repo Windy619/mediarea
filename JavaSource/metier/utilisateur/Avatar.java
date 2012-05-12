@@ -38,6 +38,11 @@ public class Avatar {
 	public Avatar(String nomAvatar){
 		this.nomAvatar = nomAvatar;
 	}	
+	
+	public Avatar(String cheminAvatar, String nomAvatar){
+		this.cheminAvatar = cheminAvatar;
+		this.nomAvatar = nomAvatar;
+	}
 
 	/**
 	 * Suppression de l'instance
