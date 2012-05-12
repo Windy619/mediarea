@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+	  xmlns:a4j="http://richfaces.org/a4j"
+	  xmlns:rich="http://richfaces.org/rich"> 
+      
+<ui:composition template="/templates/standard.xhtml">
+		
+	<ui:define name="pageTitle">Upload de média</ui:define>
+	
+	<ui:define name="content">
+	
+		<section class="group3">
+			<h3>Upload de média</h3>  
+			
+			<br />
+			
+			<h:form rendered="#{beanUpload.afficherFormulaire}" id="formFormulaire">
+			<h4> Formulaire d'upload </h4>
+	  		   <rich:panel header="#{beanUpload.nomMedia}" style="width:600px">		    		
+		  			<h:panelGrid columns="2" columnClasses="top,top">
+			   			<h:outputText value="Type de média :" />
+			   			<rich:select value="#{beanUpload.typeMedia}" style="width: 450px" defaultLabel="Vidéo">
+			   				<f:selectItem itemValue="0" itemLabel="Vidéo"/>
+			   				<f:selectItem itemValue="1" itemLabel="Audio"/>
+			   			</rich:select>
+			   						    			
+			   			<h:outputText value="Nom :" />
+			   			<h:inputText value="#{beanUpload.nomMedia}" style="width: 450px" />		
+			   			
+			   			<h:outputText value="Catégorie :" />
+			   			<h:inputText value="#{beanUpload.categorieMedia}" style="width: 450px" />		
+			   			
+			   			<h:outputText value="Photo :" />
+						<rich:fileUpload fileUploadListener="#{beanUpload.listenerPhoto}" id="upload" acceptedTypes="jpg, png, gif"
+			    		ontyperejected="alert('Fichiers supportés : jpg, png, gif');" maxFilesQuantity="1"
+			    		style="height: 100px; width: 450px">
+						</rich:fileUpload>							   				
+			   			
+			   			<h:outputText value="Tags : (séparés par ',')" />
+			   			<h:inputText value="#{beanUpload.tagsMedia}" style="width: 450px" />	
+			   			
+			   			<h:outputText value="Portée :" />
+			   			<rich:select value="#{beanUpload.porteeMedia}" style="width: 450px" defaultLabel="Public">
+			   				<f:selectItem itemValue="0" itemLabel="Public"/>
+			   				<f:selectItem itemValue="1" itemLabel="Privé"/>
+			   			</rich:select>							   			
+			   			
+			   			<h:outputText value="Mot de passe :" />
+			   			<h:inputSecret value="#{beanUpload.motdepasseMedia}" style="width: 450px" />
+			   			
+			   			<h:outputText value="Description :" />
+				        <rich:editor id="editorDescription" value="#{beanUpload.descriptionMedia}" style="margin-bottom: 1em"
+				        width="450px" height="100px">
+
+				        </rich:editor>						   						   								    							    							    							    							    						    			
+		   					    			
+		  			</h:panelGrid>
+		  			
+	            	<h:commandButton value="Supprimer"  action="#{beanUpload.supprimerFichierUploade}" ">
+	                 	<f:setPropertyActionListener target="#{beanUpload.fichierSelectionne}" value="fichier" />
+	                 	<f:setPropertyActionListener target="#{beanUpload.afficherFormulaire}" value="false" />
+	                 </h:commandButton>
+	                 		
+		  		</rich:panel>
+		  		
+		  		
+		  		<br />
+		  		<br />
+			
+			</h:form>
+		
+			
+			<br />
+ 					
+			<h:form>
+				<h4> Module d'upload </h4>
+				<h:panelGrid columns="1" columnClasses="top,top">
+					<rich:fileUpload fileUploadListener="#{beanUpload.listenerMedia}" id="uploadMedia" acceptedTypes="mp3, avi, mp4"
+		    		ontyperejected="alert('Fichiers accéptés : mp3, avi, mp4');" maxFilesQuantity="3"
+		    		style="height: 250px; width: 900px">
+		    			<a4j:ajax event="uploadcomplete" execute="@form" render="info"/>
+					</rich:fileUpload>
+					
+					<br />
+					<br />				
+					
+		         	<h:panelGroup id="info" layout="block" >
+		             	<rich:panel bodyClass="info" >
+			                <f:facet name="header">
+			                    <h:outputText value="Fichiers Envoyés" />
+			                </f:facet>
+			                <h:outputText value="Aucun fichier envoyé" rendered="#{beanUpload.size==0}" />
+			   				<rich:dataGrid value="#{beanUpload.files}" var="fichier" id="repeatFichier" rows="10" style="margin:auto;"  >
+			   					<rich:panel style="margin:auto">
+			   						<f:facet name="header"><h:outputText value="#{fichier.nom}" /></f:facet>
+			   						<div align="center">
+					   					<br />
+					   					<h:graphicImage value="/resources/images/media.png"/>
+					   					<br />
+										<h:commandButton value="Afficher le formulaire" action="#{beanUpload.afficherFormulaireUpload}" style="width:250px" >
+											<f:setPropertyActionListener target="#{beanUpload.fichierSelectionne}" value="#{fichier}" />
+										</h:commandButton>
+										
+										<h:commandButton value="Supprimer l'upload" action="#{beanUpload.supprimerFichierUploade}" style="width:250px" >
+											<f:setPropertyActionListener target="#{beanUpload.fichierSelectionne}" value="#{fichier}" />
+										</h:commandButton>						
+									</div>			   					
+			   					</rich:panel>
+
+								<br />			  		
+			  				</rich:dataGrid>
+			  				
+		            	</rich:panel>
+		            	
+		            	<br />
+		            	<h:commandButton action="#{beanUpload.supprimerFichiersUploades}" render="info, upload" value="Vider"
+		                rendered="#{beanUpload.size>0}" reRender="formulairesAjouts"/>
+		        	</h:panelGroup>
+		        	
+		    	</h:panelGrid>
+			</h:form>
+				    
+		    <br />
+		    <br />
+
+		    	
+	</section>		
+	</ui:define>
+	
+</ui:composition> 
+</html>
+ 

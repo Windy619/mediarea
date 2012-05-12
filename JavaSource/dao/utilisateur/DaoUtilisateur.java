@@ -107,6 +107,26 @@ public class DaoUtilisateur extends Dao<Utilisateur> {
 		
 		return (Utilisateur) q.uniqueResult();
 	}
+	
+	/**
+	 * Recherche simple d'un amis à partir d'un String
+	 * @param mot
+	 * @return Une liste d'amitie
+	 */
+	public List<?> rechercheAmis(String recherche, Utilisateur u) {
+		String param = "%" + recherche + "%";
+		
+		Query q = session.createQuery("" +
+				"FROM Amitie as a " + 
+				"WHERE (a.ami.adrMail like :recherche or a.ami.pseudo like :recherche or a.ami.prenomUtilisateur like :recherche or a.ami.nomUtilisateur like :recherche) " + 
+					"AND dateBanissement IS NULL AND dateSuppressionUtilisateur IS NULL " + 
+					"AND a.utilisateur.idUtilisateur = :idConnecte");
+		q.setParameter("recherche", param);		
+		q.setParameter("idConnecte", u.getIdUtilisateur());	
+
+		return q.list();
+	}	
+	
 	public List<?> rechercheNonAmis(String recherche, Utilisateur u) {
 		String param = "%" + recherche + "%";
 		
@@ -133,9 +153,11 @@ public class DaoUtilisateur extends Dao<Utilisateur> {
 		Query q = session.createQuery("" +
 				"FROM Amitie as a " +
 				"WHERE (a.ami.idUtilisateur IN (SELECT a.ami.idUtilisateur FROM Amitie as a WHERE a.utilisateur.idUtilisateur = :idConnecte) " +
-				"	OR a.utilisateur.idUtilisateur IN (SELECT a.ami.idUtilisateur FROM Amitie as a WHERE a.utilisateur.idUtilisateur = :idConnecte) " +
-				"	OR a.utilisateur.idUtilisateur NOT IN (SELECT a.ami FROM Amitie as a WHERE a.utilisateur.idUtilisateur = :idConnecte)) " +
-				"	AND a.utilisateur.idUtilisateur <> :idConnecte " +
+				"OR a.utilisateur.idUtilisateur IN (SELECT a.ami.idUtilisateur FROM Amitie as a WHERE a.utilisateur.idUtilisateur = :idConnecte) " +
+				"OR a.utilisateur.idUtilisateur NOT IN (SELECT a.ami FROM Amitie as a WHERE a.utilisateur.idUtilisateur = :idConnecte)) " +
+				"AND a.utilisateur.idUtilisateur <> :idConnecte " +
+				"AND a.ami.idUtilisateur <> :idConnecte " +
+				"AND a.ami.idUtilisateur NOT IN (SELECT a.ami.idUtilisateur FROM Amitie a WHERE a.utilisateur.idUtilisateur = :idConnecte) " +
 				"");
 		q.setParameter("idConnecte", u.getIdUtilisateur());	
 		

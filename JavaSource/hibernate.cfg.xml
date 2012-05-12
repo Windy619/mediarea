@@ -9,6 +9,7 @@
   <property name="hibernate.show_sql">false</property>
   <property name="hibernate.connection.url">jdbc:mysql://localhost/MediArea</property>
   <property name="hibernate.hbm2ddl.auto">update</property>
+  <property name="hibernate.connection.password">root</property>
   <mapping class="metier.utilisateur.Message"/>
   <mapping class="metier.media.Aimer"/>
   <mapping class="metier.media.Categorie"/>
@@ -31,5 +32,6 @@
   <mapping class="metier.utilisateur.Message_Prive"/>
   <mapping class="metier.utilisateur.Signalement_Utilisateur"/>
   <mapping class="metier.utilisateur.Utilisateur"/>
+  <mapping class="metier.utilisateur.Signalement_MessagePrive"/>
  </session-factory>
 </hibernate-configuration>

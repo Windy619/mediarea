@@ -5,6 +5,7 @@ import java.util.Date;
 import javax.persistence.CascadeType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.MappedSuperclass;
 
@@ -35,6 +36,7 @@ public abstract class Message {
 	private Date dateSuppressionMessage;
 
 	@ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+	@JoinColumn(name="emetteur_fk")
 	private Utilisateur emetteur;
 
 	/**
@@ -50,6 +52,7 @@ public abstract class Message {
 	public Message(String contenu, Utilisateur emetteur){
 		this.contenuMessage = contenu;
 		this.emetteur = emetteur;
+		this.dateEnvoi = new Date();
 	}
 
 	/**

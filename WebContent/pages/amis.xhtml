@@ -12,9 +12,13 @@
 	<ui:define name="pageTitle">Amis</ui:define>
 	<ui:define name="content">
 		<section class="group1">
-			<h3>Amis</h3>  							    
-		        		    			
-			<h:form>
+			<h3>Amis</h3>  							      
+		    
+		    <br />	
+		    <h:outputText rendered="#{empty beanAmis.utilisateurConnecte}" value="Vous devez être connecté pour accèder à ces informations" />
+		    
+		        			
+			<h:form rendered="#{not empty beanAmis.utilisateurConnecte}">
 				<rich:message for="rechercheUtilisateur" />
 				<h:outputLabel value="Recherche utilisateur : " />
 				<h:inputText value="#{beanAmis.rechercheUtilisateur}" id="rechercheUtilisateur" />
@@ -23,7 +27,7 @@
 						
 			<br />
 						
-		    <rich:panel rendered="#{beanAmis.panelRechercheAffiche}">
+		    <rich:panel rendered="#{beanAmis.panelRechercheAffiche and not empty beanAmis.utilisateurConnecte}">
 		    
 		        <f:facet name="header">
 		            <h:outputText value="Liste utilisateur"></h:outputText>
@@ -62,13 +66,13 @@
            		    
 			<br />
 			
-			<h:form>
+			<h:form rendered="#{not empty beanAmis.utilisateurConnecte}">
 				<h:commandButton action="#{beanAmis.chargerSuggestion}" value="Afficher une suggestion d'utilisateur"/>
 			</h:form>
 			
 			<br />
 			
-		    <rich:panel name="panelSuggestion" rendered="#{beanAmis.panelSuggestionAffiche}">
+		    <rich:panel name="panelSuggestion" rendered="#{beanAmis.panelSuggestionAffiche and not empty beanAmis.utilisateurConnecte}">
 		    
 		        <f:facet name="header">
 		            <h:outputText value="Suggestion d'ajout :"></h:outputText>
@@ -107,7 +111,7 @@
     			
     		<br />
     		
-			<h:form>
+			<h:form rendered="#{not empty beanAmis.utilisateurConnecte}">
 				<h:commandButton action="#{beanAmis.cacherSuggestion}" value="Cacher les suggestions" rendered="#{beanAmis.panelSuggestionAffiche}"/>
 			</h:form>
 			
@@ -118,8 +122,10 @@
 	    <aside class="group2">
 			<h3>Ma liste d'amis</h3>
 			
+			<br />
+			<h:outputText rendered="#{empty beanAmis.utilisateurConnecte}" value="Vous devez être connecté pour avoir des amis !" />
 			
-			<h:form>
+			<h:form rendered="#{not empty beanAmis.utilisateurConnecte}">
 				<rich:message for="rechercheAmis" />
 				<h:inputText value="#{beanAmis.rechercheAmis}" id="rechercheAmis" />
 				<h:commandButton value="Recherche" action="#{beanAmis.rechercherAmis}" />
@@ -129,7 +135,7 @@
 						
 			<article class="holder_news">
 	            <rich:dataGrid name="gridMesAmis" value="#{beanAmis.resultatsRechercheAmis}" var="amis"
-	                columns="2" elements="20" width="600px" border="0">
+	                columns="2" elements="20" width="600px" border="0" rendered="#{not empty beanAmis.utilisateurConnecte}">
 	                <rich:panel>
 	                    <f:facet name="header">
 	                        <h:outputText value="#{amis.ami.pseudo}"></h:outputText>
@@ -157,7 +163,12 @@
 	                </f:facet>
 	            </rich:dataGrid>
 	            <br />
-	            <h:outputText value="Vous avez #{beanAmis.nombreAmis} amis" />
+	            <h:outputText value="Vous avez #{beanAmis.nombreAmis} amis" rendered="#{not empty beanAmis.utilisateurConnecte}" />
+	            <br />
+	            <br />
+				<h:form rendered="#{not empty beanAmis.utilisateurConnecte}">
+					<h:commandButton value="Afficher tous" action="#{beanAmis.chargerAmis}" />
+				</h:form>	            
 			</article>				
 		</aside>		
 	</ui:define>
