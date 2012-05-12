@@ -105,7 +105,7 @@ public class DaoMedia extends Dao<Media> {
 		
 		q.setParameter("media", param);		
 		
-		return (Long) q.uniqueResult();
+		return (Long) q.uniqueResult(); //TODO vérif que un Regarder existe pour le média
 	}
 	
 	public long totalVotes(Media media) {		
