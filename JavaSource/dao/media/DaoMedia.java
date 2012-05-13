@@ -1,6 +1,11 @@
 package dao.media;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
 
 import metier.media.Categorie;
@@ -98,14 +103,38 @@ public class DaoMedia extends Dao<Media> {
 		Media param = media;
 		
 		Query q = session.createQuery("" +
-				"SELECT SUM(r.nbVues) " +
+				"SELECT COUNT(*) " +
 				"FROM Regarder r " +
 				"WHERE r.media = :media");
 		//( (Integer) session.createQuery("select count(*) from ....").iterate().next() ).intValue()
 		
+		q.setParameter("media", param);
+		
+		//System.out.println("Liste : " + q.list());
+		if(q.list().toString().equals("[null]")) {
+			return 0;
+		}
+		return (Long) q.uniqueResult();
+	}
+	
+	/**
+	 * Recuperation du total des téléchargements
+	 * @return Une liste de média
+	 */
+	public long totalTelechargement(Media media) {
+		Media param = media;
+		
+		Query q = session.createQuery("" +
+				"SELECT SUM(t.nbTelechargement) " +
+				"FROM Telechargement_Media t " +
+				"WHERE t.media = :media");
+		
 		q.setParameter("media", param);		
 		
-		return (Long) q.uniqueResult(); //TODO vérif que un Regarder existe pour le média
+		if(q.list().toString().equals("[null]")) {
+			return 0;
+		}
+		return (Long) q.uniqueResult();
 	}
 	
 	public long totalVotes(Media media) {		
@@ -122,6 +151,45 @@ public class DaoMedia extends Dao<Media> {
 		return (Long) q.uniqueResult();
 	}
 	
+	/**
+	 * Récupération du nombre de vues par jour TODO
+	 * @return Une liste de média
+	 * @throws ParseException 
+	 */
+	public List<?> statVues(Media media) {
+		Media param1 = media;
+		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+		GregorianCalendar calendar = new GregorianCalendar();
+		Calendar cal = Calendar.getInstance();
+		//Date dateCourante = new Date();
+		//calendar.set(cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DAY_OF_MONTH));
+		calendar.add(Calendar.MONTH, -3);
+		Date param2 = null;
+		Date param3 = null;
+		try {
+			param2 = (Date)formatter.parse(formatter.format(calendar.getTime())); //Date TODO
+			param3 = (Date)formatter.parse(formatter.format(new Date()));
+			
+
+			//System.out.println("===> Date début : " + );
+			//System.out.println("===> Date fin : " + );
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+		
+		Query q = session.createQuery("" +
+				"SELECT r.dateVues, count(r.idRegarder) " +
+				"FROM Regarder r " +
+				"WHERE r.media = :media " +
+				"AND r.dateVues BETWEEN :dateDebut AND :dateFin " + 
+				"GROUP BY r.dateVues");
+		
+		q.setParameter("media", param1);
+		q.setParameter("dateDebut", param2);
+		q.setParameter("dateFin", param3);
+		
+		return q.list();
+	}
 	
 	
 	
