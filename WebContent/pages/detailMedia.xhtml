@@ -5,7 +5,8 @@
     xmlns:f="http://java.sun.com/jsf/core" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:a4j="http://richfaces.org/a4j"
     xmlns:rich="http://richfaces.org/rich"
     xmlns:p="http://primefaces.org/ui"
-    xmlns:c="http://java.sun.com/jstl/core">
+    xmlns:c="http://java.sun.com/jstl/core"
+    xmlns:u='http:/jsf.exadel.com/template/util'>
     
 <f:metadata>
 	<f:viewParam name="v" value="#{beanMedia.idMediaVisualise}"/>
@@ -27,10 +28,13 @@
 		      
 			<h3>Détail d'un média</h3>
 			<br/>
-			<span class="titre">
-				<h:outputText value="#{beanMedia.titreMedia}" />
-			</span>
 			
+			<h:outputText rendered="#{empty beanMedia.utilisateurConnecte}" value="Vous devez être connecté pour accéder à cette page" />
+		    
+		    <br/>
+		    
+			<h:outputText value="#{beanMedia.titreMedia}" styleClass="titre" />
+						
 			<br/><br/><br/><br/>
 			
 			<!-- *** Lecteur audio/vidéo *** -->
@@ -46,13 +50,13 @@
 		 	       		<source src="../resources/videos/480p/elephants_dream_856x480_2.30.mp4" type='video/mp4; codecs="avc1.42E01E, mp4a.40.2"'/>
 				        <source src="../resources/videos/720p/elephants_dream_1280x720_2.30.mp4" type='video/mp4; codecs="avc1.42E01E, mp4a.40.2"'/>
 		-->
-						<source src="../resources/videos/elephants_dream_640x360_2.30.webm" type='video/webm; codecs="vp8, vorbis"'/>       
-		<!--			<source src="../resources/videos/360p/elephants_dream_640x360_2.30.webm" type='video/webm; codecs="vp8, vorbis"'/>
+<!--						<source src="../resources/videos/elephants_dream_640x360_2.30.webm" type='video/webm; codecs="vp8, vorbis"'/>       
+-->		<!--			<source src="../resources/videos/360p/elephants_dream_640x360_2.30.webm" type='video/webm; codecs="vp8, vorbis"'/>
 				    	<source src="../resources/videos/480p/elephants_dream_856x480_2.30.webm" type='video/webm; codecs="vp8, vorbis"'/>
 				        <source src="../resources/videos/720p/elephants_dream_1280x720_2.30.webm" type='video/webm; codecs="vp8, vorbis"'/>
 		-->		        
-						<source src="../resources/videos/elephants_dream_640x360_2.30.ogv" type='video/ogg; codecs="theora, vorbis"'/>
-		 <!--		    <source src="../resources/videos/360p/elephants_dream_640x360_2.30.ogv" type='video/ogg; codecs="theora, vorbis"'/>
+<!--						<source src="../resources/videos/elephants_dream_640x360_2.30.ogv" type='video/ogg; codecs="theora, vorbis"'/>
+-->		 <!--		    <source src="../resources/videos/360p/elephants_dream_640x360_2.30.ogv" type='video/ogg; codecs="theora, vorbis"'/>
 		 		  		<source src="../resources/videos/480p/elephants_dream_856x480_2.30.ogv" type='video/ogg; codecs="theora, vorbis"'/>
 			    		<source src="../resources/videos/720p/elephants_dream_1280x720_2.30.ogv" type='video/ogg; codecs="theora, vorbis"'/>
 		-->	
@@ -130,11 +134,25 @@
 		
 			<rich:panel styleClass="gauche">
 			<h:form>
-			<h:graphicImage library="images" name="icones/emot-heureux-smiley-icone-6821-16.png" alt="J'aime ce contenu" />
-			<h:commandButton value="J'aime" title="J'aime ce contenu" action="#{beanMedia.jAime}"><!-- jAime + pop-up TODO -->
-				<rich:componentControl target="popupJAime" operation="show" />
-			</h:commandButton>
-			<rich:popupPanel id="popupJAime" modal="false" autosized="true"
+
+
+
+
+
+
+			<a4j:commandButton value="J'aime" title="J'aime ce contenu" action="#{beanMedia.jAime}" render="notifyJAime" image="/resources/images/icones/heart-add-icone-5197-32.png">
+				<!--<rich:componentControl target="popupJAime" operation="show" />-->
+			</a4j:commandButton>
+			<rich:notify id="notifyJAime" stayTime="1500" sticky="false" nonblocking="false"
+				nonblockingOpacity="0.5" showShadow="false"
+				showCloseButton="true" detail="Merci !!" render="false">
+			 
+				<f:facet name="summary">
+					J'aime ce contenu
+				</f:facet>
+			</rich:notify>
+			
+			<!--<rich:popupPanel id="popupJAime" modal="false" autosized="true"
 		        resizeable="false" style="width: 150px; z-index: 99999;">
 		        <f:facet name="header">
 		            <h:outputText value="J'aime ce contenu" />
@@ -150,14 +168,21 @@
 		        	<a href="#"
 		            	onclick="#{rich:component('popupJAime')}.hide()">Fermer</a>
 		        </p>
-		    </rich:popupPanel>
+		    </rich:popupPanel>-->
 			</h:form>
 			
 			
 			<h:form>
-				<h:graphicImage library="images" name="icones/triste-smiley-icone-7611-16.png" alt="Je n'aime pas ce contenu" />
-				<a4j:commandButton value="Je n'aime pas" title="Je n'aime pas ce contenu" action="#{beanMedia.jeNAimePas}"/>
-				<!-- pop-up + action TODO -->			
+				<a4j:commandButton value="Je n'aime pas" title="Je n'aime pas ce contenu" action="#{beanMedia.jeNAimePas}" render="notifyJeNAimePas" image="/resources/images/icones/remove-heart-icone-8765-32.png"/>
+				
+				<rich:notify id="notifyJeNAimePas" stayTime="1500" sticky="false" nonblocking="false"
+					nonblockingOpacity="0.5" showShadow="false"
+					showCloseButton="true" detail="...">
+				 
+					<f:facet name="summary">
+						Je n'aime pas ce contenu
+					</f:facet>
+				</rich:notify>			
 			</h:form>
 			
 			<h:form>
@@ -173,11 +198,28 @@
                 </h:selectOneMenu><!-- TODO 2 event différents -->
 	        <!--</rich:panel>-->
 	        
+	        
+	        <h:panelGrid columns="2" columnClasses="cols,cols" width="400">
+            <rich:panelMenu style="width:200px" itemMode="ajax" groupMode="ajax" groupExpandedLeftIcon="triangleUp"
+                groupCollapsedLeftIcon="triangleDown" topGroupExpandedRightIcon="chevronUp"
+                topGroupCollapsedRightIcon="chevronDown" itemLeftIcon="disc">
+                <rich:panelMenuGroup label="Group 1">
+                    <rich:panelMenuItem label="Item 1.1" name="Item_1_1" />
+                    <rich:panelMenuItem label="Item 1.2" name="Item_1_2" />
+                    <rich:panelMenuItem label="Item 1.3" name="Item_1_3" />
+                </rich:panelMenuGroup>
+                
+            </rich:panelMenu><!--  itemChangeListener="..." -->
+        </h:panelGrid>
+	        
+	        
+	        
+	        
 	            
 	        <h:commandButton value="Call the popup">
 		        <rich:componentControl target="popupPlaylist" operation="show" />
 		    </h:commandButton>
-		    <rich:popupPanel id="popup" modal="false" autosized="true" resizeable="false" style="z-index: 99999;">
+		    <rich:popupPanel id="popupPlaylist" modal="false" autosized="true" resizeable="false" style="z-index: 99999;">
 		        <f:facet name="header">
 		            <h:outputText value="Ajouter à une playlist" />
 		        </f:facet>
@@ -389,8 +431,7 @@
 				
 				<br /><br />
 			
-	            <h:graphicImage library="images" name="icones/drapeau-rouge-icone-6492-16.png" alt="Peut offenser" />
-	            <h:commandButton value="Signaler">
+	            <h:commandButton value="Signaler" image="/resources/images/icones/drapeau-rouge-icone-6492-32.png" alt="Peut offenser">
 	           		<rich:componentControl target="popupSignaler" operation="show" />
 	            </h:commandButton>
 	            <rich:popupPanel id="popupSignaler" modal="false" autosized="true"
@@ -451,11 +492,11 @@
         		
         		<h:form>
 	        		<h:commandLink>
-	        			<h:graphicImage library="images" name="icones/bar-tableau-graphique-rapport-icone-5031-32.png" alt="Avatar"/>
+	        			<h:graphicImage library="images" name="icones/graphique-en-ligne-icone-4887-32.png" alt="Avatar"/>
 	        			<rich:componentControl target="popupStatistiques" operation="show" />
 	        		</h:commandLink>
 	        		
-	        		<rich:popupPanel id="popupStatistiques" modal="false" autosized="true" resizeable="false" style="z-index: 99999;">
+	        		<rich:popupPanel id="popupStatistiques" modal="false" autosized="true" resizeable="false" style="width: 500px; z-index: 99999;">
 				        <f:facet name="header">
 				            <h:outputText value="Statistiques" />
 				        </f:facet>
@@ -492,7 +533,7 @@
         		
         		
         		<br/>        		
-        		50 TODO fois téléchargé
+        		<h:outputText value="#{beanMedia.resultatTotalTelechargementMedia}"/> fois téléchargé
         		<br/>
         		<br/>
         	
@@ -513,15 +554,29 @@
 				<rich:inputNumberSlider value="#{beanMedia.resultatNbAime}" width="500" maxValue="#{beanMedia.resultatNbAimeNAimePas}"
         			step="1" showArrows="true" showTooltip="false" disabled="true" />
         		
-        		<br/><br/>
+        		<br/>
+        		<br/>
         		<!-- Artiste : <h:outputText value="" /><br /> -->
         		
-        		<h:graphicImage library="images" name="icones/panier-ajouter-icone-5924-32.png" alt="Avatar"/>Ajouter <h:outputText value="#{beanMedia.titreMedia}" /> au panier
-        		<!-- TODO panier -->
+        		<h:form>
+        			<a4j:commandButton value="Ajouter #{beanMedia.titreMedia} au panier" title="Ajouter #{beanMedia.titreMedia} au panier" action="#{beanMedia.ajouterAuPanier}" render="notifyAjoutAuPanier" image="/resources/images/icones/panier-ajouter-icone-5924-32.png" rendered="#{beanMedia.mediaVisualise.estTelechargementAutorise}"/>
+        		
+					<rich:notify id="notifyAjoutAuPanier" stayTime="1500" sticky="false" nonblocking="false"
+			        nonblockingOpacity="0.5" showShadow="false"
+			        showCloseButton="true" detail="#{beanMedia.detailNotifyAjoutAuPanier}">
+			 
+				        <f:facet name="summary">
+				            Notification
+				        </f:facet>
+			        
+			        </rich:notify>
+		        </h:form>
+        		
+        		<br/>
         		
         		<h:form>
-        			<h:outputLink value="/MediArea/resources/#{beanMedia.nomTypeMedia}s/#{beanMedia.titreMedia}.mp3">
-					  <f:verbatim>Télécharger ce média</f:verbatim>
+        			<h:outputLink value="/MediArea/resources/#{beanMedia.nomTypeMedia}s/#{beanMedia.titreMedia}.mp3" rendered="#{beanMedia.mediaVisualise.estTelechargementAutorise}">
+					  <f:verbatim>Télécharger ce média</f:verbatim><!-- TODO ajout dans table Telechargement media -->
 					</h:outputLink>
         		</h:form>
         	
@@ -529,133 +584,175 @@
         	</rich:panel>
         	
         	<div style="clear: both;"></div>
-        	
-        	
-        	
-        	
-        	<rich:collapsiblePanel header="Plus" switchType="client"> 
-	                <h:outputText value="Catégorie : " styleClass="bold" />
-	                <br/>
-	                <a4j:repeat value="#{beanMedia.listeCategories}" var="categ" rows="20" id="repeatCategories">
-						<h:outputLink value="recherche.jsf?categ=#{categ.nomCategorie}" title="#{categ.nomCategorie}">
-							<h:outputText value="#{categ.nomCategorie}"/>
-						</h:outputLink>
-						<h:outputText value=" "/>
-		    		</a4j:repeat>
-	                
-	                <br/>
-	                <br/>
-	                
-	                <h:outputText value="Tags : " styleClass="bold" />
-	                <br/>
-					<a4j:repeat value="#{beanMedia.listeTags}" var="tag" rows="20" id="repeatTags">
-						<h:outputLink value="recherche.jsf?tag=#{tag.nomTag}" title="#{tag.nomTag}">
-							<h:outputText value="#{tag.nomTag}"/>
-						</h:outputLink>
-						<h:outputText value=" "/>
-		    		</a4j:repeat>
-	        </rich:collapsiblePanel>
-		
-        	
-        	
+
+
+
+
+			<rich:collapsiblePanel header="Plus" switchType="client">
+				<h:panelGroup rendered="#{beanConnexion.user != beanMedia.mediaVisualise.auteurMedia}">
+				
+				<h:outputText value="Catégorie : " styleClass="bold" />
+				<br />
+				<a4j:repeat value="#{beanMedia.listeCategories}" var="categ"
+					rows="20" id="repeatCategories">
+					<h:outputLink value="recherche.jsf?categ=#{categ.nomCategorie}"
+						title="#{categ.nomCategorie}">
+						<h:outputText value="#{categ.nomCategorie}" />
+					</h:outputLink>
+					<h:outputText value=" " />
+				</a4j:repeat>
+
+				<br />
+				<br />
+
+				<h:outputText value="Tags : " styleClass="bold" />
+				<br />
+				<a4j:repeat value="#{beanMedia.listeTags}" var="tag" rows="20"
+					id="repeatTags">
+					<h:outputLink value="recherche.jsf?tag=#{tag.nomTag}"
+						title="#{tag.nomTag}">
+						<h:outputText value="#{tag.nomTag}" />
+					</h:outputLink>
+					<h:outputText value=" " />
+				</a4j:repeat>
+				</h:panelGroup>
+				
+				
+				<h:panelGroup rendered="#{beanConnexion.user == beanMedia.mediaVisualise.auteurMedia}">
+					propriétaire TODO champs modifiables et enregistrable
+				</h:panelGroup>
+			</rich:collapsiblePanel>
+
+
+
 			<br /><br />
 			
 			<h5>
 				Commentaires 
-				( 
+				(
 				<h:outputText value="#{beanMedia.nbCommentaires}">
 					<f:convertNumber integerOnly="true"/>
 				</h:outputText>
 				)
 			</h5>
 		   	
-		   	<h:form>
-					<rich:editor id="editor" value="#{editorBean.value}" style="margin-bottom: 1em" theme="advanced">
-			            <a4j:ajax event="change" render="panel" status="panelUpdateStatus" />
-			            <a4j:ajax event="dirty" render="panel" status="panelUpdateStatus">
-			                <a4j:attachQueue requestDelay="1000" />
-			            </a4j:ajax>
-			            Réagir à propos de ce média.
-			        </rich:editor>
-			         
-			        <rich:panel id="panel">
-			            <f:facet name="header">
-			                Output from Editor
-			                <a4j:status name="panelUpdateStatus">
-			                    <f:facet name="start">
-			                        (Updating)
-			                    </f:facet>
-			                </a4j:status>
-			            </f:facet>
-			            <h:outputText escape="false" value="#{editorBean.value}" />
-			        </rich:panel>
-			  	<br/>
-			   	<a4j:commandButton value="Publier" render="out" execute="@form"/>
-			</h:form>
 		   	
-		   	
-		    <br />
-		    
-		    <!-- <a4j:outputPanel id="out">
-		        <h:outputText value="Hello #{beanMedia.commentaireSaisi} !"
-		            rendered="#{not empty beanMedia.commentaireSaisi}" />
-		    </a4j:outputPanel> -->
-
-   			<a4j:outputPanel id="out">
-		        <h:outputText value="Hello #{beanMedia.commentaireSaisi} !"
-		            rendered="#{not empty beanMedia.commentaireSaisi}" />
-		    </a4j:outputPanel>
-    
-		    <br/><br/><br/><br/><br/>
-    		
-    		
-    		<br/>
-    		
-    
-    		<!-- *** dataScroller *** -->	
-			<h:form id="form2">
-			
+			<h:form>
+		        <rich:editor id="editor" value="#{beanMedia.commentaireSaisi}" style="margin-bottom: 1em" onfocus="this.innerHTML='';">
+		            <a4j:ajax event="change" render="panel" status="panelUpdateStatus" />
+		            <a4j:ajax event="dirty" render="panel" status="panelUpdateStatus">
+		                <a4j:attachQueue requestDelay="1000" />
+		            </a4j:ajax>
+		            <a4j:ajax event="change" render="nbCaracteresRestants" execute="@this" listener="#{beanMedia.decrementerNbCaracteresRestants}"/>
+				</rich:editor>
+		        
+		        <h:outputText id="nbCaracteresRestants" value="#{beanMedia.nbCaracteresRestants} caractères restants" style="float:left;"/><!-- TODO mettre à jour caractères restants -->
+		        
+		        
+           		<a4j:commandButton action="#{beanMedia.publierCommentaire}" value="Publier" render="groupList" style="float:right;"/>
+		        <h:commandButton value="Publier" style="float:right;">
+		        	<f:ajax event="click" listener="#{beanMedia.publierCommentaire}" render="groupList"/>
+			    </h:commandButton>
 				
+		        <br/>
+		        
+		        <rich:panel id="panel">
+		            <!--<f:facet name="header">
+		                Output from Editor-->
+		                <a4j:status name="panelUpdateStatus">
+		                    <f:facet name="start">
+		                        (Updating)
+		                    </f:facet>
+		                </a4j:status>
+		            <!--</f:facet>-->
+		            <h:outputText escape="false" value="#{beanMedia.commentaireSaisi}" />
+		        </rich:panel>
+		 
+    
+		    <br/><br/><br/><br/><br/>    		
+    
+    		<!-- *** dataScroller *** -->
+			<h:panelGroup id="groupList">
+				<ui:repeat value="#{beanMedia.commentaires}" var="commentaire" id="repeatCommentaire" rows="10">
+					<rich:panel id="panelCommentaire">
+						<f:facet name="header">
+							Commentaire : 
+						</f:facet>
+						<f:facet name="header">							
+							<h:commandLink value="Supprimer" action="#{beanMedia.supprimerCommentaire}" render="notifySuppressionComm">
+			                	<f:param name="idCommentaire" value="#{commentaire.idCommentaire}"/>
+							</h:commandLink>, 
+							<rich:notify id="notifySuppressionComm" stayTime="1500" sticky="false" nonblocking="false"
+								nonblockingOpacity="0.5" showShadow="false"
+								showCloseButton="true" detail="Le commentaire a été supprimé avec succès !" render="false">
+							 
+								<f:facet name="summary">
+									Suppression du commentaire
+								</f:facet>
+							</rich:notify>
+			
+							<h:commandLink value="Signaler comme spam" action="#{beanMedia.signalerCommentaire}">
+								<f:setPropertyActionListener target="#{beanMediacommentaireAffiche}" value="#{commentaire}" />
+								<rich:componentControl target="popupSignalement" operation="show" />						
+							</h:commandLink>
+							Vote pour
+							Vote contre										
+						</f:facet>
+						<table>
+							<tr>
+								<td>
+									<div align="center">
+										<h:outputText value="#{commentaire.auteur.pseudo}" />
+										<br />
+										<h:graphicImage value="#{commentaire.auteur.avatar.nomAvatar}" />	
+										<br />
+										Envoyé le :
+										<br />
+										<h:outputText value="#{commentaire.dateCommentaire}" />							
+									</div>
+								</td>
+								<td>
+									<h:outputText escape="false" value="#{commentaire.contenuCommentaire}" />
+								</td>
+							</tr>
+						</table>
+						
+						
+
+						<br/>
+
+						<rich:dataTable value="" var="list" style="width: 575px;">
+							<rich:column colspan="6">
+				                <rich:collapsibleSubTableToggler for="sbtbl" />
+				                Réponses
+				            </rich:column>
+							<rich:collapsibleSubTable value="" var="item" id="sbtbl" expandMode="client">
+				                <rich:column>
+				                   test
+				                </rich:column>
+				                <f:facet name="footer">
+				                    <rich:editor id="editorReponse" value="#{beanMedia.commentaireSaisi}" style="margin-bottom: 1em; width: 575px;">
+				       				</rich:editor>
+				       				<h:commandButton value="Répondre" action="#{beanMedia.repondreCommentaire}" style="float: right;">
+										<f:setPropertyActionListener target="#{beanMediacommentaireAffiche}" value="#{commentaire}" />						
+									</h:commandButton>
+				                </f:facet>
+							</rich:collapsibleSubTable>
+						</rich:dataTable>
+						
+						<br/>						
+						
+						
+
+					</rich:panel>
+					<br />
+				</ui:repeat>
+			</h:panelGroup>	
+			
+				<rich:dataScroller for="table" maxPages="5" />	
 			
 			
-		        <h:panelGrid columnClasses="acent">
-		            <rich:dataScroller for="table" maxPages="5" />
-		            <rich:dataTable value="#{beanMedia.commentaires}" var="commentaire" id="table" rows="10">
-		                <rich:column accept="#{testFiteringBean.accepttest}">
-		                    <f:facet name="header">
-		                        <h:outputText value="---" />
-		                    </f:facet>
-		                    <h:outputText value="#{commentaire.auteur.pseudo}" />
-		                    <br/>
-		                    <h:outputText value="#{commentaire.dateCommentaire}">
-		                    	<f:convertDateTime pattern="MM/dd/yy HH:MM"/> 
-		                    </h:outputText>
-		                    <br/>
-		                    <h:graphicImage library="images" name="avatars/#{beanMedia.nomAvatar}" alt="Avatar" />
-			            </rich:column>
-		                <rich:column>
-		                    <f:facet name="header">
-		                        <h:outputText value="" />
-		                    </f:facet>
-		                    <h:outputText value="#{commentaire.contenuCommentaire}" />
-		                    
-		                    
-	                        
-					         <h:panelGrid columns="2">
-					            <h:inputText value="#{commentaire.contenuCommentaire}" />
-					            <a4j:commandButton value="Répondre" action="#{beanMedia.rendreVisible}" render="out2" execute="@form">
-					            </a4j:commandButton> 
-					            
-					        </h:panelGrid>
-						    <br />
-						    
-						    <h:inputText id="out2" rendered="#{beanMedia.estVisible}"/>
-						    
-		                    
-		                </rich:column>
-		            </rich:dataTable>
-		            <rich:dataScroller for="table" maxPages="5" />
-		        </h:panelGrid>
+			
 		    </h:form>
 		    
 		</section>

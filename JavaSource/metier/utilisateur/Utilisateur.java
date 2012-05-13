@@ -13,8 +13,6 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 
-import org.hibernate.annotations.Cascade;
-
 import metier.media.Aimer;
 import metier.media.Commentaire;
 import metier.media.Media;
@@ -23,6 +21,7 @@ import metier.media.Playlist;
 import metier.media.Regarder;
 import metier.media.Signalement_Commentaire;
 import metier.media.Signalement_Media;
+import metier.media.Telechargement_Media;
 import metier.media.Visibilite;
 
 
@@ -160,6 +159,9 @@ public class Utilisateur {
 	private Set<Note> noteMedias;
 	
 	@OneToMany(cascade = {CascadeType.ALL})
+	private Set<Telechargement_Media> telechargementsMedias;	
+	
+	@OneToMany(cascade = {CascadeType.ALL})
 	private Set<Message_Mural> messagesMuraux;
 	
 	@OneToMany(mappedBy = "emetteur", cascade = {CascadeType.ALL})
@@ -217,6 +219,7 @@ public class Utilisateur {
 		signalementsCommentaires = new HashSet<Signalement_Commentaire>();
 		messagesMuraux = new HashSet<Message_Mural>();
 		messagesPrives = new HashSet<Message_Prive>();
+		telechargementsMedias = new HashSet<Telechargement_Media>();
 		
 	}
 	
@@ -251,6 +254,7 @@ public class Utilisateur {
 		notificationParMail = false;	
 		messagesMuraux = new HashSet<Message_Mural>();
 		messagesPrives = new HashSet<Message_Prive>();
+		telechargementsMedias = new HashSet<Telechargement_Media>();
 	}	
 
 	public Set<Message_Mural> getMessagesMuraux() {
@@ -575,5 +579,17 @@ public class Utilisateur {
 		this.signalementsCommentaires = signalementsCommentaires;
 	}
 
+
+	public Set<Telechargement_Media> getTelechargementsMedias() {
+		return telechargementsMedias;
+	}
+
+
+	public void setTelechargementsMedias(
+			Set<Telechargement_Media> telechargementsMedias) {
+		this.telechargementsMedias = telechargementsMedias;
+	}
+
+	
 	
 }

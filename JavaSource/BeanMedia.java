@@ -1,6 +1,8 @@
 import java.io.IOException;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -13,6 +15,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.validation.constraints.AssertTrue;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
+import javax.faces.event.ActionEvent;
 import javax.faces.event.AjaxBehaviorEvent;
 
 import org.primefaces.event.*;
@@ -49,6 +52,9 @@ public class BeanMedia {
 	private String commentaireSaisi;
 	List<Media> listeMediasSuggeres = new ArrayList<Media>();
 	SimpleDateFormat dateFormat;
+	private int nbCaracteresRestants;
+	private Commentaire commentaireAffiche;
+	private DaoCommentaire daoCommentaire;
 	
 	//****
 
@@ -57,8 +63,14 @@ public class BeanMedia {
 	
 	//private int nbVues;
 	private long resultatTotalVuesMedia;
-	
+		
 	private String motVues;
+	
+	//****
+	
+	public static DaoTelechargementMedia daoTelechargementMedia;
+	private long resultatTotalTelechargementMedia;
+	//private List<Media> mediaDansPanier; //TODO à mettre en SESSION
 	
 	//****
 
@@ -142,11 +154,28 @@ public class BeanMedia {
     int largeur = 320;
     int hauteur = 180;
     
-    
-	
+    // Bean
+ 	private BeanConnexion beanConnexion;
+ 	
+ 	// Utilisateur connecté actuellement
+ 	private Utilisateur utilisateurConnecte;
+ 	
+ 	
+ 	private String detailNotifyAjoutAuPanier;
+ 	
+ 	
 	
 	//constructeur
 	public BeanMedia() {
+		// Chargement de l'utilisateur connecte
+		beanConnexion = (BeanConnexion) FacesContext.getCurrentInstance().getCurrentInstance().getExternalContext().getSessionMap().get("beanConnexion");
+				
+		if (beanConnexion != null) {
+			utilisateurConnecte = beanConnexion.getUser();
+			//if (utilisateurConnecte != null) {}
+		}
+		
+		
 		daoMedia = new DaoMedia();
 		daoUtilisateur = new DaoUtilisateur();
 		daoRegarder = new DaoRegarder();
@@ -156,8 +185,14 @@ public class BeanMedia {
 		daoTypePlaylist = new DaoTypePlaylist();
 		daoPlaylist = new DaoPlaylist();
 		daoVisibilite = new DaoVisibilite();
+		daoTelechargementMedia = new DaoTelechargementMedia();
+		daoCommentaire = new DaoCommentaire();
+		nbCaracteresRestants = 500;
+		
 		
 		util = daoUtilisateur.getUn(1);
+		//mediaDansPanier = new ArrayList<Media>();
+		commentaireSaisi = "Réagir à propos de ce média.";
 	}
 	
 
@@ -166,14 +201,14 @@ public class BeanMedia {
 	{
 		if(idMediaVisualise == null || idMediaVisualise == "")
 		{
-			FacesContext.getCurrentInstance().getExternalContext().redirect("/MediArea/pages/erreur.jsf"); //redirection vers la page d'erreur
+//			FacesContext.getCurrentInstance().getExternalContext().redirect("/MediArea/pages/erreur.jsf"); //redirection vers la page d'erreur
 			//TODO redirection vers page media indisponible
 		}
 		else
 		{
 			mediaVisualise = daoMedia.getUn(Long.parseLong(idMediaVisualise));
 			if(mediaVisualise == null) { //id de media passé en paramètre GET n'existe pas
-				FacesContext.getCurrentInstance().getExternalContext().redirect("/MediArea/pages/erreur.jsf"); //redirection vers la page d'erreur
+//				FacesContext.getCurrentInstance().getExternalContext().redirect("/MediArea/pages/erreur.jsf"); //redirection vers la page d'erreur
 			}
 		}
 		
@@ -212,7 +247,6 @@ public class BeanMedia {
 				}
 				
 				commentaires = new ArrayList<Commentaire>(mediaVisualise.getCommentaires());
-				
 				nomTypeMedia = mediaVisualise.getType().getNomTypeMedia();
 
 				
@@ -236,6 +270,9 @@ public class BeanMedia {
 					motVues = "s"; //"vues" au pluriel
 				}
 				
+				//***********************************************
+				
+				resultatTotalTelechargementMedia = daoMedia.totalTelechargement(mediaVisualise);
 				
 				//***********************************************
 				
@@ -364,286 +401,15 @@ public class BeanMedia {
 		        url = req.getRequestURL().toString();
 		        
 		        codeIntegration = "<iframe width='320' height='180' src='" + url + "' frameborder='0' allowfullscreen></iframe>";
-			
 	}
 	
 	
 	
 
-	//getter et setter
-	public Media getMediaVisualise() {
-		//System.out.println("Getter mediavisualise");		
-		return mediaVisualise;
-	}
-	
-	public void setMediaVisualise(Media mediaVisualise) {
-		//System.out.println("Setter mediavisualise");
-		this.mediaVisualise = mediaVisualise;
-	}
-
-	public String getTitreMedia() {
-		return titreMedia;
-	}
-
-	public void setTitreMedia(String titreMedia) {
-		this.titreMedia = titreMedia;
-	}
-
-	public long getNbCommentaires() {
-		return nbCommentaires;
-	}
-
-	public void setNbCommentaires(long nbCommentaires) {
-		this.nbCommentaires = nbCommentaires;
-	}
-	
-	public String getAuteur() {
-		return auteur;
-	}
-
-	public void setAuteur(String auteur) {
-		this.auteur = auteur;
-	}
-
-	public String getDatePublication() {
-		return datePublication;
-	}
-
-	public void setDatePublication(String datePublication) {
-		this.datePublication = datePublication;
-	}
-
-	public String getDescription() {
-		return description;
-	}
-
-	public void setDescription(String description) {
-		this.description = description;
-	}	
-
-	public String getRaison() {
-		return raison;
-	}
-
-	public void setRaison(String raison) {
-		this.raison = raison;
-	}
-	
-	public String getMotVues() {
-		return motVues;
-	}
-
-	public void setMotVues(String motVues) {
-		this.motVues = motVues;
-	}
-		
-	public double getNote() {
-		return note;
-	}
-
-	public void setNote(double note) {
-		this.note = note;
-	}
-	
-	public List<Categorie> getListeCategories() {
-		return listeCategories;
-	}
-	public void setListeCategories(List<Categorie> listeCategories) {
-		this.listeCategories = listeCategories;
-	}
-
-	public String getTags() {
-		return tags;
-	}
-
-	public void setTags(String tags) {
-		this.tags = tags;
-	}
-	
-	public List<Commentaire> getCommentaires() {
-		return commentaires;
-	}
-	
-	public void setCommentaires(List<Commentaire> commentaires) {
-		this.commentaires = commentaires;
-	}
-
-	public long getResultatNbAime() {
-		return resultatNbAime;
-	}
-
-	public void setResultatNbAime(long resultatNbAime) {
-		this.resultatNbAime = resultatNbAime;
-	}
-
-	public long getResultatNbAimeNAimePas() {
-		return resultatNbAimeNAimePas;
-	}
-
-	public void setResultatNbAimeNAimePas(long resultatNbAimeNAimePas) {
-		this.resultatNbAimeNAimePas = resultatNbAimeNAimePas;
-	}
-
-	public String getNomTypeMedia() {
-		return nomTypeMedia;
-	}
-
-	public void setNomTypeMedia(String nomTypeMedia) {
-		this.nomTypeMedia = nomTypeMedia;
-	}
-
-	public String getNomAvatar() {
-		return nomAvatar;
-	}
-
-	public void setNomAvatar(String nomAvatar) {
-		this.nomAvatar = nomAvatar;
-	}
-
-	public String getCommentaireSaisi() {
-		return commentaireSaisi;
-	}
-
-	public void setCommentaireSaisi(String commentaireSaisi) {
-		this.commentaireSaisi = commentaireSaisi;
-	}
-
-	public List<Media> getListeMediasSuggeres() {
-		return listeMediasSuggeres;
-	}
-	
-	public void setListeMediasSuggeres(List<Media> listeMediasSuggeres) {
-		this.listeMediasSuggeres = listeMediasSuggeres;
-	}
-	
-	public List<Tag> getListeTags() {
-		return listeTags;
-	}
-	
-	public void setListeTags(List<Tag> listeTags) {
-		this.listeTags = listeTags;
-	}
-
-	public String getTxtFavori() {
-		return txtFavori;
-	}
-	
-	public void setTxtFavori(String txtFavori) {
-		this.txtFavori = txtFavori;
-	}
-
-	public long getResultatTotalVuesMedia() {
-		return resultatTotalVuesMedia;
-	}
-	
-	public void setResultatTotalVuesMedia(long resultatTotalVuesMedia) {
-		this.resultatTotalVuesMedia = resultatTotalVuesMedia;
-	}
-	
-	public List<Playlist> getListePlaylistUt() {
-		return listePlaylistUt;
-	}
-	
-	public void setListePlaylistUt(List<Playlist> listePlaylistUt) {
-		this.listePlaylistUt = listePlaylistUt;
-	}
-	
-	public String getImgAjoutPlaylist() {
-		return imgAjoutPlaylist;
-	}
-	
-	public void setImgAjoutPlaylist(String imgAjoutPlaylist) {
-		this.imgAjoutPlaylist = imgAjoutPlaylist;
-	}
-	
-	public List<String> getListeNomVisibilite() {
-		return listeNomVisibilite;
-	}
-	
-	public void setListeNomVisibilite(List<String> listeNomVisibilite) {
-		this.listeNomVisibilite = listeNomVisibilite;
-	}
-	
-	public String getDescriptionPlaylistACreer() {
-		return descriptionPlaylistACreer;
-	}
-	
-	public void setDescriptionPlaylistACreer(String descriptionPlaylistACreer) {
-		this.descriptionPlaylistACreer = descriptionPlaylistACreer;
-	}
-
-	public String getNomPlaylistACreer() {
-		return nomPlaylistACreer;
-	}
-	
-	public void setNomPlaylistACreer(String nomPlaylistACreer) {
-		this.nomPlaylistACreer = nomPlaylistACreer;
-	}
-
-	public String getVisibilitePlaylistACreer() {
-		return visibilitePlaylistACreer;
-	}
-	
-	public void setVisibilitePlaylistACreer(String visibilitePlaylistACreer) {
-		this.visibilitePlaylistACreer = visibilitePlaylistACreer;
-	}
-	
-	public long getResultatTotalVotesMedia() {
-		return resultatTotalVotesMedia;
-	}
-	
-	public void setResultatTotalVotesMedia(long resultatTotalVotesMedia) {
-		this.resultatTotalVotesMedia = resultatTotalVotesMedia;
-	}
-	
-	public String getMotVotes() {
-		return motVotes;
-	}
-	
-	public void setMotVotes(String motVotes) {
-		this.motVotes = motVotes;
-	}
-	
-	public CartesianChartModel getLinearModel() {  
-        return linearModel;  
-    }
-	
-	public String getCodeIntegration() {
-		return codeIntegration;
-	}
-	
-	public void setCodeIntegration(String codeIntegration) {
-		this.codeIntegration = codeIntegration;
-	}
-	
-	public String getLien() {
-		return lien;
-	}
-	
-	public void setLien(String lien) {
-		this.lien = lien;
-	}
-	
-	public String getTailleLecteur() {
-		return tailleLecteur;
-	}
-	
-	public void setTailleLecteur(String tailleLecteur) {
-		this.tailleLecteur = tailleLecteur;
-	}
-	
-	public String getIdMediaVisualise() {
-		return idMediaVisualise;
-	}
-	
-	public void setIdMediaVisualise(String idMediaVisualise) {
-		this.idMediaVisualise = idMediaVisualise;
-	}
 
 	
 	
-	
-	//méthodes
+	//METHODES
 	public String jAime() {
 		//System.out.println("Méthode jAime");
 		
@@ -654,7 +420,7 @@ public class BeanMedia {
 	}
 	
 	public String jeNAimePas() {
-		//System.out.println("Méthode jeNAimePas");
+		System.out.println("Méthode jeNAimePas");
 		
 		util.getAimeMedias().add(new Aimer(false,mediaVisualise));
 		daoUtilisateur.sauvegarder(util);
@@ -671,8 +437,9 @@ public class BeanMedia {
 		return "envoyerRapport";
 	}
 	
-	public void handleRate(RateEvent rateEvent) {  
-        FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Notation", "Votre note : " + ((Double) rateEvent.getRating()).intValue());  
+	public void handleRate(RateEvent rateEvent) {
+		note = ((Double) rateEvent.getRating()).intValue();
+        FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Notation", "Votre note : " + note);  
   
         FacesContext.getCurrentInstance().addMessage(null, message);
         
@@ -681,24 +448,15 @@ public class BeanMedia {
 	
 	public String vote() {
 		System.out.println("Méthode vote");
-		//System.out.println("Note : "+note);
+		System.out.println("Note : " + note);
+		System.out.println("Média : " + mediaVisualise);
 		
-		util.getNoteMedias().add(new Note((int) note, daoMedia.getUn(2))); //media_idMedia + interdire de noter plusieurs fois TODO
-		/////daoUtilisateur.sauvegarder(util);
+		util.getNoteMedias().add(new Note((int) note, mediaVisualise)); //media_idMedia + interdire de noter plusieurs fois TODO
+		daoUtilisateur.sauvegarder(util);
 		
 		return "vote";
 	}
-	
-	public String publierCommentaire() {
-		//System.out.println("publier commentaire");
-		//System.out.println("commentaire saisi : " + commentaireSaisi);
 		
-		daoMedia.getUn(2).getCommentaires().add(new Commentaire(commentaireSaisi,util)); //mediaVisualise. TODO
-		//daoMedia.sauvegarder(daoMedia.getUn(2));
-		
-		return "publierCommentaire";
-	}
-	
 	public String rendreVisible() {
 		estVisible = true;
 		
@@ -708,9 +466,9 @@ public class BeanMedia {
 	} //TODO
 	
 	public String incrNbVues() { //incrémenter seulement si clic sur Play et par utilisateur TODO
-		//System.out.println("Incrémentation du nombre de vues");
+		System.out.println("Incrémentation du nombre de vues");
 						
-		List<Regarder> listeRegarder = daoRegarder.getTous();
+		/*List<Regarder> listeRegarder = daoRegarder.getTous();
 		boolean existeRegMedia = false;
 		for(Regarder reg : listeRegarder) {
 			if(reg.getMedia() == daoMedia.getUn(2))	{
@@ -724,10 +482,10 @@ public class BeanMedia {
 		}
 		
 		if(!existeRegMedia) { //il crée un objet Regarder correspond au média visualisé
-			//System.out.println("Incrémentation (n'existe pas)");
+		*/	//System.out.println("Incrémentation (n'existe pas)");
 			util.getRegardeMedias().add(new Regarder(daoMedia.getUn(2)));
 			daoUtilisateur.sauvegarder(util);
-		}
+		/*}*/
 		
 		return "incrNbVues";
 	}
@@ -850,15 +608,20 @@ public class BeanMedia {
         linearModel = new CartesianChartModel();  
   
         LineChartSeries series1 = new LineChartSeries();  
-        series1.setLabel("Series 1");  
+        series1.setLabel("Vues totales (dernier mois)");  
   
+        //HashMap<Date,Long> mapStatsVues = new HashMap<Date,Long>();
+        List<?> resultatStatVues = daoMedia.statVues(mediaVisualise); //TODO EN ATTRIBUT
+        
+        //System.out.println("Stats vues : " + resultatStatVues.get(0).toString());
+        
         series1.set(1, 2);  
         series1.set(2, 1);  
         series1.set(3, 3);  
         series1.set(4, 6);  
         series1.set(5, 8);  
   
-        LineChartSeries series2 = new LineChartSeries();  
+        /*LineChartSeries series2 = new LineChartSeries();  
         series2.setLabel("Series 2");  
         series2.setMarkerStyle("diamond");  
   
@@ -866,10 +629,10 @@ public class BeanMedia {
         series2.set(2, 3);  
         series2.set(3, 2);  
         series2.set(4, 7);  
-        series2.set(5, 9);  
+        series2.set(5, 9);*/ 
   
         linearModel.addSeries(series1);  
-        linearModel.addSeries(series2);  
+        //linearModel.addSeries(series2);  
     }
 	
 	public void desactiverLecteurIframe(AjaxBehaviorEvent e) {
@@ -915,4 +678,405 @@ public class BeanMedia {
 		codeIntegration = "<object width='" + largeur + "' height='" + hauteur + "'><param name='movie' value='" + url + "'></param><param name='allowFullScreen' value='true'></param><param name='allowscriptaccess' value='always'></param><embed src='http://www.youtube.com/v/ZQ2nCGawrSY?version=3&amp;hl=fr_FR' type='application/x-shockwave-flash' width='" + largeur + "' height='" + hauteur + "' allowscriptaccess='always' allowfullscreen='true'></embed></object>";	
 		//code object aussi TODO
 	}
+	
+	
+	
+	public String ajouterAuPanier() {
+		System.out.println("ajouterAuPanier");
+		
+		//mediaDansPanier.add(daoMedia.getUn(2));
+		if(beanConnexion.getMediaDansPanier().contains(daoMedia.getUn(2)))
+		{
+			detailNotifyAjoutAuPanier = "Le média " + daoMedia.getUn(2).getTitreMedia() + " a déjà été ajouté au panier.";
+		}
+		else
+		{
+			beanConnexion.getMediaDansPanier().add(daoMedia.getUn(2));
+			detailNotifyAjoutAuPanier = "Le média " + daoMedia.getUn(2).getTitreMedia() + " a été ajouté au panier avec succès !";
+		}
+		
+		//déjà ajouté
+		
+		return "ajouterAuPanier";
+	}
+	
+	
+	public String decrementerNbCaracteresRestants() {
+		System.out.println("decrementerNbCaracteresRestants");
+		
+		nbCaracteresRestants--;				
+		
+		return "decrementerNbCaracteresRestants";
+	}
+	
+	public void publierCommentaire(AjaxBehaviorEvent e) {
+	//public String publierCommentaire() {
+		System.out.println("publierCommentaire");
+		System.out.println("commentaire saisi : " + commentaireSaisi);
+		
+		daoMedia.getUn(2).getCommentaires().add(new Commentaire(commentaireSaisi,util)); //mediaVisualise. TODO
+		daoMedia.sauvegarder(daoMedia.getUn(2));
+		
+		//return "publierCommentaire";
+	}
+	
+	public String supprimerCommentaire() {
+		System.out.println("supprimerCommentaire");
+		
+		daoMedia.getUn(2).getCommentaires().remove(daoCommentaire.getUn(Long.parseLong(FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("idPlaylist"))));
+		
+		//rafraîchir TODO
+		
+		return "supprimerCommentaire";
+	}
+
+	public String repondreCommentaire() {
+		System.out.println("repondreCommentaire");
+		
+		
+		return "repondreCommentaire";
+	}
+	
+	public String signalerCommentaire() {
+		System.out.println("signalerCommentaire");
+		
+		
+		return "signalerCommentaire";
+	}
+	
+	public String voterPourCommentaire() {
+		System.out.println("voterPour");
+		
+		
+		return "voterPour";
+	}
+	
+	
+	
+	
+
+
+
+
+
+	//GETTER ET SETTER
+	public Media getMediaVisualise() {
+		//System.out.println("Getter mediavisualise");		
+		return mediaVisualise;
+	}
+	
+	public void setMediaVisualise(Media mediaVisualise) {
+		//System.out.println("Setter mediavisualise");
+		this.mediaVisualise = mediaVisualise;
+	}
+	
+	public String getTitreMedia() {
+		return titreMedia;
+	}
+	
+	public void setTitreMedia(String titreMedia) {
+		this.titreMedia = titreMedia;
+	}
+	
+	public long getNbCommentaires() {
+		return nbCommentaires;
+	}
+	
+	public void setNbCommentaires(long nbCommentaires) {
+		this.nbCommentaires = nbCommentaires;
+	}
+	
+	public String getAuteur() {
+		return auteur;
+	}
+	
+	public void setAuteur(String auteur) {
+		this.auteur = auteur;
+	}
+	
+	public String getDatePublication() {
+		return datePublication;
+	}
+	
+	public void setDatePublication(String datePublication) {
+		this.datePublication = datePublication;
+	}
+	
+	public String getDescription() {
+		return description;
+	}
+	
+	public void setDescription(String description) {
+		this.description = description;
+	}	
+	
+	public String getRaison() {
+		return raison;
+	}
+	
+	public void setRaison(String raison) {
+		this.raison = raison;
+	}
+	
+	public String getMotVues() {
+		return motVues;
+	}
+	
+	public void setMotVues(String motVues) {
+		this.motVues = motVues;
+	}
+		
+	public double getNote() {
+		return note;
+	}
+	
+	public void setNote(double note) {
+		this.note = note;
+	}
+	
+	public List<Categorie> getListeCategories() {
+		return listeCategories;
+	}
+	public void setListeCategories(List<Categorie> listeCategories) {
+		this.listeCategories = listeCategories;
+	}
+	
+	public String getTags() {
+		return tags;
+	}
+	
+	public void setTags(String tags) {
+		this.tags = tags;
+	}
+	
+	public List<Commentaire> getCommentaires() {
+		return commentaires;
+	}
+	
+	public void setCommentaires(List<Commentaire> commentaires) {
+		this.commentaires = commentaires;
+	}
+	
+	public long getResultatNbAime() {
+		return resultatNbAime;
+	}
+	
+	public void setResultatNbAime(long resultatNbAime) {
+		this.resultatNbAime = resultatNbAime;
+	}
+	
+	public long getResultatNbAimeNAimePas() {
+		return resultatNbAimeNAimePas;
+	}
+	
+	public void setResultatNbAimeNAimePas(long resultatNbAimeNAimePas) {
+		this.resultatNbAimeNAimePas = resultatNbAimeNAimePas;
+	}
+	
+	public String getNomTypeMedia() {
+		return nomTypeMedia;
+	}
+	
+	public void setNomTypeMedia(String nomTypeMedia) {
+		this.nomTypeMedia = nomTypeMedia;
+	}
+	
+	public String getNomAvatar() {
+		return nomAvatar;
+	}
+	
+	public void setNomAvatar(String nomAvatar) {
+		this.nomAvatar = nomAvatar;
+	}
+	
+	public String getCommentaireSaisi() {
+		return commentaireSaisi;
+	}
+	
+	public void setCommentaireSaisi(String commentaireSaisi) {
+		this.commentaireSaisi = commentaireSaisi;
+	}
+	
+	public List<Media> getListeMediasSuggeres() {
+		return listeMediasSuggeres;
+	}
+	
+	public void setListeMediasSuggeres(List<Media> listeMediasSuggeres) {
+		this.listeMediasSuggeres = listeMediasSuggeres;
+	}
+	
+	public List<Tag> getListeTags() {
+		return listeTags;
+	}
+	
+	public void setListeTags(List<Tag> listeTags) {
+		this.listeTags = listeTags;
+	}
+	
+	public String getTxtFavori() {
+		return txtFavori;
+	}
+	
+	public void setTxtFavori(String txtFavori) {
+		this.txtFavori = txtFavori;
+	}
+	
+	public long getResultatTotalVuesMedia() {
+		return resultatTotalVuesMedia;
+	}
+	
+	public void setResultatTotalVuesMedia(long resultatTotalVuesMedia) {
+		this.resultatTotalVuesMedia = resultatTotalVuesMedia;
+	}
+	
+	public List<Playlist> getListePlaylistUt() {
+		return listePlaylistUt;
+	}
+	
+	public void setListePlaylistUt(List<Playlist> listePlaylistUt) {
+		this.listePlaylistUt = listePlaylistUt;
+	}
+	
+	public String getImgAjoutPlaylist() {
+		return imgAjoutPlaylist;
+	}
+	
+	public void setImgAjoutPlaylist(String imgAjoutPlaylist) {
+		this.imgAjoutPlaylist = imgAjoutPlaylist;
+	}
+	
+	public List<String> getListeNomVisibilite() {
+		return listeNomVisibilite;
+	}
+	
+	public void setListeNomVisibilite(List<String> listeNomVisibilite) {
+		this.listeNomVisibilite = listeNomVisibilite;
+	}
+	
+	public String getDescriptionPlaylistACreer() {
+		return descriptionPlaylistACreer;
+	}
+	
+	public void setDescriptionPlaylistACreer(String descriptionPlaylistACreer) {
+		this.descriptionPlaylistACreer = descriptionPlaylistACreer;
+	}
+	
+	public String getNomPlaylistACreer() {
+		return nomPlaylistACreer;
+	}
+	
+	public void setNomPlaylistACreer(String nomPlaylistACreer) {
+		this.nomPlaylistACreer = nomPlaylistACreer;
+	}
+	
+	public String getVisibilitePlaylistACreer() {
+		return visibilitePlaylistACreer;
+	}
+	
+	public void setVisibilitePlaylistACreer(String visibilitePlaylistACreer) {
+		this.visibilitePlaylistACreer = visibilitePlaylistACreer;
+	}
+	
+	public long getResultatTotalVotesMedia() {
+		return resultatTotalVotesMedia;
+	}
+	
+	public void setResultatTotalVotesMedia(long resultatTotalVotesMedia) {
+		this.resultatTotalVotesMedia = resultatTotalVotesMedia;
+	}
+	
+	public String getMotVotes() {
+		return motVotes;
+	}
+	
+	public void setMotVotes(String motVotes) {
+		this.motVotes = motVotes;
+	}
+	
+	public CartesianChartModel getLinearModel() {  
+	    return linearModel;  
+	}
+	
+	public String getCodeIntegration() {
+		return codeIntegration;
+	}
+	
+	public void setCodeIntegration(String codeIntegration) {
+		this.codeIntegration = codeIntegration;
+	}
+	
+	public String getLien() {
+		return lien;
+	}
+	
+	public void setLien(String lien) {
+		this.lien = lien;
+	}
+	
+	public String getTailleLecteur() {
+		return tailleLecteur;
+	}
+	
+	public void setTailleLecteur(String tailleLecteur) {
+		this.tailleLecteur = tailleLecteur;
+	}
+	
+	public String getIdMediaVisualise() {
+		return idMediaVisualise;
+	}
+	
+	public void setIdMediaVisualise(String idMediaVisualise) {
+		this.idMediaVisualise = idMediaVisualise;
+	}
+	
+	public Utilisateur getUtilisateurConnecte() {
+		return utilisateurConnecte;
+	}
+	
+	public void setUtilisateurConnecte(Utilisateur utilisateurConnecte) {
+		this.utilisateurConnecte = utilisateurConnecte;
+	}
+	
+	public int getNbCaracteresRestants() {
+		return nbCaracteresRestants;
+	}
+	
+	public void setNbCaracteresRestants(int nbCaracteresRestants) {
+		this.nbCaracteresRestants = nbCaracteresRestants;
+	}
+	
+	public Commentaire getCommentaireAffiche() {
+		return commentaireAffiche;
+	}
+	
+	public void setCommentaireAffiche(Commentaire commentaireAffiche) {
+		this.commentaireAffiche = commentaireAffiche;
+	}
+	
+	public long getResultatTotalTelechargementMedia() {
+		return resultatTotalTelechargementMedia;
+	}
+	
+	public void setResultatTotalTelechargementMedia(
+			long resultatTotalTelechargementMedia) {
+		this.resultatTotalTelechargementMedia = resultatTotalTelechargementMedia;
+	}
+	
+	public String getDetailNotifyAjoutAuPanier() {
+		return detailNotifyAjoutAuPanier;
+	}
+	
+	public void setDetailNotifyAjoutAuPanier(String detailNotifyAjoutAuPanier) {
+		this.detailNotifyAjoutAuPanier = detailNotifyAjoutAuPanier;
+	}
+	
+	/*public List<Media> getMediaDansPanier() {
+		return mediaDansPanier;
+	}
+	
+	public void setMediaDansPanier(List<Media> mediaDansPanier) {
+		this.mediaDansPanier = mediaDansPanier;
+	}*/
+	
+	
 }

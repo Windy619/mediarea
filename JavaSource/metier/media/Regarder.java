@@ -1,5 +1,10 @@
 package metier.media;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -24,7 +29,10 @@ public class Regarder {
 	@GeneratedValue
 	private long idRegarder;
 	
-	private long nbVues;
+	//private long nbVues;
+	
+	//SimpleDateFormat dateFormat;
+	private Date dateVues;
 	
 	@ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
 	private Media media;
@@ -40,7 +48,17 @@ public class Regarder {
 	 */
 	public Regarder(Media media){
 		this.media = media;
-		this.nbVues = 0;
+		
+		//this.nbVues = 1;
+		
+		//dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+		//System.out.println("Date : " + dateFormat.format(new Date()));
+		//try {
+		//	this.dateVues = dateFormat.parse(dateFormat.format(new Date()));
+		this.dateVues = new Date();
+		//} catch (ParseException e) {
+		//	e.printStackTrace();
+		//}
 	}	
 
 	/**
@@ -52,13 +70,13 @@ public class Regarder {
 	
 	// GETTER SETTER
 
-	public long getNbVues() {
+	/*public long getNbVues() {
 		return nbVues;
 	}
 
 	public void setNbVues(long nbVues) {
 		this.nbVues = nbVues;
-	}
+	}*/
 
 	public Media getMedia() {
 		return media;
@@ -76,7 +94,11 @@ public class Regarder {
 		this.idRegarder = idRegarder;
 	}
 
-	
-	
+	public Date getDateVues() {
+		return dateVues;
+	}
 
+	public void setDateVues(Date dateVues) {
+		this.dateVues = dateVues;
+	}
 }
