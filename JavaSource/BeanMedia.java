@@ -2,6 +2,7 @@ import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -18,8 +19,10 @@ import javax.validation.constraints.Size;
 import javax.faces.event.ActionEvent;
 import javax.faces.event.AjaxBehaviorEvent;
 
+import org.hibernate.Query;
 import org.primefaces.event.*;
 import org.primefaces.model.chart.CartesianChartModel;
+import org.primefaces.model.chart.ChartSeries;
 import org.primefaces.model.chart.LineChartSeries;
 
 import metier.media.*;
@@ -46,6 +49,7 @@ public class BeanMedia {
 	private List<Categorie> listeCategories;
 	private String tags;
 	private List<Tag> listeTags;
+	private List<Commentaire> listeCommentaires;
 	private List<Commentaire> commentaires;
 	private double note;
 	private String nomTypeMedia;
@@ -145,9 +149,11 @@ public class BeanMedia {
 	
 	//*****
 	  
-    private CartesianChartModel linearModel;
-    
-    private String codeIntegration;
+    //private CartesianChartModel linearModel;
+	private CartesianChartModel categoryModel;
+	private long maxY;
+
+	private String codeIntegration;
     private String lien;
     private String url;
     private String tailleLecteur = "";
@@ -247,6 +253,9 @@ public class BeanMedia {
 				}
 				
 				commentaires = new ArrayList<Commentaire>(mediaVisualise.getCommentaires());
+				//Collections.sort(listeCommentaires, Collections.reverseOrder());
+				//Collections.reverse(commentaires);
+				
 				nomTypeMedia = mediaVisualise.getType().getNomTypeMedia();
 
 				
@@ -395,7 +404,8 @@ public class BeanMedia {
 				//***********************************************
 				
 				//Autre
-		        createLinearModel();
+		        //createLinearModel();
+				createCategoryModel();
 		        
 		        HttpServletRequest req = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
 		        url = req.getRequestURL().toString();
@@ -604,22 +614,27 @@ public class BeanMedia {
 		return "creerPlaylist";
 	}
 	
-	private void createLinearModel() {  
+/*	private void createLinearModel() {  
         linearModel = new CartesianChartModel();  
   
         LineChartSeries series1 = new LineChartSeries();  
         series1.setLabel("Vues totales (dernier mois)");  
   
         //HashMap<Date,Long> mapStatsVues = new HashMap<Date,Long>();
-        List<?> resultatStatVues = daoMedia.statVues(mediaVisualise); //TODO EN ATTRIBUT
-        
-        //System.out.println("Stats vues : " + resultatStatVues.get(0).toString());
-        
-        series1.set(1, 2);  
+        //List<?> resultatStatVues = daoMedia.statVues(mediaVisualise);
+        Query resultatStatVues = daoMedia.statVues(daoMedia.getUn(2));
+        System.out.println("TEST");
+        for(Iterator it=resultatStatVues.iterate();it.hasNext();) {
+        	Object[] row = (Object[]) it.next();
+        	System.out.println("Date vues : " + row[0]);
+        	System.out.println("Count regarder : " + row[1]);
+        }
+*/        
+        /*series1.set(1, 2);  
         series1.set(2, 1);  
         series1.set(3, 3);  
         series1.set(4, 6);  
-        series1.set(5, 8);  
+        series1.set(5, 8);*/
   
         /*LineChartSeries series2 = new LineChartSeries();  
         series2.setLabel("Series 2");  
@@ -631,9 +646,36 @@ public class BeanMedia {
         series2.set(4, 7);  
         series2.set(5, 9);*/ 
   
-        linearModel.addSeries(series1);  
+/*        linearModel.addSeries(series1);  
         //linearModel.addSeries(series2);  
-    }
+    }*/
+	
+	private void createCategoryModel() {
+		categoryModel = new CartesianChartModel();  
+
+		ChartSeries graphiqueVues = new ChartSeries();  
+		graphiqueVues.setLabel("Vues totales");
+
+		//HashMap<Date,Long> mapStatsVues = new HashMap<Date,Long>();
+        //List<?> resultatStatVues = daoMedia.statVues(mediaVisualise);
+        Query resultatStatVues = daoMedia.statVues(daoMedia.getUn(2));
+        //suivant heure et mois TODO
+        for(Iterator it=resultatStatVues.iterate();it.hasNext();) {
+        	Object[] row = (Object[]) it.next();
+        	//System.out.println("Date vues : " + row[0]);
+        	//System.out.println("Count regarder : " + row[1]);
+        
+        	graphiqueVues.set(row[0], Integer.parseInt(row[1].toString()));
+        }
+		/*boys.set("2004", 120);
+		boys.set("2005", 100);
+		boys.set("2007", 150);
+		boys.set("2008", 25);*/
+        
+        maxY = daoMedia.totalVues(daoMedia.getUn(2));
+
+		categoryModel.addSeries(graphiqueVues);
+	}
 	
 	public void desactiverLecteurIframe(AjaxBehaviorEvent e) {
 		System.out.println("desactiverLecteurIframe");
@@ -709,21 +751,21 @@ public class BeanMedia {
 		return "decrementerNbCaracteresRestants";
 	}
 	
-	public void publierCommentaire(AjaxBehaviorEvent e) {
-	//public String publierCommentaire() {
+	//public void publierCommentaire(AjaxBehaviorEvent e) {
+	public String publierCommentaire() {
 		System.out.println("publierCommentaire");
 		System.out.println("commentaire saisi : " + commentaireSaisi);
 		
 		daoMedia.getUn(2).getCommentaires().add(new Commentaire(commentaireSaisi,util)); //mediaVisualise. TODO
 		daoMedia.sauvegarder(daoMedia.getUn(2));
 		
-		//return "publierCommentaire";
+		return "publierCommentaire";
 	}
 	
 	public String supprimerCommentaire() {
 		System.out.println("supprimerCommentaire");
 		
-		daoMedia.getUn(2).getCommentaires().remove(daoCommentaire.getUn(Long.parseLong(FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("idPlaylist"))));
+		//daoMedia.getUn(2).getCommentaires().remove(daoCommentaire.getUn(Long.parseLong(FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("idPlaylist"))));
 		
 		//rafraîchir TODO
 		
@@ -993,9 +1035,9 @@ public class BeanMedia {
 		this.motVotes = motVotes;
 	}
 	
-	public CartesianChartModel getLinearModel() {  
+	/*public CartesianChartModel getLinearModel() {  
 	    return linearModel;  
-	}
+	}*/
 	
 	public String getCodeIntegration() {
 		return codeIntegration;
@@ -1078,5 +1120,14 @@ public class BeanMedia {
 		this.mediaDansPanier = mediaDansPanier;
 	}*/
 	
-	
+	public CartesianChartModel getCategoryModel() {  
+		return categoryModel;  
+	}
+    
+    public long getMaxY() {
+		return maxY;
+	}
+	public void setMaxY(long maxY) {
+		this.maxY = maxY;
+	}
 }
