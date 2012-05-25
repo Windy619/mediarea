@@ -510,10 +510,10 @@
 				        <br/>
 				        
 						    
-				            
-				        <p:lineChart id="linear" value="#{beanMedia.linearModel}" legendPosition="e"  
-     						title="Linear Chart" minY="0" maxY="10" style="height:300px"/>    
-				            
+
+     					<p:lineChart id="category" value="#{beanMedia.categoryModel}" legendPosition="e"  
+							title="Statistiques sur le nombre de vues" minY="0" maxY="#{beanMedia.maxY}" style="height:300px;margin-top:20px"/> 
+				        <!-- Audiences par sexe, par endroit TODO -->
 				            
 				            
 				            
@@ -648,11 +648,11 @@
 		        
 		        <h:outputText id="nbCaracteresRestants" value="#{beanMedia.nbCaracteresRestants} caractères restants" style="float:left;"/><!-- TODO mettre à jour caractères restants -->
 		        
-		        
-           		<a4j:commandButton action="#{beanMedia.publierCommentaire}" value="Publier" render="groupList" style="float:right;"/>
+		        <!-- <a4j:commandButton action="" value="Publier" render="groupList" style="float:right;"/>
 		        <h:commandButton value="Publier" style="float:right;">
-		        	<f:ajax event="click" listener="#{beanMedia.publierCommentaire}" render="groupList"/>
-			    </h:commandButton>
+		        	<f:ajax event="click" listener="" render="groupList"/>
+			    </h:commandButton> -->
+           		<p:commandButton value="Publier" actionListener="#{beanMedia.publierCommentaire}" update="groupList" process="groupList" />
 				
 		        <br/>
 		        
