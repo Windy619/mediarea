@@ -59,6 +59,9 @@ public class BeanMedia {
 	private int nbCaracteresRestants;
 	private Commentaire commentaireAffiche;
 	private DaoCommentaire daoCommentaire;
+	@Size(min = 3, max = 12, message = "La taille du mot de passe doit être entre 3 et 12")
+	private String motDePasseMedia;
+	private boolean showMotDePasseMedia;
 	
 	//****
 
@@ -113,6 +116,7 @@ public class BeanMedia {
 	public static DaoTypePlaylist daoTypePlaylist;
 	public static DaoPlaylist daoPlaylist;
 	private String txtFavori;
+	private String imgFavori;
 	
 	private List<Playlist> listePlaylistUt;
 	private String imgAjoutPlaylist;
@@ -169,7 +173,9 @@ public class BeanMedia {
  	
  	private String detailNotifyAjoutAuPanier;
  	
- 	
+ 	String estNotifieJAime; //TODO suppr
+ 	String detailNotificationJAime;
+ 	String detailNotificationJeNAimePas;
 	
 	//constructeur
 	public BeanMedia() {
@@ -180,7 +186,6 @@ public class BeanMedia {
 			utilisateurConnecte = beanConnexion.getUser();
 			//if (utilisateurConnecte != null) {}
 		}
-		
 		
 		daoMedia = new DaoMedia();
 		daoUtilisateur = new DaoUtilisateur();
@@ -199,12 +204,35 @@ public class BeanMedia {
 		util = daoUtilisateur.getUn(1);
 		//mediaDansPanier = new ArrayList<Media>();
 		commentaireSaisi = "Réagir à propos de ce média.";
+		
+		//estNotifieJAime = false;
+		if(utilisateurConnecte != null) {
+			if(daoMedia.getUn(2).getVisibilite().equals(daoVisibilite.getUn(2))) { //si privé
+				 if(! utilisateurConnecte.getAmis().contains(daoMedia.getUn(2).getAuteurMedia())) {//et que l'utilisateur n'est pas un ami
+					 System.out.println("demande d'un mot de passe"); //demande d'un mot de passe
+				 }
+				 else //mais que l'utilisateur est ami
+				 {
+					 System.out.println("demande rien"); //demande rien
+				 }
+			}
+			else
+			{
+				detailNotificationJAime = "Merci !";
+				detailNotificationJeNAimePas = "...";
+			}
+		}
+		else {
+			detailNotificationJAime = "Connectez-vous ou inscrivez-vous dès maintenant !";
+			detailNotificationJeNAimePas = "Connectez-vous ou inscrivez-vous dès maintenant !";
+		}
 	}
 	
 
 	//fonction appelée avant l'affichage de la page
 	public void processRecherche() throws IOException
 	{
+		estNotifieJAime = null;
 		if(idMediaVisualise == null || idMediaVisualise == "")
 		{
 //			FacesContext.getCurrentInstance().getExternalContext().redirect("/MediArea/pages/erreur.jsf"); //redirection vers la page d'erreur
@@ -258,7 +286,7 @@ public class BeanMedia {
 				
 				nomTypeMedia = mediaVisualise.getType().getNomTypeMedia();
 
-				
+				showMotDePasseMedia = true;
 				//***********************************************
 				
 				//Regarder
@@ -356,16 +384,18 @@ public class BeanMedia {
 				//***********************************************
 				
 				//Playlist
+				imgFavori = "add-star-award-icone-8518-16.png";
 				Set<Playlist> playlistsUtilisateur = daoUtilisateur.getUn(1).getPlaylists();
 				for(Playlist pl : playlistsUtilisateur) {
 					if(pl.getType().equals(daoTypePlaylist.getUn(2))) {
 						if(pl.getMedias().contains(mediaVisualise)) {
 							txtFavori = "Retirer des favoris";
+							imgFavori = "star-award-delete-icone-5901-16.png";
 						}
-						else
-						{
+						/*else {
 							txtFavori = "Favori";
-						}
+							imgFavori = "add-star-award-icone-8518-16.png";
+						}*/
 					}
 				}
 				
@@ -425,6 +455,8 @@ public class BeanMedia {
 		
 		util.getAimeMedias().add(new Aimer(true,mediaVisualise));
 		daoUtilisateur.sauvegarder(util);
+		
+		estNotifieJAime = "true";
 		
 		return "jAime";
 	}
@@ -756,8 +788,11 @@ public class BeanMedia {
 		System.out.println("publierCommentaire");
 		System.out.println("commentaire saisi : " + commentaireSaisi);
 		
-		daoMedia.getUn(2).getCommentaires().add(new Commentaire(commentaireSaisi,util)); //mediaVisualise. TODO
+		Commentaire c = new Commentaire(commentaireSaisi,util);
+		daoMedia.getUn(2).getCommentaires().add(c); //mediaVisualise. TODO
 		daoMedia.sauvegarder(daoMedia.getUn(2));
+		
+		//commentaires.add(c);
 		
 		return "publierCommentaire";
 	}
@@ -793,7 +828,25 @@ public class BeanMedia {
 		return "voterPour";
 	}
 	
-	
+	public String verifierMotDePasseMedia() {
+		if(daoMedia.getUn(2).getMdpMedia().equals(motDePasseMedia)) //si le mot de passe du média saisi est correct
+		{
+			System.out.println("on cache le Modal panel");
+			showMotDePasseMedia = true; //TODO
+			//on cache le Modal panel
+		}
+		else
+		{
+			System.out.println("mot de passe incorrect");
+			message = new FacesMessage("Mot de passe incorrect");
+			message.setSeverity(FacesMessage.SEVERITY_ERROR);
+			FacesContext.getCurrentInstance().addMessage(
+					"form-login:password", message);
+		}
+		//vérification
+		
+		return "verifierMotDePasseMedia";
+	}
 	
 	
 
@@ -1130,4 +1183,46 @@ public class BeanMedia {
 	public void setMaxY(long maxY) {
 		this.maxY = maxY;
 	}
+	
+	public String getEstNotifieJAime() {
+		return estNotifieJAime;
+	}
+	
+	public void setEstNotifieJAime(String estNotifieJAime) {
+		this.estNotifieJAime = estNotifieJAime;
+	}
+	
+	public String getDetailNotificationJAime() {
+		return detailNotificationJAime;
+	}
+	
+	public void setDetailNotificationJAime(String detailNotificationJAime) {
+		this.detailNotificationJAime = detailNotificationJAime;
+	}
+	
+	public String getDetailNotificationJeNAimePas() {
+		return detailNotificationJeNAimePas;
+	}
+	public void setDetailNotificationJeNAimePas(String detailNotificationJeNAimePas) {
+		this.detailNotificationJeNAimePas = detailNotificationJeNAimePas;
+	}
+	public String getImgFavori() {
+		return imgFavori;
+	}
+	public void setImgFavori(String imgFavori) {
+		this.imgFavori = imgFavori;
+	}
+	public String getMotDePasseMedia() {
+		return motDePasseMedia;
+	}
+	public void setMotDePasseMedia(String motDePasseMedia) {
+		this.motDePasseMedia = motDePasseMedia;
+	}
+	public boolean isShowMotDePasseMedia() {
+		return showMotDePasseMedia;
+	}
+	public void setShowMotDePasseMedia(boolean showMotDePasseMedia) {
+		this.showMotDePasseMedia = showMotDePasseMedia;
+	}
+	
 }
