@@ -154,6 +154,20 @@ public class DaoMedia extends Dao<Media> {
 		return (Long) q.uniqueResult();
 	}
 	
+	/*public long totalFavoriesMedia(Media media) {
+		Media param = media;
+		
+		Query q = session.createQuery("" +
+				"SELECT COUNT(*) " +
+				"FROM Playlist p join Type_Playlist tp " +
+				//"WHERE n.media = :media");
+		
+		q.setParameter("media", param);
+		
+		return (Long) q.uniqueResult();
+	}*/
+	
+	
 	
 	
 	

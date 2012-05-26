@@ -17,6 +17,40 @@
 	<ui:define name="pageTitle">Détail d'un média</ui:define>
 	<ui:define name="content">
 		<section class="group1">
+		
+		<h:commandButton value="Mot de passe">
+        <rich:componentControl target="popupMotDePasseMedia" operation="show" />
+    </h:commandButton>
+    
+    
+    <rich:popupPanel id="popupMotDePasseMedia" modal="true" resizeable="true"  show="false"><!-- show="#{beanMedia.showMotDePasseMedia}"      onmaskclick="#{rich:component('popup')}.hide()" -->
+        <f:facet name="header">
+            <h:outputText value="Demande de mot de passe du média" />
+        </f:facet>
+        <h:form id="form-login">
+			<rich:graphValidator value="">
+					<rich:message for="motDePasse" />
+					<h:panelGrid columns="2">
+						<h:outputText value="Mot de passe :" />
+						<h:inputSecret value="#{beanMedia.motDePasseMedia}" id="motDePasse"
+							showMessages="true">
+							<rich:validator />
+						</h:inputSecret>
+					</h:panelGrid>
+					<br />
+					<a4j:commandButton id="Valider" action="#{beanMedia.verifierMotDePasseMedia}" value="Valider" />
+			</rich:graphValidator>
+		</h:form>
+    </rich:popupPanel>
+		
+		
+		
+		
+		
+		
+		
+		
+		
 		    <div id="fb-root"></div>
 			<script>(function(d, s, id) {
 			  var js, fjs = d.getElementsByTagName(s)[0];
@@ -129,96 +163,89 @@
 		        </a4j:jsFunction>
 		    </h:form>
 			
-			
-			<br /><br /><br /><br />
 		
 			<rich:panel styleClass="gauche">
-			<h:form>
-
-
-
-
-
-
-			<a4j:commandButton value="J'aime" title="J'aime ce contenu" action="#{beanMedia.jAime}" render="notifyJAime" image="/resources/images/icones/heart-add-icone-5197-32.png">
-				<!--<rich:componentControl target="popupJAime" operation="show" />-->
-			</a4j:commandButton>
-			<rich:notify id="notifyJAime" stayTime="1500" sticky="false" nonblocking="false"
+		
+		<h:form>
+        <rich:toolbar height="26px" itemSeparator="/resources/images/icones/puce_menu.gif">
+            <rich:dropDownMenu mode="ajax">
+                <f:facet name="label">
+                    <h:panelGroup>
+                        <h:graphicImage value="/resources/images/icones/empreintes-icone-5104-16.png" styleClass="pic" alt="Avis" />
+                        <h:outputText value="Avis" />
+                    </h:panelGroup>
+                </f:facet>
+                <rich:menuItem label="J'aime" action="#{beanMedia.jAime}" render="notifyJAime" icon="/resources/images/icones/heart-ajouter-icone-8199-16.png">
+                </rich:menuItem>
+                <rich:menuItem label="Je n'aime pas" action="#{beanMedia.jeNAimePas}" render="notifyJAime" icon="/resources/images/icones/remove-heart-icone-8765-32.png">
+                </rich:menuItem>
+            </rich:dropDownMenu>
+ 
+            <rich:dropDownMenu mode="ajax">
+                <f:facet name="label">
+                    <h:panelGrid cellpadding="0" cellspacing="0" columns="2" style="vertical-align:middle">
+                        <h:graphicImage value="/resources/images/icones/ajouter-icone-5107-16.png" styleClass="pic" alt="Ajouter à" />
+                        <h:outputText value="Ajouter à" />
+                    </h:panelGrid>
+                </f:facet>
+                <rich:menuItem label="Favori" action="#{beanMedia.ajouterAFavori}" render="notifyFavori" icon="/resources/images/icones/#{beanMedia.imgFavori}"><!-- changement image + notify retirer -->
+                </rich:menuItem>
+                <rich:menuItem label="Playlist" icon="/resources/images/icones/player-playlist-icone-7426-16.png" onclick="#{rich:component('popupPlaylist')}.show()">
+                </rich:menuItem>
+            </rich:dropDownMenu>
+            
+            <rich:dropDownMenu mode="ajax">
+                <f:facet name="label">
+                    <h:panelGrid cellpadding="0" cellspacing="0" columns="2" style="vertical-align:middle">
+                        <h:graphicImage value="/resources/images/icones/sharing-overlay-icone-8730-16.png" styleClass="pic" alt="Partager" />
+                        <h:outputText value="Partager" />
+                    </h:panelGrid>
+                </f:facet>
+                <rich:menuItem label="Exporter" icon="/resources/images/icones/page-de-copie-icone-9572-16.png" onclick="#{rich:component('popupExporter')}.show()">
+                </rich:menuItem>
+                <rich:menuItem label="Emails et amis" icon="/resources/images/icones/email-go-icone-7614-16.png" onclick="#{rich:component('popupEmail')}.show()">
+                </rich:menuItem>
+            </rich:dropDownMenu>
+            
+        </rich:toolbar>
+    </h:form>
+    	
+		
+			
+			<a4j:outputPanel ajaxRenderer="true">
+			<rich:notify id="notifyJAime" stayTime="1500" sticky="false" nonblocking="true"
 				nonblockingOpacity="0.5" showShadow="false"
-				showCloseButton="true" detail="Merci !!" render="false">
-			 
+				showCloseButton="true" detail="#{beanMedia.detailNotificationJAime}" render="false"
+				>
 				<f:facet name="summary">
 					J'aime ce contenu
 				</f:facet>
 			</rich:notify>
-			
-			<!--<rich:popupPanel id="popupJAime" modal="false" autosized="true"
-		        resizeable="false" style="width: 150px; z-index: 99999;">
-		        <f:facet name="header">
-		            <h:outputText value="J'aime ce contenu" />
-		        </f:facet>
-		        <f:facet name="controls">
-		            <h:outputLink value="#"
-		                onclick="#{rich:component('popupJAime')}.hide(); return false;">
-		                    X
-		                </h:outputLink>
-		        </f:facet>
-		        <p class="bold">Merci !</p>
-		        <p>
-		        	<a href="#"
-		            	onclick="#{rich:component('popupJAime')}.hide()">Fermer</a>
-		        </p>
-		    </rich:popupPanel>-->
-			</h:form>
+			</a4j:outputPanel>
 			
 			
-			<h:form>
-				<a4j:commandButton value="Je n'aime pas" title="Je n'aime pas ce contenu" action="#{beanMedia.jeNAimePas}" render="notifyJeNAimePas" image="/resources/images/icones/remove-heart-icone-8765-32.png"/>
-				
+			
 				<rich:notify id="notifyJeNAimePas" stayTime="1500" sticky="false" nonblocking="false"
 					nonblockingOpacity="0.5" showShadow="false"
-					showCloseButton="true" detail="...">
+					showCloseButton="true" detail="#{beanMedia.detailNotificationJeNAimePas}">
 				 
 					<f:facet name="summary">
 						Je n'aime pas ce contenu
 					</f:facet>
-				</rich:notify>			
-			</h:form>
+				</rich:notify>
+			
+			
+			<rich:notify id="notifyFavori" stayTime="1500" sticky="false" nonblocking="false"
+					nonblockingOpacity="0.5" showShadow="false"
+					showCloseButton="true" detail="Média ajouté à vos favoris">
+				 
+					<f:facet name="summary">
+						Favori
+					</f:facet>
+				</rich:notify>
+				
 			
 			<h:form>
-			<!--<rich:panel style="width:220px;">
-	            <f:facet name="header">
-	                <h:outputText value="Select with manual input"></h:outputText>
-	            </f:facet>-->
-	          
-	            <h:selectOneMenu id="selectAjouter" label="+ Ajouter à" style="width:105px;">
-               		  <f:selectItem itemValue="F" itemLabel="#{beanMedia.txtFavori}" />
-                      <f:selectItem itemValue="P" itemLabel="Playlist"/>
-                      <a4j:ajax event="change" render="selectAjouter" execute="@this" listener="#{beanMedia.ajouterAFavori}"/>              
-                </h:selectOneMenu><!-- TODO 2 event différents -->
-	        <!--</rich:panel>-->
-	        
-	        
-	        <h:panelGrid columns="2" columnClasses="cols,cols" width="400">
-            <rich:panelMenu style="width:200px" itemMode="ajax" groupMode="ajax" groupExpandedLeftIcon="triangleUp"
-                groupCollapsedLeftIcon="triangleDown" topGroupExpandedRightIcon="chevronUp"
-                topGroupCollapsedRightIcon="chevronDown" itemLeftIcon="disc">
-                <rich:panelMenuGroup label="Group 1">
-                    <rich:panelMenuItem label="Item 1.1" name="Item_1_1" />
-                    <rich:panelMenuItem label="Item 1.2" name="Item_1_2" />
-                    <rich:panelMenuItem label="Item 1.3" name="Item_1_3" />
-                </rich:panelMenuGroup>
-                
-            </rich:panelMenu><!--  itemChangeListener="..." -->
-        </h:panelGrid>
-	        
-	        
-	        
-	        
-	            
-	        <h:commandButton value="Call the popup">
-		        <rich:componentControl target="popupPlaylist" operation="show" />
-		    </h:commandButton>
 		    <rich:popupPanel id="popupPlaylist" modal="false" autosized="true" resizeable="false" style="z-index: 99999;">
 		        <f:facet name="header">
 		            <h:outputText value="Ajouter à une playlist" />
@@ -236,7 +263,7 @@
 			                <f:facet name="header">
 			                	<a4j:commandLink value="Nom" render="table" action="#{beanMedia.sortByNom}" />
 			                </f:facet>
-			                <h:graphicImage library="images" name="icones/#{beanMedia.imgAjoutPlaylist}" alt="Ajouter" />
+			                <h:graphicImage library="images/icones" name="#{beanMedia.imgAjoutPlaylist}" alt="Ajouter" />
 	        				<h:commandLink value="#{play.nomPlaylist}" action="#{beanMedia.ajouterMediAPlaylist}">
 			                	<f:param name="idPlaylist" value="#{play.idPlaylist}"/>
 							</h:commandLink>
@@ -301,31 +328,6 @@
 	        
         
         	<h:form>
-        		<!-- <h:panelGrid columns="1" style="margin-bottom:10px" cellpadding="5">
-        		
-        		<p:selectOneMenu value=""
-                         effect="fade" var="p">
-		            <f:selectItem itemLabel="+ Partager" itemValue="" />
-		            
-		            <p:column>--><!-- images TODO -->  
-		        <!--         <p:graphicImage value="/images/icones/document-a-exportation-icone-8861-16.png" width="40" height="50"/>  
-		            </p:column>
-		        </p:selectOneMenu>
-		        
-        		</h:panelGrid>-->
-        	
-        		<rich:select enableManualInput="true" defaultLabel="+ Partager">
-	                <f:selectItem itemValue="1" itemLabel="Exporter" />
-	                <f:selectItem itemValue="2" itemLabel="Facebook" />
-	                <f:selectItem itemValue="3" itemLabel="Twitter" />
-	                <f:selectItem itemValue="4" itemLabel="Emails et amis" />
-	            </rich:select>
-	            
-	            
-	            
-	            <h:commandButton value="Call the popup Exporter">
-			        <rich:componentControl target="popupExporter" operation="show" />
-			    </h:commandButton>
 			    <rich:popupPanel id="popupExporter" modal="false" autosized="true" resizeable="false" style="z-index: 99999;">
 			        <f:facet name="header">
 			            <h:outputText value="Personnaliser le lecteur exportable" />
@@ -371,18 +373,6 @@
 			    </rich:popupPanel>
 			    
 			    
-			    
-			    
-			    
-			    
-			    
-			    
-			    
-			    
-			    
-			    <h:commandButton value="Call the popup Email">
-			        <rich:componentControl target="popupEmail" operation="show" />
-			    </h:commandButton>
 			    <rich:popupPanel id="popupEmail" modal="false" autosized="true" resizeable="false" style="z-index: 99999;">
 			        <f:facet name="header">
 			            <h:outputText value="Choisissez vos destinataires" />
@@ -408,32 +398,130 @@
 			        		titre - TODO
 			        </p>
 			    </rich:popupPanel>
+			    
+			    <br/>
+			    	
+				<rich:inputNumberSlider value="#{beanMedia.resultatNbAime}" style="max-width:100px;" maxValue="#{beanMedia.resultatNbAimeNAimePas}"
+        			step="1" showArrows="true" showTooltip="false" disabled="true" orientation="vertical"/>
+        		<br/>
+        		<br/>
+        		
 	        </h:form>
 	            
-	            <br/>
-	            
+	            <div style="float: left;">
 	            <!-- https://dev.twitter.com/docs/tweet-button : Tweet Button -->
 				<a href="https://twitter.com/share" class="twitter-share-button" data-via="twitterapi" data-lang="en">Tweet</a>
 				<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="//platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+				</div>
 				
-	            <!-- Like Button - Facebook Developers -->
-				<div class="fb-like" data-send="false" data-layout="button_count" data-width="450" data-show-faces="true"></div>
-								
+				<!-- Like Button - Facebook Developers -->
+				<div style="float: left; max-width: 100px;" class="fb-like" data-send="false" data-layout="button_count" data-width="450" data-show-faces="true"></div>
+				
+				<div style="float: left;">
 				<!-- https://developers.google.com/+/plugins/+1button/ : +1 Button -->
 				<script type="text/javascript" src="https://apis.google.com/js/plusone.js"></script>
 				<div class="g-plusone" data-size="medium"></div>
+				</div>
 				
-				<br/>
-				
+				<div style="float: left;">
 				<!-- http://en.skyrock.com/developer/tools.php : Share on Skyrock -->
 				<a href="http://www.skyrock.com/m/blog/share.php?js=0" class="skysocial-s skyrocksocialshare_classic24" title="Share on Skyrock" style="display:inline-block;text-indent:-999em;overflow:hidden;width:57px;height:24px;background:url(http://share.static.skyrock.net/img/api/skyrocksocialshare_classic24.png) no-repeat 0 0 transparent;"><p style="display:none;">Share on Skyrock</p></a>
 				<script>(function(){var d=document,id='skyrock-fxlebpx'; if(d.getElementById(id)) return;var e=d.createElement('script');e.id=id;e.async=true;e.src='http://share.static.skyrock.net/js/skyrock_social.min.js';d.getElementsByTagName('body')[0].appendChild(e);}());</script>
+				</div>
 				
+				<div style="clear: both;"></div>
 				<br /><br />
 			
-	            <h:commandButton value="Signaler" image="/resources/images/icones/drapeau-rouge-icone-6492-32.png" alt="Peut offenser">
+	            
+	            
+	            <span class="bold">
+	            	Ajouté par 
+	            	<h:outputLink value="TODO/#{beanMedia.auteur}" title="#{tag.nomTag}">
+						<h:outputText value="#{beanMedia.auteur}"/>
+					</h:outputLink>
+	            	le <h:outputText value="#{beanMedia.datePublication}" />
+	            </span>
+	            <br />
+	            <h:outputText value="#{beanMedia.description}" />
+        	</rich:panel>
+        	
+        	<rich:panel styleClass="droite bold">
+        		<h:outputText value="#{beanMedia.resultatTotalVuesMedia}">
+        			<f:convertNumber integerOnly="true"/>
+        		</h:outputText>
+        		<h:outputText value=" vue#{beanMedia.motVues}" />
+        		
+        		
+				        
+				<br/>        		
+		        <h:outputText value="#{beanMedia.resultatTotalTelechargementMedia}"/> téléchargements
+		        <br/>
+		        <br/>  
+        		
+        		
+        		
+        			
+        		
+        		
+        		
+        		
+        		
+        		
+        	
+        	<h:form>
+        		<div style="float:left;">
+        		<p:growl id="messages" showDetail="true"/> 
+        	
+        		<h:panelGrid columns="2" cellpadding="5">
+			        <p:rating value="#{beanMedia.note}">  
+			            <p:ajax event="rate" listener="#{beanMedia.handleRate}" update="messages" />  
+			        </p:rating>
+			    </h:panelGrid>
+        		</div>
+        		
+        		<br/>
+        		
+        		<div style="float:left;">
+        		<h:commandButton value="Signaler" image="/resources/images/icones/drapeau-rouge-icone-6492-32.png" alt="Peut offenser">
 	           		<rich:componentControl target="popupSignaler" operation="show" />
 	            </h:commandButton>
+	            </div>
+	         </h:form>  
+	            	
+        		<br/>
+        		
+        		<h:form>
+	        		<h:commandLink>
+	        			<h:graphicImage library="images" name="icones/graphique-en-ligne-icone-4887-32.png" alt="Avatar"/>
+	        			<rich:componentControl target="popupStatistiques" operation="show" />
+	        		</h:commandLink>
+	        		
+	        		<rich:popupPanel id="popupStatistiques" modal="false" autosized="true" resizeable="false" style="width: 500px; z-index: 99999;">
+				        <f:facet name="header">
+				            <h:outputText value="Statistiques" />
+				        </f:facet>
+				        <f:facet name="controls">
+				            <h:outputLink value="#" onclick="#{rich:component('popupStatistiques')}.hide(); return false;">
+				                X
+				            </h:outputLink>
+				        </f:facet>
+				        <p>
+				        <h:outputText value="#{beanMedia.resultatTotalVuesMedia}"/> vue<h:outputText value="#{beanMedia.motVues}"/> - <h:outputText value="#{beanMedia.nbCommentaires}"/> com. - TODO fav. - <h:outputText value="#{beanMedia.resultatTotalVotesMedia}"/> vote<h:outputText value="#{beanMedia.motVotes}"/>
+				        <br/>  
+
+     					<p:lineChart id="category" value="#{beanMedia.categoryModel}" legendPosition="e"  
+							title="Statistiques sur le nombre de vues" minY="0" maxY="#{beanMedia.maxY}" style="height:300px;margin-top:20px"/> 
+				        <!-- Audiences par sexe, par endroit TODO -->
+				            
+				            
+				            <a href="#" onclick="#{rich:component('popupStatistiques')}.hide()">Fermer</a>
+				        </p>
+				    </rich:popupPanel>
+				</h:form>
+        		
+        	
+        		
+        		
 	            <rich:popupPanel id="popupSignaler" modal="false" autosized="true"
 			        resizeable="false" style="width: 400px; overflow: hidden; z-index: 99999;">
 			        <f:facet name="header">
@@ -470,92 +558,7 @@
 			    
 			    
 	            <br /><br />
-	            
-	            <span class="bold">
-	            	Ajouté par 
-	            	<h:outputLink value="TODO/#{beanMedia.auteur}" title="#{tag.nomTag}">
-						<h:outputText value="#{beanMedia.auteur}"/>
-					</h:outputLink>
-	            	le <h:outputText value="#{beanMedia.datePublication}" />
-	            </span>
-	            <br />
-	            <h:outputText value="#{beanMedia.description}" />
-	            
-        		<br /><br />
-        	</rich:panel>
-        	
-        	<rich:panel styleClass="droite bold">
-        		<h:outputText value="#{beanMedia.resultatTotalVuesMedia}">
-        			<f:convertNumber integerOnly="true"/>
-        		</h:outputText>
-        		<h:outputText value=" vue#{beanMedia.motVues}" />
         		
-        		<h:form>
-	        		<h:commandLink>
-	        			<h:graphicImage library="images" name="icones/graphique-en-ligne-icone-4887-32.png" alt="Avatar"/>
-	        			<rich:componentControl target="popupStatistiques" operation="show" />
-	        		</h:commandLink>
-	        		
-	        		<rich:popupPanel id="popupStatistiques" modal="false" autosized="true" resizeable="false" style="width: 500px; z-index: 99999;">
-				        <f:facet name="header">
-				            <h:outputText value="Statistiques" />
-				        </f:facet>
-				        <f:facet name="controls">
-				            <h:outputLink value="#" onclick="#{rich:component('popupStatistiques')}.hide(); return false;">
-				                X
-				            </h:outputLink>
-				        </f:facet>
-				        <p>
-				        <h:outputText value="#{beanMedia.resultatTotalVuesMedia}"/> vue<h:outputText value="#{beanMedia.motVues}"/> - <h:outputText value="#{beanMedia.nbCommentaires}"/> com. - TODO fav. - <h:outputText value="#{beanMedia.resultatTotalVotesMedia}"/> vote<h:outputText value="#{beanMedia.motVotes}"/>
-				        <br/>
-				        
-						    
-
-     					<p:lineChart id="category" value="#{beanMedia.categoryModel}" legendPosition="e"  
-							title="Statistiques sur le nombre de vues" minY="0" maxY="#{beanMedia.maxY}" style="height:300px;margin-top:20px"/> 
-				        <!-- Audiences par sexe, par endroit TODO -->
-				            
-				            
-				            
-				            
-				            
-				            
-				            
-				            <a href="#" onclick="#{rich:component('popupStatistiques')}.hide()">Fermer</a>
-				        </p>
-				    </rich:popupPanel>
-				</h:form>
-        		
-        		
-        		
-        		
-        		
-        		
-        		
-        		<br/>        		
-        		<h:outputText value="#{beanMedia.resultatTotalTelechargementMedia}"/> fois téléchargé
-        		<br/>
-        		<br/>
-        	
-        	<h:form>
-        		<p:growl id="messages" showDetail="true"/> 
-        	
-        		<h:panelGrid columns="2" cellpadding="5">
-			        <p:rating value="#{beanMedia.note}">  
-			            <p:ajax event="rate" listener="#{beanMedia.handleRate}" update="messages" />  
-			        </p:rating>
-			    </h:panelGrid>
-        	</h:form>
-        	
-        	
-        		<br/><br/>
-        		
-        					
-				<rich:inputNumberSlider value="#{beanMedia.resultatNbAime}" width="500" maxValue="#{beanMedia.resultatNbAimeNAimePas}"
-        			step="1" showArrows="true" showTooltip="false" disabled="true" />
-        		
-        		<br/>
-        		<br/>
         		<!-- Artiste : <h:outputText value="" /><br /> -->
         		
         		<h:form>
@@ -652,7 +655,7 @@
 		        <h:commandButton value="Publier" style="float:right;">
 		        	<f:ajax event="click" listener="" render="groupList"/>
 			    </h:commandButton> -->
-           		<p:commandButton value="Publier" actionListener="#{beanMedia.publierCommentaire}" update="groupList" process="groupList" />
+           		<p:commandButton value="Publier" actionListener="#{beanMedia.publierCommentaire}" update="groupList" />
 				
 		        <br/>
 		        
