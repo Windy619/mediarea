@@ -11,10 +11,10 @@
       
 <ui:composition template="/templates/standard.xhtml">
 		
-	<ui:define name="pageTitle">Messages Prives</ui:define>
+	<ui:define name="pageTitle">Messages Privés</ui:define>
 	<ui:define name="content">
 		<section class="group1">
-			<h3> Messages Prives </h3>    	
+			<h3> Messages Privés </h3>    	
 			<br />
 			
 			<h:outputText rendered="#{empty beanMessagesPrives.utilisateurConnecte}" value="L'envoi de message privé est reservé aux utilisateurs inscrits" />			
@@ -153,7 +153,9 @@
 									<br />
 									Envoyé le :
 									<br />
-									<h:outputText value="#{beanMessagesPrives.mpSelectionneDetail.dateEnvoi}" />																						
+									<h:outputText value="#{beanMessagesPrives.mpSelectionneDetail.dateEnvoi}">
+										<f:convertDateTime type="date" pattern="dd/MM/yyyy HH:mm"/>
+									</h:outputText>																					
 								</center>
 							</td>
 							<td>
@@ -188,7 +190,9 @@
 										<br />
 										Envoyé le :
 										<br />
-										<h:outputText value="#{reponse.dateEnvoi}" />																							
+											<h:outputText value="#{reponse.dateEnvoi}">
+												<f:convertDateTime type="date" pattern="dd/MM/yyyy HH:mm"/>
+											</h:outputText>																							
 									</center>
 								</td>
 								<td>
@@ -206,7 +210,7 @@
 				<br />
 				
 				<h:form>
-					<h:commandButton value="Fermer formulaire">				
+					<h:commandButton value="Fermer détail">				
 						<f:setPropertyActionListener target="#{beanMessagesPrives.afficherDetailMessage}" value="false" />
 						<f:setPropertyActionListener target="#{beanMessagesPrives.afficherListeMessage}" value="true" />
 					</h:commandButton>
@@ -231,15 +235,8 @@
 
 						<a4j:repeat value="#{beanMessagesPrives.messages}" var="message" id="repeat" rows="10">
 
-							<rich:collapsiblePanel switchType="client" 
+							<rich:collapsiblePanel switchType="client" style="border: solid 1px red" rendered="#{message.dateLecture == null}"
 							expanded="false" header="De : #{message.emetteur.pseudo} A :  #{message.destinataire.pseudo} Objet : #{message.objet} ">
-							
-								<f:facet name="header">
-									<h:commandLink value="Afficher conversation" action="#{beanMessagesPrives.afficherFormulaireDetailMessage}">
-										<f:setPropertyActionListener target="#{beanMessagesPrives.mpSelectionneDetail}" value="#{message}" />
-										<f:setPropertyActionListener target="#{beanMessagesPrives.mpSelectionne}" value="#{message}" />
-									</h:commandLink>										
-								</f:facet>	
 									
 								<table>
 									<tr>
@@ -261,8 +258,16 @@
 									<tr>						
 										<td>
 											<h4><h:outputText value="#{message.objet}" /></h4>
-										</td>
+										</td>									
 									</tr>
+									<tr>
+										<td>
+											<h:outputText value="Envoyé le :" />
+											<h:outputText value="#{message.dateEnvoi}">
+												<f:convertDateTime type="date" pattern="dd/MM/yyyy HH:mm"/>
+											</h:outputText>
+										</td>	
+									</tr>									
 								</table>
 															
 								<br />
@@ -270,18 +275,72 @@
 								<h:commandLink value="Afficher conversation" action="#{beanMessagesPrives.afficherFormulaireDetailMessage}">
 									<f:setPropertyActionListener target="#{beanMessagesPrives.mpSelectionneDetail}" value="#{message}" />
 									<f:setPropertyActionListener target="#{beanMessagesPrives.mpSelectionne}" value="#{message}" />
-								</h:commandLink>									
+								</h:commandLink>,	
+								
+								<h:commandLink value="Supprimer conversation" action="#{beanMessagesPrives.supprimerMessage}">
+									<f:setPropertyActionListener target="#{beanMessagesPrives.mpSelectionne}" value="#{message}" />
+								</h:commandLink>																
 														
 								<br />
 												
 							</rich:collapsiblePanel>
-							<br />
+
+							<rich:collapsiblePanel switchType="client" rendered="#{message.dateLecture != null}"
+							expanded="false" header="De : #{message.emetteur.pseudo} A :  #{message.destinataire.pseudo} Objet : #{message.objet} ">
+									
+								<table>
+									<tr>
+										<td>
+											<center>
+												<h:outputText value="#{message.emetteur.pseudo}" />
+												<br />
+												<h:graphicImage value="#{message.emetteur.avatar.nomAvatar}" />													
+											</center>
+										</td>
+										<td>
+											<center>
+												<h:outputText value="#{message.destinataire.pseudo}" />
+												<br />
+												<h:graphicImage value="#{message.destinataire.avatar.nomAvatar}" />													
+											</center>
+										</td>	
+									</tr>	
+									<tr>						
+										<td>
+											<h4><h:outputText value="#{message.objet}" /></h4>
+										</td>									
+									</tr>
+									<tr>
+										<td>
+											<h:outputText value="Envoyé le :" />
+											<h:outputText value="#{message.dateEnvoi}">
+												<f:convertDateTime type="date" pattern="dd/MM/yyyy HH:mm"/>
+											</h:outputText>
+										</td>	
+									</tr>									
+								</table>
+															
+								<br />
+								
+								<h:commandLink value="Afficher conversation" action="#{beanMessagesPrives.afficherFormulaireDetailMessage}">
+									<f:setPropertyActionListener target="#{beanMessagesPrives.mpSelectionneDetail}" value="#{message}" />
+									<f:setPropertyActionListener target="#{beanMessagesPrives.mpSelectionne}" value="#{message}" />
+								</h:commandLink>,	
+								
+								<h:commandLink value="Supprimer conversation" action="#{beanMessagesPrives.supprimerMessage}">
+									<f:setPropertyActionListener target="#{beanMessagesPrives.mpSelectionne}" value="#{message}" />
+								</h:commandLink>																
+														
+								<br />
+												
+							</rich:collapsiblePanel>							
 							
+							<br />
 						</a4j:repeat>
 					
 					<br />
 					<a4j:outputPanel layout="inline">
-						<rich:dataScroller for="repeat" render="panelMessages" />
+						<rich:dataScroller for="repeat" render="panelMessages" rendered="#{beanMessagesPrives.messages.size() > 10}"/>
 					</a4j:outputPanel>			
 				</h:panelGrid>				
 			
@@ -317,7 +376,7 @@
 		
 		<aside class="group2">	
 		
-			<h3> Controle </h3>
+			<h3> Contrôle </h3>
 			
 			<br />
 			<h:outputFormat value="Vous avez #{beanMessagesPrives.nbMessagesNonLus} messages non lus" />
@@ -325,30 +384,21 @@
 			<br />
 			
 			<rich:panel header="Actions" rendered="#{not empty beanMessagesPrives.utilisateurConnecte}">
-				<h:form>
-					<h:commandButton value="Nouveau Message" action="#{beanMessagesPrives.afficherFormulaireNouveauMessage}" style="width:150px" />
-				</h:form>
+			
+				<div align = "center">
+					<h:form>
+						<h:commandButton value="Nouveau Message" action="#{beanMessagesPrives.afficherFormulaireNouveauMessage}" style="width:150px" />
+						<br /><br />
+						<h:commandButton value="Messages non lus" action="#{beanMessagesPrives.chargerMessagesNonLus}"  style="width:150px"/>
+						<br /><br />			
+						<h:commandButton value="Mes Messages" action="#{beanMessagesPrives.chargerMessages}"  style="width:150px"/>	
+						<br /><br />
+						<h:commandButton value="Messages envoyés" action="#{beanMessagesPrives.chargerMessagesEnvoyes}" style="width:150px" />
+						<br /><br />
+						<h:commandButton value="Messages recus" action="#{beanMessagesPrives.chargerMessagesRecus}" style="width:150px" />
+					</h:form>
+				</div>
 				
-				<br />
-					
-				<h:form>
-					<h:commandButton value="Messages non lus" action="#{beanMessagesPrives.chargerMessagesNonLus}"  style="width:150px"/>
-				</h:form>	
-				<br />
-										
-				<h:form>
-					<h:commandButton value="Mes Messages" action="#{beanMessagesPrives.chargerMessages}"  style="width:150px"/>
-				</h:form>	
-				<br />
-												
-				<h:form>
-					<h:commandButton value="Messages envoyés" action="#{beanMessagesPrives.chargerMessagesEnvoyes}" style="width:150px" />
-				</h:form>	
-				<br />
-				
-				<h:form>
-					<h:commandButton value="Messages recus" action="#{beanMessagesPrives.chargerMessagesRecus}" style="width:150px" />
-				</h:form>	
 			</rich:panel>
 						
 		</aside>

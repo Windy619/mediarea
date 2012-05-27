@@ -3,10 +3,12 @@ package metier.utilisateur;
 import java.util.Date;
 
 import javax.persistence.CascadeType;
+import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 
+@Entity
 public class Signalement_MessagePrive {
 
 	@Id
