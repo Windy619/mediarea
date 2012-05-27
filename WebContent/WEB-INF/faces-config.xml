@@ -37,11 +37,6 @@
 		<managed-bean-name>beanMedia</managed-bean-name>
 		<managed-bean-class>BeanMedia</managed-bean-class>
 		<managed-bean-scope>request</managed-bean-scope>
-		<managed-property>
-			<property-name>mediaVisualise</property-name>
-			<property-class>metier.media.Media</property-class>
-			<value></value>
-		</managed-property>
 	</managed-bean>
 	<managed-bean>
 		<managed-bean-name>beanMessagesPrives</managed-bean-name>

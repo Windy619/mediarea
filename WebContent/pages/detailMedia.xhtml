@@ -4,17 +4,47 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html"
     xmlns:f="http://java.sun.com/jsf/core" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:a4j="http://richfaces.org/a4j"
     xmlns:rich="http://richfaces.org/rich"
-    xmlns:p="http://primefaces.org/ui">
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:c="http://java.sun.com/jstl/core"
+    xmlns:u='http:/jsf.exadel.com/template/util'>
+    
+<f:metadata>
+	<f:viewParam name="v" value="#{beanMedia.idMediaVisualise}"/>
+	<f:event type="preRenderView" listener="#{beanMedia.processRecherche()}"/>
+</f:metadata>
 
 <ui:composition template="/templates/standard.xhtml">
 	<ui:define name="pageTitle">Détail d'un média</ui:define>
 	<ui:define name="content">
-		<section class="group1">   
+		<section class="group1">
 		
-			<rich:editor value="#{beanMessagesPrives.contenu}" 
-			toolbar="full" width="500" height="250" viewMode="visual">	
-			</rich:editor>			
-		    
+		<h:commandButton value="Mot de passe">
+        <rich:componentControl target="popupMotDePasseMedia" operation="show" />
+    </h:commandButton>
+        
+    <p:dialog id="popupMotDePasseMedia" header="Demande de mot de passe du média" modal="true" widgetVar="mdp">
+        <h:form id="form-login">
+        	Le média que vous tentez d'accéder est privé et vous n'êtes pas ami avec l'auteur.<br/>
+        	Par conséquent, nous vous demandons de bien vouloir saisir le mot de passe associé à ce média.
+			<br/>
+			<rich:graphValidator value="">
+					<rich:message for="motDePasse" />
+					<h:panelGrid columns="2">
+						<h:outputText value="Mot de passe :" />
+						<h:inputSecret value="#{beanMedia.motDePasseMedia}" id="motDePasse"
+							showMessages="true">
+							<rich:validator />
+						</h:inputSecret>
+					</h:panelGrid>
+					<br />
+					
+					<p:commandButton value="Valider" actionListener="#{beanMedia.verifierMotDePasseMedia}" update=":popupMotDePasseMedia" />
+				
+			</rich:graphValidator>
+		</h:form>    
+    </p:dialog>
+				
+		
 		    <div id="fb-root"></div>
 			<script>(function(d, s, id) {
 			  var js, fjs = d.getElementsByTagName(s)[0];
@@ -26,153 +56,209 @@
 		      
 			<h3>Détail d'un média</h3>
 			<br/>
-			<span class="titre">
-				<h:outputText value="#{beanMedia.titreMedia}" />
-			</span>
 			
+			<h:outputText rendered="#{empty beanMedia.utilisateurConnecte}" value="Vous devez être connecté pour accéder à cette page" />
+		    
+		    <br/>
+		    
+			<h:outputText value="#{beanMedia.titreMedia}" styleClass="titre" />
+						
 			<br/><br/><br/><br/>
 			
 			<!-- *** Lecteur audio/vidéo *** -->
 			
 			<!-- surrounding element with class - needed!! -->
-			<div onclick="incrementerNbVues()" class="leanback-player-video" style="z-index: 0;">
+			<h:panelGroup rendered="#{beanMedia.nomTypeMedia == 'video' }">
+				<div onclick="incrementerNbVues()" class="leanback-player-video" style="z-index: 0;">
 			    <!-- HTML5 <video> element -->
-			    <video width="612" height="404" preload="metadata" poster="../resources/videos/elephants_dream_640x360.jpg"> <!--  width="472" height="264" -->
-			        <!-- HTML5 <video> sources -->
-			        <source src="../resources/videos/elephants_dream_640x360_2.30.mp4" type='video/mp4; codecs="avc1.42E01E, mp4a.40.2"'/>
-	<!--		    <source src="../resources/videos/360p/elephants_dream_640x360_2.30.mp4" type='video/mp4; codecs="avc1.42E01E, mp4a.40.2"'/>
-	 	       		<source src="../resources/videos/480p/elephants_dream_856x480_2.30.mp4" type='video/mp4; codecs="avc1.42E01E, mp4a.40.2"'/>
-			        <source src="../resources/videos/720p/elephants_dream_1280x720_2.30.mp4" type='video/mp4; codecs="avc1.42E01E, mp4a.40.2"'/>
-	-->
-					<source src="../resources/videos/elephants_dream_640x360_2.30.webm" type='video/webm; codecs="vp8, vorbis"'/>       
-	<!--			<source src="../resources/videos/360p/elephants_dream_640x360_2.30.webm" type='video/webm; codecs="vp8, vorbis"'/>
-			    	<source src="../resources/videos/480p/elephants_dream_856x480_2.30.webm" type='video/webm; codecs="vp8, vorbis"'/>
-			        <source src="../resources/videos/720p/elephants_dream_1280x720_2.30.webm" type='video/webm; codecs="vp8, vorbis"'/>
-	-->		        
-					<source src="../resources/videos/elephants_dream_640x360_2.30.ogv" type='video/ogg; codecs="theora, vorbis"'/>
-	 <!--		    <source src="../resources/videos/360p/elephants_dream_640x360_2.30.ogv" type='video/ogg; codecs="theora, vorbis"'/>
-	 		  		<source src="../resources/videos/480p/elephants_dream_856x480_2.30.ogv" type='video/ogg; codecs="theora, vorbis"'/>
-		    		<source src="../resources/videos/720p/elephants_dream_1280x720_2.30.ogv" type='video/ogg; codecs="theora, vorbis"'/>
-	-->	
-			    	<!-- subtitle-references with <track>-element -->
-	 				<track enabled="true" kind="subtitles" label="عربي" srclang="ar" type="text/x-srt" src="../resources/subtitles/elephants_dream/arabic_ar.srt"></track>
-					<track enabled="true" kind="subtitles" label="中文" srclang="zh" type="text/x-srt" src="../resources/subtitles/elephants_dream/chinese_zh.srt"></track>
-					<track enabled="true" kind="subtitles" label="Deutsch" srclang="de" type="text/x-srt" src="../resources/subtitles/elephants_dream/german_de.srt"></track>
-					<track enabled="true" kind="subtitles" label="English" srclang="en" type="text/x-srt" src="../resources/subtitles/elephants_dream/english_en.srt"></track>
-	 				<track enabled="true" kind="subtitles" label="Español" srclang="es" type="text/x-srt" src="../resources/subtitles/elephants_dream/spanish_es.srt"></track>
-					<track enabled="true" kind="subtitles" label="Français" srclang="fr" type="text/x-srt" src="../resources/subtitles/elephants_dream/french_fr.srt"></track>
-					<track enabled="true" kind="subtitles" label="日本語" srclang="ja" type="text/x-srt" src="../resources/subtitles/elephants_dream/japanese_ja.srt"></track>
-					<track enabled="true" kind="subtitles" label="Svenska" srclang="sv" type="text/x-srt" src="../resources/subtitles/elephants_dream/svenska_sv.srt"></track>
-				    
-				    <!-- Flash-Fallback -->
-			   		<object class="leanback-player-flash-fallback" width="472" height="259" type="application/x-shockwave-flash" data="../resources/flash/flowplayer-3.2.7.swf">
-			            <param name="movie" value="../resources/videos/flash/flowplayer-3.2.7.swf" />
-						<param name="allowfullscreen" value="true" />
-						<param name="bgcolor" value="#000000" />
-						<param name="flashvars" value='config={"clip":{"url":"../resources/videos/elephants_dream_640x360_2.30.mp4","autoPlay":false,"autoBuffering":false}}' />
-						<!--<param name="flashvars" value='config={"clip":{"url":"../resources/videos/360p/elephants_dream_640x360_2.30.mp4","autoPlay":false,"autoBuffering":false}}' />-->
-			        </object>
-			 
-			        <!-- HTML-Fallback - Download Links -->
-			        <div class="leanback-player-html-fallback">
-			            <img src="../resources/videos/elephants_dream_640x360.jpg" width="360" height="240" alt="Poster Image" 
-			                title="No HTML5 media playback capabilities available." />
-			            <div>
-			                <strong>Download Video:</strong>
-			                <a href="../resources/videos/elephants_dream_640x360_2.30.mp4">.mp4</a>,
-			                <a href="../resources/videos/elephants_dream_640x360_2.30.webm">.webm</a>,
-			                <a href="../resources/videos/elephants_dream_640x360_2.30.ogv">.ogv</a>
-			                <!--<a href="../resources/videos/360p/elephants_dream_640x360_2.30.mp4">.mp4</a>,
-			                <a href="../resources/videos/360p/elephants_dream_640x360_2.30.webm">.webm</a>,
-			                <a href="../resources/videos/360p/elephants_dream_640x360_2.30.ogv">.ogv</a>-->
-			            </div>
-			        </div>
-			    </video>
+			       <video width="612" height="404" preload="metadata" poster="../resources/videos/elephants_dream_640x360.jpg"> <!--  width="472" height="264" -->
+				        <!-- HTML5 <video> sources -->
+				        <source src="../resources/videos/elephants_dream_640x360_2.30.mp4" type='video/mp4; codecs="avc1.42E01E, mp4a.40.2"'/>
+		<!--		    <source src="../resources/videos/360p/elephants_dream_640x360_2.30.mp4" type='video/mp4; codecs="avc1.42E01E, mp4a.40.2"'/>
+		 	       		<source src="../resources/videos/480p/elephants_dream_856x480_2.30.mp4" type='video/mp4; codecs="avc1.42E01E, mp4a.40.2"'/>
+				        <source src="../resources/videos/720p/elephants_dream_1280x720_2.30.mp4" type='video/mp4; codecs="avc1.42E01E, mp4a.40.2"'/>
+		-->
+<!--						<source src="../resources/videos/elephants_dream_640x360_2.30.webm" type='video/webm; codecs="vp8, vorbis"'/>       
+-->		<!--			<source src="../resources/videos/360p/elephants_dream_640x360_2.30.webm" type='video/webm; codecs="vp8, vorbis"'/>
+				    	<source src="../resources/videos/480p/elephants_dream_856x480_2.30.webm" type='video/webm; codecs="vp8, vorbis"'/>
+				        <source src="../resources/videos/720p/elephants_dream_1280x720_2.30.webm" type='video/webm; codecs="vp8, vorbis"'/>
+		-->		        
+<!--						<source src="../resources/videos/elephants_dream_640x360_2.30.ogv" type='video/ogg; codecs="theora, vorbis"'/>
+-->		 <!--		    <source src="../resources/videos/360p/elephants_dream_640x360_2.30.ogv" type='video/ogg; codecs="theora, vorbis"'/>
+		 		  		<source src="../resources/videos/480p/elephants_dream_856x480_2.30.ogv" type='video/ogg; codecs="theora, vorbis"'/>
+			    		<source src="../resources/videos/720p/elephants_dream_1280x720_2.30.ogv" type='video/ogg; codecs="theora, vorbis"'/>
+		-->	
+				    	<!-- subtitle-references with <track>-element -->
+		 				<track enabled="true" kind="subtitles" label="عربي" srclang="ar" type="text/x-srt" src="../resources/subtitles/elephants_dream/arabic_ar.srt"></track>
+						<track enabled="true" kind="subtitles" label="中文" srclang="zh" type="text/x-srt" src="../resources/subtitles/elephants_dream/chinese_zh.srt"></track>
+						<track enabled="true" kind="subtitles" label="Deutsch" srclang="de" type="text/x-srt" src="../resources/subtitles/elephants_dream/german_de.srt"></track>
+						<track enabled="true" kind="subtitles" label="English" srclang="en" type="text/x-srt" src="../resources/subtitles/elephants_dream/english_en.srt"></track>
+		 				<track enabled="true" kind="subtitles" label="Español" srclang="es" type="text/x-srt" src="../resources/subtitles/elephants_dream/spanish_es.srt"></track>
+						<track enabled="true" kind="subtitles" label="Français" srclang="fr" type="text/x-srt" src="../resources/subtitles/elephants_dream/french_fr.srt"></track>
+						<track enabled="true" kind="subtitles" label="日本語" srclang="ja" type="text/x-srt" src="../resources/subtitles/elephants_dream/japanese_ja.srt"></track>
+						<track enabled="true" kind="subtitles" label="Svenska" srclang="sv" type="text/x-srt" src="../resources/subtitles/elephants_dream/svenska_sv.srt"></track>
+					    
+					    <!-- Flash-Fallback -->
+				   		<object class="leanback-player-flash-fallback" width="472" height="259" type="application/x-shockwave-flash" data="../resources/flash/flowplayer-3.2.7.swf">
+				            <param name="movie" value="../resources/flash/flowplayer-3.2.7.swf" />
+							<param name="allowfullscreen" value="true" />
+							<param name="bgcolor" value="#000000" />
+							<param name="flashvars" value='config={"clip":{"url":"../resources/videos/elephants_dream_640x360_2.30.mp4","autoPlay":false,"autoBuffering":false}}' />
+							<!--<param name="flashvars" value='config={"clip":{"url":"../resources/videos/360p/elephants_dream_640x360_2.30.mp4","autoPlay":false,"autoBuffering":false}}' />-->
+				        </object>
+				 
+				        <!-- HTML-Fallback - Download Links -->
+				        <div class="leanback-player-html-fallback">
+				            <img src="../resources/videos/elephants_dream_640x360.jpg" width="360" height="240" alt="Poster Image" 
+				                title="No HTML5 media playback capabilities available." />
+				            <div>
+				                <strong>Download Video:</strong>
+				                <a href="../resources/videos/elephants_dream_640x360_2.30.mp4">.mp4</a>,
+				                <a href="../resources/videos/elephants_dream_640x360_2.30.webm">.webm</a>,
+				                <a href="../resources/videos/elephants_dream_640x360_2.30.ogv">.ogv</a>
+				                <!--<a href="../resources/videos/360p/elephants_dream_640x360_2.30.mp4">.mp4</a>,
+				                <a href="../resources/videos/360p/elephants_dream_640x360_2.30.webm">.webm</a>,
+				                <a href="../resources/videos/360p/elephants_dream_640x360_2.30.ogv">.ogv</a>-->
+				            </div>
+				        </div>
+				    </video>
 			</div>
+			</h:panelGroup>
 			
 			
 			<br /><br /><br />
 				
 		
-			<!-- surrounding element with class - needed!! -->
-			<div onclick="incrementerNbVues()" class="leanback-player-audio" style="width:612px; z-index: -1;"><!-- width="350px" -->
-			    <!-- HTML5 <audio> element -->
-			    <audio preload="metadata">
-			        <!-- HTML5 <audio> sources -->
-			        <source src="../resources/audios/03_Snowflake_GiveItUp_4.19.mp4" type='audio/mp4; codecs="mp4a.40.2"'/>
-			        <source src="../resources/audios/03_Snowflake_GiveItUp_4.19.mp3" type='audio/mpeg; codecs="vorbis"'/>
-			        <source src="../resources/audios/03_Snowflake_GiveItUp_4.19.oga" type='audio/ogg; codecs="vorbis"'/>
-			    
-			    	<!-- HTML-Fallback - Download Links -->
-			        <div class="leanback-player-html-fallback">
-			            <div>
-			                <strong>Download Audio:</strong>
-			                <a href="../resources/audios/03_Snowflake_GiveItUp_4.19.mp4">.mp4</a>
-			                <a href="../resources/audios/03_Snowflake_GiveItUp_4.19.mp3">.mp3</a>
-			                <a href="../resources/audios/03_Snowflake_GiveItUp_4.19.oga">.oga</a>
-			            </div>
-			        </div>
-			    </audio>
-			</div>
+			<h:panelGroup rendered="#{beanMedia.nomTypeMedia == 'audio' }">
+				<!-- surrounding element with class - needed!! -->
+				<div onclick="incrementerNbVues()" class="leanback-player-audio" style="width:612px; z-index: 0;"><!-- width="350px" -->
+				    <!-- HTML5 <audio> element -->
+				    <audio preload="metadata">
+				        <!-- HTML5 <audio> sources -->
+				        <source src="../resources/audios/03_Snowflake_GiveItUp_4.19.mp4" type='audio/mp4; codecs="mp4a.40.2"'/>
+				        <source src="../resources/audios/03_Snowflake_GiveItUp_4.19.mp3" type='audio/mpeg; codecs="vorbis"'/>
+				        <source src="../resources/audios/03_Snowflake_GiveItUp_4.19.oga" type='audio/ogg; codecs="vorbis"'/>
+				    
+				    	<!-- HTML-Fallback - Download Links -->
+				        <div class="leanback-player-html-fallback">
+				            <div>
+				                <strong>Download Audio:</strong>
+				                <a href="../resources/audios/03_Snowflake_GiveItUp_4.19.mp4">.mp4</a>
+				                <a href="../resources/audios/03_Snowflake_GiveItUp_4.19.mp3">.mp3</a>
+				                <a href="../resources/audios/03_Snowflake_GiveItUp_4.19.oga">.oga</a>
+				            </div>
+				        </div>
+				    </audio>
+				</div>
+			</h:panelGroup>
 			
 			<h:form>
 		        <a4j:jsFunction name="incrementerNbVues" action="#{beanMedia.incrNbVues}">
 		        </a4j:jsFunction>
 		    </h:form>
 			
-			
-			<br /><br /><br /><br />
 		
 			<rich:panel styleClass="gauche">
-			<h:form>
-			<h:graphicImage library="images" name="icones/emot-heureux-smiley-icone-6821-16.png" alt="J'aime ce contenu" />
-			<h:commandButton value="J'aime" title="J'aime ce contenu" action="#{beanMedia.jAime}"><!-- jAime + pop-up TODO -->
-				<rich:componentControl target="popupJAime" operation="show" />
-			</h:commandButton>
-			<rich:popupPanel id="popupJAime" modal="false" autosized="true"
-		        resizeable="false" style="width: 150px;">
-		        <f:facet name="header">
-		            <h:outputText value="J'aime ce contenu" />
-		        </f:facet>
-		        <f:facet name="controls">
-		            <h:outputLink value="#"
-		                onclick="#{rich:component('popupJAime')}.hide(); return false;">
-		                    X
-		                </h:outputLink>
-		        </f:facet>
-		        <p class="bold">Merci !</p>
-		        <p>
-		        	<a href="#"
-		            	onclick="#{rich:component('popupJAime')}.hide()">Fermer</a>
-		        </p>
-		    </rich:popupPanel>
-			</h:form>
+		
+		<h:form>
+        <rich:toolbar height="26px" itemSeparator="/resources/images/icones/puce_menu.gif">
+            <rich:dropDownMenu mode="ajax">
+                <f:facet name="label">
+                    <h:panelGroup>
+                        <h:graphicImage value="/resources/images/icones/empreintes-icone-5104-16.png" styleClass="pic" alt="Avis" />
+                        <h:outputText value="Avis" />
+                    </h:panelGroup>
+                </f:facet>
+                <rich:menuItem label="J'aime" action="#{beanMedia.jAime}" render="notifyJAime" icon="/resources/images/icones/heart-ajouter-icone-8199-16.png" disabled="true"><!-- disabled todo -->
+                </rich:menuItem>
+                <rich:menuItem label="Je n'aime pas" action="#{beanMedia.jeNAimePas}" render="notifyJeNAimePas" icon="/resources/images/icones/remove-heart-icone-8765-16.png">
+                </rich:menuItem>
+            </rich:dropDownMenu>
+ 
+            <rich:dropDownMenu mode="ajax">
+                <f:facet name="label">
+                    <h:panelGrid cellpadding="0" cellspacing="0" columns="2" style="vertical-align:middle">
+                        <h:graphicImage value="/resources/images/icones/ajouter-icone-5107-16.png" styleClass="pic" alt="Ajouter à" />
+                        <h:outputText value="Ajouter à" />
+                    </h:panelGrid>
+                </f:facet>
+                <rich:menuItem label="Favori" action="#{beanMedia.ajouterAFavori}" render="notifyFavori" icon="/resources/images/icones/#{beanMedia.imgFavori}"><!-- changement image + notify retirer -->
+                </rich:menuItem>
+                <rich:menuItem label="Playlist" icon="/resources/images/icones/player-playlist-icone-7426-16.png" onclick="#{rich:component('popupPlaylist')}.show()">
+                </rich:menuItem>
+            </rich:dropDownMenu>
+            
+            <rich:dropDownMenu mode="ajax">
+                <f:facet name="label">
+                    <h:panelGrid cellpadding="0" cellspacing="0" columns="2" style="vertical-align:middle">
+                        <h:graphicImage value="/resources/images/icones/sharing-overlay-icone-8730-16.png" styleClass="pic" alt="Partager" />
+                        <h:outputText value="Partager" />
+                    </h:panelGrid>
+                </f:facet>
+                <rich:menuItem label="Exporter" icon="/resources/images/icones/page-de-copie-icone-9572-16.png" onclick="#{rich:component('popupExporter')}.show()">
+                </rich:menuItem>
+                <rich:menuItem label="Emails et amis" icon="/resources/images/icones/email-go-icone-7614-16.png" onclick="#{rich:component('popupEmail')}.show()">
+                </rich:menuItem>
+            </rich:dropDownMenu>
+            
+        </rich:toolbar>
+    </h:form>
+    	
+		
+			
+			<a4j:outputPanel ajaxRenderer="true">
+			<rich:notify id="notifyJAime" stayTime="1500" sticky="false" nonblocking="true"
+				nonblockingOpacity="0.5" showShadow="false"
+				showCloseButton="true" detail="#{beanMedia.detailNotificationJAime}" render="false"
+				>
+				<f:facet name="summary">
+					J'aime ce contenu
+				</f:facet>
+			</rich:notify>
+			</a4j:outputPanel>
 			
 			
-			<h:form>
-				<h:graphicImage library="images" name="icones/triste-smiley-icone-7611-16.png" alt="Je n'aime pas ce contenu" />
-				<a4j:commandButton value="Je n'aime pas" title="Je n'aime pas ce contenu" action="#{beanMedia.jeNAimePas}"/>
-				<!-- pop-up + action TODO -->			
-			</h:form>
 			
+				<rich:notify id="notifyJeNAimePas" stayTime="1500" sticky="false" nonblocking="false"
+					nonblockingOpacity="0.5" showShadow="false"
+					showCloseButton="true" detail="#{beanMedia.detailNotificationJeNAimePas}">
+				 
+					<f:facet name="summary">
+						Je n'aime pas ce contenu
+					</f:facet>
+				</rich:notify>
+			
+			
+			<rich:notify id="notifyFavori" stayTime="1500" sticky="false" nonblocking="false"
+					nonblockingOpacity="0.5" showShadow="false"
+					showCloseButton="true" detail="Média ajouté à vos favoris">
+				 
+					<f:facet name="summary">
+						Favori
+					</f:facet>
+				</rich:notify>
+				
+				
+				
+				
+				
+				
+	<h:form>
+        <h:panelGrid columns="3">
+            <h:outputText value="Name:" />
+            <h:inputText value="#{beanMedia.commentaireSaisi}" />
+            <a4j:commandLink value="Say Hello" render="out" execute="@form" />
+        </h:panelGrid>
+    </h:form>
+    <br />
+    <a4j:outputPanel id="out">
+        <h:outputText value="Hello #{beanMedia.commentaireSaisi} !" styleClass="outhello" />
+    </a4j:outputPanel>
+    
+    
+    
 			<h:form>
-			<!--<rich:panel style="width:220px;">
-	            <f:facet name="header">
-	                <h:outputText value="Select with manual input"></h:outputText>
-	            </f:facet>-->
-	          
-	            <h:selectOneMenu id="selectAjouter" label="+ Ajouter à" style="width:105px;">
-               		  <f:selectItem itemValue="F" itemLabel="#{beanMedia.txtFavori}" />
-                      <f:selectItem itemValue="P" itemLabel="Playlist"/>
-                      <a4j:ajax event="change" render="selectAjouter" execute="@this" listener="#{beanMedia.ajouterAFavori}"/>              
-                </h:selectOneMenu><!-- TODO 2 event différents -->
-	        <!--</rich:panel>-->
-	        
-	            
-	        <h:commandButton value="Call the popup">
-		        <rich:componentControl target="popupPlaylist" operation="show" />
-		    </h:commandButton>
-		    <rich:popupPanel id="popup" modal="false" autosized="true" resizeable="false">
+		    <rich:popupPanel id="popupPlaylist" modal="false" autosized="true" resizeable="false" style="z-index: 99999;">
 		        <f:facet name="header">
 		            <h:outputText value="Ajouter à une playlist" />
 		        </f:facet>
@@ -183,16 +269,15 @@
 		        </f:facet>
 		        <p>
 		        	Cliquez sur une playlist pour ajouter ou retirer cette vidéo
-		        	
-			        <rich:dataTable value="#{beanMedia.listePlaylistUt}" var="play" id="table">
+		        	<rich:dataTable value="#{beanMedia.listePlaylistUt}" var="play" id="table">
 			            <rich:column sortBy="#{play.nomPlaylist}" id="nomPlaylist" sortOrder="">
 			                <f:facet name="header">
 			                	<a4j:commandLink value="Nom" render="table" action="#{beanMedia.sortByNom}" />
 			                </f:facet>
-			                <h:graphicImage library="images" name="icones/#{beanMedia.imgAjoutPlaylist}" alt="Ajouter" />
-	        				<h:commandLink value="#{play.nomPlaylist}" action="#{beanMedia.ajouterMediAPlaylist}">
-			                	<f:param name="idPlaylist" value="#{play.idPlaylist}"/>
-							</h:commandLink>
+			                <h:graphicImage id="imgAjoutPlaylist" value="../resources/images/icones/#{beanMedia.imgAjoutPlaylist}" alt="Ajouter" />
+	        				<a4j:commandLink value="#{play.nomPlaylist}" action="#{beanMedia.ajouterMediaAPlaylist}" execute="@form"  ajaxSingle="true">
+			                
+			                </a4j:commandLink>
 			                (
 					        nb TODO
 					        )
@@ -213,7 +298,7 @@
 		        </p>
 		    </rich:popupPanel>
 	        
-	        <rich:popupPanel id="popupCreerPlaylist" modal="false" autosized="true" resizeable="false">
+	        <rich:popupPanel id="popupCreerPlaylist" modal="false" autosized="true" resizeable="false" style="z-index: 99999;">
 						<f:facet name="header">
 				            <h:outputText value="Créer une nouvelle playlist" />
 				        </f:facet>
@@ -254,32 +339,7 @@
 	        
         
         	<h:form>
-        		<!-- <h:panelGrid columns="1" style="margin-bottom:10px" cellpadding="5">
-        		
-        		<p:selectOneMenu value=""
-                         effect="fade" var="p">
-		            <f:selectItem itemLabel="+ Partager" itemValue="" />
-		            
-		            <p:column>--><!-- images TODO -->  
-		        <!--         <p:graphicImage value="/images/icones/document-a-exportation-icone-8861-16.png" width="40" height="50"/>  
-		            </p:column>
-		        </p:selectOneMenu>
-		        
-        		</h:panelGrid>-->
-        	
-        		<rich:select enableManualInput="true" defaultLabel="+ Partager">
-	                <f:selectItem itemValue="1" itemLabel="Exporter" />
-	                <f:selectItem itemValue="2" itemLabel="Facebook" />
-	                <f:selectItem itemValue="3" itemLabel="Twitter" />
-	                <f:selectItem itemValue="4" itemLabel="Emails et amis" />
-	            </rich:select>
-	            
-	            
-	            
-	            <h:commandButton value="Call the popup Exporter">
-			        <rich:componentControl target="popupExporter" operation="show" />
-			    </h:commandButton>
-			    <rich:popupPanel id="popupExporter" modal="false" autosized="true" resizeable="false">
+			    <rich:popupPanel id="popupExporter" modal="false" autosized="true" resizeable="false" style="z-index: 99999;">
 			        <f:facet name="header">
 			            <h:outputText value="Personnaliser le lecteur exportable" />
 			        </f:facet>
@@ -296,9 +356,9 @@
 			        	<h:outputText value="Copier le code d'intégration" styleClass="bold"/>
 			        	<br/>
 			        	<br/>
-			        	<h:inputTextarea>
-			        		<h:outputText id="codeIntegration" value="#{beanMedia.codeIntegration}" />
+			        	<h:inputTextarea id="codeIntegration" value="#{beanMedia.codeIntegration}" cols="60" rows="5">
 			        	</h:inputTextarea>
+			        	<br/>
 			        	<h:selectBooleanCheckbox value="true">
 			        		<f:ajax event="click" listener="#{beanMedia.desactiverLecteurIframe}" render="codeIntegration"/>
 			        		<h:outputText value="Activer le lecteur iframe compatible iPhone, iPad, Android..."/>
@@ -324,19 +384,7 @@
 			    </rich:popupPanel>
 			    
 			    
-			    
-			    
-			    
-			    
-			    
-			    
-			    
-			    
-			    
-			    <h:commandButton value="Call the popup Email">
-			        <rich:componentControl target="popupEmail" operation="show" />
-			    </h:commandButton>
-			    <rich:popupPanel id="popupEmail" modal="false" autosized="true" resizeable="false">
+			    <rich:popupPanel id="popupEmail" modal="false" autosized="true" resizeable="false" style="z-index: 99999;">
 			        <f:facet name="header">
 			            <h:outputText value="Choisissez vos destinataires" />
 			        </f:facet>
@@ -345,51 +393,163 @@
 			                X
 			            </h:outputLink>
 			        </f:facet>
-			        <p>
-			        	<h:outputText value="À (adresses e-mail ou noms d'utilisateur) :" styleClass="bold"/>
-			        	<a href="#" onclick="#{rich:component('popupEmail')}.hide()">Fermer</a>
-			        	<br/>
-			        	<br/>
-			        	<h:outputText value="Remarque supplémentaire (facultatif) :" styleClass="bold"/>
-			        	<br/>
-			        	TODO
-			        	<br/>
-			        	<br/>
-			        	<h:outputText value="Aperçu du message :" styleClass="bold"/>
-			        	<br/>
-			        	bidule a partagé une vidéo avec vous sur MediArea :
-			        		titre - TODO
-			        </p>
+			        
+			        <h:panelGrid columns="2" columnClasses="top,top">
+						<h:outputText value="De : "/>
+						<h:inputText value="#{beanMessagesPrives.utilisateurConnecte.adrMail}" style="width: 500px" disabled="true"/>
+									
+						<h:outputText value=" A : "/>
+						<rich:autocomplete id="destinataire" mode="ajax" value="#{beanMessagesPrives.destinataire}"
+						tokens=", " minChars="1" autoFill="false" autocompleteMethod="#{beanMessagesPrives.autoCompletion}" 
+						autocompleteList="#{beanMessagesPrives.suggestionUtilisateurs}" style="width: 500px"/><!-- TODO -->
+						
+						<h:outputText value=" Objet : "/>
+						<h:inputText id="objet" value="#{beanMessagesPrives.objet}" style="width: 500px"/>
+
+						<h:outputText value="Message :"/>
+						<rich:editor value="#{beanMessagesPrives.contenu}" 
+						theme="advanced" width="500" height="250" viewMode="visual">	
+						</rich:editor>	
+					
+					</h:panelGrid>	
+								
+					<br />
+					
+					<h:commandButton value="Envoyer le message" action="#{beanMedia.envoyerEmail}" >
+					</h:commandButton>
+					
+					<h:commandButton value="Vider formulaire">
+						<f:setPropertyActionListener target="#{beanMessagesPrives.destinataire}" value="#{message.destinataire.adrMail}" />
+						<f:setPropertyActionListener target="#{beanMessagesPrives.objet}" value="" />
+						<f:setPropertyActionListener target="#{beanMessagesPrives.contenu}" value="" />					
+					</h:commandButton>
 			    </rich:popupPanel>
+			    
+			    <br/>
+			    	
+				<rich:inputNumberSlider value="#{beanMedia.resultatNbAime}" style="max-width:100px;" maxValue="#{beanMedia.resultatNbAimeNAimePas}"
+        			step="1" showArrows="true" showTooltip="false" disabled="true" orientation="vertical"/>
+        		<br/>
+        		<br/>
+        		
 	        </h:form>
 	            
-	            <br/>
-	            
+	            <div style="float: left;">
 	            <!-- https://dev.twitter.com/docs/tweet-button : Tweet Button -->
 				<a href="https://twitter.com/share" class="twitter-share-button" data-via="twitterapi" data-lang="en">Tweet</a>
 				<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="//platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+				</div>
 				
-	            <!-- Like Button - Facebook Developers -->
-				<div class="fb-like" data-send="false" data-layout="button_count" data-width="450" data-show-faces="true"></div>
-								
+				<!-- Like Button - Facebook Developers -->
+				<div style="float: left; max-width: 100px;" class="fb-like" data-send="false" data-layout="button_count" data-width="450" data-show-faces="true"></div>
+				
+				<div style="float: left;">
 				<!-- https://developers.google.com/+/plugins/+1button/ : +1 Button -->
 				<script type="text/javascript" src="https://apis.google.com/js/plusone.js"></script>
 				<div class="g-plusone" data-size="medium"></div>
+				</div>
 				
-				<br/>
-				
+				<div style="float: left;">
 				<!-- http://en.skyrock.com/developer/tools.php : Share on Skyrock -->
 				<a href="http://www.skyrock.com/m/blog/share.php?js=0" class="skysocial-s skyrocksocialshare_classic24" title="Share on Skyrock" style="display:inline-block;text-indent:-999em;overflow:hidden;width:57px;height:24px;background:url(http://share.static.skyrock.net/img/api/skyrocksocialshare_classic24.png) no-repeat 0 0 transparent;"><p style="display:none;">Share on Skyrock</p></a>
 				<script>(function(){var d=document,id='skyrock-fxlebpx'; if(d.getElementById(id)) return;var e=d.createElement('script');e.id=id;e.async=true;e.src='http://share.static.skyrock.net/js/skyrock_social.min.js';d.getElementsByTagName('body')[0].appendChild(e);}());</script>
+				</div>
 				
+				<div style="clear: both;"></div>
 				<br /><br />
 			
-	            <h:graphicImage library="images" name="icones/drapeau-rouge-icone-6492-16.png" alt="Peut offenser" />
-	            <h:commandButton value="Signaler">
+	            
+	            
+	            <span class="bold">
+	            	Ajouté par 
+	            	<h:outputLink value="TODO/#{beanMedia.auteur}" title="#{tag.nomTag}">
+						<h:outputText value="#{beanMedia.auteur}"/>
+					</h:outputLink>
+	            	le <h:outputText value="#{beanMedia.datePublication}" />
+	            </span>
+	            <br />
+	            <h:outputText value="#{beanMedia.description}" />
+        	</rich:panel>
+        	
+        	<rich:panel styleClass="droite bold">
+        		<h:outputText value="#{beanMedia.resultatTotalVuesMedia}">
+        			<f:convertNumber integerOnly="true"/>
+        		</h:outputText>
+        		<h:outputText value=" vue#{beanMedia.motVues}" />
+        		
+        		
+				        
+				<br/>        		
+		        <h:outputText value="#{beanMedia.resultatTotalTelechargementMedia}"/> téléchargement<h:outputText value="#{beanMedia.motTelechargement}"/>
+		        <br/>
+		        <br/>  
+        		
+        		
+        		
+        			
+        		
+        		
+        		
+        		
+        		
+        		
+        	
+        	<h:form>
+        		<div style="float:left;">
+        		<p:growl id="messages" showDetail="true"/> 
+        	
+        		<h:panelGrid columns="2" cellpadding="5">
+			        <p:rating value="#{beanMedia.note}">  
+			            <p:ajax event="rate" listener="#{beanMedia.handleRate}" update="messages" />  
+			        </p:rating>
+			    </h:panelGrid>
+        		</div>
+        		
+        		<br/>
+        		
+        		<div style="float:left;">
+        		<h:commandButton value="Signaler" image="/resources/images/icones/drapeau-rouge-icone-6492-32.png" alt="Peut offenser">
 	           		<rich:componentControl target="popupSignaler" operation="show" />
 	            </h:commandButton>
+	            </div>
+	         </h:form>  
+	            	
+        		<br/>
+        		
+        		<h:form>
+	        		<h:commandLink>
+	        			<h:graphicImage library="images" name="icones/graphique-en-ligne-icone-4887-32.png" alt="Avatar"/>
+	        			<rich:componentControl target="popupStatistiques" operation="show" />
+	        		</h:commandLink>
+	        		
+	        		<rich:popupPanel id="popupStatistiques" modal="false" autosized="true" resizeable="false" style="width: 500px; z-index: 99999;">
+				        <f:facet name="header">
+				            <h:outputText value="Statistiques" />
+				        </f:facet>
+				        <f:facet name="controls">
+				            <h:outputLink value="#" onclick="#{rich:component('popupStatistiques')}.hide(); return false;">
+				                X
+				            </h:outputLink>
+				        </f:facet>
+				        <p>
+				        <h:outputText value="#{beanMedia.resultatTotalVuesMedia}"/> vue<h:outputText value="#{beanMedia.motVues}"/> - <h:outputText value="#{beanMedia.nbCommentaires}"/> com. - TODO fav. - <h:outputText value="#{beanMedia.resultatTotalVotesMedia}"/> vote<h:outputText value="#{beanMedia.motVotes}"/>
+				        <br/>  
+
+     					<p:lineChart id="category" value="#{beanMedia.categoryModel}" legendPosition="e"  
+							title="Statistiques sur le nombre de vues" minY="0" maxY="#{beanMedia.maxY}" style="height:300px;margin-top:20px"/> 
+				        <!-- Audiences par sexe, par endroit TODO -->
+				            
+				            
+				            <a href="#" onclick="#{rich:component('popupStatistiques')}.hide()">Fermer</a>
+				        </p>
+				    </rich:popupPanel>
+				</h:form>
+        		
+        	
+        		
+        		
 	            <rich:popupPanel id="popupSignaler" modal="false" autosized="true"
-			        resizeable="false" style="width: 400px; overflow: hidden;">
+			        resizeable="false" style="width: 400px; overflow: hidden; z-index: 99999;">
 			        <f:facet name="header">
 			            <h:outputText value="Signaler cette vidéo (contenu pouvant offenser)" title="" />
 			        </f:facet>
@@ -424,99 +584,28 @@
 			    
 			    
 	            <br /><br />
-	            
-	            <span class="bold">
-	            	Ajouté par 
-	            	<h:outputLink value="TODO/#{beanMedia.auteur}" title="#{tag.nomTag}">
-						<h:outputText value="#{beanMedia.auteur}"/>
-					</h:outputLink>
-	            	le <h:outputText value="#{beanMedia.datePublication}" />
-	            </span>
-	            <br />
-	            <h:outputText value="#{beanMedia.description}" />
-	            
-        		<br /><br />
-        	</rich:panel>
-        	
-        	<rich:panel styleClass="droite bold">
-        		<h:outputText value="#{beanMedia.resultatTotalVuesMedia}">
-        			<f:convertNumber integerOnly="true"/>
-        		</h:outputText>
-        		<h:outputText value=" vue#{beanMedia.motVues}" />
         		
-        		<h:form>
-	        		<h:commandLink>
-	        			<h:graphicImage library="images" name="icones/bar-tableau-graphique-rapport-icone-5031-32.png" alt="Avatar"/>
-	        			<rich:componentControl target="popupStatistiques" operation="show" />
-	        		</h:commandLink>
-	        		
-	        		<rich:popupPanel id="popupStatistiques" modal="false" autosized="true" resizeable="false">
-				        <f:facet name="header">
-				            <h:outputText value="Statistiques" />
-				        </f:facet>
-				        <f:facet name="controls">
-				            <h:outputLink value="#" onclick="#{rich:component('popupStatistiques')}.hide(); return false;">
-				                X
-				            </h:outputLink>
-				        </f:facet>
-				        <p>
-				        <h:outputText value="#{beanMedia.resultatTotalVuesMedia}"/> vue<h:outputText value="#{beanMedia.motVues}"/> - <h:outputText value="#{beanMedia.nbCommentaires}"/> com. - TODO fav. - <h:outputText value="#{beanMedia.resultatTotalVotesMedia}"/> vote<h:outputText value="#{beanMedia.motVotes}"/>
-				        <br/>
-				        
-						    
-				            
-				        <p:lineChart id="linear" value="#{beanMedia.linearModel}" legendPosition="e"  
-     						title="Linear Chart" minY="0" maxY="10" style="height:300px"/>    
-				            
-				            
-				            
-				            
-				            
-				            
-				            
-				            
-				            <a href="#" onclick="#{rich:component('popupStatistiques')}.hide()">Fermer</a>
-				        </p>
-				    </rich:popupPanel>
-				</h:form>
-        		
-        		
-        		
-        		
-        		
-        		
-        		
-        		<br/>        		
-        		50 TODO fois téléchargé
-        		<br/>
-        		<br/>
-        	
-        	<h:form>
-        		<p:growl id="messages" showDetail="true"/> 
-        	
-        		<h:panelGrid columns="2" cellpadding="5">
-			        <p:rating value="#{beanMedia.note}">  
-			            <p:ajax event="rate" listener="#{beanMedia.handleRate}" update="messages" />  
-			        </p:rating>
-			    </h:panelGrid>
-        	</h:form>
-        	
-        	
-        		<br/><br/>
-        		
-        					
-				<rich:inputNumberSlider value="#{beanMedia.resultatNbAime}" width="500" maxValue="#{beanMedia.resultatNbAimeNAimePas}"
-        			step="1" showArrows="true" showTooltip="false" disabled="true" />
-        		
-        		<br/><br/>
         		<!-- Artiste : <h:outputText value="" /><br /> -->
         		
-        		<h:graphicImage library="images" name="icones/panier-ajouter-icone-5924-32.png" alt="Avatar"/>Ajouter <h:outputText value="#{beanMedia.titreMedia}" /> au panier
-        		<!-- TODO panier -->
+        		<h:form>
+        			<a4j:commandButton value="Ajouter #{beanMedia.titreMedia} au panier" title="Ajouter #{beanMedia.titreMedia} au panier" action="#{beanMedia.ajouterAuPanier}" render="notifyAjoutAuPanier" image="/resources/images/icones/panier-ajouter-icone-5924-32.png" rendered="#{beanMedia.mediaVisualise.estTelechargementAutorise}"/>
+        		
+					<rich:notify id="notifyAjoutAuPanier" stayTime="1500" sticky="false" nonblocking="false"
+			        nonblockingOpacity="0.5" showShadow="false"
+			        showCloseButton="true" detail="#{beanMedia.detailNotifyAjoutAuPanier}">
+			 
+				        <f:facet name="summary">
+				            Notification
+				        </f:facet>
+			        
+			        </rich:notify>
+		        </h:form>
+        		
+        		<br/>
         		
         		<h:form>
-        			<h:outputLink value="/MediArea/resources/#{beanMedia.nomTypeMedia}s/#{beanMedia.titreMedia}.mp3">
-					  <f:verbatim>Télécharger ce média</f:verbatim>
+        			<h:outputLink value="/MediArea/resources/#{beanMedia.nomTypeMedia}s/#{beanMedia.titreMedia}.mp3" rendered="#{beanMedia.mediaVisualise.estTelechargementAutorise}">
+					  <f:verbatim>Télécharger ce média</f:verbatim><!-- TODO ajout dans table Telechargement media -->
 					</h:outputLink>
         		</h:form>
         	
@@ -524,129 +613,254 @@
         	</rich:panel>
         	
         	<div style="clear: both;"></div>
-        	
-        	
-        	
-        	
-        	<rich:collapsiblePanel header="Plus" switchType="client"> 
-	                <h:outputText value="Catégorie : " styleClass="bold" />
-	                <br/>
-	                <a4j:repeat value="#{beanMedia.listeCategories}" var="categ" rows="20" id="repeatCategories">
-						<h:outputLink value="recherche.jsf?categ=#{categ.nomCategorie}" title="#{categ.nomCategorie}">
-							<h:outputText value="#{categ.nomCategorie}"/>
-						</h:outputLink>
-						<h:outputText value=" "/>
-		    		</a4j:repeat>
-	                
-	                <br/>
-	                <br/>
-	                
-	                <h:outputText value="Tags : " styleClass="bold" />
-	                <br/>
-					<a4j:repeat value="#{beanMedia.listeTags}" var="tag" rows="20" id="repeatTags">
-						<h:outputLink value="recherche.jsf?tag=#{tag.nomTag}" title="#{tag.nomTag}">
-							<h:outputText value="#{tag.nomTag}"/>
-						</h:outputLink>
-						<h:outputText value=" "/>
-		    		</a4j:repeat>
-	        </rich:collapsiblePanel>
-		
-        	
-        	
+
+
+
+
+			<rich:collapsiblePanel header="Plus" switchType="client">
+				<h:panelGroup rendered="#{beanConnexion.user != beanMedia.mediaVisualise.auteurMedia}">
+				
+				<h:outputText value="Catégorie : " styleClass="bold" />
+				<br />
+				<a4j:repeat value="#{beanMedia.listeCategories}" var="categ"
+					rows="20" id="repeatCategories">
+					<h:outputLink value="recherche.jsf?categ=#{categ.nomCategorie}"
+						title="#{categ.nomCategorie}">
+						<h:outputText value="#{categ.nomCategorie}" />
+					</h:outputLink>
+					<h:outputText value=" " />
+				</a4j:repeat>
+
+				<br />
+				<br />
+
+				<h:outputText value="Tags : " styleClass="bold" />
+				<br />
+				<a4j:repeat value="#{beanMedia.listeTags}" var="tag" rows="20"
+					id="repeatTags">
+					<h:outputLink value="recherche.jsf?tag=#{tag.nomTag}"
+						title="#{tag.nomTag}">
+						<h:outputText value="#{tag.nomTag}" />
+					</h:outputLink>
+					<h:outputText value=" " />
+				</a4j:repeat>
+				</h:panelGroup>
+				
+				
+				<h:panelGroup rendered="#{beanConnexion.user == beanMedia.mediaVisualise.auteurMedia}">
+					propriétaire TODO champs modifiables et enregistrable
+				</h:panelGroup>
+			</rich:collapsiblePanel>
+
+
+
 			<br /><br />
+			
+			
+			
+			
+			<h:form id="form">
+
+				<p:panel id="panel" header="New Person" style="margin-bottom:10px;">
+					<p:messages id="messages" />
+					<h:panelGrid columns="3">
+						<h:outputLabel for="firstname" value="Firstname: *" />
+						<p:inputText id="firstname" 
+							value="#{beanMedia.commentaireSaisi}" required="true" label="Firstname">
+							<f:validateLength minimum="2" />
+						</p:inputText>
+						<p:message for="firstname" />
+					</h:panelGrid>
+				</p:panel>
+			
+				<p:commandButton value="Ajax Submit" update="panel,display" id="ajax"
+						 				 />
+				
+				<p:panel id="display" header="Information" style="margin-top:10px;">
+					<h:panelGrid columns="2">
+						<h:outputText value="Firstname: " />
+						<h:outputText value="#{beanMedia.commentaireSaisi}" />
+					</h:panelGrid>
+				</p:panel>
+				
+			</h:form>
+            
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
 			
 			<h5>
 				Commentaires 
-				( 
+				(
 				<h:outputText value="#{beanMedia.nbCommentaires}">
 					<f:convertNumber integerOnly="true"/>
 				</h:outputText>
 				)
 			</h5>
 		   	
-		   	<h:form>
-					<rich:editor id="editor" toolbar="full" value="#{editorBean.value}" style="margin-bottom: 1em">
-			            <a4j:ajax event="change" render="panel" status="panelUpdateStatus" />
-			            <a4j:ajax event="dirty" render="panel" status="panelUpdateStatus">
-			                <a4j:attachQueue requestDelay="1000" />
-			            </a4j:ajax>
-			            Réagir à propos de ce média.
-			        </rich:editor>
-			         
-			        <rich:panel id="panel">
-			            <f:facet name="header">
-			                Output from Editor
-			                <a4j:status name="panelUpdateStatus">
-			                    <f:facet name="start">
-			                        (Updating)
-			                    </f:facet>
-			                </a4j:status>
-			            </f:facet>
-			            <h:outputText escape="false" value="#{editorBean.value}" />
-			        </rich:panel>			  
-			  	<br/>
-			   	<a4j:commandButton value="Publier" render="out" execute="@form"/>
-			</h:form>
 		   	
-		   	
-		    <br />
-		    
-		    <!-- <a4j:outputPanel id="out">
-		        <h:outputText value="Hello #{beanMedia.commentaireSaisi} !"
-		            rendered="#{not empty beanMedia.commentaireSaisi}" />
-		    </a4j:outputPanel> -->
+			<h:form id="formMessage">
+		        <rich:editor id="editor" value="#{beanMedia.commentaireSaisi}" style="margin-bottom: 1em" onfocus="this.innerHTML='';"><!-- TODO onfocus -->
+		            <a4j:ajax event="change" render="panel" status="panelUpdateStatus" />
+		            <a4j:ajax event="dirty" render="panel" status="panelUpdateStatus">
+		                <a4j:attachQueue requestDelay="1000" />
+		            </a4j:ajax>
+		            <a4j:ajax event="change" render="nbCaracteresRestants" execute="@this" listener="#{beanMedia.decrementerNbCaracteresRestants}"/>
+				</rich:editor>
+		        
+		        <h:outputText id="nbCaracteresRestants" value="#{beanMedia.nbCaracteresRestants} caractères restants" style="float:left;"/><!-- TODO mettre à jour caractères restants -->
+		        
+		        <!-- <a4j:commandButton action="" value="Publier" render="groupList" style="float:right;"/>
+		        <h:commandButton value="Publier" style="float:right;">
+		        	<f:ajax event="click" listener="" render="groupList"/>
+			    </h:commandButton> -->
+           		<p:commandButton id="ajax" value="Publier" actionListener="#{beanMedia.publierCommentaire}" update=":formTest:test" />
+				
+		        <br/>
+		        
+		        <rich:panel id="panel">
+		            <!--<f:facet name="header">
+		                Output from Editor-->
+		                <a4j:status name="panelUpdateStatus">
+		                    <f:facet name="start">
+		                        (Updating)
+		                    </f:facet>
+		                </a4j:status>
+		            <!--</f:facet>-->
+		            <h:outputText escape="false" value="#{beanMedia.commentaireSaisi}" />
+		        </rich:panel>
+		 
+    		</h:form>
+		    <br/><br/><br/><br/><br/>    		
+    
+    		<h:form id="formTest">
+    		<p:panel id="test" >
+    			<h:outputText value="#{beanMedia.listeCommentaires.size()}"/>
+    		</p:panel>
+    		
+			<h:panelGroup id="groupList">
+				<ui:repeat value="#{beanMedia.listeCommentaires}" var="commentaire" id="repeatCommentaire" rows="10">
+					<rich:panel id="panelCommentaire">
+						<f:facet name="header">
+							Commentaire : 
+						</f:facet>
+						<f:facet name="header">							
+							<h:commandLink value="Supprimer" action="#{beanMedia.supprimerCommentaire}" render="notifySuppressionComm">
+			                	<f:param name="idCommentaire" value="#{commentaire.idCommentaire}"/>
+							</h:commandLink>, 
+							<rich:notify id="notifySuppressionComm" stayTime="1500" sticky="false" nonblocking="false"
+								nonblockingOpacity="0.5" showShadow="false"
+								showCloseButton="true" detail="Le commentaire a été supprimé avec succès !" render="false">
+							 
+								<f:facet name="summary">
+									Suppression du commentaire
+								</f:facet>
+							</rich:notify>
+			
+							<h:commandLink value="Signaler comme spam" action="#{beanMedia.signalerCommentaire}">
+								<f:setPropertyActionListener target="#{beanMedia.commentaireAffiche}" value="#{commentaire}" />
+								<rich:componentControl target="popupSignalement" operation="show" />						
+							</h:commandLink>
+							
+			
+							Vote pour
+							Vote contre										
+						</f:facet>
+						<table>
+							<tr>
+								<td>
+									<div align="center">
+										<h:outputText value="#{commentaire.auteur.pseudo}" />
+										<br />
+										<h:graphicImage value="#{commentaire.auteur.avatar.nomAvatar}" />	
+										<br />
+										Envoyé le :
+										<br />
+										<h:outputText value="#{commentaire.dateCommentaire}">
+											<f:convertDateTime type="both" dateStyle="short"/>
+										</h:outputText>							
+									</div>
+								</td>
+								<td>
+									<h:outputText escape="false" value="#{commentaire.contenuCommentaire}" />
+								</td>
+							</tr>
+						</table>
+						
+						<rich:popupPanel id="popupSignalement" modal="false" autosized="true" resizeable="false">
+						        <f:facet name="header">
+						            <h:outputText value="Attention !" />
+						        </f:facet>
+						        <f:facet name="controls">
+						            <h:outputLink value="#" onclick="#{rich:component('popupSignalement')}.hide(); return false;">
+						                X
+						            </h:outputLink>
+						        </f:facet>
+						        	<h:outputText value="Etes-vous sur de vouloir signaler ce commentaire ?" />
+								    <h:commandButton value="Oui" action="#{beanMedia.signalerCommentaire}"/>
+								    <h:commandButton value="Annuler">
+								        <rich:componentControl target="popupSignalement" operation="hide" />
+								    </h:commandButton>	
+							</rich:popupPanel>
 
-   			<a4j:outputPanel id="out">
-		        <h:outputText value="Hello #{beanMedia.commentaireSaisi} !"
-		            rendered="#{not empty beanMedia.commentaireSaisi}" />
-		    </a4j:outputPanel>
-    
-		    <br/><br/><br/><br/><br/>
-    		
-    		
-    		<br/>
-    		
-    
-    		<!-- *** dataScroller *** -->	
-			<h:form id="form2">
-		        <h:panelGrid columnClasses="acent">
-		            <rich:dataScroller for="table" maxPages="5" />
-		            <rich:dataTable value="#{beanMedia.commentaires}" var="commentaire" id="table" rows="10">
-		                <rich:column accept="#{testFiteringBean.accepttest}">
-		                    <f:facet name="header">
-		                        <h:outputText value="---" />
-		                    </f:facet>
-		                    <h:outputText value="#{commentaire.auteur.pseudo}" />
-		                    <br/>
-		                    <h:outputText value="#{commentaire.dateCommentaire}">
-		                    	<f:convertDateTime pattern="MM/dd/yy HH:MM"/> 
-		                    </h:outputText>
-		                    <br/>
-		                    <h:graphicImage library="images" name="avatars/#{beanMedia.nomAvatar}" alt="Avatar" />
-			            </rich:column>
-		                <rich:column>
-		                    <f:facet name="header">
-		                        <h:outputText value="" />
-		                    </f:facet>
-		                    <h:outputText value="#{commentaire.contenuCommentaire}" />
-		                    
-		                    
-	                        
-					         <h:panelGrid columns="2">
-					            <h:inputText value="#{commentaire.contenuCommentaire}" />
-					            <a4j:commandButton value="Répondre" action="#{beanMedia.rendreVisible}" render="out2" execute="@form">
-					            </a4j:commandButton> 
-					            
-					        </h:panelGrid>
-						    <br />
-						    
-						    <h:inputText id="out2" rendered="#{beanMedia.estVisible}"/>
-						    
-		                    
-		                </rich:column>
-		            </rich:dataTable>
-		            <rich:dataScroller for="table" maxPages="5" />
-		        </h:panelGrid>
+						<br/>
+
+						<rich:dataTable value="" var="list" style="width: 575px;">
+							<rich:column colspan="6">
+				                <rich:collapsibleSubTableToggler for="sbtbl" />
+				                Réponses
+				            </rich:column>
+							<rich:collapsibleSubTable value="#{beanMedia.listeReponses}" var="reponses" id="sbtbl" expandMode="client"  expanded="#{false}">
+				                <rich:column>
+				                  	<h:outputText escape="false" value="#{reponses.contenuCommentaire}" />
+				                </rich:column>
+				                <f:facet name="footer">
+				                    <rich:editor id="editorReponse" value="#{beanMedia.commentaireSaisi}" height="100" width="575" style="margin-bottom: 1em;">
+				       				</rich:editor>
+				       				<h:commandButton value="Répondre" action="#{beanMedia.repondreCommentaire}" style="float: right;">
+										<f:setPropertyActionListener target="#{beanMediacommentaireAffiche}" value="#{commentaire}" />						
+									</h:commandButton>
+				                </f:facet>
+							</rich:collapsibleSubTable>
+						</rich:dataTable>
+						
+						<br/>						
+						
+						
+
+					</rich:panel>
+					<br />
+				</ui:repeat>
+			</h:panelGroup>	
+			
+				<rich:dataScroller for="table" maxPages="5" />	
+			
+			
+			
 		    </h:form>
 		    
 		</section>
@@ -669,12 +883,11 @@
 			                        </f:facet>
 			                        <h:panelGrid columns="3">	                            
 			                            <h:graphicImage value="#{mediaSuggere.photo}" alt="flag" style="float: left;"/>
-			                            de
 			                            <div style="float: right;">
+			                            	de
 				                            <h:outputText value="#{mediaSuggere.auteurMedia.pseudo}" style="font-weight:bold;" />
-				                            <br/><br/>
-				                            ...
-				                        	vues
+				                            
+				                            ... vues
 			                        	</div>
 			                        </h:panelGrid>
 			                    </rich:panel>
@@ -691,4 +904,3 @@
 	</ui:define>
 </ui:composition> 
 </html>
- 

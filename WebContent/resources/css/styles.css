@@ -636,7 +636,7 @@ nav ul li a.current{
 		    	
 .gauche {
 	float: left;
-	width: 420px;
+	width: 450px;
 	position: relative;
 	background:white;
 	padding:5px;
@@ -645,7 +645,7 @@ nav ul li a.current{
 					
 .droite {
 	float: right;
-	width: 150px;
+	width: 140px;
 	position: relative;
 	background:white;
 	padding:10px;
@@ -668,4 +668,23 @@ nav ul li a.current{
 		 
 .green {
 	color: green;
+}
+
+
+.pic {
+	margin-bottom: -4px;
+	margin-right: 2px;
+}
+
+.search .rf-ddm-itm-sel {
+	background-color: transparent;
+	background-image: none;
+	border-color: transparent;
+	cursor: default;
+}
+
+/* Modal panel */
+.rf-pp-shade {
+    background-color: #00000 !important;
+    opacity: 1 !important;
 }
