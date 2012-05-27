@@ -1,35 +1,36 @@
+import java.awt.event.ActionEvent;
 import java.io.IOException;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 //import org.richfaces.component.SortOrder;
 import javax.faces.application.FacesMessage;
+import javax.faces.component.UIComponent;
+import javax.faces.component.html.HtmlDataTable;
 import javax.faces.component.html.HtmlSelectBooleanCheckbox;
 import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.constraints.AssertTrue;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
-import javax.faces.event.ActionEvent;
 import javax.faces.event.AjaxBehaviorEvent;
+import javax.faces.model.DataModel;
+import javax.faces.model.ListDataModel;
 
 import org.hibernate.Query;
 import org.primefaces.event.*;
 import org.primefaces.model.chart.CartesianChartModel;
 import org.primefaces.model.chart.ChartSeries;
-import org.primefaces.model.chart.LineChartSeries;
 
 import metier.media.*;
 import dao.media.*;
 
 import metier.utilisateur.*;
 import dao.utilisateur.*;
+
 
 
 /**
@@ -50,7 +51,8 @@ public class BeanMedia {
 	private String tags;
 	private List<Tag> listeTags;
 	private List<Commentaire> listeCommentaires;
-	private List<Commentaire> commentaires;
+	private List<Commentaire> listeReponses;
+	//private DataModel dataModel = new ListDataModel();
 	private double note;
 	private String nomTypeMedia;
 	private String commentaireSaisi;
@@ -61,7 +63,7 @@ public class BeanMedia {
 	private DaoCommentaire daoCommentaire;
 	@Size(min = 3, max = 12, message = "La taille du mot de passe doit être entre 3 et 12")
 	private String motDePasseMedia;
-	private boolean showMotDePasseMedia;
+	private Boolean showMotDePasseMedia;
 	
 	//****
 
@@ -72,6 +74,7 @@ public class BeanMedia {
 	private long resultatTotalVuesMedia;
 		
 	private String motVues;
+	private String motTelechargement;
 	
 	//****
 	
@@ -280,13 +283,13 @@ public class BeanMedia {
 					listeTags.add(tagCompteur.next());
 				}
 				
-				commentaires = new ArrayList<Commentaire>(mediaVisualise.getCommentaires());
-				//Collections.sort(listeCommentaires, Collections.reverseOrder());
-				//Collections.reverse(commentaires);
+				chargerCommentaires();
+				chargerReponses();
 				
 				nomTypeMedia = mediaVisualise.getType().getNomTypeMedia();
 
 				showMotDePasseMedia = true;
+					
 				//***********************************************
 				
 				//Regarder
@@ -310,6 +313,11 @@ public class BeanMedia {
 				//***********************************************
 				
 				resultatTotalTelechargementMedia = daoMedia.totalTelechargement(mediaVisualise);
+				
+				if(resultatTotalTelechargementMedia > 0)
+				{
+					motTelechargement = "s"; //"telechargements" au pluriel
+				}
 				
 				//***********************************************
 				
@@ -403,13 +411,18 @@ public class BeanMedia {
 			
 				
 				Set<Playlist> setPlaylistUt = util.getPlaylists();
-				for(Playlist playlistUt : setPlaylistUt)
-				{
-					if(playlistUt.getMedias().contains(mediaVisualise)) {
-						imgAjoutPlaylist = "fermer-croix-supprimer-erreurs-sortie-icone-4368-16.png"; //mime TODO
-						estAjouteAPlaylist = true;
-						break;
-					}
+				imgAjoutPlaylist = "accepter-check-ok-oui-icone-4851-16.png"; //TODO
+				
+				for(Playlist playlistUt : setPlaylistUt) {
+						if(playlistUt.getMedias().contains(mediaVisualise)) {
+							imgAjoutPlaylist = "fermer-croix-supprimer-erreurs-sortie-icone-4368-16.png";
+							estAjouteAPlaylist = true;
+							break;
+						}
+				}
+
+				if(!estAjouteAPlaylist) {
+					imgAjoutPlaylist = "accepter-check-ok-oui-icone-4851-16.png"; //TODO
 				}
 				
 				listeVisibilite = daoVisibilite.getTous();
@@ -451,7 +464,7 @@ public class BeanMedia {
 	
 	//METHODES
 	public String jAime() {
-		//System.out.println("Méthode jAime");
+		System.out.println("Méthode jAime");
 		
 		util.getAimeMedias().add(new Aimer(true,mediaVisualise));
 		daoUtilisateur.sauvegarder(util);
@@ -473,7 +486,7 @@ public class BeanMedia {
 	public String envoyerRapport() { //retourné obligatoirement un String et non un void
 		//System.out.println("Méthode envoyerRapport");
 		
-		util.getSignalementsMedias().add(new Signalement_Media(raison, mediaVisualise)); //media_idMedia pas tjrs à null TODO
+		util.getSignalementsMedias().add(new Signalement_Media(raison, daoMedia.getUn(2)));
 		daoUtilisateur.sauvegarder(util);
 		
 		return "envoyerRapport";
@@ -592,7 +605,9 @@ public class BeanMedia {
         }*/
     }
 	
-	public String ajouterMediAPlaylist() {
+	public String ajouterMediaAPlaylist() {
+		System.out.println("ajouterMediaAPlaylist");
+		
 		Set<Playlist> setPlaylistUt = util.getPlaylists();
 		if(!estAjouteAPlaylist) {
 			System.out.println("Ajouter une vidéo à une playlist");
@@ -620,7 +635,7 @@ public class BeanMedia {
 			imgAjoutPlaylist = "accepter-check-ok-oui-icone-4851-16.png"; //TODO
 		}
 		
-		return "ajouterMediAPlaylist";
+		return "ajouterMediaAPlaylist";
 	}
 	
 	public String creerPlaylist() { //TODO à tester
@@ -792,15 +807,50 @@ public class BeanMedia {
 		daoMedia.getUn(2).getCommentaires().add(c); //mediaVisualise. TODO
 		daoMedia.sauvegarder(daoMedia.getUn(2));
 		
+		/*if(commentaires == null)
+		{
+			System.out.println("c'est la liste de commentaires qui pose problème (null)");
+		}*/
+		
 		//commentaires.add(c);
+		//rechargement de la liste
+		chargerCommentaires();
+		
 		
 		return "publierCommentaire";
 	}
 	
+	public void chargerCommentaires() {
+		System.out.println("chargerCommentaires");
+		
+		// On charge les liste des commentaires
+		//commentaires = new ArrayList<Commentaire>(mediaVisualise.getCommentaires());
+		listeCommentaires = daoMedia.getCommentaires(daoMedia.getUn(2));
+		
+	}
+	
+	public String chargerReponses() {
+		System.out.println("chargerReponses");
+		
+		listeReponses = new ArrayList<Commentaire>(daoCommentaire.getUn(3).getCommentairesFils()); //TODO commentaire en paramètre
+		
+		
+		
+		
+		return "chargerReponses";
+	}
+	
+	
+
+	
+	
+	
 	public String supprimerCommentaire() {
 		System.out.println("supprimerCommentaire");
 		
-		//daoMedia.getUn(2).getCommentaires().remove(daoCommentaire.getUn(Long.parseLong(FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("idPlaylist"))));
+		daoMedia.getUn(2).getCommentaires().remove(daoCommentaire.getUn(Long.parseLong(FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("idCommentaire"))));
+		
+		daoMedia.sauvegarder(daoMedia.getUn(2));
 		
 		//rafraîchir TODO
 		
@@ -809,7 +859,6 @@ public class BeanMedia {
 
 	public String repondreCommentaire() {
 		System.out.println("repondreCommentaire");
-		
 		
 		return "repondreCommentaire";
 	}
@@ -832,7 +881,7 @@ public class BeanMedia {
 		if(daoMedia.getUn(2).getMdpMedia().equals(motDePasseMedia)) //si le mot de passe du média saisi est correct
 		{
 			System.out.println("on cache le Modal panel");
-			showMotDePasseMedia = true; //TODO
+			showMotDePasseMedia = false; //TODO
 			//on cache le Modal panel
 		}
 		else
@@ -847,8 +896,6 @@ public class BeanMedia {
 		
 		return "verifierMotDePasseMedia";
 	}
-	
-	
 
 
 
@@ -942,14 +989,6 @@ public class BeanMedia {
 	
 	public void setTags(String tags) {
 		this.tags = tags;
-	}
-	
-	public List<Commentaire> getCommentaires() {
-		return commentaires;
-	}
-	
-	public void setCommentaires(List<Commentaire> commentaires) {
-		this.commentaires = commentaires;
 	}
 	
 	public long getResultatNbAime() {
@@ -1203,26 +1242,56 @@ public class BeanMedia {
 	public String getDetailNotificationJeNAimePas() {
 		return detailNotificationJeNAimePas;
 	}
+	
 	public void setDetailNotificationJeNAimePas(String detailNotificationJeNAimePas) {
 		this.detailNotificationJeNAimePas = detailNotificationJeNAimePas;
 	}
+	
 	public String getImgFavori() {
 		return imgFavori;
 	}
+	
 	public void setImgFavori(String imgFavori) {
 		this.imgFavori = imgFavori;
 	}
+	
 	public String getMotDePasseMedia() {
 		return motDePasseMedia;
 	}
+	
 	public void setMotDePasseMedia(String motDePasseMedia) {
 		this.motDePasseMedia = motDePasseMedia;
 	}
+	
 	public boolean isShowMotDePasseMedia() {
 		return showMotDePasseMedia;
 	}
+	
 	public void setShowMotDePasseMedia(boolean showMotDePasseMedia) {
 		this.showMotDePasseMedia = showMotDePasseMedia;
 	}
 	
+	public List<Commentaire> getListeCommentaires() {
+		return listeCommentaires;
+	}
+	
+	public void setListeCommentaires(List<Commentaire> listeCommentaires) {
+		this.listeCommentaires = listeCommentaires;
+	}
+	
+	public List<Commentaire> getListeReponses() {
+		return listeReponses;
+	}
+	
+	public void setListeReponses(List<Commentaire> listeReponses) {
+		this.listeReponses = listeReponses;
+	}
+	
+	public String getMotTelechargement() {
+		return motTelechargement;
+	}
+	
+	public void setMotTelechargement(String motTelechargement) {
+		this.motTelechargement = motTelechargement;
+	}
 }
