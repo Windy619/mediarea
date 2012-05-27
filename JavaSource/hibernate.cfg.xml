@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-configuration PUBLIC "-//Hibernate/Hibernate Configuration DTD 3.0//EN"
+                                         "http://hibernate.sourceforge.net/hibernate-configuration-3.0.dtd">
+<hibernate-configuration>
+ <session-factory name="sessionFactory">
+  <property name="hibernate.connection.driver_class">com.mysql.jdbc.Driver</property>
+  <property name="hibernate.connection.username">root</property>
+  <property name="hibernate.dialect">org.hibernate.dialect.MySQLDialect</property>
+  <property name="hibernate.show_sql">false</property>
+  <property name="hibernate.connection.url">jdbc:mysql://localhost/MediArea</property>
+  <property name="hibernate.hbm2ddl.auto">update</property>
+  <property name="hibernate.connection.password">root</property>
+  <mapping class="metier.utilisateur.Message"/>
+  <mapping class="metier.media.Aimer"/>
+  <mapping class="metier.media.Categorie"/>
+  <mapping class="metier.media.Commentaire"/>
+  <mapping class="metier.media.Media"/>
+  <mapping class="metier.media.Note"/>
+  <mapping class="metier.utilisateur.Notification"/>
+  <mapping class="metier.media.Photo_Couverture"/>
+  <mapping class="metier.media.Playlist"/>
+  <mapping class="metier.media.Regarder"/>
+  <mapping class="metier.media.Signalement_Commentaire"/>
+  <mapping class="metier.media.Signalement_Media"/>
+  <mapping class="metier.media.Tag"/>
+  <mapping class="metier.media.Type_Media"/>
+  <mapping class="metier.media.Type_Playlist"/>
+  <mapping class="metier.media.Visibilite"/>
+  <mapping class="metier.utilisateur.Amitie"/>
+  <mapping class="metier.utilisateur.Avatar"/>
+  <mapping class="metier.utilisateur.Message_Mural"/>
+  <mapping class="metier.utilisateur.Message_Prive"/>
+  <mapping class="metier.utilisateur.Signalement_Utilisateur"/>
+  <mapping class="metier.utilisateur.Utilisateur"/>
+  <mapping class="metier.utilisateur.Signalement_MessagePrive"/>
+  <mapping class="metier.media.Categorie_Media"/>
+  <mapping class="metier.media.Fichier"/>
+ </session-factory>
+</hibernate-configuration>
