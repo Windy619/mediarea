@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Set;
 
 import metier.media.Aimer;
+import metier.media.Categorie_Media;
 import metier.media.Commentaire;
 import metier.media.Media;
 import metier.media.Note;
@@ -135,7 +136,7 @@ public class Main {
 		
 		media.getCommentaires().add(new Commentaire("Bonjour!",daoUtilisateur.getUn(0)));
 		
-		media.getCategories().add(daoCategorie.categorie("CategorieTest"));	
+		media.getCategories().add(new Categorie_Media(2,daoCategorie.categorie("CategorieTest").getIdCategorie()));	
 		
 		media.setPhoto(new Photo_Couverture("RepPhoto","MaPhoto.png"));		
 		

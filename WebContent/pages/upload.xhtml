@@ -5,7 +5,8 @@
       xmlns:f="http://java.sun.com/jsf/core"
       xmlns:ui="http://java.sun.com/jsf/facelets"
 	  xmlns:a4j="http://richfaces.org/a4j"
-	  xmlns:rich="http://richfaces.org/rich"> 
+	  xmlns:rich="http://richfaces.org/rich"
+	  xmlns:p="http://primefaces.org/ui">
       
 <ui:composition template="/templates/standard.xhtml">
 		
@@ -15,119 +16,175 @@
 	
 		<section class="group3">
 			<h3>Upload de média</h3>  
-			
-			<br />
-			
-			<h:form rendered="#{beanUpload.afficherFormulaire}" id="formFormulaire">
-			<h4> Formulaire d'upload </h4>
-	  		   <rich:panel header="#{beanUpload.nomMedia}" style="width:600px">		    		
-		  			<h:panelGrid columns="2" columnClasses="top,top">
-			   			<h:outputText value="Type de média :" />
-			   			<rich:select value="#{beanUpload.typeMedia}" style="width: 450px" defaultLabel="Vidéo">
-			   				<f:selectItem itemValue="0" itemLabel="Vidéo"/>
-			   				<f:selectItem itemValue="1" itemLabel="Audio"/>
-			   			</rich:select>
-			   						    			
-			   			<h:outputText value="Nom :" />
-			   			<h:inputText value="#{beanUpload.nomMedia}" style="width: 450px" />		
-			   			
-			   			<h:outputText value="Catégorie :" />
-			   			<h:inputText value="#{beanUpload.categorieMedia}" style="width: 450px" />		
-			   			
-			   			<h:outputText value="Photo :" />
-						<rich:fileUpload fileUploadListener="#{beanUpload.listenerPhoto}" id="upload" acceptedTypes="jpg, png, gif"
-			    		ontyperejected="alert('Fichiers supportés : jpg, png, gif');" maxFilesQuantity="1"
-			    		style="height: 100px; width: 450px">
-						</rich:fileUpload>							   				
-			   			
-			   			<h:outputText value="Tags : (séparés par ',')" />
-			   			<h:inputText value="#{beanUpload.tagsMedia}" style="width: 450px" />	
-			   			
-			   			<h:outputText value="Portée :" />
-			   			<rich:select value="#{beanUpload.porteeMedia}" style="width: 450px" defaultLabel="Public">
-			   				<f:selectItem itemValue="0" itemLabel="Public"/>
-			   				<f:selectItem itemValue="1" itemLabel="Privé"/>
-			   			</rich:select>							   			
-			   			
-			   			<h:outputText value="Mot de passe :" />
-			   			<h:inputSecret value="#{beanUpload.motdepasseMedia}" style="width: 450px" />
-			   			
-			   			<h:outputText value="Description :" />
-				        <rich:editor id="editorDescription" value="#{beanUpload.descriptionMedia}" style="margin-bottom: 1em"
-				        width="450px" height="100px">
-
-				        </rich:editor>						   						   								    							    							    							    							    						    			
-		   					    			
-		  			</h:panelGrid>
-		  			
-	            	<h:commandButton value="Supprimer"  action="#{beanUpload.supprimerFichierUploade}" ">
-	                 	<f:setPropertyActionListener target="#{beanUpload.fichierSelectionne}" value="fichier" />
-	                 	<f:setPropertyActionListener target="#{beanUpload.afficherFormulaire}" value="false" />
-	                 </h:commandButton>
-	                 		
-		  		</rich:panel>
-		  		
-		  		
-		  		<br />
-		  		<br />
-			
-			</h:form>
-		
-			
+						
+								
 			<br />
  					
-			<h:form>
+ 			<h:outputText rendered="#{empty beanUpload.utilisateurConnecte}" value="L'upload de Média est reservé aux utilisateurs inscrits ! Pour profiter de cette fonctionnalité, veuillez vous inscrire ou vous connecter." />			
+ 			
+			<h:form enctype="multipart/form-data" rendered="#{not empty beanUpload.utilisateurConnecte}">
 				<h4> Module d'upload </h4>
-				<h:panelGrid columns="1" columnClasses="top,top">
-					<rich:fileUpload fileUploadListener="#{beanUpload.listenerMedia}" id="uploadMedia" acceptedTypes="mp3, avi, mp4"
-		    		ontyperejected="alert('Fichiers accéptés : mp3, avi, mp4');" maxFilesQuantity="3"
-		    		style="height: 250px; width: 900px">
-		    			<a4j:ajax event="uploadcomplete" execute="@form" render="info"/>
-					</rich:fileUpload>
-					
-					<br />
-					<br />				
-					
-		         	<h:panelGroup id="info" layout="block" >
-		             	<rich:panel bodyClass="info" >
-			                <f:facet name="header">
-			                    <h:outputText value="Fichiers Envoyés" />
-			                </f:facet>
-			                <h:outputText value="Aucun fichier envoyé" rendered="#{beanUpload.size==0}" />
-			   				<rich:dataGrid value="#{beanUpload.files}" var="fichier" id="repeatFichier" rows="10" style="margin:auto;"  >
-			   					<rich:panel style="margin:auto">
-			   						<f:facet name="header"><h:outputText value="#{fichier.nom}" /></f:facet>
-			   						<div align="center">
-					   					<br />
-					   					<h:graphicImage value="/resources/images/media.png"/>
-					   					<br />
-										<h:commandButton value="Afficher le formulaire" action="#{beanUpload.afficherFormulaireUpload}" style="width:250px" >
-											<f:setPropertyActionListener target="#{beanUpload.fichierSelectionne}" value="#{fichier}" />
-										</h:commandButton>
-										
-										<h:commandButton value="Supprimer l'upload" action="#{beanUpload.supprimerFichierUploade}" style="width:250px" >
-											<f:setPropertyActionListener target="#{beanUpload.fichierSelectionne}" value="#{fichier}" />
-										</h:commandButton>						
-									</div>			   					
-			   					</rich:panel>
-
-								<br />			  		
-			  				</rich:dataGrid>
-			  				
-		            	</rich:panel>
-		            	
-		            	<br />
-		            	<h:commandButton action="#{beanUpload.supprimerFichiersUploades}" render="info, upload" value="Vider"
-		                rendered="#{beanUpload.size>0}" reRender="formulairesAjouts"/>
-		        	</h:panelGroup>
-		        	
-		    	</h:panelGrid>
+			    <p:fileUpload fileUploadListener="#{beanUpload.handleFileUpload}"  
+			            mode="advanced"  
+			            update="messages" 
+			            multiple="true"  
+			            sizeLimit="1000000000"   
+			            allowTypes="/(\.|\/)(mp3|mp4|oga|ogv|avi|wmv|webm)$/"/>  
+			  
+			    <p:growl id="messages" showDetail="true"/>  
+			    <br />
+		    	<p:commandButton value="Rafraichir mes uploades" ajax="false" >
+                 	<f:setPropertyActionListener target="#{beanUpload.afficherListeUploades}" value="true" />
+		    	</p:commandButton>
+			    <br />
+			    
 			</h:form>
-				    
+ 
 		    <br />
+		    
+			<p:accordionPanel value="#{beanUpload.files}" var="fichier" multiple="true">  
+			    <p:tab title="#{fichier.nom}">  
+			        <h:panelGrid columns="2" cellpadding="10">  
+			            <h:panelGrid columns="2" cellpadding="10">  
+			                <h:outputText value="Nom : " />  
+			                <h:outputText value="#{fichier.nom}" style="font-weight: bold"/>  
+			  
+			                <h:outputText value="Format : " />  
+			                <h:outputText value="#{fichier.extension}" style="font-weight: bold"/>  
+			  
+			                <h:outputText value="Taille : " />  
+			                <h:outputText value="#{fichier.taille}  #{fichier.uniteTaille}" style="font-weight: bold"/>  
+			                	
+						</h:panelGrid>			        
+			            <p:graphicImage value="/resources/images/media.png" />  
+  			        </h:panelGrid>  
+						
+					<h:form enctype="multipart/form-data">
+			  		   <p:panel>		
+			  		   		<f:facet name="header"><h:outputText value="Formulaire d'upload"/> </f:facet> 
+		  		   			
+		  		   			<p:tabView id="tabView">  
+		  		   				 <p:tab id="tab1" title="Informations générales">  
+		  		   				 	<h:panelGrid columns="3" columnClasses="top,top">
+							   			<h:outputText value="Type de média :" />  	
+								        <p:selectOneMenu value="#{beanUpload.typeMedia}" effect="fade" style="width: 404px" id="typeMedia">  
+								            <f:selectItems value="#{beanUpload.lstTypesMedia}" var="type" itemLabel="#{type.nomTypeMedia}" itemValue="#{type.idTypeMedia}"/>  
+								        </p:selectOneMenu>  							    				   			
+							   			<rich:message for="typeMedia" />	
+								   						    			
+							   			<h:outputText value="Nom :" />
+							   			<p:inputText value="#{beanUpload.nomMedia}" style="width: 400px" id="nomMedia" />	
+							   			<rich:message for="nomMedia" />	
+							   										   			
+							   			<h:outputText value="Catégorie :" />
+									    <p:selectCheckboxMenu label="Categories du Media" style="width: 410px" id="categorieMedia">  
+									        <f:selectItems value="#{beanUpload.lstCategories}" var="categorie" itemLabel="#{categorie.nomCategorie}" itemValue="#{categorie.idCategorie}"/> 
+									    </p:selectCheckboxMenu>  	
+									    <rich:message for="categorieMedia" />					   				
+							   					
+							   			<h:outputText value="Tags :" />
+							   			<p:inputText value="#{beanUpload.tagsMedia}" style="width: 400px" id="tagMedia"/>
+							   			<rich:message for="tagMedia" />
+							   			
+							   			<h:outputText value="Description :" />
+								        <p:inputTextarea value="#{beanUpload.descriptionMedia}" style="margin-bottom: 1em" id="descriptionMedia"
+								        cols="62" rows="5" />	
+								        <rich:message for="descriptionMedia" />	
+								        
+							        </h:panelGrid>	
+							        
+	         						<h:outputText value="Autoriser le téléchargement du Média ?" id="autoriserTelechargmentMedia"/>
+	         						<br /><br />
+							        <p:selectOneButton value="#{beanUpload.autoriserTelechargementMedia}">  
+							            <f:selectItem itemLabel="Non" itemValue="false" />  						        
+							            <f:selectItem itemLabel="Oui" itemValue="true" />  
+							        </p:selectOneButton>  
+							        <rich:message for="autoriserTelechargmentMedia" />
+							        
+							        <br /> <br />
+								        							        
+	         						<h:outputText value="Autoriser l'ajout de commentaires ?" id="autoriserCommentairesMedia"/>
+	         						<br /><br />
+							        <p:selectOneButton value="#{beanUpload.autoriserCommentairesMedia}">  
+							            <f:selectItem itemLabel="Non" itemValue="false" />
+							            <f:selectItem itemLabel="Oui" itemValue="true" />  						              
+							        </p:selectOneButton>  
+							        <rich:message for="autoriserCommentairesMedia" />
+							        
+							        <br /> <br />
+							        
+								    <h:outputText value="Captcha"/>
+								    <p:captcha label="#{beanUpload.fichierSelectionne.nom}" id="captcha"/>  
+								    <rich:message for="captcha" />							        
+								        			
+								    <br /> <br />
+								    						        
+					            	<p:commandButton value="Valider !"  action="#{beanUpload.uploader}" actionListener="#{beanUpload.handlePictureUpload}" ajax="false" id="btnValider">
+					            		<f:setPropertyActionListener target="#{beanUpload.fichierSelectionne}" value="#{fichier}"></f:setPropertyActionListener>
+					            	</p:commandButton>	
+					            	<rich:message for="btnValider"> En cliquant sur "Valider" vous vous engagez à respecter la charte et les règles du site visibles ICI </rich:message>								        	  		   				 
+		  		   				 </p:tab>
+		  		   				 
+		  		   				 <p:tab id="tab2" title="Informations complémentaires">
+		  		   				 	<h:panelGrid columns="3" columnClasses="top,top">
+		  		   				 	
+							   			<h:outputText value="Portée :" />		 		   			
+								        <p:selectOneMenu value="#{beanUpload.porteeMedia}" effect="fade" defaultLabel="Public" style="width: 404px" id="porteeMedia">  
+							   				<f:selectItems value="#{beanUpload.lstVisibilites}" var="visibilite" itemLabel="#{visibilite.nomVisibilite}" itemValue="#{visibilite.idVisibilite}"/>
+							   				<p:ajax event="change" update="motdepasseMedia" listener="#{beanUpload.changeValeurPortee}"/>  
+								        </p:selectOneMenu>  	   				
+							   			<rich:message for="porteeMedia" />					   			
+							   			
+							   			<h:outputText value="Mot de passe:"/>
+							            <p:password  value="#{beanUpload.motdepasseMedia}"
+							            			style="width: 400px" id="motdepasseMedia" feedback="true"   
+							                        promptLabel="Veuillez entrer un mot de passe" weakLabel="Mot de passe faible !"  
+							                        goodLabel="Mot de passe valide" strongLabel="Mot de passe trés sécurisé !" /> 					   			
+							   			<rich:message for="motdepasseMedia" />	
+							   							   			
+		 							    <h:outputText value="Photo :" />					  
+									    <p:fileUpload mode="simple" value="#{beanUpload.photoMedia}" id="photoMedia" style="width: 410px"/>  									    
+									   	<br /><br />
+									   	
+		         						<h:outputText value="Recherche automatique d'image" id="rechercheAutomatique"/>
+		         						
+								        <p:selectOneButton value="#{beanUpload.rechercheAutomatique}">  
+								            <f:selectItem itemLabel="Non" itemValue="false" />  						        
+								            <f:selectItem itemLabel="Oui" itemValue="true" />  
+								        </p:selectOneButton>  
+								        <rich:message for="rechercheAutomatique" />									    						   				  		   				 	
+		  		   				 	</h:panelGrid>
+		  		   				 </p:tab>
+		  		   				 
+		  		   			</p:tabView>  
+		  		   			
+   						    <p:growl id="messages" showDetail="true"/> 						
+				  			
+					  		<br />
+					  				                						  				                 		
+				  		</p:panel>
+				  		
+					</h:form>						    	                
+ 
+ 					<br />
+ 					
+			 		<h:form>
+		            	<p:commandButton value="Supprimer" ajax="false" action="#{beanUpload.supprimerFichierUploade}">
+		                 	<f:setPropertyActionListener target="#{beanUpload.fichierSelectionne}" value="#{fichier}" />
+		                </p:commandButton>				 		
+			 		</h:form>
+	 
+			    </p:tab>  
+			</p:accordionPanel>  	    
+			    
 		    <br />
-
-		    	
+		    
+		    <h:form>
+            	<p:commandButton value="Supprimer tout"  action="#{beanUpload.supprimerFichiersUploades}" ajax="false" rendered="#{beanUpload.files.size() > 0}">
+                 	<f:setPropertyActionListener target="#{beanUpload.afficherFormulaire}" value="false" />
+                </p:commandButton>	            			    
+		    </h:form>
+		    		    		    	
 	</section>		
 	</ui:define>
 	

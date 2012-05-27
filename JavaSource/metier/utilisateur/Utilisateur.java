@@ -136,8 +136,8 @@ public class Utilisateur {
 	
 	@OneToMany(cascade = {CascadeType.ALL})
 	private Set<Signalement_Commentaire> signalementsCommentaires;		
-	
-	@OneToMany(cascade = {CascadeType.ALL})
+
+	@OneToMany(mappedBy = "destinnataireNotification", cascade = {CascadeType.ALL})
 	private Set<Notification> notifications;
 	
 	@OneToMany(cascade = {CascadeType.ALL})

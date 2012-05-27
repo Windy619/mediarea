@@ -21,7 +21,13 @@ public class DaoMessagePrive extends Dao<Message_Prive>{
 	public List<?> getMessages(Utilisateur u) {
 		Query q = session.createQuery("" +
 				"FROM Message_Prive as mp " +
-				"WHERE (mp.emetteur.idUtilisateur = :idConnecte AND mp.dateSuppressionMessage IS NULL AND mp.isMessageMere = true ) OR (mp.destinataire.idUtilisateur = :idConnecte AND mp.dateSuppressionMessageDestinataire IS NULL AND mp.isMessageMere = true )  " +
+				"WHERE (mp.emetteur.idUtilisateur = :idConnecte " + 
+				"AND mp.reponses.size > 0 " +
+				"AND mp.dateSuppressionMessage IS  " +
+				"NULL AND mp.isMessageMere = true ) " +
+				"OR (mp.destinataire.idUtilisateur = :idConnecte  " +
+				"AND mp.dateSuppressionMessageDestinataire IS NULL  " +
+				"AND mp.isMessageMere = true ) " +
 				"ORDER BY mp.dateEnvoi DESC" +
 				"");
 		q.setParameter("idConnecte", u.getIdUtilisateur());	
