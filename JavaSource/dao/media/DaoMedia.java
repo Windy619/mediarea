@@ -7,6 +7,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -259,7 +260,7 @@ public class DaoMedia extends Dao<Media> {
 		return (Long) q.uniqueResult();
 	}
 	
-	public List<?> getCommentaires(Media media) { //à utiliser
+	/*public List<?> getCommentaires(Media media) { //à utiliser
 		Query q = session.createQuery("" +
 				"SELECT m.commentaires " +
 				"FROM Media as m join Commentaire as c " + //join à voir TODO
@@ -268,6 +269,38 @@ public class DaoMedia extends Dao<Media> {
 				"");
 		q.setParameter("media", media);
 		
+		return q.list();
+	}*/
+	
+	public List<Commentaire> getCommentaires(Media media) { //à utiliser
+		Query query = session.createSQLQuery("" +
+				"SELECT c.idCommentaire, c.contenuCommentaire, c.dateCommentaire, c.nbVotes, c.auteur_idUtilisateur " +
+				"FROM media_commentaire mc LEFT JOIN commentaire c " +
+				"ON mc.commentaires_idCommentaire = c.idCommentaire " +
+				"LEFT JOIN media m " +
+				"ON mc.Media_idMedia = m.idMedia " +
+				"AND m.aCommentairesOuverts = true " +
+				"WHERE mc.Media_idMedia = :media " +
+				"ORDER BY c.dateCommentaire DESC" +
+				""); //requête SQL pour faire un join
+
+		query.setParameter("media", media);
+		
+		List result = query.list();
+		String listids = "";
+		Iterator it= result.iterator();
+		while (it.hasNext()) // tant que j'ai un element non parcouru
+		{
+			Object[] o = (Object[]) it.next();
+            if(!listids.equals(""))
+                   listids += ", ";
+            listids += o[0].toString();
+		}
+		Query q = session.createQuery("" +
+				" FROM Commentaire as c " +
+				"WHERE c.idCommentaire IN (" + listids +") " + 
+				"ORDER BY c.dateCommentaire DESC");
+		  
 		return q.list();
 	}
 }
