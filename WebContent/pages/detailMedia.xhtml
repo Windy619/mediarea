@@ -619,36 +619,54 @@
 
 			<rich:collapsiblePanel header="Plus" switchType="client">
 				<h:panelGroup rendered="#{beanConnexion.user != beanMedia.mediaVisualise.auteurMedia}">
-				
-				<h:outputText value="Catégorie : " styleClass="bold" />
-				<br />
-				<a4j:repeat value="#{beanMedia.listeCategories}" var="categ"
-					rows="20" id="repeatCategories">
-					<h:outputLink value="recherche.jsf?categ=#{categ.nomCategorie}"
-						title="#{categ.nomCategorie}">
-						<h:outputText value="#{categ.nomCategorie}" />
-					</h:outputLink>
-					<h:outputText value=" " />
-				</a4j:repeat>
-
-				<br />
-				<br />
-
-				<h:outputText value="Tags : " styleClass="bold" />
-				<br />
-				<a4j:repeat value="#{beanMedia.listeTags}" var="tag" rows="20"
-					id="repeatTags">
-					<h:outputLink value="recherche.jsf?tag=#{tag.nomTag}"
-						title="#{tag.nomTag}">
-						<h:outputText value="#{tag.nomTag}" />
-					</h:outputLink>
-					<h:outputText value=" " />
-				</a4j:repeat>
+					<h:outputText value="Catégorie : " styleClass="bold" />
+					<br />
+					<a4j:repeat value="#{beanMedia.listeNomCategories}" var="categ"
+						rows="20" id="repeatCategories">
+						<h:outputLink value="recherche.jsf?categ=#{categ}"
+							title="#{categ}">
+							<h:outputText value="#{categ}" />
+						</h:outputLink>
+					</a4j:repeat>
+	
+					<br />
+					<br />
+	
+					<h:outputText value="Tags : " styleClass="bold" />
+					<br />
+					<a4j:repeat value="#{beanMedia.listeNomTags}" var="tag" rows="20"
+						id="repeatTags">
+						<h:outputLink value="recherche.jsf?tag=#{tag}"
+							title="#{tag}">
+							<h:outputText value="#{tag}" />
+						</h:outputLink>
+						<h:outputText value=" " />
+					</a4j:repeat>
 				</h:panelGroup>
 				
 				
 				<h:panelGroup rendered="#{beanConnexion.user == beanMedia.mediaVisualise.auteurMedia}">
-					propriétaire TODO champs modifiables et enregistrable
+					<h:form>
+						<h:outputText value="Catégorie : " styleClass="bold" />
+						<br />
+						<h:inputTextarea value="#{beanMedia.listeNomCategories}" cols="110"/>
+						
+						<br />
+						<br />
+		
+						<h:outputText value="Tags : " styleClass="bold" />
+						<br />
+						<h:inputTextarea value="#{beanMedia.listeNomTags}" cols="110"/>
+					
+						<br/>
+						<br/>
+						
+						<h:commandButton value="Enregistrer les modifications">
+			                <a4j:actionListener listener="#{beanMedia.modifierCategoriesTags}"/>
+			            </h:commandButton>
+            
+						<h:commandButton action="#{beanMedia.modifierCategoriesTags}" value="Enregistrer les modifications"/>
+					</h:form>
 				</h:panelGroup>
 			</rich:collapsiblePanel>
 

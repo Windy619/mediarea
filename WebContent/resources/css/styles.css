@@ -602,7 +602,7 @@ nav ul li a.current{
 ***************************************************/
 
 .menuBar{
-	background:#534741  !important;
+	background:#534741 !important;
 }
 .menuLink{
 	color:#F15A24;
@@ -610,7 +610,7 @@ nav ul li a.current{
 .menuLink:hover{
 	color: white;
 	text-decoration:underline;
-	cursor:  pointer;
+	cursor: pointer;
 }
 .selected{
 	background:#FFFFFF;
