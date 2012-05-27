@@ -7,7 +7,9 @@ package metier.media;
  */
 public class FichierUpload {
 
-    private int taille;
+    private long taille;
+    
+    private String uniteTaille;
     
     private String nom;
     
@@ -16,14 +18,28 @@ public class FichierUpload {
     private String extension;
  
     public FichierUpload() {
- 
+    	uniteTaille = "octet";
+    }
+    
+    public void reCalculerTaille() {
+    	uniteTaille = "octet";
+    	if (taille > 1000000000) {
+    		uniteTaille = "Go";
+    		taille = taille / 1000000000;
+    	} else if (taille > 1000000) {
+    		uniteTaille = "Mo";
+    		taille = taille / 1000000;    		
+    	} else if (taille > 1000) {
+    		uniteTaille = "Ko";
+    		taille = taille / 1000;    		
+    	}    	
     }
 
-	public int getTaille() {
+	public long getTaille() {
 		return taille;
 	}
 
-	public void setTaille(int taille) {
+	public void setTaille(long taille) {
 		this.taille = taille;
 	}
 
@@ -51,7 +67,16 @@ public class FichierUpload {
 		this.extension = extension;
 	}
 
- 
+	public String getUniteTaille() {
+		return uniteTaille;
+	}
+
+	public void setUniteTaille(String uniteTaille) {
+		this.uniteTaille = uniteTaille;
+	}
+
+
+	
     
 
 }

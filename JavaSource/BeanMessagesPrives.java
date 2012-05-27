@@ -6,9 +6,11 @@ import javax.faces.context.FacesContext;
 import javax.validation.constraints.Pattern;
 
 import metier.utilisateur.Message_Prive;
+import metier.utilisateur.Notification;
 import metier.utilisateur.Signalement_MessagePrive;
 import metier.utilisateur.Utilisateur;
 import dao.utilisateur.DaoMessagePrive;
+import dao.utilisateur.DaoNotification;
 import dao.utilisateur.DaoSignalementMessagePrive;
 import dao.utilisateur.DaoUtilisateur;
 
@@ -19,6 +21,7 @@ public class BeanMessagesPrives {
 	private DaoMessagePrive daoMessagePrive;
 	private DaoUtilisateur daoUtilisateur;
 	private DaoSignalementMessagePrive daoSignalementMP;
+	private DaoNotification daoNotification;
 	
 	// Propriétés
 	@Pattern(regexp = "^[\\w\\-]([\\.\\w])+[\\w]+@([\\w\\-]+\\.)+[a-zA-Z]{2,4}$", message = "Mauvaise adresse mail - Veuillez corriger")
@@ -55,6 +58,7 @@ public class BeanMessagesPrives {
 	public BeanMessagesPrives() {
 		daoMessagePrive = new DaoMessagePrive();
 		daoUtilisateur = new DaoUtilisateur();
+		daoSignalementMP = new DaoSignalementMessagePrive();
 		
 		// Chargement de l'utilisateur connecte
 		beanConnexion = (BeanConnexion) FacesContext.getCurrentInstance().getCurrentInstance().getExternalContext().getSessionMap().get("beanConnexion");
@@ -106,6 +110,13 @@ public class BeanMessagesPrives {
 		
 		// On charge les liste des réponses
 		reponses = new ArrayList(daoMessagePrive.getReponses(mpSelectionne,utilisateurConnecte));
+		
+		// On met à jour la date de lecture des messages
+		for (Message_Prive mp : reponses) {
+			if (mp.getDestinataire() == utilisateurConnecte && mp.getDateLecture() == null) {
+				mp.setDateLecture(new Date());
+			}
+		}
 		
 		return "chargerResponses";
 	}
@@ -224,6 +235,7 @@ public class BeanMessagesPrives {
 		
 		return "supprimerMessages";
 	}	
+		
 	
 	/**
 	 * Réponde à un message
@@ -269,9 +281,15 @@ public class BeanMessagesPrives {
 			
 			// On ajoute un nouveau message (par défaut, celui ci est un message mère)
 			utilisateurConnecte.getMessagesPrives().add(new Message_Prive(contenu,utilisateurConnecte,uDestinataire,objet));
-			
 			// On enregistre
 			daoUtilisateur.sauvegarder(utilisateurConnecte);	
+			
+			// On crée une notification
+			Notification notification = new Notification("Un message privé vous à été envoyé de \"" + utilisateurConnecte.getPseudo() + "\"", uDestinataire);
+			notification.setDateEnvoiNotification(new Date());
+			// On l'ajoute à l'utilisateur concerné et on le sauvegarde
+			uDestinataire.getNotifications().add(notification);
+			daoUtilisateur.sauvegarder(uDestinataire);			
 		}
 				
 		
@@ -300,6 +318,14 @@ public class BeanMessagesPrives {
 			Signalement_MessagePrive sMP = new Signalement_MessagePrive(mpSelectionne);
 			// Et le sauvegarde
 			daoSignalementMP.sauvegarder(sMP);
+			
+			// On crée une notification
+			Notification notification = new Notification("Votre message : \"" + mpSelectionne.getContenuMessage() + "\" à fait l'objet d'un signalement !",mpSelectionne.getDestinataire());
+			notification.setDateEnvoiNotification(new Date());
+			// On l'ajoute à l'utilisateur concerné et on le sauvegarde
+			mpSelectionne.getDestinataire().getNotifications().add(notification);
+			daoUtilisateur.sauvegarder(mpSelectionne.getDestinataire());
+
 		}
 		
 		// On recharge des listes si besoins
@@ -363,8 +389,10 @@ public class BeanMessagesPrives {
 		afficherNouveauMessage = false;
 		afficherReponseMessage = false;
 		
-		mpSelectionne.setDateLecture(new Date());
-		daoMessagePrive.sauvegarder(mpSelectionne);
+		if (mpSelectionne.getDestinataire() == utilisateurConnecte) {
+			mpSelectionne.setDateLecture(new Date());
+			daoMessagePrive.sauvegarder(mpSelectionne);			
+		}
 		
 		chargerReponses();
 		
@@ -392,10 +420,10 @@ public class BeanMessagesPrives {
 		// On retourne les resultats
 		return suggestionUtilisateurs;
 	}
-	
+		
 		
 	// GETTER / SETTER
-
+	
 	public ArrayList<Message_Prive> getMessages() {
 		return messages;
 	}

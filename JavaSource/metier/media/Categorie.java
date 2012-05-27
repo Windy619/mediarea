@@ -32,6 +32,7 @@ public class Categorie {
 	private long idCategorie;
 	
 	private String nomCategorie;
+	
 
 	/**
 	 * Constructeur vide

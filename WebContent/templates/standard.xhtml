@@ -33,7 +33,36 @@
 </h:head>
 
 <h:body>
+		<p:notificationBar position="top" effect="slide" widgetVar="notif" style="height: 300px">  
+		    <h1> Mes notifications</h1>
+		    
+		    <br />
+		    <p:dataTable id="basic" value="#{beanNotification.listeNotifications}" var="notification">  
+		        <p:column>  
+		            <f:facet name="header">  
+		                    Date  
+		            </f:facet>  
+			    	<h:outputText value="#{notification.dateEnvoiNotification}">
+			    		<f:convertDateTime type="date" pattern="dd/MM/yyyy HH:mm"/>
+			    	</h:outputText>
+		        </p:column>  	
+		        
+		        <p:column>  
+		            <f:facet name="header">  
+		                    Message  
+		            </f:facet>  
+		            <h:outputText value="#{notification.contenuNotification}" /> 
+		        </p:column>
+		          		        	    
+		    </p:dataTable>  
+
+			<br />
+
+			<p:commandButton value="Cacher" onclick="notif.hide()" type="button"/>  
+		</p:notificationBar>  
+		
 	<div id="container">
+			
 		<header>
 			<!--logo-->
 			<a href="#" id="logo"><h:graphicImage library="images"
@@ -47,7 +76,14 @@
 			</nav>
 			<ssnav>
 				<h:form>
-					<h:commandLink rendered="#{beanConnexion.isConnected}" action="#{beanConnexion.seDeconnecter}" value="#{beanConnexion.user.adrMail} - D&#233;connexion" />	
+					<h:commandLink rendered="#{beanConnexion.isConnected}" action="#{beanConnexion.seDeconnecter}" value="#{beanConnexion.user.adrMail} - D&#233;connexion" />
+										
+					
+					<h:outputText rendered="#{beanConnexion.isConnected}" value="Notifications (#{beanNotification.nbNotifications}) :"/>
+					<p:commandButton rendered="#{beanConnexion.isConnected}" value="Afficher" onclick="notif.show()" type="button" style="height: 30px"/>
+
+	
+					<br /><br />
 				</h:form>
 			</ssnav>
 		</header>
