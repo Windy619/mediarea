@@ -23,6 +23,7 @@ import org.hibernate.Query;
 import org.primefaces.event.*;
 import org.primefaces.model.chart.CartesianChartModel;
 import org.primefaces.model.chart.ChartSeries;
+import org.primefaces.model.chart.LineChartSeries; 
 
 import metier.media.*;
 import dao.media.*;
@@ -510,8 +511,8 @@ public class BeanMedia {
 	 */
 	public void handleRate(RateEvent rateEvent) {
 		note = ((Double) rateEvent.getRating()).intValue();
+		
         FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Notation", "Votre note : " + note);  
-  
         FacesContext.getCurrentInstance().addMessage(null, message);
         
         vote();
@@ -528,7 +529,7 @@ public class BeanMedia {
 		
 		util.getNoteMedias().add(new Note((int) note, mediaVisualise)); //media_idMedia + interdire de noter plusieurs fois TODO
 		daoUtilisateur.sauvegarder(util);
-		
+				
 		return "vote";
 	}
 	

@@ -143,7 +143,7 @@
                 </f:facet>
                 <rich:menuItem label="J'aime" action="#{beanMedia.jAime}" render="notifyJAime" icon="/resources/images/icones/heart-ajouter-icone-8199-16.png" disabled="true"><!-- disabled todo -->
                 </rich:menuItem>
-                <rich:menuItem label="Je n'aime pas" action="#{beanMedia.jeNAimePas}" render="notifyJeNAimePas" icon="/resources/images/icones/remove-heart-icone-8765-16.png">
+                <rich:menuItem label="Je n'aime pas" render="notifyJeNAimePas" icon="/resources/images/icones/remove-heart-icone-8765-16.png"><!-- action="#{beanMedia.jeNAimePas}"  -->
                 </rich:menuItem>
             </rich:dropDownMenu>
  
@@ -194,8 +194,7 @@
 				<rich:notify id="notifyJeNAimePas" stayTime="1500" sticky="false" nonblocking="false"
 					nonblockingOpacity="0.5" showShadow="false"
 					showCloseButton="true" detail="#{beanMedia.detailNotificationJeNAimePas}">
-				 
-					<f:facet name="summary">
+				 	<f:facet name="summary">
 						Je n'aime pas ce contenu
 					</f:facet>
 				</rich:notify>
