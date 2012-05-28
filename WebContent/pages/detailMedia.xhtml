@@ -17,34 +17,6 @@
 	<ui:define name="pageTitle">Détail d'un média</ui:define>
 	<ui:define name="content">
 		<section class="group1">
-		
-		<h:commandButton value="Mot de passe">
-        <rich:componentControl target="popupMotDePasseMedia" operation="show" />
-    </h:commandButton>
-        
-    <p:dialog id="popupMotDePasseMedia" header="Demande de mot de passe du média" modal="true" widgetVar="mdp">
-        <h:form id="form-login">
-        	Le média que vous tentez d'accéder est privé et vous n'êtes pas ami avec l'auteur.<br/>
-        	Par conséquent, nous vous demandons de bien vouloir saisir le mot de passe associé à ce média.
-			<br/>
-			<rich:graphValidator value="">
-					<rich:message for="motDePasse" />
-					<h:panelGrid columns="2">
-						<h:outputText value="Mot de passe :" />
-						<h:inputSecret value="#{beanMedia.motDePasseMedia}" id="motDePasse"
-							showMessages="true">
-							<rich:validator />
-						</h:inputSecret>
-					</h:panelGrid>
-					<br />
-					
-					<p:commandButton value="Valider" actionListener="#{beanMedia.verifierMotDePasseMedia}" update=":popupMotDePasseMedia" />
-				
-			</rich:graphValidator>
-		</h:form>    
-    </p:dialog>
-				
-		
 		    <div id="fb-root"></div>
 			<script>(function(d, s, id) {
 			  var js, fjs = d.getElementsByTagName(s)[0];
@@ -68,7 +40,7 @@
 			<!-- *** Lecteur audio/vidéo *** -->
 			
 			<!-- surrounding element with class - needed!! -->
-			<h:panelGroup rendered="#{beanMedia.nomTypeMedia == 'video' }">
+			<h:panelGroup rendered="#{beanMedia.nomTypeMedia == 'Video' }">
 				<div onclick="incrementerNbVues()" class="leanback-player-video" style="z-index: 0;">
 			    <!-- HTML5 <video> element -->
 			       <video width="612" height="404" preload="metadata" poster="../resources/videos/elephants_dream_640x360.jpg"> <!--  width="472" height="264" -->
@@ -129,7 +101,7 @@
 			<br /><br /><br />
 				
 		
-			<h:panelGroup rendered="#{beanMedia.nomTypeMedia == 'audio' }">
+			<h:panelGroup rendered="#{beanMedia.nomTypeMedia == 'Son' }">
 				<!-- surrounding element with class - needed!! -->
 				<div onclick="incrementerNbVues()" class="leanback-player-audio" style="width:612px; z-index: 0;"><!-- width="350px" -->
 				    <!-- HTML5 <audio> element -->

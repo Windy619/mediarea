@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Set;
 
 import metier.media.Categorie;
+import metier.media.Commentaire;
 import metier.media.Media;
 import metier.media.Type_Media;
 import metier.utilisateur.Amitie;
