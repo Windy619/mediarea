@@ -23,6 +23,8 @@ public class Categorie_Media {
 	/**
 	 * Constructeur
 	 */
+	public Categorie_Media() {}
+	
 	public Categorie_Media(long media, long categorie) {
 		this.media = media;
 		this.categorie = categorie;

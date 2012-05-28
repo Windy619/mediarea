@@ -178,6 +178,8 @@ public class BeanMedia {
  	String detailNotificationJAime;
  	String detailNotificationJeNAimePas;
 	
+ 	private DaoCategorie daoCategorie;
+ 	
  	/**
 	 * Constructeur du Bean
 	 */
@@ -191,6 +193,7 @@ public class BeanMedia {
 		}
 		
 		daoMedia = new DaoMedia();
+		daoCategorie = new DaoCategorie();
 		daoUtilisateur = new DaoUtilisateur();
 		daoRegarder = new DaoRegarder();
 		daoSignalementMedia = new DaoSignalementMedia();
@@ -263,8 +266,16 @@ public class BeanMedia {
 				description = mediaVisualise.getDescriptionMedia();
 				
 				listeNomCategories = new ArrayList<String>();
-				Set<Categorie> setCategories = mediaVisualise.getCategories();
-				Iterator<Categorie> i=setCategories.iterator(); // on crée un Iterator pour parcourir notre Set
+				Set<Categorie_Media> setCategoriesMedia = mediaVisualise.getCategories();
+				
+				Set<Categorie> setCategories = new HashSet<Categorie>();
+				
+				for (Categorie_Media categorie_Media : setCategoriesMedia) {
+					setCategories.add(daoCategorie.getUn(categorie_Media.getCategorie()));
+				}
+				
+			
+				Iterator<Categorie> i = setCategories.iterator(); // on crée un Iterator pour parcourir notre Set
 				while(i.hasNext()) { // tant qu'on a un suivant
 					//System.out.println(i.next().getNomCategorie()); // on affiche le suivant
 					listeNomCategories.add(i.next().getNomCategorie());
@@ -905,7 +916,7 @@ public class BeanMedia {
 	 * Vérification du mot de passe du média (si média privé et utilisateur connecté non ami)
 	 * @return
 	 */
-	public String verifierMotDePasseMedia() {
+	public String verifierMotDePasseMedia() { //TODO
 		if(daoMedia.getUn(2).getMdpMedia().equals(motDePasseMedia)) { //si le mot de passe du média saisi est correct
 			System.out.println("on cache le Modal panel");
 			showMotDePasseMedia = false; //TODO
