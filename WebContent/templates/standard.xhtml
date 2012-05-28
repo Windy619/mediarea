@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:a4j="http://richfaces.org/a4j"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+<h:head>
+	<meta http-equiv="Content-Type"
+		content="application/xhtml+xml; charset=UTF-8" />
+	<h:outputStylesheet library="css" name="styles.css" />
+	<title>MediArea - <ui:insert name="pageTitle" /></title>
+
+
+	<!-- Lecteur audio/vidéo -->
+	<!-- first: the CSS layout of LeanBack Player -->
+	<h:outputStylesheet library="css" name="leanbackPlayer.default.css" />
+
+	<!-- second: the Javascript file of LeanBack Player -->
+	<h:outputScript library="js" name="leanbackPlayer.pack.js" />
+
+	<!-- third: additional language files of LeanBack Player; -->
+	<!-- make sure you add at least the english translation ("en") -->
+	<h:outputScript library="js" name="leanbackPlayer.en.js" />
+	<h:outputScript library="js" name="leanbackPlayer.de.js" />
+	<h:outputScript library="js" name="LBPoption.js" />
+	
+	
+	<h:outputScript library="js" name="redirection.js"/>
+</h:head>
+
+<h:body>
+		<p:notificationBar position="top" effect="slide" widgetVar="notif" style="height: 300px">  
+		    <h1> Mes notifications</h1>
+		    
+		    <br />
+		    <p:dataTable id="basic" value="#{beanNotification.listeNotifications}" var="notification">  
+		        <p:column>  
+		            <f:facet name="header">  
+		                    Date  
+		            </f:facet>  
+			    	<h:outputText value="#{notification.dateEnvoiNotification}">
+			    		<f:convertDateTime type="date" pattern="dd/MM/yyyy HH:mm"/>
+			    	</h:outputText>
+		        </p:column>  	
+		        
+		        <p:column>  
+		            <f:facet name="header">  
+		                    Message  
+		            </f:facet>  
+		            <h:outputText value="#{notification.contenuNotification}" /> 
+		        </p:column>
+		          		        	    
+		    </p:dataTable>  
+
+			<br />
+
+			<p:commandButton value="Cacher" onclick="notif.hide()" type="button"/>  
+		</p:notificationBar>  
+		
+	<div id="container">
+			
+		<header>
+			<!--logo-->
+			<a href="#" id="logo"><h:graphicImage library="images"
+					name="logo.png" alt="logo" /></a>
+			<!--barre de recherche-->
+			<!--menu-->
+			<nav>
+				<ui:insert name="menu">
+					<ui:include src="../resources/includes/menu_basic.xhtml" />
+				</ui:insert>
+			</nav>
+			<ssnav>
+				<h:form>
+					<h:commandLink rendered="#{beanConnexion.isConnected}" action="#{beanConnexion.seDeconnecter}" value="#{beanConnexion.user.adrMail} - D&#233;connexion" />
+										
+					
+					<h:outputText rendered="#{beanConnexion.isConnected}" value="Notifications (#{beanNotification.nbNotifications}) :"/>
+					<p:commandButton rendered="#{beanConnexion.isConnected}" value="Afficher" onclick="notif.show()" type="button" style="height: 30px"/>
+
+	
+					<br /><br />
+				</h:form>
+			</ssnav>
+		</header>
+
+		<div id="intro">
+			<ui:insert name="intro">
+				<!--<img src="images/banner1.png"  alt="baner">-->
+			</ui:insert>
+		</div>
+
+		<header class="group_bannner_left">
+
+			<input type="text" class="inputRecherche" size="53" name="recherche" />
+			<div class="button black">
+				<a href="#">Rechercher</a>
+			</div>
+
+		</header>
+
+		<div class="holder_content">
+			<ui:insert name="content">
+		 		Content is empty
+		 	</ui:insert>
+		</div>
+	</div>
+
+	<footer>
+		<ui:insert name="footerContent">
+			<ui:include src="../resources/includes/footer_basic.xhtml" />
+		</ui:insert>
+	</footer>
+		
+</h:body>
+
+</html>

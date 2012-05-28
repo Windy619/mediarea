@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:a4j="http://richfaces.org/a4j"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets">
+
+<h:outputStylesheet>
+ 	.ecol1 {
+    	vertical-align: top;
+    	padding-right: 25px
+    }
+ 
+    .ecol2 {
+        vertical-align: top;
+        border-left: #ACBECE 1px solid;
+        padding-left: 10px
+     }
+ 
+     .rich-calendar-tool-btn {
+        font-family: Arial, Verdana;
+     }
+    </h:outputStylesheet>
+
+<ui:composition template="/templates/standard.xhtml">
+	<ui:define name="pageTitle">Inscription Suite</ui:define>
+	<ui:define name="content">
+		<section class="group3">
+			<h3>Inscription - ETAPE 2</h3>
+			<br />
+			<h:outputText value="* Champs obligatoire" />
+			<h:form id="form-subscribeSuite">
+				<rich:graphValidator value="#{beanSuiteInscription}">
+					<rich:panel header="Pour mieux vous connaître..."
+						style="width:450px;float:left;">
+						<h:panelGrid columns="3">
+							<h:outputText value="Civilité :" />
+							<h:selectOneRadio value="#{beanSuiteInscription.sexe}" id="sexe"
+								showMessages="true">
+								<f:selectItem id="M" itemLabel="M." itemValue="M." />
+								<f:selectItem id="Mme" itemLabel="Mme" itemValue="Mme" />
+								<f:selectItem id="Mlle" itemLabel="Mlle" itemValue="Mlle" />
+							</h:selectOneRadio>
+							<rich:message for="sexe" />
+
+							<h:outputText value="Nom :" />
+							<h:inputText value="#{beanSuiteInscription.nomUtilisateur}"
+								id="nomUtilisateur" showMessages="true">
+								<rich:validator />
+							</h:inputText>
+							<rich:message for="nomUtilisateur" />
+
+							<h:outputText value="Prénom :" />
+							<h:inputText value="#{beanSuiteInscription.prenomUtilisateur}"
+								id="prenomUtilisateur" showMessages="true">
+								<rich:validator />
+							</h:inputText>
+							<rich:message for="prenomUtilisateur" />
+
+							<h:outputText value="Date de naissance :" />
+							<rich:calendar id="dateNaissance" value="#{beanSuiteInscription.dateNaissance}" boundaryDatesMode="scroll" />
+							<br />
+
+							<h:outputText value="Profession :" />
+							<h:inputText value="#{beanSuiteInscription.profession}"
+								id="profession" showMessages="true">
+								<rich:validator />
+							</h:inputText>
+							<rich:message for="profession" />
+						</h:panelGrid>
+					</rich:panel>
+					<rich:panel header="Pour mieux vous joindre..."
+						style="width:450px;float:left;margin-left:42px">
+						<h:panelGrid columns="3">
+							<h:outputText value="N° et rue :" />
+							<h:inputText value="#{beanSuiteInscription.rue}" id="rue"
+								showMessages="true">
+								<rich:validator />
+							</h:inputText>
+							<rich:message for="rue" />
+
+							<h:outputText value="Code Postal :" />
+							<h:inputText value="#{beanSuiteInscription.cp}" id="cp"
+								showMessages="true">
+								<rich:validator />
+							</h:inputText>
+							<rich:message for="cp" />
+
+							<h:outputText value="Ville :" />
+							<h:inputText value="#{beanSuiteInscription.ville}" id="ville"
+								showMessages="true">
+								<rich:validator />
+							</h:inputText>
+							<rich:message for="ville" />
+
+							<h:outputText value="Pays :" />
+							<h:inputText value="#{beanSuiteInscription.pays}" id="pays"
+								showMessages="true">
+								<rich:validator />
+							</h:inputText>
+							<rich:message for="pays" />
+
+							<h:outputText value="Adresse Mail* :" />
+							<h:inputText value="#{beanSuiteInscription.adrMail}" id="adrMail"
+								showMessages="true">
+								<rich:validator />
+							</h:inputText>
+							<rich:message for="adrMail" />
+
+							<h:outputText value="Autre Adresse Mail :" />
+							<h:inputText value="#{beanSuiteInscription.autreAdrMail}"
+								id="autreAdrMail" showMessages="true">
+								<rich:validator />
+							</h:inputText>
+							<rich:message for="autreAdrMail" />
+
+							<h:outputText value="Numéro mobile :" />
+							<h:inputText value="#{beanSuiteInscription.numTelMobile}"
+								id="numTelMobile" showMessages="true">
+								<rich:validator />
+							</h:inputText>
+							<rich:message for="autreAdrMail" />
+						</h:panelGrid>
+					</rich:panel>
+					<rich:panel header="Pour mieux vous comprendre..."
+						style="width:450px;float:left;margin-top:25px">
+						<h:panelGrid>
+							<h:outputText value="Veuillez nous préciser vos intérêts : " />
+							<h:inputTextarea value="#{beanSuiteInscription.interets}"
+								id="interets" style="width:420px;height:100px;" />
+						</h:panelGrid>
+					</rich:panel>
+					<rich:panel header="Pour mieux vous identifier..."
+						style="width:450px;float:left;margin-left:42px;margin-top:25px">
+						<h:panelGrid columns="3">
+							<h:outputText value="Pseudo* :" />
+							<h:inputText value="#{beanSuiteInscription.pseudo}" id="pseudo"
+								showMessages="true">
+								<rich:validator />
+							</h:inputText>
+							<rich:message for="pseudo" />
+
+							<h:outputText value="Veuillez choisir un avatar : " />
+							<h:commandButton value="Faites votre choix">
+								<rich:componentControl target="popup" operation="show" />
+							</h:commandButton>
+							<rich:popupPanel id="popup" modal="true" resizeable="false"
+								width="100" height="550"
+								onmaskclick="#{rich:component('popup')}.hide()">
+								<f:facet name="header">
+									<h:outputText value="Avatars" />
+								</f:facet>
+								<f:facet name="controls">
+									<h:outputLink value="#"
+										onclick="#{rich:component('popup')}.hide(); return false;">
+					               		X
+					            	</h:outputLink>
+								</f:facet>
+								<h:outputText value="La liste d'avatar est vide!"
+									rendered="#{empty beanSuiteInscription.listAvatar}" />
+								<h:dataTable value="#{beanSuiteInscription.listAvatar}"
+									var="avatar"
+									rendered="#{not empty beanSuiteInscription.listAvatar}">
+									<h:column>
+										<h:commandLink>
+											<h:graphicImage
+												value="#{avatar.cheminAvatar}#{avatar.nomAvatar}" alt="img" />
+											<f:setPropertyActionListener
+												target="#{beanSuiteInscription.numAvatar}"
+												value="#{avatar.idAvatar}"></f:setPropertyActionListener>
+										</h:commandLink>
+									</h:column>
+								</h:dataTable>
+							</rich:popupPanel>
+						</h:panelGrid>
+					</rich:panel>
+					<rich:panel header="Validez..."
+						style="width:946px;float:left;margin-top:25px">
+						<h:panelGrid columns="2">
+							<h:selectBooleanCheckbox
+								value="#{beanSuiteInscription.estPublique}" id="estPublique" />
+							<h:outputText
+								value="Je souhaite que mon profil soit visible par tous" />
+
+							<h:selectBooleanCheckbox
+								value="#{beanSuiteInscription.notificationAutomatique}"
+								id="notificationAutomatique" />
+							<h:outputText
+								value="Je souhaite mettre les notifications en mode automatique" />
+
+							<h:selectBooleanCheckbox
+								value="#{beanSuiteInscription.notificationParMail}"
+								id="notificationParMail" />
+							<h:outputText
+								value="Je souhaite recevoir les notifications par mails" />
+						</h:panelGrid>
+						<br />
+						<h:commandButton id="subscribeSuite"
+							action="#{beanSuiteInscription.updateAccount}"
+							value="Mettre à jour" />
+					</rich:panel>
+				</rich:graphValidator>
+			</h:form>
+		</section>
+	</ui:define>
+</ui:composition>
+</html>

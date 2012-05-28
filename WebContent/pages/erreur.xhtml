@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:a4j="http://richfaces.org/a4j"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets">
+
+<ui:composition template="/templates/standard.xhtml">
+	<ui:define name="pageTitle">Erreur</ui:define>
+	<ui:define name="content">
+		<section class="group3">
+			<h3>Désolé, la page demandée n'est pas disponible.</h3>
+			
+			<p style="color: red; font-size: 16px;">Redirection dans <span id="time">9 secondes</span>.</p>
+			<br/>
+			<br/>
+			
+			<h:outputText value="Essayez d'effectuer une nouvelle recherche." />
+			<br/>
+			TODO
+			<br/>
+			<br/>
+			
+			<h:outputLink value="http://localhost:8085/MediArea/pages/home.jsf" title="Revenir à la page d'accueil">
+				<h:outputText value="Revenir à la page d'accueil" />
+			</h:outputLink>
+			
+			<br/>
+			<br/>
+			<h:graphicImage library="images" name="icones/dannuler-une-erreur-gtk-icone-5458-128.png" alt="Erreur" />
+			<br/>
+			<br/>
+			<br/>
+			<br/>
+			<br/>
+			<br/>
+			<br/>
+			<br/>
+		</section>
+		
+		
+		<script type="text/javascript">
+		var spanTime= document.getElementById('time');
+		var time= spanTime.innerHTML.substring(0,1);
+
+		function refreshTimer ()
+		{
+		 time--;
+		 spanTime.innerHTML= time +' seconde';
+		 
+		 if (time > 1)
+		 {
+		  spanTime.innerHTML+= 's';
+		 }
+		 
+		 else if (time==0)
+		 {
+		  window.location='http://localhost:8085/MediArea/pages/home.jsf';
+		  clearInterval();
+		 }
+		}
+
+		setInterval(refreshTimer, 1000);
+		</script>
+	</ui:define>
+</ui:composition>
+</html>
