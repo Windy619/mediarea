@@ -454,7 +454,7 @@ public class DaoMedia extends Dao<Media> {
 		return q.list();
 	}*/
 	
-	public List<Commentaire> getCommentaires(Media media) { //à utiliser
+	public List<Commentaire> getCommentaires(Media media) {
 		Query query = session.createSQLQuery("" +
 				"SELECT c.idCommentaire, c.contenuCommentaire, c.dateCommentaire, c.nbVotes, c.auteur_idUtilisateur " +
 				"FROM media_commentaire mc LEFT JOIN commentaire c " +
@@ -479,10 +479,39 @@ public class DaoMedia extends Dao<Media> {
             listids += o[0].toString();
 		}
 		Query q = session.createQuery("" +
-				" FROM Commentaire as c " +
+				"FROM Commentaire as c " +
 				"WHERE c.idCommentaire IN (" + listids +") " + 
 				"ORDER BY c.dateCommentaire DESC");
 		  
 		return q.list();
 	}
+	
+	/*public Query getReponses(Media media) {
+		Query query = session.createSQLQuery("" +
+				"SELECT cc.commentairesFils_idCommentaire, cc.Commentaire_idCommentaire " +
+				"FROM commentaire_commentaire cc LEFT JOIN media_commentaire mc " +
+				"ON cc.Commentaire_idCommentaire = mc.commentaires_idCommentaire " +
+				"WHERE mc.Media_idMedia = :media");
+
+		query.setParameter("media", media);
+		
+		List result = query.list();
+		String listids = "";
+		Iterator it= result.iterator();
+		while (it.hasNext()) // tant que j'ai un element non parcouru
+		{
+			Object[] o = (Object[]) it.next();
+            if(!listids.equals(""))
+                   listids += ", ";
+            listids += o[0].toString();
+		}
+		Query q = session.createQuery("" +
+				"SELECT c.idCommentaire, c.commentairesFils " +
+				"FROM Commentaire as c " +
+				"WHERE c.idCommentaire IN (" + listids +")");
+				//trié par date TODO
+		
+		//return q.list();
+		return q;
+	}*/
 }

@@ -8,6 +8,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 //import org.richfaces.component.SortOrder;
+
 import javax.faces.application.FacesMessage;
 import javax.faces.component.UIComponent;
 import javax.faces.component.html.HtmlDataTable;
@@ -18,12 +19,12 @@ import javax.validation.constraints.AssertTrue;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 import javax.faces.event.AjaxBehaviorEvent;
+import javax.faces.model.SelectItem;
 
 import org.hibernate.Query;
 import org.primefaces.event.*;
 import org.primefaces.model.chart.CartesianChartModel;
 import org.primefaces.model.chart.ChartSeries;
-import org.primefaces.model.chart.LineChartSeries; 
 
 import metier.media.*;
 import dao.media.*;
@@ -38,10 +39,22 @@ import dao.utilisateur.*;
  *
  */
 public class BeanMedia {
-	private DaoMedia daoMedia;
+	// DAO
+	private static DaoMedia daoMedia;
+	private static DaoCommentaire daoCommentaire;
+	private static DaoRegarder daoRegarder;
+	public static DaoTelechargementMedia daoTelechargementMedia;
+	private static DaoSignalementMedia daoSignalementMedia;
+	private static DaoUtilisateur daoUtilisateur;
+	private static DaoAimer daoAimer;
+	public static DaoTypePlaylist daoTypePlaylist;
+	public static DaoPlaylist daoPlaylist;
+	public static DaoVisibilite daoVisibilite;
+ 	private static DaoCategorie daoCategorie;
+ 	
+ 	// Propriétés
 	private String idMediaVisualise;
 	private Media mediaVisualise;
-	
 	private String titreMedia; //nécessaire de faire appel à l'objet car #{beanMedia.mediaVisualise.titreMedia} ne fonctionne pas
 	private long nbCommentaires;
 	private String auteur;
@@ -59,112 +72,48 @@ public class BeanMedia {
 	SimpleDateFormat dateFormat;
 	private int nbCaracteresRestants;
 	private Commentaire commentaireAffiche;
-	private DaoCommentaire daoCommentaire;
 	@Size(min = 3, max = 12, message = "La taille du mot de passe doit être entre 3 et 12")
 	private String motDePasseMedia;
 	private Boolean showMotDePasseMedia;
-	
-	//****
-
-	private DaoRegarder daoRegarder;
 	private Regarder regarder;
-	
-	//private int nbVues;
 	private long resultatTotalVuesMedia;
-		
 	private String motVues;
 	private String motTelechargement;
-	
-	//****
-	
-	public static DaoTelechargementMedia daoTelechargementMedia;
 	private long resultatTotalTelechargementMedia;
 	//private List<Media> mediaDansPanier; //TODO à mettre en SESSION
-	
-	//****
-
-	private DaoSignalementMedia daoSignalementMedia;
 	private Signalement_Media signalementMedia;
 	private String raison; //récupéré de la vue
-	
-	//*****
-	
-	private DaoUtilisateur daoUtilisateur;
 	private Utilisateur util;
-	
-	//*****
-	
-	private DaoAimer daoAimer;
 	private Aimer aimer;
 	private long resultatNbAime;
 	private long resultatNbAimeNAimePas;
-
-	//*****
-	
 	private String nomAvatar;
-	
-	//*****
-	
-	boolean estVisible = false; //TODO
-	public boolean isEstVisible() {
-		return estVisible;
-	}
-	public void setEstVisible(boolean estVisible) {
-		this.estVisible = estVisible;
-	}
-	
-	//*****
-	
-	public static DaoTypePlaylist daoTypePlaylist;
-	public static DaoPlaylist daoPlaylist;
 	private String txtFavori;
 	private String imgFavori;
-	
 	private List<Playlist> listePlaylistUt;
 	private String imgAjoutPlaylist;
 	private boolean estAjouteAPlaylist = false;
-	
 	@Size(min = 0, message = "Ce champ est requis.")
     private String nomPlaylistACreer;
 	private String descriptionPlaylistACreer;
 	private String visibilitePlaylistACreer;
 	private FacesMessage message;
-
-	//*****
-
-	public static DaoVisibilite daoVisibilite;
 	private List<Visibilite> listeVisibilite;
-	private List<String> listeNomVisibilite;
-	//private Map<Visibilite, String> items; // +getter
-	
-	//*****
-	
+	private List<SelectItem> listeNomVisibilite;
 	private long resultatTotalVotesMedia;
-	
 	private String motVotes;
-	
-	//*****
-	
-	/*private SortOrder statesOrder = SortOrder.unsorted;
-	public SortOrder getStatesOrder() {
-		return statesOrder;
-	}
-	public void setStatesOrder(SortOrder statesOrder) {
-		this.statesOrder = statesOrder;
-	}*/
-	
-	//*****
-	  
-    //private CartesianChartModel linearModel;
 	private CartesianChartModel categoryModel;
 	private long maxY;
-
 	private String codeIntegration;
     private String lien;
     private String url;
     private String tailleLecteur = "";
-    int largeur = 320;
-    int hauteur = 180;
+    private int largeur = 320;
+    private int hauteur = 180;
+ 	private String detailNotifyAjoutAuPanier;
+ 	private String estNotifieJAime; //TODO suppr
+ 	private String detailNotificationJAime;
+ 	private String detailNotificationJeNAimePas;
     
     // Bean
  	private BeanConnexion beanConnexion;
@@ -172,14 +121,7 @@ public class BeanMedia {
  	// Utilisateur connecté actuellement
  	private Utilisateur utilisateurConnecte;
  	
- 	
- 	private String detailNotifyAjoutAuPanier;
- 	
- 	String estNotifieJAime; //TODO suppr
- 	String detailNotificationJAime;
- 	String detailNotificationJeNAimePas;
 	
- 	private DaoCategorie daoCategorie;
  	
  	/**
 	 * Constructeur du Bean
@@ -193,6 +135,7 @@ public class BeanMedia {
 			//if (utilisateurConnecte != null) {}
 		}
 		
+		//Instantiation des Dao
 		daoMedia = new DaoMedia();
 		daoCategorie = new DaoCategorie();
 		daoUtilisateur = new DaoUtilisateur();
@@ -296,20 +239,12 @@ public class BeanMedia {
 				nomTypeMedia = mediaVisualise.getType().getNomTypeMedia();
 
 				showMotDePasseMedia = true;
+				
+				algorithmeSuggestions();
 					
 				//***********************************************
 				
 				//Regarder
-				/*List<Regarder> listeRegarder = daoRegarder.getTous();
-				int nbVues = 0;
-		        for (Regarder object : listeRegarder) {
-		        	if(object.getMedia() == mediaVisualise) {
-		        		nbVues += ((Regarder) object).getNbVues();
-		        	}
-				}
-				if(nbVues > 0) {
-					motVues = "s"; //"vues" au pluriel
-				}*/
 				
 				resultatTotalVuesMedia = daoMedia.totalVues(mediaVisualise);
 				if(resultatTotalVuesMedia > 0) {
@@ -325,15 +260,8 @@ public class BeanMedia {
 				}
 				
 				//***********************************************
-				
-				//Utilisateur (connecté)
-				//daoUtilisateur = new DaoUtilisateur();
-				//util = daoUtilisateur.getUn(1);
-				
-				//***********************************************		
-				
+
 				//Aimer
-				//daoAimer = new DaoAimer();
 				resultatNbAime = daoMedia.nbAimeMedia(mediaVisualise.getIdMedia()).size();
 				resultatNbAimeNAimePas = daoMedia.nbAimeNAimePas(mediaVisualise.getIdMedia()).size();
 				
@@ -343,58 +271,7 @@ public class BeanMedia {
 				nomAvatar = util.getAvatar().getNomAvatar();
 				
 				//***********************************************
-				
-				//Tag
-				Set<Tag> tagMedia = mediaVisualise.getTags(); //tags du média visualisé
-				
-				List<Media> listeMedia = daoMedia.getTous();
-				
-				HashMap<Media, Integer> map = new HashMap<Media, Integer>(); //HashMap contenant le nb d'occurrences de tags correspondants dans les médias
-				
-				Iterator<Tag> iteratorMedia = tagMedia.iterator();
-				while(iteratorMedia.hasNext()) { //parcours des tags du média visualisé
-					//System.out.println("Set tagMedia : " + i.next());
-					Tag svg = iteratorMedia.next();
-					for(Media elMedia : listeMedia) { //parcours de tous les médias
-						if(! elMedia.equals(mediaVisualise)) {//tout sauf le média actuellement visualisé
-							Set<Tag> setTagMediaCourant = daoMedia.getUn(elMedia.getIdMedia()).getTags();
-							for(Tag tagMediaCourant : setTagMediaCourant) {
-								//System.out.println(svg + "***" + tagMediaCourant + " (" + elMedia.getIdMedia() + ")");
-								if(svg.toString().equals(tagMediaCourant.toString())) {
-									if(map.containsKey(elMedia)) {
-										map.put(elMedia, map.get(elMedia) + 1); //tag correspond supplémentaire
-									}
-									else {
-										map.put(elMedia, 1);
-									}
-								}
-							}
-						}
-					}
-				}
-				
-				/*//Affichage de la HashMap
-				Set cles = map.keySet();
-				Iterator it = cles.iterator();
-				while (it.hasNext()){
-				   Object cle = it.next();
-				   Object valeur = map.get(cle);
-				   System.out.println(cle + " => " + valeur);
-				}*/
-
-				
-				listeMediasSuggeres = new ArrayList<Media>(map.keySet());
-				//System.out.println("size listeMediasSuggeres : " + listeMediasSuggeres.size());
-				if(listeMediasSuggeres.size() < 20) {
-					listeMediasSuggeres = listeMediasSuggeres.subList(0, listeMediasSuggeres.size());
-				}
-				else {
-					listeMediasSuggeres = listeMediasSuggeres.subList(0, 20);
-				}
-				//suggestion en tenant compte du titre et catégories TODO
-				
-				//***********************************************
-				
+								
 				//Playlist
 				imgFavori = "add-star-award-icone-8518-16.png";
 				Set<Playlist> playlistsUtilisateur = daoUtilisateur.getUn(1).getPlaylists();
@@ -430,12 +307,12 @@ public class BeanMedia {
 				}
 				
 				listeVisibilite = daoVisibilite.getTous();
-				listeNomVisibilite = new ArrayList<String>();
-				//items = new LinkedHashMap<Visibilite, String>();
-				//SelectItem optionVisibilite = new SelectItem("ch1", "choice1", "This bean is for selectItems tag", true);
+				listeNomVisibilite = new ArrayList<SelectItem>();
+				SelectItem optionVisibilite;
 				for(Visibilite visible : listeVisibilite) {
-					listeNomVisibilite.add(visible.getNomVisibilite());
-					//items.put(visible, visible.getNomVisibilite());
+					optionVisibilite = new SelectItem(visible.getIdVisibilite(), visible.getNomVisibilite(), visible.getNomVisibilite(), false);
+					//listeNomVisibilite.add(visible.getNomVisibilite());
+					listeNomVisibilite.add(optionVisibilite);
 				}
 				
 				//***********************************************
@@ -458,10 +335,6 @@ public class BeanMedia {
 		        codeIntegration = "<iframe width='320' height='180' src='" + url + "' frameborder='0' allowfullscreen></iframe>";
 	}
 	
-	
-	
-
-
 	
 	
 	/** 
@@ -534,22 +407,10 @@ public class BeanMedia {
 	}
 	
 	/** 
-	 * Visibilite
-	 * @return
-	 */
-	public String rendreVisible() {
-		estVisible = true;
-		
-		System.out.println("est visible : " + estVisible);
-		
-		return "rendreVisible";
-	} //TODO
-	
-	/** 
 	 * Incrémentation du nombre de vues du média
 	 * @return
 	 */
-	public String incrNbVues() { //incrémenter seulement si clic sur Play et par utilisateur TODO
+	public String incrNbVues() { //incrémenter seulement si clic sur Play et par utilisateur XXX
 		System.out.println("Incrémentation du nombre de vues");
 						
 		/*List<Regarder> listeRegarder = daoRegarder.getTous();
@@ -689,7 +550,7 @@ public class BeanMedia {
 			daoUtilisateur.getUn(1).getPlaylists().add(nvlPlaylist);
 			daoUtilisateur.sauvegarder(daoUtilisateur.getUn(1));
 			FacesContext.getCurrentInstance().addMessage(null,
-	                new FacesMessage(FacesMessage.SEVERITY_INFO, "Mission accomplie !", "Ce média a été ajouté à votre playlist: ...")); //XXX en pop-up ?
+	                new FacesMessage(FacesMessage.SEVERITY_INFO, "Mission accomplie !", "Ce média a été ajouté à votre playlist: ..."));
 		}
 		else { //playlist déjà existante
 			message = new FacesMessage("La playlist existe déjà");
@@ -715,7 +576,7 @@ public class BeanMedia {
         //List<?> resultatStatVues = daoMedia.statVues(mediaVisualise);
         Query resultatStatVues = daoMedia.statVues(daoMedia.getUn(2));
         //suivant heure et mois TODO
-        for(Iterator it=resultatStatVues.iterate();it.hasNext();) {
+        for(Iterator it = resultatStatVues.iterate();it.hasNext();) {
         	Object[] row = (Object[]) it.next();
         	//System.out.println("Date vues : " + row[0]);
         	//System.out.println("Count regarder : " + row[1]);
@@ -848,19 +709,24 @@ public class BeanMedia {
 		System.out.println("chargerCommentaires");
 		
 		// On charge les liste des commentaires
-		//commentaires = new ArrayList<Commentaire>(mediaVisualise.getCommentaires());
 		listeCommentaires = daoMedia.getCommentaires(daoMedia.getUn(2));
 	}
 	
 	/** 
-	 * Chargement de la liste des réponses associé à un commentaire
+	 * Chargement de la liste des réponses associée à un commentaire
 	 * @return
 	 */
 	public String chargerReponses() {
 		System.out.println("chargerReponses");
 		
-		listeReponses = new ArrayList<Commentaire>(daoCommentaire.getUn(3).getCommentairesFils()); //TODO commentaire en paramètre
-		
+		/*listeReponses = daoMedia.getReponses(daoMedia.getUn(2));
+		HashMap<Long, ArrayList<Commentaire>> hmReponses = new HashMap<Long, ArrayList<Commentaire>>();
+		for(Commentaire c : listeCommentaires) {
+			hmReponses.put(c.getIdCommentaire(), new ArrayList<Commentaire>(c.getCommentairesFils()));
+			System.out.println("key : "+c.getIdCommentaire());
+			System.out.println("value : "+hmReponses.get(3));
+			System.out.println("Set commentairesFils : "+new ArrayList<Commentaire>(c.getCommentairesFils()));
+		} //TODO*/
 		
 		return "chargerReponses";
 	}
@@ -912,28 +778,6 @@ public class BeanMedia {
 		
 		return "voterPour";
 	}
-	
-	/** 
-	 * Vérification du mot de passe du média (si média privé et utilisateur connecté non ami)
-	 * @return
-	 */
-	public String verifierMotDePasseMedia() { //TODO
-		if(daoMedia.getUn(2).getMdpMedia().equals(motDePasseMedia)) { //si le mot de passe du média saisi est correct
-			System.out.println("on cache le Modal panel");
-			showMotDePasseMedia = false; //TODO
-			//on cache le Modal panel
-		}
-		else {
-			System.out.println("mot de passe incorrect");
-			message = new FacesMessage("Mot de passe incorrect");
-			message.setSeverity(FacesMessage.SEVERITY_ERROR);
-			FacesContext.getCurrentInstance().addMessage(
-					"form-login:password", message);
-		}
-		//vérification
-		
-		return "verifierMotDePasseMedia";
-	}
 
 	/** 
 	 * Modification des catégories et tags d'un média (si propriétaire)
@@ -949,14 +793,73 @@ public class BeanMedia {
 		}
 		daoMedia.getUn(2).setCategories(setCategorie);
 		*/
-		//sauvegarder TODO
+		//sauvegarder
 		
 		return "modifierCategoriesTags";
 	}
 
 
+	/** 
+	 * Algorithme des suggestions de média
+	 * @return
+	 */
+	public void algorithmeSuggestions() {
+		//Tag
+		Set<Tag> tagMedia = mediaVisualise.getTags(); //tags du média visualisé
+		
+		List<Media> listeMedia = daoMedia.getTous();
+		
+		HashMap<Media, Integer> map = new HashMap<Media, Integer>(); //HashMap contenant le nb d'occurrences de tags correspondants dans les médias
+		
+		Iterator<Tag> iteratorMedia = tagMedia.iterator();
+		while(iteratorMedia.hasNext()) { //parcours des tags du média visualisé
+			//System.out.println("Set tagMedia : " + i.next());
+			Tag svg = iteratorMedia.next();
+			for(Media elMedia : listeMedia) { //parcours de tous les médias
+				if(! elMedia.equals(mediaVisualise)) {//tout sauf le média actuellement visualisé
+					Set<Tag> setTagMediaCourant = daoMedia.getUn(elMedia.getIdMedia()).getTags();
+					for(Tag tagMediaCourant : setTagMediaCourant) {
+						//System.out.println(svg + "***" + tagMediaCourant + " (" + elMedia.getIdMedia() + ")");
+						if(svg.toString().equals(tagMediaCourant.toString())) {
+							if(map.containsKey(elMedia)) {
+								map.put(elMedia, map.get(elMedia) + 1); //tag correspond supplémentaire
+							}
+							else {
+								map.put(elMedia, 1);
+							}
+						}
+					}
+				}
+			}
+		}
+		
+		/*//Affichage de la HashMap
+		Set cles = map.keySet();
+		Iterator it = cles.iterator();
+		while (it.hasNext()){
+		   Object cle = it.next();
+		   Object valeur = map.get(cle);
+		   System.out.println(cle + " => " + valeur);
+		}*/
 
-	//GETTER ET SETTER
+		
+		listeMediasSuggeres = new ArrayList<Media>(map.keySet());
+		//System.out.println("size listeMediasSuggeres : " + listeMediasSuggeres.size());
+		if(listeMediasSuggeres.size() < 20) {
+			listeMediasSuggeres = listeMediasSuggeres.subList(0, listeMediasSuggeres.size());
+		}
+		else {
+			listeMediasSuggeres = listeMediasSuggeres.subList(0, 20);
+		}
+		//suggestion en tenant compte du titre et catégories XXX
+	}
+
+	
+	
+	
+	
+	// GETTER / SETTER
+	
 	public Media getMediaVisualise() {	
 		return mediaVisualise;
 	}
@@ -1124,11 +1027,11 @@ public class BeanMedia {
 		this.imgAjoutPlaylist = imgAjoutPlaylist;
 	}
 	
-	public List<String> getListeNomVisibilite() {
+	public List<SelectItem> getListeNomVisibilite() {
 		return listeNomVisibilite;
 	}
 	
-	public void setListeNomVisibilite(List<String> listeNomVisibilite) {
+	public void setListeNomVisibilite(List<SelectItem> listeNomVisibilite) {
 		this.listeNomVisibilite = listeNomVisibilite;
 	}
 	

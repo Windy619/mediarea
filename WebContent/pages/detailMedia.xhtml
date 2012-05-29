@@ -288,13 +288,13 @@
 			                    <rich:message for="nomPlaylistACreer" />
 			                    <br/>
 			                    <h:outputText value="Visibilité :" />
-			                    <rich:select value="#{bean.visibilitePlaylistACreer}">
+			                    <h:selectOneMenu value="#{bean.visibilitePlaylistACreer}">
 					                <f:selectItems value="#{beanMedia.listeNomVisibilite}" />
-					            </rich:select>
+					            </h:selectOneMenu>
 					            <br/>
 			                    <h:outputText value="Description :" />
-			                    <h:inputTextarea rows="2" cols="2" value="#{beanMedia.descriptionPlaylistACreer}" id="descriptionPlaylistACreer">
-		           				</h:inputTextarea><!-- TODO pouvoir écrire -->
+			                    <h:inputTextarea rows="2" cols="10" value="#{beanMedia.descriptionPlaylistACreer}" id="descriptionPlaylistACreer">
+		           				</h:inputTextarea>
 			                    <rich:message for="descriptionPlaylistACreer" />
 			                </h:panelGrid>
 			                <a4j:commandButton value="Sauvegarder" action="#{beanMedia.creerPlaylist}" /><!-- TODO rentrer dans fonction -->
@@ -365,10 +365,10 @@
 			            </h:outputLink>
 			        </f:facet>
 			        
-			        <h:panelGrid columns="2" columnClasses="top,top">
+			        <h:panelGrid><!-- columns="2" columnClasses="top,top" -->
 						<h:outputText value="De : "/>
 						<h:inputText value="#{beanMessagesPrives.utilisateurConnecte.adrMail}" style="width: 500px" disabled="true"/>
-									
+						
 						<h:outputText value=" A : "/>
 						<rich:autocomplete id="destinataire" mode="ajax" value="#{beanMessagesPrives.destinataire}"
 						tokens=", " minChars="1" autoFill="false" autocompleteMethod="#{beanMessagesPrives.autoCompletion}" 
@@ -376,13 +376,12 @@
 						
 						<h:outputText value=" Objet : "/>
 						<h:inputText id="objet" value="#{beanMessagesPrives.objet}" style="width: 500px"/>
-
+					
 						<h:outputText value="Message :"/>
 						<rich:editor value="#{beanMessagesPrives.contenu}" 
 						theme="advanced" width="500" height="250" viewMode="visual">	
-						</rich:editor>	
-					
-					</h:panelGrid>	
+						</rich:editor>
+					</h:panelGrid>
 								
 					<br />
 					
@@ -506,12 +505,12 @@
 				        <h:outputText value="#{beanMedia.resultatTotalVuesMedia}"/> vue<h:outputText value="#{beanMedia.motVues}"/> - <h:outputText value="#{beanMedia.nbCommentaires}"/> com. - TODO fav. - <h:outputText value="#{beanMedia.resultatTotalVotesMedia}"/> vote<h:outputText value="#{beanMedia.motVotes}"/>
 				        <br/>  
 
-     					<p:lineChart id="category" value="#{beanMedia.categoryModel}" legendPosition="e"  
-							title="Statistiques sur le nombre de vues" minY="0" maxY="#{beanMedia.maxY}" style="height:300px;margin-top:20px"/> 
-				        <!-- Audiences par sexe, par endroit TODO -->
-				            
-				            
-				            <a href="#" onclick="#{rich:component('popupStatistiques')}.hide()">Fermer</a>
+						<h:panelGroup rendered="#{beanMedia.resultatTotalVuesMedia > 0 }">
+							<p:lineChart id="category" value="#{beanMedia.categoryModel}" legendPosition="e"  
+								title="Statistiques sur le nombre de vues" minY="0" maxY="#{beanMedia.maxY}" style="height:300px;margin-top:20px"/> 
+					        <!-- Audiences par sexe, par endroit XXX -->
+					            <a href="#" onclick="#{rich:component('popupStatistiques')}.hide()">Fermer</a>
+				        </h:panelGroup>
 				        </p>
 				    </rich:popupPanel>
 				</h:form>
@@ -576,7 +575,7 @@
         		
         		<h:form>
         			<h:outputLink value="/MediArea/resources/#{beanMedia.nomTypeMedia}s/#{beanMedia.titreMedia}.mp3" rendered="#{beanMedia.mediaVisualise.estTelechargementAutorise}">
-					  <f:verbatim>Télécharger ce média</f:verbatim><!-- TODO ajout dans table Telechargement media -->
+					  <f:verbatim>Télécharger ce média</f:verbatim>
 					</h:outputLink>
         		</h:form>
         	
@@ -823,7 +822,7 @@
 				                <rich:collapsibleSubTableToggler for="sbtbl" />
 				                Réponses
 				            </rich:column>
-							<rich:collapsibleSubTable value="#{beanMedia.listeReponses}" var="reponses" id="sbtbl" expandMode="client"  expanded="#{false}">
+							<rich:collapsibleSubTable value="#{hmReponses.get(commentaire.idCommentaire)}" var="reponses" id="sbtbl" expandMode="client"  expanded="#{false}">
 				                <rich:column>
 				                  	<h:outputText escape="false" value="#{reponses.contenuCommentaire}" />
 				                </rich:column>
@@ -831,7 +830,7 @@
 				                    <rich:editor id="editorReponse" value="#{beanMedia.commentaireSaisi}" height="100" width="575" style="margin-bottom: 1em;">
 				       				</rich:editor>
 				       				<h:commandButton value="Répondre" action="#{beanMedia.repondreCommentaire}" style="float: right;">
-										<f:setPropertyActionListener target="#{beanMediacommentaireAffiche}" value="#{commentaire}" />						
+										<f:setPropertyActionListener target="#{beanMedia.commentaireAffiche}" value="#{commentaire}" />						
 									</h:commandButton>
 				                </f:facet>
 							</rich:collapsibleSubTable>
