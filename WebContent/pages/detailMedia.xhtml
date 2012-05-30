@@ -246,9 +246,7 @@
 			                	<a4j:commandLink value="Nom" render="table" action="#{beanMedia.sortByNom}" />
 			                </f:facet>
 			                <h:graphicImage id="imgAjoutPlaylist" value="../resources/images/icones/#{beanMedia.imgAjoutPlaylist}" alt="Ajouter" />
-	        				<a4j:commandLink value="#{play.nomPlaylist}" action="#{beanMedia.ajouterMediaAPlaylist}" execute="@form"  ajaxSingle="true">
-			                
-			                </a4j:commandLink>
+	        				<a4j:commandLink value="#{play.nomPlaylist}" action="#{beanMedia.ajouterMediaAPlaylist}" execute="@form"  ajaxSingle="true">			                	
 			                (
 					        nb TODO
 					        )
@@ -288,7 +286,7 @@
 			                    <rich:message for="nomPlaylistACreer" />
 			                    <br/>
 			                    <h:outputText value="Visibilité :" />
-			                    <h:selectOneMenu value="#{bean.visibilitePlaylistACreer}">
+			                    <h:selectOneMenu value="#{beanMedia.visibilitePlaylistACreer}">
 					                <f:selectItems value="#{beanMedia.listeNomVisibilite}" />
 					            </h:selectOneMenu>
 					            <br/>
@@ -501,7 +499,6 @@
 				                X
 				            </h:outputLink>
 				        </f:facet>
-				        <p>
 				        <h:outputText value="#{beanMedia.resultatTotalVuesMedia}"/> vue<h:outputText value="#{beanMedia.motVues}"/> - <h:outputText value="#{beanMedia.nbCommentaires}"/> com. - TODO fav. - <h:outputText value="#{beanMedia.resultatTotalVotesMedia}"/> vote<h:outputText value="#{beanMedia.motVotes}"/>
 				        <br/>  
 
@@ -511,7 +508,6 @@
 					        <!-- Audiences par sexe, par endroit XXX -->
 					            <a href="#" onclick="#{rich:component('popupStatistiques')}.hide()">Fermer</a>
 				        </h:panelGroup>
-				        </p>
 				    </rich:popupPanel>
 				</h:form>
         		
@@ -521,7 +517,7 @@
 	            <rich:popupPanel id="popupSignaler" modal="false" autosized="true"
 			        resizeable="false" style="width: 400px; overflow: hidden; z-index: 99999;">
 			        <f:facet name="header">
-			            <h:outputText value="Signaler cette vidéo (contenu pouvant offenser)" title="" />
+			            <h:outputText value="Signaler ce média (contenu pouvant offenser)" title="" />
 			        </f:facet>
 			        <f:facet name="controls">
 			            <h:outputLink value="#"
@@ -559,7 +555,7 @@
         		
         		<h:form>
         			<a4j:commandButton value="Ajouter #{beanMedia.titreMedia} au panier" title="Ajouter #{beanMedia.titreMedia} au panier" action="#{beanMedia.ajouterAuPanier}" render="notifyAjoutAuPanier" image="/resources/images/icones/panier-ajouter-icone-5924-32.png" rendered="#{beanMedia.mediaVisualise.estTelechargementAutorise}"/>
-        		
+        		azertyuiop
 					<rich:notify id="notifyAjoutAuPanier" stayTime="1500" sticky="false" nonblocking="false"
 			        nonblockingOpacity="0.5" showShadow="false"
 			        showCloseButton="true" detail="#{beanMedia.detailNotifyAjoutAuPanier}">
@@ -574,6 +570,7 @@
         		<br/>
         		
         		<h:form>
+        			qsdfghjklm
         			<h:outputLink value="/MediArea/resources/#{beanMedia.nomTypeMedia}s/#{beanMedia.titreMedia}.mp3" rendered="#{beanMedia.mediaVisualise.estTelechargementAutorise}">
 					  <f:verbatim>Télécharger ce média</f:verbatim>
 					</h:outputLink>
