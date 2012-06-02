@@ -109,13 +109,7 @@
 	// canplaythrough;
 	// seeking, seeked, timeupdate, ended; ratechange, durationchange,
 	// volumechange
-	triggerHTML5Events : [ "play", "pause" ],
-	
-	
-	
-	
-	
-	
+	triggerHTML5Events : [ "play", "pause" ]
 	
 	
 	
@@ -135,3 +129,12 @@
     LBP.gaTracker.trackEvents = 
         ["VolumeChange", "RateChange", "Seeking", "Seeked", "Ended", "Play", "Pause"];*/
 };
+
+
+
+
+
+
+/*document.getElementById("leanback-video-id0_play_control").onclick(alert("incrementerNbVues()"));
+document.getElementById("leanback-video-id0_play_control").onclick(alert("incrementerNbVues()"));*/
+//TODO

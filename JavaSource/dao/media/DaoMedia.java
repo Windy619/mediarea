@@ -1,21 +1,17 @@
 package dao.media;
 
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 
 import metier.media.Categorie;
 import metier.media.Commentaire;
 import metier.media.Media;
 import metier.media.Type_Media;
-import metier.utilisateur.Amitie;
 import metier.utilisateur.Utilisateur;
 
 import org.hibernate.Criteria;
@@ -24,8 +20,6 @@ import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.LogicalExpression;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
-import org.hibernate.Query;
-
 
 import dao.Dao;
 
@@ -323,6 +317,26 @@ public class DaoMedia extends Dao<Media> {
 		return (Long) q.uniqueResult();
 	}
 	
+	/**
+	 * Recuperation du total des vues
+	 * @return Une liste de média
+	 */
+	public double moyenneVotes(Media media) {
+		Media param = media;
+		
+		Query q = session.createQuery("" +
+				"SELECT AVG(note) " +
+				"FROM Note " +
+				"WHERE media = :media");
+		
+		q.setParameter("media", param);
+		
+		if(q.list().toString().equals("[null]")) {
+			return 0;
+		}
+		return (Double) q.uniqueResult();
+	}
+	
 	public long totalVotes(Media media) {		
 		//long param = media.getIdMedia();
 		Media param = media;
@@ -401,9 +415,7 @@ public class DaoMedia extends Dao<Media> {
 	//public List<?> statVues(Media media) {
 	public Query statVues(Media media) {
 		Media param1 = media;
-		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
 		GregorianCalendar calendar = new GregorianCalendar();
-		Calendar cal = Calendar.getInstance();
 		calendar.add(Calendar.MONTH, -3);
 		Date param2 = null;
 		Date param3 = null;
@@ -413,18 +425,18 @@ public class DaoMedia extends Dao<Media> {
 		
 		
 		Query q = session.createQuery("" +
-				"SELECT DATE_FORMAT(r.dateVues,'%Y-%m-%d'), count(r.idRegarder) " +
+				"SELECT DATE_FORMAT(r.dateVues,'%d-%m-%Y'), count(r.idRegarder) " +
 				"FROM Regarder r " +
 				"WHERE r.media = :media " +
 				"AND r.dateVues BETWEEN :dateDebut AND :dateFin " + 
-				"GROUP BY DATE_FORMAT(r.dateVues,'%Y-%m-%d')");
+				"GROUP BY DATE_FORMAT(r.dateVues,'%d-%m-%Y')");
 		
 		q.setParameter("media", param1);
 		q.setParameter("dateDebut", param2);
 		q.setParameter("dateFin", param3);
 		
 		//return q.list();
-		return q; //retourne un query car 
+		return q; //retourne un query car plusieurs champs dans SELECT
 	}
 	
 	public long maxNbRegarder(Media media) {
@@ -486,32 +498,16 @@ public class DaoMedia extends Dao<Media> {
 		return q.list();
 	}
 	
-	/*public Query getReponses(Media media) {
-		Query query = session.createSQLQuery("" +
-				"SELECT cc.commentairesFils_idCommentaire, cc.Commentaire_idCommentaire " +
-				"FROM commentaire_commentaire cc LEFT JOIN media_commentaire mc " +
-				"ON cc.Commentaire_idCommentaire = mc.commentaires_idCommentaire " +
-				"WHERE mc.Media_idMedia = :media");
-
-		query.setParameter("media", media);
+	public Query getReponses(Media media) {
 		
-		List result = query.list();
-		String listids = "";
-		Iterator it= result.iterator();
-		while (it.hasNext()) // tant que j'ai un element non parcouru
-		{
-			Object[] o = (Object[]) it.next();
-            if(!listids.equals(""))
-                   listids += ", ";
-            listids += o[0].toString();
-		}
 		Query q = session.createQuery("" +
-				"SELECT c.idCommentaire, c.commentairesFils " +
-				"FROM Commentaire as c " +
-				"WHERE c.idCommentaire IN (" + listids +")");
-				//trié par date TODO
+			"SELECT pere as PERE, fils as FILS, fils.dateCommentaire " +
+			"FROM Media as media JOIN media.commentaires as pere JOIN pere.commentairesFils as fils " +
+			"WHERE media.idMedia = :idMedia " +
+			"ORDER BY fils.dateCommentaire");
 		
-		//return q.list();
+		q.setParameter("idMedia", media.getIdMedia());
+
 		return q;
-	}*/
+	}
 }

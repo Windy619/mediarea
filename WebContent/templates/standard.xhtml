@@ -28,39 +28,12 @@
 	<h:outputScript library="js" name="leanbackPlayer.de.js" />
 	<h:outputScript library="js" name="LBPoption.js" />
 	
+	<script type="text/javascript" src="https://apis.google.com/js/plusone.js"></script>
 	
 	<h:outputScript library="js" name="redirection.js"/>
 </h:head>
 
 <h:body>
-		<p:notificationBar position="top" effect="slide" widgetVar="notif" style="height: 300px">  
-		    <h1> Mes notifications</h1>
-		    
-		    <br />
-		    <p:dataTable id="basic" value="#{beanNotification.listeNotifications}" var="notification">  
-		        <p:column>  
-		            <f:facet name="header">  
-		                    Date  
-		            </f:facet>  
-			    	<h:outputText value="#{notification.dateEnvoiNotification}">
-			    		<f:convertDateTime type="date" pattern="dd/MM/yyyy HH:mm"/>
-			    	</h:outputText>
-		        </p:column>  	
-		        
-		        <p:column>  
-		            <f:facet name="header">  
-		                    Message  
-		            </f:facet>  
-		            <h:outputText value="#{notification.contenuNotification}" /> 
-		        </p:column>
-		          		        	    
-		    </p:dataTable>  
-
-			<br />
-
-			<p:commandButton value="Cacher" onclick="notif.hide()" type="button"/>  
-		</p:notificationBar>  
-		
 	<div id="container">
 			
 		<header>
@@ -77,12 +50,8 @@
 			<ssnav>
 				<h:form>
 					<h:commandLink rendered="#{beanConnexion.isConnected}" action="#{beanConnexion.seDeconnecter}" value="#{beanConnexion.user.adrMail} - D&#233;connexion" />
-										
 					
-					<h:outputText rendered="#{beanConnexion.isConnected}" value="Notifications (#{beanNotification.nbNotifications}) :"/>
-					<p:commandButton rendered="#{beanConnexion.isConnected}" value="Afficher" onclick="notif.show()" type="button" style="height: 30px"/>
-
-	
+					
 					<br /><br />
 				</h:form>
 			</ssnav>
