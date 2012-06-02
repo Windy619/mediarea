@@ -2,6 +2,7 @@ import java.awt.event.ActionEvent;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -86,7 +87,7 @@ public class BeanMedia {
 	private Utilisateur util;
 	private Aimer aimer;
 	private long resultatNbAime;
-	private long resultatNbAimeNAimePas;
+	private long resultatNbNAimePas;
 	private String nomAvatar;
 	private String txtFavori;
 	private String imgFavori;
@@ -114,7 +115,9 @@ public class BeanMedia {
  	private String estNotifieJAime; //TODO suppr
  	private String detailNotificationJAime;
  	private String detailNotificationJeNAimePas;
-    
+ 	private HashMap<Commentaire, ArrayList<Commentaire>> hmReponses;
+ 	private FacesContext context = FacesContext.getCurrentInstance();  
+     	
     // Bean
  	private BeanConnexion beanConnexion;
  	
@@ -167,7 +170,7 @@ public class BeanMedia {
 			}
 			else {
 				detailNotificationJAime = "Merci !";
-				detailNotificationJeNAimePas = "...";
+				detailNotificationJeNAimePas = "Vous n'aimez pas ce média. Merci de votre commentaire !";
 			}
 		}
 		else {
@@ -263,7 +266,7 @@ public class BeanMedia {
 
 				//Aimer
 				resultatNbAime = daoMedia.nbAimeMedia(mediaVisualise.getIdMedia()).size();
-				resultatNbAimeNAimePas = daoMedia.nbAimeNAimePas(mediaVisualise.getIdMedia()).size();
+				resultatNbNAimePas = daoMedia.nbAimeNAimePas(mediaVisualise.getIdMedia()).size();
 				
 				//***********************************************
 				
@@ -314,6 +317,7 @@ public class BeanMedia {
 					//listeNomVisibilite.add(visible.getNomVisibilite());
 					listeNomVisibilite.add(optionVisibilite);
 				}
+				Collections.reverse(listeNomVisibilite); //inversion pour mettre "Prive" au début
 				
 				//***********************************************
 				
@@ -322,6 +326,9 @@ public class BeanMedia {
 				if(resultatTotalVotesMedia > 0)	{
 					motVotes = "s"; //"vues" au pluriel
 				}
+				
+				//moyenne des notes
+				note = daoMedia.moyenneVotes(mediaVisualise); //note initialement affichée
 				
 				//***********************************************
 				
@@ -344,6 +351,9 @@ public class BeanMedia {
 	public String jAime() {
 		System.out.println("Méthode jAime");
 		
+		//message = new FacesMessage(FacesMessage.SEVERITY_INFO, "J'aime ce contenu", detailNotificationJAime);
+		context.addMessage(null, new FacesMessage("J'aime ce contenu", detailNotificationJAime));  
+        		
 		util.getAimeMedias().add(new Aimer(true,mediaVisualise));
 		daoUtilisateur.sauvegarder(util);
 		
@@ -359,6 +369,8 @@ public class BeanMedia {
 	public String jeNAimePas() {
 		System.out.println("Méthode jeNAimePas");
 		
+		message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Je n'aime pas ce contenu", detailNotificationJeNAimePas);
+		
 		util.getAimeMedias().add(new Aimer(false,mediaVisualise));
 		daoUtilisateur.sauvegarder(util);
 		
@@ -369,17 +381,19 @@ public class BeanMedia {
 	 * Envoi du rapport de signalement du média
 	 * @return
 	 */
-	public String envoyerRapport() { //retourné obligatoirement un String et non un void
-		//System.out.println("Méthode envoyerRapport");
+	public String signalerMedia() { //retourné obligatoirement un String et non un void
+		System.out.println("Méthode signalerMedia");
+		
+		FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Signalement du média", "Votre rapport a été pris en compte.")); //TODO ne plus afficher ce message lorsque l'on revient sur la pop-up
 		
 		util.getSignalementsMedias().add(new Signalement_Media(raison, daoMedia.getUn(2)));
 		daoUtilisateur.sauvegarder(util);
 		
-		return "envoyerRapport";
+		return "signalerMedia";
 	}
 	
 	/** 
-	 * Notation par étoile du média
+	 * Notation par estimation d'étoiles du média
 	 * @return
 	 */
 	public void handleRate(RateEvent rateEvent) {
@@ -389,6 +403,7 @@ public class BeanMedia {
         FacesContext.getCurrentInstance().addMessage(null, message);
         
         vote();
+        
     }
 	
 	/** 
@@ -400,7 +415,7 @@ public class BeanMedia {
 		System.out.println("Note : " + note);
 		System.out.println("Média : " + mediaVisualise);
 		
-		util.getNoteMedias().add(new Note((int) note, mediaVisualise)); //media_idMedia + interdire de noter plusieurs fois TODO
+		util.getNoteMedias().add(new Note((int) note, daoMedia.getUn(2))); //media_idMedia + interdire de noter plusieurs fois TODO
 		daoUtilisateur.sauvegarder(util);
 				
 		return "vote";
@@ -444,7 +459,10 @@ public class BeanMedia {
 		
 		if(txtFavori == "Favori")
 		{
-			//System.out.println("Ajout au favori");
+			//System.out.println("Ajout au favori");			
+
+			message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Favori", "Ajoutée à Favoris");
+			
 			Playlist plFavoris = new Playlist();
 			
 			boolean possedeFavori = false;
@@ -474,6 +492,9 @@ public class BeanMedia {
 		}
 		else {
 			//System.out.println("Retrait au favori");
+			
+			message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Favori", "Retirée à Favoris");
+			
 			for(Playlist pl : playlistsUtilisateur) {
 				if(pl.getType().equals(daoTypePlaylist.getUn(2))) { //possède déjà une playlist de type Favori
 					pl.getMedias().remove(daoMedia.getUn(2)); //suppression du média visualisé de la liste des favoris
@@ -484,22 +505,6 @@ public class BeanMedia {
 		
 		return "ajouterAFavori";
 	}
-	
-	/** 
-	 * Tri
-	 * @return
-	 */
-	public void sortByNom() { //TODO
-		System.out.println("SORT BY");
-		
-        /*statesOrder = SortOrder.unsorted; //SortOrder.unsorted;
-        //timeZonesOrder = SortOrder.unsorted;
-        if (statesOrder.equals(SortOrder.ascending)) {
-            setStatesOrder(SortOrder.descending);
-        } else {
-            setStatesOrder(SortOrder.ascending);
-        }*/
-    }
 	
 	/** 
 	 * Ajout du média à la playlist
@@ -563,7 +568,7 @@ public class BeanMedia {
 	}
 
 	/** 
-	 * Génération du graphiques du nombre de vues du média
+	 * Génération du graphique, du nombre de vues du média
 	 * @return
 	 */
 	private void createCategoryModel() {
@@ -572,21 +577,13 @@ public class BeanMedia {
 		ChartSeries graphiqueVues = new ChartSeries();  
 		graphiqueVues.setLabel("Vues totales");
 
-		//HashMap<Date,Long> mapStatsVues = new HashMap<Date,Long>();
-        //List<?> resultatStatVues = daoMedia.statVues(mediaVisualise);
         Query resultatStatVues = daoMedia.statVues(daoMedia.getUn(2));
         //suivant heure et mois TODO
         for(Iterator it = resultatStatVues.iterate();it.hasNext();) {
         	Object[] row = (Object[]) it.next();
-        	//System.out.println("Date vues : " + row[0]);
-        	//System.out.println("Count regarder : " + row[1]);
         
         	graphiqueVues.set(row[0], Integer.parseInt(row[1].toString()));
         }
-		/*boys.set("2004", 120);
-		boys.set("2005", 100);
-		boys.set("2007", 150);
-		boys.set("2008", 25);*/
         
         maxY = daoMedia.totalVues(daoMedia.getUn(2));
 
@@ -650,6 +647,8 @@ public class BeanMedia {
 	public String ajouterAuPanier() {
 		System.out.println("ajouterAuPanier");
 		
+		message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Notification", detailNotifyAjoutAuPanier);
+        
 		//mediaDansPanier.add(daoMedia.getUn(2));
 		if(beanConnexion.getMediaDansPanier().contains(daoMedia.getUn(2))) {
 			detailNotifyAjoutAuPanier = "Le média " + daoMedia.getUn(2).getTitreMedia() + " a déjà été ajouté au panier.";
@@ -706,7 +705,7 @@ public class BeanMedia {
 	 * @return
 	 */
 	public void chargerCommentaires() {
-		System.out.println("chargerCommentaires");
+		//System.out.println("chargerCommentaires");
 		
 		// On charge les liste des commentaires
 		listeCommentaires = daoMedia.getCommentaires(daoMedia.getUn(2));
@@ -717,18 +716,50 @@ public class BeanMedia {
 	 * @return
 	 */
 	public String chargerReponses() {
-		System.out.println("chargerReponses");
+		//System.out.println("chargerReponses");
+				
+		Query resultatReponses = daoMedia.getReponses(daoMedia.getUn(2));
+		hmReponses = new HashMap<Commentaire, ArrayList<Commentaire>>();
 		
-		/*listeReponses = daoMedia.getReponses(daoMedia.getUn(2));
-		HashMap<Long, ArrayList<Commentaire>> hmReponses = new HashMap<Long, ArrayList<Commentaire>>();
-		for(Commentaire c : listeCommentaires) {
-			hmReponses.put(c.getIdCommentaire(), new ArrayList<Commentaire>(c.getCommentairesFils()));
-			System.out.println("key : "+c.getIdCommentaire());
-			System.out.println("value : "+hmReponses.get(3));
-			System.out.println("Set commentairesFils : "+new ArrayList<Commentaire>(c.getCommentairesFils()));
-		} //TODO*/
+		Commentaire pere = null;
+		ArrayList<Commentaire> lstFils = new ArrayList<Commentaire>();
+		Commentaire tmp = null;
+		
+        for(Iterator it = resultatReponses.iterate();it.hasNext();) {
+        	Object[] rowCommentaire = (Object[]) it.next();
+        	
+        	pere = (Commentaire)rowCommentaire[0];
+        	
+        	if (tmp == null || tmp == pere ) {
+        		tmp = pere;
+            	lstFils.add((Commentaire)rowCommentaire[1]);        		
+        	} else  {
+        		hmReponses.put(tmp, lstFils);
+        		tmp = null;
+        		lstFils.clear();
+        	}
+		}  
+        
+        if (tmp != null && lstFils != null) {
+        	hmReponses.put(tmp, lstFils);
+        }
+        
+
+    	
+    	/*Set cles = hmReponses.keySet();
+    	Iterator itHm = cles.iterator();
+    	while(itHm.hasNext()) {
+    		Commentaire cle = (Commentaire)itHm.next();
+    		Object valeur = hmReponses.get(cle); //parcourir l'Arraylist
+    		System.out.println("Contenu comm père : " + cle.getContenuCommentaire());
+    		System.out.println("Contenu comms fils : " + valeur);
+    	}*/
 		
 		return "chargerReponses";
+	}
+	
+	public ArrayList<Commentaire> mapValue(Commentaire c) {
+		return hmReponses.get(c);
 	}
 	
 	/** 
@@ -737,6 +768,8 @@ public class BeanMedia {
 	 */
 	public String supprimerCommentaire() {
 		System.out.println("supprimerCommentaire");
+		
+		message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Suppression du commentaire", "Le commentaire a été supprimé avec succès !");
 		
 		daoMedia.getUn(2).getCommentaires().remove(daoCommentaire.getUn(Long.parseLong(FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("idCommentaire"))));
 		
@@ -857,7 +890,6 @@ public class BeanMedia {
 	
 	
 	
-	
 	// GETTER / SETTER
 	
 	public Media getMediaVisualise() {	
@@ -947,12 +979,12 @@ public class BeanMedia {
 		this.resultatNbAime = resultatNbAime;
 	}
 	
-	public long getResultatNbAimeNAimePas() {
-		return resultatNbAimeNAimePas;
+	public long getResultatNbNAimePas() {
+		return resultatNbNAimePas;
 	}
 	
-	public void setResultatNbAimeNAimePas(long resultatNbAimeNAimePas) {
-		this.resultatNbAimeNAimePas = resultatNbAimeNAimePas;
+	public void setResultatNbNAimePas(long resultatNbNAimePas) {
+		this.resultatNbNAimePas = resultatNbNAimePas;
 	}
 	
 	public String getNomTypeMedia() {
