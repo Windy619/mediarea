@@ -35,10 +35,12 @@
 			<h:outputText rendered="#{empty beanMedia.utilisateurConnecte}" value="Vous devez être connecté pour accéder à cette page" />
 		    
 		    <br />
-		    
+		    		
 			<h:outputText value="#{beanMedia.titreMedia}" styleClass="titre" />
 						
-			<br /><br /><br /><br />
+			<br />
+			<br />
+			<br />
 			
 			<!-- *** Lecteur audio/vidéo *** -->
 			
@@ -174,7 +176,7 @@
                         <h:outputText value="Partager" />
                     </h:panelGrid>
                 </f:facet>
-                <rich:menuItem label="Exporter" icon="/resources/images/icones/page-de-copie-icone-9572-16.png" onclick="dlgExporter.show();" type="button">
+                <rich:menuItem label="Exporter" icon="/resources/images/icones/tag-icone-4783-16.png" onclick="dlgExporter.show();" type="button">
                 </rich:menuItem>
                 <rich:menuItem label="Emails et amis" icon="/resources/images/icones/email-go-icone-7614-16.png" onclick="dlgEmail.show();" type="button">
                 </rich:menuItem>
@@ -223,10 +225,10 @@
 			<!--<rich:popupPanel id="popupPlaylist" modal="false" autosized="true" resizeable="false" style="z-index: 99999;">-->
 		    <p:dialog id="popupPlaylist" header="Ajouter à une playlist" widgetVar="dlgPlaylist" showEffect="explode" hideEffect="bounce">
 		        <p>
-		        	Cliquez sur une playlist pour ajouter ou retirer ce média
+		        	<h:outputText value="Cliquez sur une playlist pour ajouter ou retirer ce média" />
 		        	 <p:dataTable id="dataTable" var="play" value="#{beanMedia.listePlaylistUt}">  
 				        <f:facet name="header">
-				            Playlists
+				            <h:outputText value="Playlists" />
 				        </f:facet>  
 				  
 				        <p:column id="nomPlaylist" sortBy="#{play.nomPlaylist}"><!-- TODO sort -->
@@ -235,10 +237,7 @@
 				            </f:facet>  
 				            <h:graphicImage id="imgAjoutPlaylist" value="../resources/images/icones/#{beanMedia.imgAjoutPlaylist}" alt="Ajouter" />
 	        				<p:commandLink update="imgAjoutPlaylist" actionListener="#{beanMedia.ajouterMediaAPlaylist}" style="margin-right:20px;">  
-						        <h:outputText value="#{play.nomPlaylist}" />
-			                (
-					        nb de média dans playlist TODO
-					        )
+						        <h:outputText value="#{play.nomPlaylist} (nb de média dans playlist TODO)" />
 						    </p:commandLink>
 				        </p:column>
 				        
@@ -395,8 +394,6 @@
 					</h:commandButton>
 			    <!--</rich:popupPanel>-->
 			    </p:dialog>
-			    
-			    <br />
 			    	
 				<rich:inputNumberSlider value="#{beanMedia.resultatNbAime}" style="max-width:100px;" maxValue="#{beanMedia.resultatNbNAimePas}"
         			step="1" showArrows="true" showTooltip="false" disabled="true" orientation="vertical" />
@@ -433,11 +430,11 @@
 	            
 	            
 	            <span class="bold">
-	            	Ajouté par 
+	            	<h:outputText value="Ajouté par " />
 	            	<h:outputLink value="TODO/#{beanMedia.auteur}" title="#{tag.nomTag}">
 						<h:outputText value="#{beanMedia.auteur}" />
 					</h:outputLink>
-	            	le <h:outputText value="#{beanMedia.datePublication}" />
+	            	<h:outputText value=" le #{beanMedia.datePublication}" />
 	            </span>
 	            <br />
 	            <h:outputText value="#{beanMedia.description}" />
@@ -450,20 +447,11 @@
         		</h:outputText>
         		<h:outputText value=" vue#{beanMedia.motVues}" />
         		
-        		
 				        
 				<br />        		
-		        <h:outputText value="#{beanMedia.resultatTotalTelechargementMedia}" /> téléchargement<h:outputText value="#{beanMedia.motTelechargement}" />
+		        <h:outputText value="#{beanMedia.resultatTotalTelechargementMedia} téléchargement#{beanMedia.motTelechargement}" />
 		        <br />
 		        <br />  
-        		
-        		
-        		
-        			
-        		
-        		
-        		
-        		
         		
         		
         	
@@ -482,26 +470,30 @@
         		<br />
         		
         		<div style="float:left;">
-        			<a4j:commandButton value="Exporter" image="/resources/images/icones/page-de-copie-icone-9572-32.png" alt="Exporter" onclick="dlgExporter.show();" />
-        			<a4j:commandButton value="Visualiser statistiques" image="/resources/images/icones/graphique-en-ligne-icone-4887-32.png" alt="Statistiques" onclick="dlgStatistiques.show();" />
-        			<a4j:commandButton value="Signaler" image="/resources/images/icones/drapeau-rouge-icone-6492-32.png" alt="Peut offenser" onclick="dlgSignaler.show();" />
+        			<a4j:commandButton value="Exporter" image="/resources/images/icones/tag-icone-4783-32.png" alt="Exporter" onclick="dlgExporter.show();" title="Exporter ce média sur votre blog ou site" />
+        			<a4j:commandButton value="Visualiser statistiques" image="/resources/images/icones/graphique-en-ligne-icone-4887-32.png" alt="Statistiques" onclick="dlgStatistiques.show();" title="Statistiques" style="margin: 0 15px 0 15px" />
+        			<a4j:commandButton value="Signaler" image="/resources/images/icones/drapeau-rouge-icone-6492-32.png" alt="Peut offenser" onclick="dlgSignaler.show();" title="Signaler ce média" />
 	            </div>
 	         </h:form>  
 	         
 	         
         		<h:form>	        		
 	        		<p:dialog id="popupStatistiques" header="Statistiques" widgetVar="dlgStatistiques" showEffect="explode" hideEffect="bounce">
-				        <h:outputText value="#{beanMedia.resultatTotalVuesMedia}"/> vue<h:outputText value="#{beanMedia.motVues}"/> - 
-				        <h:outputText value="#{beanMedia.nbCommentaires}" /> com. - 
-				        TODO fav. - 
-				        <h:outputText value="#{beanMedia.resultatTotalVotesMedia}"/> vote<h:outputText value="#{beanMedia.motVotes}"/>
+				        <h:outputText value="#{beanMedia.resultatTotalVuesMedia} vue#{beanMedia.motVues} - "/> 
+				        <h:outputText value="#{beanMedia.nbCommentaires} com. - " />
+				        <h:outputText value="TODO fav. - " />
+				        <h:outputText value="#{beanMedia.resultatTotalVotesMedia} vote#{beanMedia.motVotes}"/>
 				        <br />  
 						<h:outputText value="Utilisateurs ayant aimé : " /><h:outputText value="#{beanMedia.resultatNbAime}" />
+						
 						<br />
 						<h:outputText value="Utilisateurs n'ayant pas aimé : " /><h:outputText value="#{beanMedia.resultatNbNAimePas}" />
 						<br />
+						<p:barChart id="graphiqueAimeNAimePas" value="#{beanMedia.graphiqueAimeNAimePas}" legendPosition="se" style="height:300px"  
+            				title="Avis des utilisateurs" orientation="horizontal" min="0" max="200"/><!-- TODO pq rechargement de la page qd ajout de barChart ? -->
+						<br />
 						<h:panelGroup rendered="#{beanMedia.resultatTotalVuesMedia > 0 }">
-							<p:lineChart id="category" value="#{beanMedia.categoryModel}" legendPosition="e"  
+							<p:lineChart id="graphiqueStatVues" value="#{beanMedia.graphiqueStatVues}" legendPosition="e"  
 								title="Statistiques sur le nombre de vues" minY="0" maxY="#{beanMedia.maxY}" style="height:300px;margin-top:20px; width: 500px" /> 
 					        <!-- Audiences par nb de vues (dernière heure, dernier jour, dernier mois) par sexe et âge, par endroit XXX -->
 				        </h:panelGroup>
@@ -512,7 +504,9 @@
         		<h:form>
         		<p:dialog id="popupSignaler" header="Signaler ce média (contenu pouvant offenser)" widgetVar="dlgSignaler" showEffect="explode" hideEffect="bounce" width="480">
 			       	<p:messages id="messagesSignalementMedia" showDetail="true" autoUpdate="true"/>
-			        <p>Décrivez la raison qui décrit le mieux le problème lié au média. Nous procéderons à un examen afin de déterminer si celle-ci enfreint le Règlement de la communauté ou si elle risque d'offenser certaines personnes. L'usage abusif de cette fonctionnalité constitue également une violation du Règlement de la communauté. Ne l'utilisez pas de manière inadéquate.</p>
+			        <p>
+			        	<h:outputText value="Décrivez la raison qui décrit le mieux le problème lié au média. Nous procéderons à un examen afin de déterminer si celle-ci enfreint le Règlement de la communauté ou si elle risque d'offenser certaines personnes. L'usage abusif de cette fonctionnalité constitue également une violation du Règlement de la communauté. Ne l'utilisez pas de manière inadéquate." />
+			        </p>
 			        <p>
 						<h:outputText value="Raison du signalement : " styleClass="bold" />
 						<br />
@@ -566,7 +560,8 @@
 			<!--<rich:collapsiblePanel header="Plus" switchType="client">-->
 			<p:fieldset legend="Plus" toggleable="true" toggleSpeed="500">
 				<h:panelGroup rendered="#{beanConnexion.user != beanMedia.mediaVisualise.auteurMedia}">
-					<h:outputText value="Catégorie : " styleClass="bold" />
+					<h:graphicImage value="/resources/images/icones/documents-tiroirs-classeurs-icone-6679-16.png" />
+                    <h:outputText value=" Catégories : " styleClass="bold" />
 					<br />
 					<a4j:repeat value="#{beanMedia.listeNomCategories}" var="categ"
 						rows="20" id="repeatCategories">
@@ -579,7 +574,8 @@
 					<br />
 					<br />
 	
-					<h:outputText value="Tags : " styleClass="bold" />
+					<h:graphicImage value="/resources/images/icones/tag-pink-icone-4864-16.png" />
+					<h:outputText value=" Tags : " styleClass="bold" />
 					<br />
 					<a4j:repeat value="#{beanMedia.listeNomTags}" var="tag" rows="20"
 						id="repeatTags">
@@ -620,17 +616,34 @@
 
 
 
-			<br /><br />
+		    
+			<br />
+			<br />
 			
-			<h5>
-				Commentaires 
-				(
-				<h:outputText value="#{beanMedia.nbCommentaires}">
-					<f:convertNumber integerOnly="true" />
-				</h:outputText>
-				)
-			</h5>
-		   	
+			<h:panelGroup rendered="#{beanMedia.carouselRecommendationMedias.size() > 0}">
+						<p:carousel value="#{beanMedia.carouselRecommendationMedias}" var="mediaRecommende" itemStyleClass="carItem"  
+			            			easing="easeOutBounce" style="min-width: 600px;">
+						    <h:panelGrid columns="1" style="width: 200px"  cellpadding="5">
+						        <p:graphicImage value="../resources/#{mediaRecommende.photo}"/> <!-- TODO bon chemin -->  
+						          
+						        <h:outputText value="#{mediaRecommende.titreMedia}" styleClass = "bold" />  
+						          
+						        <h:outputText value="de #{mediaRecommende.auteurMedia.nomUtilisateur}" />
+						          
+						        <!--<h:outputText value="Nb vues : " /> XXX-->
+						    </h:panelGrid>
+						</p:carousel>
+					</h:panelGroup>
+			
+			<br />
+			<br />
+			<br />
+			
+			<p:tabView effect="fade" effectDuration="normal">  
+  
+		        <p:tab title="Commentaires (#{beanMedia.nbCommentaires})">  
+		            
+		    
 		   	
 			<h:form id="formMessage">
 		        <rich:editor id="editor" value="#{beanMedia.commentaireSaisi}" style="margin-bottom: 1em" onfocus="this.innerHTML='';"><!-- TODO onfocus + Benjamin -->
@@ -647,7 +660,7 @@
 		        <h:commandButton value="Publier" style="float:right;">
 		        	<f:ajax event="click" listener="" render="groupList" />
 			    </h:commandButton> -->
-           		<p:commandButton id="ajax" value="Publier" actionListener="#{beanMedia.publierCommentaire}" update=":formTest:test" />
+           		<p:commandButton id="ajax" value="Publier" actionListener="#{beanMedia.publierCommentaire}" update="@form" />
 				
 		        <br />
 		        
@@ -703,7 +716,7 @@
 										<br />
 										<h:graphicImage value="#{commentaire.auteur.avatar.nomAvatar}" />	
 										<br />
-										Envoyé le :
+										<h:outputText value="Envoyé le :" />
 										<br />
 										<h:outputText value="#{commentaire.dateCommentaire}">
 											<f:convertDateTime type="both" dateStyle="short" />
@@ -737,7 +750,7 @@
 						<rich:dataTable value="" var="list" style="width: 575px;">
 							<rich:column colspan="6">
 				                <rich:collapsibleSubTableToggler for="sbtbl" />
-				                Réponses
+				                <h:outputText value="Réponses" />
 				            </rich:column>
 							<rich:collapsibleSubTable value="#{beanMedia.mapValue(commentaire)}" var="reponses" id="sbtbl" expandMode="client"  expanded="#{false}">
 				                <rich:column>
@@ -763,12 +776,45 @@
 			
 		    </h:form>
 		    
+		    	</p:tab>
+		    	
+		    	<p:tab title="Médias de #{beanMedia.auteur}">
+		    		<a4j:outputPanel id="gallery">
+		    			<ui:repeat value="#{beanMedia.listeMediasDeAuteur}" var="mediaDeAuteur" id="repeatMediaDeAuteur" rows="10">
+				        	<div style="float: left;">
+				        	<h:graphicImage value="/resources/images/icones/heart-ajouter-icone-8199-16.png" alt="pic" style="width: 120px;" />
+				        	<h:outputLink value="detailMedia.jsf?v=#{mediaDeAuteur.idMedia}" title="#{mediaDeAuteur.titreMedia}">
+				        		<h:outputText value="#{mediaDeAuteur.titreMedia}" />
+				        	</h:outputLink>
+				        	</div>
+				        </ui:repeat>
+				    </a4j:outputPanel>
+				 
+				    <br style="clear: both" />
+				 
+				    <rich:jQuery selector="#gallery img" query="addClass('pic-normal')" />
+				    <rich:jQuery selector="#gallery img" query="wrap('&lt;div class=\'wrap1\'&gt;&lt;/div&gt;')" />
+				    <rich:jQuery selector="#gallery img" event="mouseover" query="jQuery(this).stop().animate({width:'180px'})" />
+				    <rich:jQuery selector="#gallery img" event="mouseout" query="jQuery(this).stop().animate({width:'120px'})" />
+		    	
+		    		<!-- Voir les prochaines vidéos >> XXX -->
+		    	</p:tab>
+		    	
+		    	<p:tab title="Playlist">
+		    	</p:tab>
+		    		
+				<br />
+				<br />
+			</p:tabView>
+			<!-- Regarder plus de vidéos de l'auteur XXX -->
 		</section>
 		
 		
 		
 		<aside class="group2">
-			<h3>Suggestions</h3>
+			<h3>
+				<h:outputText value="Suggestions" />
+			</h3>
 			<article class="holder_news">
 				<h:form>
 			        <h:panelGrid columns="1">
@@ -779,10 +825,9 @@
 			                        <h:panelGrid columns="3">	                            
 			                            <h:graphicImage value="#{mediaSuggere.photo}" alt="flag" style="float: left;" />
 			                            <div style="float: right;">
-			                            	de
+			                            	<h:outputText value="de" />
 				                            <h:outputText value="#{mediaSuggere.auteurMedia.pseudo}" style="font-weight:bold;" />
-				                            
-				                            ... vues
+				                            <h:outputText value="... vues" />
 			                        	</div>
 			                        </h:panelGrid>
 			                    </p:fieldset>

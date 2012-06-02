@@ -688,3 +688,15 @@ nav ul li a.current{
     background-color: #00000 !important;
     opacity: 1 !important;
 }
+
+/* jQuery usage */
+.pic-normal {
+	width: 120px;
+	border: 2px solid #ACBECE;
+}
+
+.wrap1 {
+	width: 190px;
+	height: 130px;
+	/*float: left;*/
+}
