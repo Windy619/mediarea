@@ -14,10 +14,10 @@ import dao.utilisateur.DaoNotification;
 import dao.utilisateur.DaoSignalementMessagePrive;
 import dao.utilisateur.DaoUtilisateur;
 
-import java.util.*;
+/*import java.util.*;
 import javax.mail.*;
 import javax.mail.internet.*;
-import javax.activation.*;
+import javax.activation.*;*/
 
 
 public class BeanMessagesPrives {
@@ -325,7 +325,7 @@ public class BeanMessagesPrives {
 			daoSignalementMP.sauvegarder(sMP);
 			
 			// On crée une notification
-			Notification notification = new Notification("Votre message : \"" + mpSelectionne.getContenuMessage() + "\" à fait l'objet d'un signalement !",mpSelectionne.getDestinataire());
+			Notification notification = new Notification("Votre message : \"" + mpSelectionne.getContenuMessage() + "\" a fait l'objet d'un signalement !",mpSelectionne.getDestinataire());
 			notification.setDateEnvoiNotification(new Date());
 			// On l'ajoute à l'utilisateur concerné et on le sauvegarde
 			mpSelectionne.getDestinataire().getNotifications().add(notification);
@@ -431,7 +431,7 @@ public class BeanMessagesPrives {
 	 * Envoi d'un email
 	 * @return
 	 */
-	public String envoyerEmail() { //TODO
+	/*public String envoyerEmail() { //TODO
 		//http://www.tutorialspoint.com/java/java_sending_email.htm
 
 		
@@ -479,7 +479,7 @@ public class BeanMessagesPrives {
 	      }
 	      
 		return "envoyerEmail";
-	}
+	}*/
 		
 	// GETTER / SETTER
 	

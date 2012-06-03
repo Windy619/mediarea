@@ -285,7 +285,7 @@ public class DaoMedia extends Dao<Media> {
 		Query q = session.createQuery("" +
 				"FROM Media " +
 				"WHERE titreMedia LIKE :titreMedia " + //artiste XXX
-				"AND visibilite.idVisibilite = 1"); //public 
+				"AND visibilite.idVisibilite = 1"); //média ayant une visibilité "Public" 
 		
 		q.setParameter("titreMedia", param + "%"); //like	
 		
@@ -308,10 +308,12 @@ public class DaoMedia extends Dao<Media> {
 		
 		q.setParameter("media", param);
 		
-		//System.out.println("Liste : " + q.list());
+		//Si la requête ne retourne rien
 		if(q.list().toString().equals("[null]")) {
 			return 0;
 		}
+		
+		//Retour d'un nombre
 		return (Long) q.uniqueResult();
 	}
 	
@@ -383,7 +385,6 @@ public class DaoMedia extends Dao<Media> {
 	}*/
 	
 	
-	
 	/**
 	 * Nombre de personnes ayant aimé un média
 	 * @param idMedia
@@ -450,7 +451,8 @@ public class DaoMedia extends Dao<Media> {
 		q.setParameter("dateFin", param3);
 		
 		//return q.list();
-		return q; //retourne un query car plusieurs champs dans SELECT
+		//Retour d'un query car plusieurs champs dans SELECT
+		return q; 
 	}
 	
 	public long maxNbRegarder(Media media) {
@@ -487,17 +489,21 @@ public class DaoMedia extends Dao<Media> {
 				"ON mc.commentaires_idCommentaire = c.idCommentaire " +
 				"LEFT JOIN media m " +
 				"ON mc.Media_idMedia = m.idMedia " +
-				"AND m.aCommentairesOuverts = true " +
+				"LEFT JOIN signalement_commentaire sc " +
+				"ON mc.commentaires_idCommentaire = sc.commentaire_idCommentaire " +
 				"WHERE mc.Media_idMedia = :media " +
-				"ORDER BY c.dateCommentaire DESC" +
-				""); //requête SQL pour faire un join
+				"AND m.aCommentairesOuverts = true " +
+				"AND c.idCommentaire NOT IN (SELECT commentaire_idCommentaire " +
+				                            "FROM signalement_commentaire) " +
+				"ORDER BY c.dateCommentaire DESC " +
+				""); //requête SQL (pour faire un join)
 
 		query.setParameter("media", media);
 		
 		List result = query.list();
 		String listids = "";
 		Iterator it= result.iterator();
-		while (it.hasNext()) // tant que j'ai un element non parcouru
+		while (it.hasNext()) // tant que l'on a un élément non parcouru
 		{
 			Object[] o = (Object[]) it.next();
             if(!listids.equals(""))
@@ -506,7 +512,7 @@ public class DaoMedia extends Dao<Media> {
 		}
 		Query q = session.createQuery("" +
 				"FROM Commentaire as c " +
-				"WHERE c.idCommentaire IN (" + listids +") " + 
+				"WHERE c.idCommentaire IN (" + listids +") " + //identifiants des commentaires récupérés avec la requête SQL
 				"ORDER BY c.dateCommentaire DESC");
 		  
 		return q.list();
@@ -518,7 +524,7 @@ public class DaoMedia extends Dao<Media> {
 			"SELECT pere as PERE, fils as FILS, fils.dateCommentaire " +
 			"FROM Media as media JOIN media.commentaires as pere JOIN pere.commentairesFils as fils " +
 			"WHERE media.idMedia = :idMedia " +
-			"ORDER BY fils.dateCommentaire");
+			"ORDER BY fils.dateCommentaire"); //et non signalé TODO
 		
 		q.setParameter("idMedia", media.getIdMedia());
 
