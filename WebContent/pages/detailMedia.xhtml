@@ -4,13 +4,12 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html"
     xmlns:f="http://java.sun.com/jsf/core" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:a4j="http://richfaces.org/a4j"
     xmlns:rich="http://richfaces.org/rich"
-    xmlns:p="http://primefaces.org/ui"
-    xmlns:c="http://java.sun.com/jstl/core"
-    xmlns:u='http:/jsf.exadel.com/template/util'>
+    xmlns:p="http://primefaces.org/ui">    
+    <!--xmlns:c="http://java.sun.com/jstl/core"-->
     
 <f:metadata>
 	<f:viewParam name="v" value="#{beanMedia.idMediaVisualise}" />
-	<f:event type="preRenderView" listener="#{beanMedia.processRecherche()}" />
+	<f:event type="preRenderView" listener="#{beanMedia.processRecherche()}" /><!-- TODO pas erreur -->
 </f:metadata>
 
 <ui:composition template="/templates/standard.xhtml">
@@ -26,7 +25,7 @@
 			  fjs.parentNode.insertBefore(js, fjs);
 			}(document, 'script', 'facebook-jssdk'));
 			</script>
-		      
+		    
 			<h3>Détail d'un média</h3>
 			
 			
@@ -100,6 +99,10 @@
 				        </div>
 				    </video>
 			</div>
+			
+			<br />
+			<br />
+			<p:media value="http://www.youtube.com/v/KZnUr8lcqjo" width="425" height="344" player="flash"/>
 			</h:panelGroup>
 			
 			
@@ -135,54 +138,29 @@
 		    </h:form>
 			
 		
-		
+		<!-- S'abonner et Se désabonner XXX -->
 
 		
 		<!--<rich:panel styleClass="gauche">-->
 		<p:fieldset styleClass="gauche">  
 		<h:form>
-		<p:growl id="growl" showDetail="true" sticky="true" />
-        <rich:toolbar height="26px" itemSeparator="/resources/images/icones/puce_menu.gif">
-            <rich:dropDownMenu mode="ajax">
-                <f:facet name="label">
-                    <h:panelGroup>
-                        <h:graphicImage value="/resources/images/icones/empreintes-icone-5104-16.png" styleClass="pic" alt="Avis" />
-                        <h:outputText value="Avis" />
-                    </h:panelGroup>
-                </f:facet>
-                <rich:menuItem label="J'aime" action="#{beanMedia.jAime}" icon="/resources/images/icones/heart-ajouter-icone-8199-16.png" update="growl"><!-- disabled="true" todo --><!-- TODO afficher notificationss -->
-                </rich:menuItem>
-                <rich:menuItem label="Je n'aime pas" action="#{beanMedia.jeNAimePas}" icon="/resources/images/icones/remove-heart-icone-8765-16.png"><!-- action="#{beanMedia.jeNAimePas}"  -->
-                </rich:menuItem>
-            </rich:dropDownMenu>
- 
-            <rich:dropDownMenu mode="ajax">
-                <f:facet name="label">
-                    <h:panelGrid cellpadding="0" cellspacing="0" columns="2" style="vertical-align:middle">
-                        <h:graphicImage value="/resources/images/icones/ajouter-icone-5107-16.png" styleClass="pic" alt="Ajouter à" />
-                        <h:outputText value="Ajouter à" />
-                    </h:panelGrid>
-                </f:facet>
-                <rich:menuItem label="Favori" action="#{beanMedia.ajouterAFavori}" icon="/resources/images/icones/#{beanMedia.imgFavori}"><!-- changement image + notify retirer -->
-                </rich:menuItem>
-                <rich:menuItem label="Playlist" icon="/resources/images/icones/player-playlist-icone-7426-16.png" onclick="dlgPlaylist.show();" type="button">
-                </rich:menuItem>
-            </rich:dropDownMenu>
-            
-            <rich:dropDownMenu mode="ajax">
-                <f:facet name="label">
-                    <h:panelGrid cellpadding="0" cellspacing="0" columns="2" style="vertical-align:middle">
-                        <h:graphicImage value="/resources/images/icones/sharing-overlay-icone-8730-16.png" styleClass="pic" alt="Partager" />
-                        <h:outputText value="Partager" />
-                    </h:panelGrid>
-                </f:facet>
-                <rich:menuItem label="Exporter" icon="/resources/images/icones/tag-icone-4783-16.png" onclick="dlgExporter.show();" type="button">
-                </rich:menuItem>
-                <rich:menuItem label="Emails et amis" icon="/resources/images/icones/email-go-icone-7614-16.png" onclick="dlgEmail.show();" type="button">
-                </rich:menuItem>
-            </rich:dropDownMenu>            
-        </rich:toolbar>
-        <!--FIXME-->
+		
+		<p:growl id="messages"/>  
+  
+	    <p:splitButton value="Avis" icon="/resources/images/icones/empreintes-icone-5104-16.png" style="font-size: 11px;">  
+	        <p:menuitem value="J'aime" actionListener="#{beanMedia.jAime}" update="messages" icon="/resources/images/icones/heart-ajouter-icone-8199-16.png"/>  
+	        <p:menuitem value="Je n'aime pas" actionListener="#{beanMedia.jeNAimePas}" update="messages" icon="/resources/images/icones/heart-ajouter-icone-8199-16.png"/>  
+	    </p:splitButton>
+	    
+	    <p:splitButton value="Ajouter à" icon="/resources/images/icones/ajouter-icone-5107-16.png" style="font-size: 11px;">  
+	        <p:menuitem value="Favori" actionListener="#{beanMedia.ajouterAFavori}" update="messages" icon="/resources/images/icones/#{beanMedia.imgFavori}"/><!-- changement image + notify retirer --> 
+	        <p:menuitem value="Playlist" update="messages" icon="/resources/images/icones/player-playlist-icone-7426-16.png" onclick="dlgPlaylist.show();" />  
+	    </p:splitButton>
+		
+		<p:splitButton value="Partager" icon="/resources/images/icones/sharing-overlay-icone-8730-16.png" style="font-size: 11px;">  
+	        <p:menuitem value="Exporter" actionListener="#{beanMedia.ajouterAFavori}" update="messages" icon="/resources/images/icones/tag-icone-4783-16.png" onclick="dlgExporter.show();" />
+	        <p:menuitem value="Emails et amis" update="messages" icon="/resources/images/icones/email-go-icone-7614-16.png" onclick="dlgExporter.show();" />  
+	    </p:splitButton>
     </h:form>
     	
 		
@@ -250,6 +228,7 @@
 				    </p:dataTable>
 		            <br />
 		            <p:commandButton value="Créer une playlist" onclick="dlgCreerPlaylist.show();" type="button" />
+		            <!-- Collector XXX -->
 		            <br />
 		        </p>
 		    <!--</rich:popupPanel>-->
@@ -315,7 +294,6 @@
         	<h:form>
 			    <!--<rich:popupPanel id="popupExporter" modal="false" autosized="true" resizeable="false" style="z-index: 99999;">-->
 			    <p:dialog id="popupExporter" header="Personnaliser le lecteur exportable" widgetVar="dlgExporter" showEffect="explode" hideEffect="bounce" width="480">
-			        <p>
 			        	<h:outputText value="Lien : " styleClass="bold"/>
 			        	<br />
 			        	<p:inputText id="lien" value="#{request.requestURL}" size="58" />
@@ -357,7 +335,6 @@
 				        </p:selectManyCheckbox>-->
 				        <!--Intro, Titre, Résumé XXX-->
 			        	<br />
-			        </p>
 			    <!--</rich:popupPanel>-->
 			    </p:dialog>
 			    
@@ -471,7 +448,9 @@
         		
         		<div style="float:left;">
         			<a4j:commandButton value="Exporter" image="/resources/images/icones/tag-icone-4783-32.png" alt="Exporter" onclick="dlgExporter.show();" title="Exporter ce média sur votre blog ou site" />
-        			<a4j:commandButton value="Visualiser statistiques" image="/resources/images/icones/graphique-en-ligne-icone-4887-32.png" alt="Statistiques" onclick="dlgStatistiques.show();" title="Statistiques" style="margin: 0 15px 0 15px" />
+        			<p:spacer width="20" />
+        			<a4j:commandButton value="Visualiser statistiques" image="/resources/images/icones/graphique-en-ligne-icone-4887-32.png" alt="Statistiques" onclick="dlgStatistiques.show();" title="Statistiques" />
+        			<p:spacer width="20" />
         			<a4j:commandButton value="Signaler" image="/resources/images/icones/drapeau-rouge-icone-6492-32.png" alt="Peut offenser" onclick="dlgSignaler.show();" title="Signaler ce média" />
 	            </div>
 	         </h:form>  
@@ -526,11 +505,10 @@
 			    
 	            <br /><br />
         		
-        		<!-- Artiste : <h:outputText value="" /><br /> -->
+        		<!-- Artiste : <h:outputText value="" /><br /> XXX -->
         		
         		<h:form>
-        			<p:commandButton value="Ajouter #{beanMedia.titreMedia} au panier" title="Ajouter #{beanMedia.titreMedia} au panier" actionListener="#{beanMedia.ajouterAuPanier}" image="/resources/images/icones/panier-ajouter-icone-5924-32.png" rendered="#{beanMedia.mediaVisualise.estTelechargementAutorise}" />
-        		azertyuiop
+        			<a4j:commandButton value="Ajouter #{beanMedia.titreMedia} au panier" title="Ajouter #{beanMedia.titreMedia} au panier" actionListener="#{beanMedia.ajouterAuPanier}" image="/resources/images/icones/panier-ajouter-icone-5924-32.png" rendered="#{beanMedia.mediaVisualise.estTelechargementAutorise}" />
 					<!--<rich:notify id="notifyAjoutAuPanier" stayTime="1500" sticky="false" nonblocking="false"
 			        nonblockingOpacity="0.5" showShadow="false"
 			        showCloseButton="true" detail="#{beanMedia.detailNotifyAjoutAuPanier}">			 
@@ -540,13 +518,10 @@
 			        </rich:notify>-->
 		        </h:form>
         		
-        		<br />
-        		
         		<h:form>
-        			qsdfghjklm
-        			<h:outputLink value="/MediArea/resources/#{beanMedia.nomTypeMedia}s/#{beanMedia.titreMedia}.mp3" rendered="#{beanMedia.mediaVisualise.estTelechargementAutorise}">
-						<f:verbatim>Télécharger ce média</f:verbatim>
-					</h:outputLink>
+	        		<p:commandLink id="downloadLink" value="Télécharger ce média" ajax="false" rendered="#{beanMedia.mediaVisualise.estTelechargementAutorise}">  
+					    <p:fileDownload value="#{beanMedia.file}" />  
+					</p:commandLink>
         		</h:form>
         	
         		
@@ -554,10 +529,6 @@
         	
         	<div style="clear: both;"></div>
 
-
-
-
-			<!--<rich:collapsiblePanel header="Plus" switchType="client">-->
 			<p:fieldset legend="Plus" toggleable="true" toggleSpeed="500">
 				<h:panelGroup rendered="#{beanConnexion.user != beanMedia.mediaVisualise.auteurMedia}">
 					<h:graphicImage value="/resources/images/icones/documents-tiroirs-classeurs-icone-6679-16.png" />
@@ -577,41 +548,30 @@
 					<h:graphicImage value="/resources/images/icones/tag-pink-icone-4864-16.png" />
 					<h:outputText value=" Tags : " styleClass="bold" />
 					<br />
-					<a4j:repeat value="#{beanMedia.listeNomTags}" var="tag" rows="20"
-						id="repeatTags">
-						<h:outputLink value="recherche.jsf?tag=#{tag}"
-							title="#{tag}">
-							<h:outputText value="#{tag}" />
-						</h:outputLink>
-						<h:outputText value=" " />
-					</a4j:repeat>
+					<p:tagCloud model="#{beanMedia.tagCloud}" />
 				</h:panelGroup>
 				
 				
 				<h:panelGroup rendered="#{beanConnexion.user == beanMedia.mediaVisualise.auteurMedia}">
-					<h:form>
+					<h:form id="formTagsCategories">
 						<h:outputText value="Catégorie : " styleClass="bold" />
 						<br />
-						<h:inputTextarea value="#{beanMedia.listeNomCategories}" cols="110" />
+						<p:inputTextarea value="#{beanMedia.listeNomCategories}" cols="80" />
 						
 						<br />
 						<br />
 		
 						<h:outputText value="Tags : " styleClass="bold" />
 						<br />
-						<h:inputTextarea value="#{beanMedia.listeNomTags}" cols="110" />
+						<p:inputTextarea value="#{beanMedia.listeNomTags}" cols="80" />
 					
 						<br />
 						<br />
-						
-						<p:commandButton value="Enregistrer les modifications">
-			                <a4j:actionListener listener="#{beanMedia.modifierCategoriesTags}" />
-			            </p:commandButton>
-            
-						<p:commandButton actionListener="#{beanMedia.modifierCategoriesTags}" value="Enregistrer les modifications" />
+
+						<p:commandButton value="Enregistrer les modifications" update="formTagsCategories" id="enregistrerModif"  
+             				actionListener="#{beanMedia.modifierCategoriesTags}" />
 					</h:form>
 				</h:panelGroup>
-			<!--</rich:collapsiblePanel>-->
 			</p:fieldset>
 
 
@@ -646,38 +606,35 @@
 		    
 		   	
 			<h:form id="formMessage">
-		        <rich:editor id="editor" value="#{beanMedia.commentaireSaisi}" style="margin-bottom: 1em" onfocus="this.innerHTML='';"><!-- TODO onfocus + Benjamin -->
-		            <a4j:ajax event="change" render="panel" status="panelUpdateStatus" />
-		            <a4j:ajax event="dirty" render="panel" status="panelUpdateStatus">
-		                <a4j:attachQueue requestDelay="1000" />
-		            </a4j:ajax>
-		            <a4j:ajax event="change" render="nbCaracteresRestants" execute="@this" listener="#{beanMedia.decrementerNbCaracteresRestants}" />
-				</rich:editor>
-		        
+				<p:editor id="editor" value="#{beanMedia.commentaireSaisi}" width="565" />
+				<p:inputText id="counter">  
+		            <p:ajax event="keyup" update="nbCaracteresRestants"   
+		                    listener="#{beanMedia.decrementerNbCaracteresRestants}"/><!-- TODO nbCaracteresRestants pour p:editor -->
+		        </p:inputText> 
+        
+		        <br />
 		        <h:outputText id="nbCaracteresRestants" value="#{beanMedia.nbCaracteresRestants} caractères restants" style="float:left;" /><!-- TODO mettre à jour caractères restants -->
+		        <br />
+  
+			    <h:panelGrid columns="2" style="margin-top:10px">  
+			        <p:commandButton id="submitButton" value="Submit" update="display" oncomplete="dlg.show()"  
+			                        icon="ui-icon-disk" />  
+			        <p:commandButton id="clearButton" type="button" value="Clear" onclick="editor.clear()"  
+			                        icon="ui-icon-close" />  
+			    </h:panelGrid>  
+			  
+			    <p:dialog header="Content" widgetVar="dlg" showEffect="fade" hideEffect="fade" modal="true">  
+			        <h:outputText id="display" value="#{beanMedia.commentaireSaisi}" escape="false" />  
+			    </p:dialog>				
+				
+				<br />
 		        
-		        <!-- <a4j:commandButton action="" value="Publier" render="groupList" style="float:right;" />
-		        <h:commandButton value="Publier" style="float:right;">
-		        	<f:ajax event="click" listener="" render="groupList" />
-			    </h:commandButton> -->
-           		<p:commandButton id="ajax" value="Publier" actionListener="#{beanMedia.publierCommentaire}" update="@form" />
+           		<p:commandButton id="publier" value="Publier" update="formMessage" icon="ui-icon-disk" actionListener="#{beanMedia.publierCommentaire}" />
 				
 		        <br />
-		        
-		        <rich:panel id="panel"><!-- TODO nb caractères restants (pas richfaces) -->
-		            <!--<f:facet name="header">
-		                Output from Editor-->
-		                <a4j:status name="panelUpdateStatus">
-		                    <f:facet name="start">
-		                        (Updating)
-		                    </f:facet>
-		                </a4j:status>
-		            <!--</f:facet>-->
-		            <h:outputText escape="false" value="#{beanMedia.commentaireSaisi}" />
-		        </rich:panel>
 		 
     		</h:form>
-		    <br /><br /><br /><br /><br />    		
+		    <br /><br />  		
     
     		<h:form id="formTest">
     		<p:panel id="test" >
@@ -747,7 +704,7 @@
 
 						<br />
 
-						<rich:dataTable value="" var="list" style="width: 575px;">
+						<rich:dataTable value="" var="list" style="width: 530px;">
 							<rich:column colspan="6">
 				                <rich:collapsibleSubTableToggler for="sbtbl" />
 				                <h:outputText value="Réponses" />
@@ -782,7 +739,7 @@
 		    		<a4j:outputPanel id="gallery">
 		    			<ui:repeat value="#{beanMedia.listeMediasDeAuteur}" var="mediaDeAuteur" id="repeatMediaDeAuteur" rows="10">
 				        	<div style="float: left;">
-				        	<h:graphicImage value="/resources/images/icones/heart-ajouter-icone-8199-16.png" alt="pic" style="width: 120px;" />
+				        	<h:graphicImage value="/resources/images/icones/{mediaDeAuteur.photo}" style="width: 120px;" />
 				        	<h:outputLink value="detailMedia.jsf?v=#{mediaDeAuteur.idMedia}" title="#{mediaDeAuteur.titreMedia}">
 				        		<h:outputText value="#{mediaDeAuteur.titreMedia}" />
 				        	</h:outputLink>
@@ -800,9 +757,14 @@
 		    		<!-- Voir les prochaines vidéos >> XXX -->
 		    	</p:tab>
 		    	
-		    	<p:tab title="Playlist">
+		    	<p:tab title="Playlists">				
+					<p:dataList value="#{beanMedia.listePlaylistsAvecMedia}" var="playlistsAvecMedia" itemType="disc">  
+						<h:outputLink value="playlist.jsf?#{playlistsAvecMedia.idPlaylist}" title="#{playlistsAvecMedia.nomPlaylist}">
+					   		#{playlistsAvecMedia.nomPlaylist}
+					   	</h:outputLink>
+					</p:dataList><!-- TODO affichage disc -->
 		    	</p:tab>
-		    		
+		    	
 				<br />
 				<br />
 			</p:tabView>

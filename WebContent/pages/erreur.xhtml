@@ -47,19 +47,19 @@
 
 		function refreshTimer ()
 		{
-		 time--;
-		 spanTime.innerHTML= time +' seconde';
-		 
-		 if (time > 1)
-		 {
-		  spanTime.innerHTML+= 's';
-		 }
-		 
-		 else if (time==0)
-		 {
-		  window.location='http://localhost:8085/MediArea/pages/home.jsf';
-		  clearInterval();
-		 }
+			time--;
+			spanTime.innerHTML= time +' seconde';
+			 
+			if (time > 1)
+			{
+				spanTime.innerHTML += 's';
+			}
+			 
+			else if (time==0)
+			{
+			 	window.location='/MediArea/pages/home.jsf';
+			 	clearInterval();
+		    }
 		}
 
 		setInterval(refreshTimer, 1000);

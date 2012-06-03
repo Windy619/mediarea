@@ -636,7 +636,7 @@ nav ul li a.current{
 		    	
 .gauche {
 	float: left;
-	width: 390px;
+	width: 380px;
 	position: relative;
 	background:white;
 	padding:5px;
@@ -645,7 +645,7 @@ nav ul li a.current{
 					
 .droite {
 	float: right;
-	width: 140px;
+	width: 150px;
 	position: relative;
 	background:white;
 	padding:10px;
@@ -699,4 +699,10 @@ nav ul li a.current{
 	width: 190px;
 	height: 130px;
 	/*float: left;*/
+}
+
+.ui-button-icon-left .ui-icon .empreintes-icone {
+	background-image:url("#{resource['images:bg1.png']}") !important; /*icones/empreintes-icone-5104-16.png*/ /*TODO*/
+	height:16px;
+	width:16px;
 }

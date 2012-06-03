@@ -8,7 +8,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
-//import org.richfaces.component.SortOrder;
+import java.io.InputStream;
 
 import javax.faces.application.FacesMessage;
 import javax.faces.component.UIComponent;
@@ -21,11 +21,17 @@ import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 import javax.faces.event.AjaxBehaviorEvent;
 import javax.faces.model.SelectItem;
+import javax.servlet.ServletContext;
 
 import org.hibernate.Query;
 import org.primefaces.event.*;
 import org.primefaces.model.chart.CartesianChartModel;
 import org.primefaces.model.chart.ChartSeries;
+import org.primefaces.model.DefaultStreamedContent;  
+import org.primefaces.model.StreamedContent;
+import org.primefaces.model.tagcloud.DefaultTagCloudItem;  
+import org.primefaces.model.tagcloud.DefaultTagCloudModel;  
+import org.primefaces.model.tagcloud.TagCloudModel;
 
 import metier.media.*;
 import dao.media.*;
@@ -43,15 +49,15 @@ public class BeanMedia {
 	// DAO
 	private static DaoMedia daoMedia;
 	private static DaoCommentaire daoCommentaire;
-	private static DaoRegarder daoRegarder;
 	public static DaoTelechargementMedia daoTelechargementMedia;
-	private static DaoSignalementMedia daoSignalementMedia;
 	private static DaoUtilisateur daoUtilisateur;
-	private static DaoAimer daoAimer;
 	public static DaoTypePlaylist daoTypePlaylist;
 	public static DaoPlaylist daoPlaylist;
 	public static DaoVisibilite daoVisibilite;
  	private static DaoCategorie daoCategorie;
+ 	private static DaoAimer daoAimer;
+ 	private static DaoRegarder daoRegarder;
+ 	private static DaoSignalementMedia daoSignalementMedia;
  	
  	// Propriétés
 	private String idMediaVisualise;
@@ -75,17 +81,13 @@ public class BeanMedia {
 	private Commentaire commentaireAffiche;
 	@Size(min = 3, max = 12, message = "La taille du mot de passe doit être entre 3 et 12")
 	private String motDePasseMedia;
-	private Boolean showMotDePasseMedia;
-	private Regarder regarder;
 	private long resultatTotalVuesMedia;
 	private String motVues;
 	private String motTelechargement;
 	private long resultatTotalTelechargementMedia;
 	//private List<Media> mediaDansPanier; //TODO à mettre en SESSION
-	private Signalement_Media signalementMedia;
 	private String raison; //récupéré de la vue
 	private Utilisateur util;
-	private Aimer aimer;
 	private long resultatNbAime;
 	private long resultatNbNAimePas;
 	private String nomAvatar;
@@ -103,7 +105,9 @@ public class BeanMedia {
 	private List<SelectItem> listeNomVisibilite;
 	private long resultatTotalVotesMedia;
 	private String motVotes;
-	private CartesianChartModel categoryModel;
+	private CartesianChartModel graphiqueStatVues;
+	private CartesianChartModel graphiqueAimeNAimePas;
+	private List<?> carouselRecommendationMedias;
 	private long maxY;
 	private String codeIntegration;
     private String lien;
@@ -116,8 +120,37 @@ public class BeanMedia {
  	private String detailNotificationJAime;
  	private String detailNotificationJeNAimePas;
  	private HashMap<Commentaire, ArrayList<Commentaire>> hmReponses;
- 	private FacesContext context = FacesContext.getCurrentInstance();  
-     	
+ 	private FacesContext context = FacesContext.getCurrentInstance();
+ 	private List<Media> listeMediasDeAuteur;
+ 	private List<Playlist> listePlaylistsAvecMedia;
+ 	private List<Playlist> listeTousPlaylist;
+ 	private Set<Categorie_Media> setCategoriesMedia;
+ 	private Set<Categorie> setCategories;
+ 	private Iterator<Categorie> categoriesCompteur;
+ 	private Set<Tag> setTags;
+ 	private Iterator<Tag> tagCompteur;
+ 	private Set<Playlist> playlistsUtilisateur;
+ 	private Set<Playlist> setPlaylistUt;
+ 	private SelectItem optionVisibilite;
+ 	private HttpServletRequest req;
+ 	private Playlist plFavoris;
+ 	private Playlist nvlPlaylist;
+ 	private ChartSeries graphiqueVues;
+ 	private HtmlSelectBooleanCheckbox check;
+ 	Query resultatReponses;
+ 	private Commentaire pere;
+ 	private ArrayList<Commentaire> lstFils;
+ 	private Set<Tag> tagMedia;
+ 	private List<Media> listeTousMedia;
+ 	private Iterator<Tag> iteratorMedia;
+ 	private HashMap<Media, Integer> mapOccurrenceTags;
+ 	private Tag tagMediaCourant;
+ 	private Set<Tag> setTagMediaCourant;
+ 	private StreamedContent file;
+ 	private TagCloudModel tagCloud;
+ 	
+ 	// Compteur
+ 	
     // Bean
  	private BeanConnexion beanConnexion;
  	
@@ -129,10 +162,10 @@ public class BeanMedia {
  	/**
 	 * Constructeur du Bean
 	 */
-	public BeanMedia() {
+	public BeanMedia() {		
 		// Chargement de l'utilisateur connecte
 		beanConnexion = (BeanConnexion) FacesContext.getCurrentInstance().getCurrentInstance().getExternalContext().getSessionMap().get("beanConnexion");
-				
+		
 		if (beanConnexion != null) {
 			utilisateurConnecte = beanConnexion.getUser();
 			//if (utilisateurConnecte != null) {}
@@ -156,7 +189,7 @@ public class BeanMedia {
 		
 		util = daoUtilisateur.getUn(1);
 		//mediaDansPanier = new ArrayList<Media>();
-		commentaireSaisi = "Réagir à propos de ce média.";
+		//commentaireSaisi = "Réagir à propos de ce média.";
 		
 		//estNotifieJAime = false;
 		if(utilisateurConnecte != null) {
@@ -177,6 +210,9 @@ public class BeanMedia {
 			detailNotificationJAime = "Connectez-vous ou inscrivez-vous dès maintenant !";
 			detailNotificationJeNAimePas = "Connectez-vous ou inscrivez-vous dès maintenant !";
 		}
+		
+		InputStream stream = ((ServletContext)FacesContext.getCurrentInstance().getExternalContext().getContext()).getResourceAsStream("/images/optimusprime.jpg");  
+        file = new DefaultStreamedContent(stream, "image/jpg", "downloaded_optimus.jpg"); //TODO chemin vers média à télécharger
 	}
 	
 
@@ -207,41 +243,51 @@ public class BeanMedia {
 				
 				auteur = mediaVisualise.getAuteurMedia().getNomUtilisateur();
 				
-				SimpleDateFormat dateFormat = new SimpleDateFormat("dd MMMM yyyy H:m");
+				dateFormat = new SimpleDateFormat("dd MMMM yyyy H:m");
 				datePublication = dateFormat.format(mediaVisualise.getDatePublication());
 				
 				description = mediaVisualise.getDescriptionMedia();
 				
 				listeNomCategories = new ArrayList<String>();
-				Set<Categorie_Media> setCategoriesMedia = mediaVisualise.getCategories();
+				setCategoriesMedia = mediaVisualise.getCategories();
 				
-				Set<Categorie> setCategories = new HashSet<Categorie>();
+				setCategories = new HashSet<Categorie>();
 				
 				for (Categorie_Media categorie_Media : setCategoriesMedia) {
 					setCategories.add(daoCategorie.getUn(categorie_Media.getCategorie()));
 				}
 				
 			
-				Iterator<Categorie> i = setCategories.iterator(); // on crée un Iterator pour parcourir notre Set
-				while(i.hasNext()) { // tant qu'on a un suivant
-					//System.out.println(i.next().getNomCategorie()); // on affiche le suivant
-					listeNomCategories.add(i.next().getNomCategorie());
+				categoriesCompteur = setCategories.iterator(); // on crée un Iterator pour parcourir notre Set
+				while(categoriesCompteur.hasNext()) { // tant qu'on a un suivant
+					//System.out.println(categoriesCompteur.next().getNomCategorie()); // on affiche le suivant
+					listeNomCategories.add(categoriesCompteur.next().getNomCategorie());
 				}
 				//System.out.println("Categories : " + listeNomCategories.toString());
 				
 				listeNomTags = new ArrayList<String>();
-				Set<Tag> setTags = mediaVisualise.getTags();
-				Iterator<Tag> tagCompteur=setTags.iterator();
+				setTags = mediaVisualise.getTags();
+				tagCompteur = setTags.iterator();
+				tagCloud = new DefaultTagCloudModel();  
 				while(tagCompteur.hasNext()) {
-					listeNomTags.add(tagCompteur.next().getNomTag());
+					//listeNomTags.add(tagCompteur.next().getNomTag());
+					tagCloud.addTag(new DefaultTagCloudItem(tagCompteur.next().getNomTag(), "recherche.jsf?", (int) Math.random() * 5)); //TODO lien
 				}
+		        
 				
 				chargerCommentaires();
 				chargerReponses();
 				
 				nomTypeMedia = mediaVisualise.getType().getNomTypeMedia();
 
-				showMotDePasseMedia = true;
+				listeMediasDeAuteur = new ArrayList<Media>(daoUtilisateur.getUn(1).getMedias());
+				
+				listeTousPlaylist = daoPlaylist.getTous();
+				listePlaylistsAvecMedia = new ArrayList<Playlist>();
+				for (Playlist elPlaylist : listeTousPlaylist) {
+					if(elPlaylist.getMedias().contains(daoMedia.getUn(2)))
+						listePlaylistsAvecMedia.add(elPlaylist);
+				}
 				
 				algorithmeSuggestions();
 					
@@ -277,7 +323,7 @@ public class BeanMedia {
 								
 				//Playlist
 				imgFavori = "add-star-award-icone-8518-16.png";
-				Set<Playlist> playlistsUtilisateur = daoUtilisateur.getUn(1).getPlaylists();
+				playlistsUtilisateur = daoUtilisateur.getUn(1).getPlaylists();
 				for(Playlist pl : playlistsUtilisateur) {
 					if(pl.getType().equals(daoTypePlaylist.getUn(2))) {
 						if(pl.getMedias().contains(mediaVisualise)) {
@@ -294,7 +340,7 @@ public class BeanMedia {
 				listePlaylistUt = new ArrayList<Playlist>(daoUtilisateur.getUn(1).getPlaylists());
 			
 				
-				Set<Playlist> setPlaylistUt = util.getPlaylists();
+				setPlaylistUt = util.getPlaylists();
 				imgAjoutPlaylist = "accepter-check-ok-oui-icone-4851-16.png"; //TODO
 				
 				for(Playlist playlistUt : setPlaylistUt) {
@@ -311,7 +357,6 @@ public class BeanMedia {
 				
 				listeVisibilite = daoVisibilite.getTous();
 				listeNomVisibilite = new ArrayList<SelectItem>();
-				SelectItem optionVisibilite;
 				for(Visibilite visible : listeVisibilite) {
 					optionVisibilite = new SelectItem(visible.getIdVisibilite(), visible.getNomVisibilite(), visible.getNomVisibilite(), false);
 					//listeNomVisibilite.add(visible.getNomVisibilite());
@@ -333,10 +378,11 @@ public class BeanMedia {
 				//***********************************************
 				
 				//Autre
-		        //createLinearModel();
-				createCategoryModel();
+				creerGraphiqueStatVues();
+				creerGraphiqueAimeNAimePas();
+				alimenterCarouselRecommendationMedias();
 		        
-		        HttpServletRequest req = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
+		        req = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
 		        url = req.getRequestURL().toString();
 		        
 		        codeIntegration = "<iframe width='320' height='180' src='" + url + "' frameborder='0' allowfullscreen></iframe>";
@@ -351,8 +397,7 @@ public class BeanMedia {
 	public String jAime() {
 		System.out.println("Méthode jAime");
 		
-		//message = new FacesMessage(FacesMessage.SEVERITY_INFO, "J'aime ce contenu", detailNotificationJAime);
-		context.addMessage(null, new FacesMessage("J'aime ce contenu", detailNotificationJAime));  
+		context.addMessage(null, new FacesMessage("J'aime ce contenu", detailNotificationJAime)); //TODO afficher detailNotificationJAime
         		
 		util.getAimeMedias().add(new Aimer(true,mediaVisualise));
 		daoUtilisateur.sauvegarder(util);
@@ -369,7 +414,7 @@ public class BeanMedia {
 	public String jeNAimePas() {
 		System.out.println("Méthode jeNAimePas");
 		
-		message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Je n'aime pas ce contenu", detailNotificationJeNAimePas);
+		context.addMessage(null, new FacesMessage("Je n'aime pas ce contenu", detailNotificationJeNAimePas));
 		
 		util.getAimeMedias().add(new Aimer(false,mediaVisualise));
 		daoUtilisateur.sauvegarder(util);
@@ -399,11 +444,10 @@ public class BeanMedia {
 	public void handleRate(RateEvent rateEvent) {
 		note = ((Double) rateEvent.getRating()).intValue();
 		
-        FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Notation", "Votre note : " + note);  
+        message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Notation", "Votre note : " + note);  
         FacesContext.getCurrentInstance().addMessage(null, message);
         
         vote();
-        
     }
 	
 	/** 
@@ -455,15 +499,15 @@ public class BeanMedia {
 	 * @return
 	 */
 	public String ajouterAFavori() {
-		Set<Playlist> playlistsUtilisateur = daoUtilisateur.getUn(1).getPlaylists();
+		playlistsUtilisateur = daoUtilisateur.getUn(1).getPlaylists();
 		
 		if(txtFavori == "Favori")
 		{
 			//System.out.println("Ajout au favori");			
 
-			message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Favori", "Ajoutée à Favoris");
+			context.addMessage(null, new FacesMessage("Favori", "Ajoutée à Favoris"));
 			
-			Playlist plFavoris = new Playlist();
+			plFavoris = new Playlist();
 			
 			boolean possedeFavori = false;
 			for(Playlist pl : playlistsUtilisateur) {
@@ -493,7 +537,7 @@ public class BeanMedia {
 		else {
 			//System.out.println("Retrait au favori");
 			
-			message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Favori", "Retirée à Favoris");
+			context.addMessage(null, new FacesMessage("Favori", "Retirée à Favoris"));
 			
 			for(Playlist pl : playlistsUtilisateur) {
 				if(pl.getType().equals(daoTypePlaylist.getUn(2))) { //possède déjà une playlist de type Favori
@@ -513,7 +557,7 @@ public class BeanMedia {
 	public String ajouterMediaAPlaylist() {
 		System.out.println("ajouterMediaAPlaylist");
 		
-		Set<Playlist> setPlaylistUt = util.getPlaylists();
+		setPlaylistUt = util.getPlaylists();
 		if(!estAjouteAPlaylist) {
 			System.out.println("Ajouter une vidéo à une playlist");
 			for(Playlist playlistUt : setPlaylistUt) {
@@ -549,7 +593,7 @@ public class BeanMedia {
 		System.out.println("Création d'une playlist");
 		//défaut privée TODO
 		
-		Playlist nvlPlaylist = new Playlist(nomPlaylistACreer, descriptionPlaylistACreer, "", daoTypePlaylist.typeAutre(), daoVisibilite.typeVisible()); //visibilité TODO
+		nvlPlaylist = new Playlist(nomPlaylistACreer, descriptionPlaylistACreer, "", daoTypePlaylist.typeAutre(), daoVisibilite.typeVisible()); //visibilité TODO
 		
 		if(!daoUtilisateur.getUn(1).getPlaylists().contains(nvlPlaylist)) {
 			daoUtilisateur.getUn(1).getPlaylists().add(nvlPlaylist);
@@ -568,18 +612,18 @@ public class BeanMedia {
 	}
 
 	/** 
-	 * Génération du graphique, du nombre de vues du média
+	 * Génération du graphique du nombre de vues du média
 	 * @return
 	 */
-	private void createCategoryModel() {
-		categoryModel = new CartesianChartModel();  
+	private void creerGraphiqueStatVues() {
+		graphiqueStatVues = new CartesianChartModel();  
 
-		ChartSeries graphiqueVues = new ChartSeries();  
+		graphiqueVues = new ChartSeries();  
 		graphiqueVues.setLabel("Vues totales");
 
         Query resultatStatVues = daoMedia.statVues(daoMedia.getUn(2));
         //suivant heure et mois TODO
-        for(Iterator it = resultatStatVues.iterate();it.hasNext();) {
+        for(Iterator<?> it = resultatStatVues.iterate();it.hasNext();) {
         	Object[] row = (Object[]) it.next();
         
         	graphiqueVues.set(row[0], Integer.parseInt(row[1].toString()));
@@ -587,7 +631,36 @@ public class BeanMedia {
         
         maxY = daoMedia.totalVues(daoMedia.getUn(2));
 
-		categoryModel.addSeries(graphiqueVues);
+		graphiqueStatVues.addSeries(graphiqueVues);
+	}
+	
+	private void creerGraphiqueAimeNAimePas() {  
+		graphiqueAimeNAimePas = new CartesianChartModel();  
+  
+        ChartSeries utilisateursAyantAime = new ChartSeries();  
+        utilisateursAyantAime.setLabel("Utilisateurs ayant aimé");  
+  
+        utilisateursAyantAime.set("1", resultatNbAime);
+  
+        ChartSeries utilisateursNAyantPasAime = new ChartSeries();  
+        utilisateursNAyantPasAime.setLabel("Utilisateurs n'ayant pas aimé");  
+  
+        utilisateursNAyantPasAime.set("2", resultatNbNAimePas);
+  
+        graphiqueAimeNAimePas.addSeries(utilisateursAyantAime);  
+        graphiqueAimeNAimePas.addSeries(utilisateursNAyantPasAime);  
+    }
+	
+	/** 
+	 * Alimentation du carousel de recommendation de médias (suivant l'artiste du média visualisé)
+	 * @return
+	 */
+	public String alimenterCarouselRecommendationMedias() {
+		//System.out.println("alimenterCarouselRecommendationMedias");
+		
+		carouselRecommendationMedias = daoMedia.recommendationMediasSuivantMediaVisualise(daoMedia.getUn(2));
+		
+		return "alimenterCarouselRecommendationMedias";
 	}
 	
 	/** 
@@ -603,9 +676,9 @@ public class BeanMedia {
 		//Object contentValue = (Content) input.getValue();
 		//System.out.println("Value : "+contentValue);
 		//Object value = ((UIInput) e.getSource()).getSubmittedValue();
-		HtmlSelectBooleanCheckbox check=(HtmlSelectBooleanCheckbox)e.getSource();
+		check = (HtmlSelectBooleanCheckbox)e.getSource();
 		Object checkvar = check.getValue();
-		System.out.println("Value : "+checkvar); //false true TODO
+		System.out.println("Value : " + checkvar); //false true TODO
 		
 	    if(! Boolean.parseBoolean(checkvar.toString()))	{
 			codeIntegration = "<object width='" + largeur + "' height='" + hauteur + "'><param name='movie' value='" + url + "'></param><param name='allowFullScreen' value='true'></param><param name='allowscriptaccess' value='always'></param><embed src='http://www.youtube.com/v/ZQ2nCGawrSY?version=3&amp;hl=fr_FR' type='application/x-shockwave-flash' width='" + largeur + "' height='" + hauteur + "' allowscriptaccess='always' allowfullscreen='true'></embed></object>";	
@@ -647,7 +720,7 @@ public class BeanMedia {
 	public String ajouterAuPanier() {
 		System.out.println("ajouterAuPanier");
 		
-		message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Notification", detailNotifyAjoutAuPanier);
+		context.addMessage(null, new FacesMessage("Notification", detailNotifyAjoutAuPanier));
         
 		//mediaDansPanier.add(daoMedia.getUn(2));
 		if(beanConnexion.getMediaDansPanier().contains(daoMedia.getUn(2))) {
@@ -670,7 +743,7 @@ public class BeanMedia {
 	public String decrementerNbCaracteresRestants() {
 		System.out.println("decrementerNbCaracteresRestants");
 		
-		nbCaracteresRestants--;				
+		nbCaracteresRestants--;
 		
 		return "decrementerNbCaracteresRestants";
 	}
@@ -718,14 +791,14 @@ public class BeanMedia {
 	public String chargerReponses() {
 		//System.out.println("chargerReponses");
 				
-		Query resultatReponses = daoMedia.getReponses(daoMedia.getUn(2));
+		resultatReponses = daoMedia.getReponses(daoMedia.getUn(2));
 		hmReponses = new HashMap<Commentaire, ArrayList<Commentaire>>();
 		
-		Commentaire pere = null;
-		ArrayList<Commentaire> lstFils = new ArrayList<Commentaire>();
+		pere = null;
+		lstFils = new ArrayList<Commentaire>();
 		Commentaire tmp = null;
 		
-        for(Iterator it = resultatReponses.iterate();it.hasNext();) {
+        for(Iterator<?> it = resultatReponses.iterate(); it.hasNext(); ) {
         	Object[] rowCommentaire = (Object[]) it.next();
         	
         	pere = (Commentaire)rowCommentaire[0];
@@ -769,7 +842,7 @@ public class BeanMedia {
 	public String supprimerCommentaire() {
 		System.out.println("supprimerCommentaire");
 		
-		message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Suppression du commentaire", "Le commentaire a été supprimé avec succès !");
+		context.addMessage(null, new FacesMessage("Suppression du commentaire", "Le commentaire a été supprimé"));
 		
 		daoMedia.getUn(2).getCommentaires().remove(daoCommentaire.getUn(Long.parseLong(FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("idCommentaire"))));
 		
@@ -817,7 +890,7 @@ public class BeanMedia {
 	 * @return
 	 */
 	public String modifierCategoriesTags() { //TODO
-		System.out.println("===>");
+		System.out.println("méthode modifierCategoriesTags");
 		
 		//Set<Categorie> setCategorie = new HashSet<Categorie>();
 		/*for(String nomCateg : listeNomCategories)
@@ -831,34 +904,46 @@ public class BeanMedia {
 		return "modifierCategoriesTags";
 	}
 
+	/** 
+	 * Téléchargement du média visualisé (redirection)
+	 * @return
+	 */
+	public String telechargerMedia() {
+		try {
+			FacesContext.getCurrentInstance().getExternalContext().redirect("/resources/#{beanMedia.nomTypeMedia}s/#{beanMedia.titreMedia}.mp3");
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		return "telechargerMedia";
+	}
 
 	/** 
 	 * Algorithme des suggestions de média
 	 * @return
 	 */
 	public void algorithmeSuggestions() {
-		//Tag
-		Set<Tag> tagMedia = mediaVisualise.getTags(); //tags du média visualisé
+		tagMedia = mediaVisualise.getTags(); //tags du média visualisé
 		
-		List<Media> listeMedia = daoMedia.getTous();
+		listeTousMedia = daoMedia.getTous();
 		
-		HashMap<Media, Integer> map = new HashMap<Media, Integer>(); //HashMap contenant le nb d'occurrences de tags correspondants dans les médias
+		mapOccurrenceTags = new HashMap<Media, Integer>(); //HashMap contenant le nb d'occurrences de tags correspondants dans les médias
 		
-		Iterator<Tag> iteratorMedia = tagMedia.iterator();
+		iteratorMedia = tagMedia.iterator();
 		while(iteratorMedia.hasNext()) { //parcours des tags du média visualisé
 			//System.out.println("Set tagMedia : " + i.next());
-			Tag svg = iteratorMedia.next();
-			for(Media elMedia : listeMedia) { //parcours de tous les médias
+			tagMediaCourant = iteratorMedia.next();
+			for(Media elMedia : listeTousMedia) { //parcours de tous les médias
 				if(! elMedia.equals(mediaVisualise)) {//tout sauf le média actuellement visualisé
-					Set<Tag> setTagMediaCourant = daoMedia.getUn(elMedia.getIdMedia()).getTags();
+					setTagMediaCourant = daoMedia.getUn(elMedia.getIdMedia()).getTags();
 					for(Tag tagMediaCourant : setTagMediaCourant) {
 						//System.out.println(svg + "***" + tagMediaCourant + " (" + elMedia.getIdMedia() + ")");
-						if(svg.toString().equals(tagMediaCourant.toString())) {
-							if(map.containsKey(elMedia)) {
-								map.put(elMedia, map.get(elMedia) + 1); //tag correspond supplémentaire
+						if(tagMediaCourant.toString().equals(tagMediaCourant.toString())) {
+							if(mapOccurrenceTags.containsKey(elMedia)) {
+								mapOccurrenceTags.put(elMedia, mapOccurrenceTags.get(elMedia) + 1); //tag correspond supplémentaire
 							}
 							else {
-								map.put(elMedia, 1);
+								mapOccurrenceTags.put(elMedia, 1);
 							}
 						}
 					}
@@ -874,9 +959,8 @@ public class BeanMedia {
 		   Object valeur = map.get(cle);
 		   System.out.println(cle + " => " + valeur);
 		}*/
-
 		
-		listeMediasSuggeres = new ArrayList<Media>(map.keySet());
+		listeMediasSuggeres = new ArrayList<Media>(mapOccurrenceTags.keySet());
 		//System.out.println("size listeMediasSuggeres : " + listeMediasSuggeres.size());
 		if(listeMediasSuggeres.size() < 20) {
 			listeMediasSuggeres = listeMediasSuggeres.subList(0, listeMediasSuggeres.size());
@@ -1184,17 +1268,35 @@ public class BeanMedia {
 		this.detailNotifyAjoutAuPanier = detailNotifyAjoutAuPanier;
 	}
 	
-	public CartesianChartModel getCategoryModel() {  
-		return categoryModel;  
+	public CartesianChartModel getGraphiqueStatVues() {  
+		return graphiqueStatVues;  
 	}
     
     public long getMaxY() {
 		return maxY;
 	}
+    
 	public void setMaxY(long maxY) {
 		this.maxY = maxY;
 	}
 	
+	public CartesianChartModel getGraphiqueAimeNAimePas() {
+		return graphiqueAimeNAimePas;
+	}
+
+	public void setGraphiqueAimeNAimePas(CartesianChartModel graphiqueAimeNAimePas) {
+		this.graphiqueAimeNAimePas = graphiqueAimeNAimePas;
+	}
+
+	public List<?> getCarouselRecommendationMedias() {
+		return carouselRecommendationMedias;
+	}
+
+	public void setCarouselRecommendationMedias(
+			List<?> carouselRecommendationMedias) {
+		this.carouselRecommendationMedias = carouselRecommendationMedias;
+	}
+
 	public String getEstNotifieJAime() {
 		return estNotifieJAime;
 	}
@@ -1235,14 +1337,6 @@ public class BeanMedia {
 		this.motDePasseMedia = motDePasseMedia;
 	}
 	
-	public boolean isShowMotDePasseMedia() {
-		return showMotDePasseMedia;
-	}
-	
-	public void setShowMotDePasseMedia(boolean showMotDePasseMedia) {
-		this.showMotDePasseMedia = showMotDePasseMedia;
-	}
-	
 	public List<Commentaire> getListeCommentaires() {
 		return listeCommentaires;
 	}
@@ -1266,4 +1360,29 @@ public class BeanMedia {
 	public void setMotTelechargement(String motTelechargement) {
 		this.motTelechargement = motTelechargement;
 	}
+
+	public List<Media> getListeMediasDeAuteur() {
+		return listeMediasDeAuteur;
+	}
+
+	public void setListeMediasDeAuteur(List<Media> listeMediasDeAuteur) {
+		this.listeMediasDeAuteur = listeMediasDeAuteur;
+	}
+
+
+	public List<Playlist> getListePlaylistsAvecMedia() {
+		return listePlaylistsAvecMedia;
+	}
+	
+	public void setListePlaylistsAvecMedia(List<Playlist> listePlaylistsAvecMedia) {
+		this.listePlaylistsAvecMedia = listePlaylistsAvecMedia;
+	}
+	
+	public TagCloudModel getTagCloud() {  
+        return tagCloud;  
+    }
+	
+	public StreamedContent getFile() {  
+        return file;  
+    }
 }
