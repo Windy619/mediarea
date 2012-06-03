@@ -268,14 +268,18 @@ public class BeanMedia {
 				listeNomTags = new ArrayList<String>();
 				setTags = mediaVisualise.getTags();
 				tagCompteur = setTags.iterator();
-				tagCloud = new DefaultTagCloudModel();  
+				tagCloud = new DefaultTagCloudModel();
+				Tag tagNext;
 				while(tagCompteur.hasNext()) {
-					//listeNomTags.add(tagCompteur.next().getNomTag());
-					tagCloud.addTag(new DefaultTagCloudItem(tagCompteur.next().getNomTag(), "recherche.jsf?", (int) Math.random() * 5)); //TODO lien
+					tagNext = tagCompteur.next();
+					listeNomTags.add(tagNext.getNomTag());
+					tagCloud.addTag(new DefaultTagCloudItem(tagNext.getNomTag(), "recherche.jsf?", (int) Math.random() * 5)); //TODO lien
 				}
 		        
-				
+				//Chargement des commentaires
 				chargerCommentaires();
+				
+				//Chargement des réponses
 				chargerReponses();
 				
 				nomTypeMedia = mediaVisualise.getType().getNomTypeMedia();
@@ -457,6 +461,25 @@ public class BeanMedia {
 	}
 	
 	/** 
+	 * Téléchargement d'un média
+	 * @return
+	 */
+	public String telechargerMedia() { //TODO rentrer dedans
+		System.out.println("méthode telechargerMedia");
+		
+		//Création de l'objet Telechargement_Media
+		Telechargement_Media tm = new Telechargement_Media(daoMedia.getUn(2));
+		
+		//Ajout du téléchargement à la liste de médias téléchargés
+		daoUtilisateur.getUn(1).getTelechargementsMedias().add(tm);
+		
+		//Sauvegarde de l'ajout
+		daoUtilisateur.sauvegarder(daoUtilisateur.getUn(1));
+		
+		return "telechargerMedia";
+	}
+	
+	/** 
 	 * Notation par estimation d'étoiles du média
 	 * @return
 	 */
@@ -557,7 +580,7 @@ public class BeanMedia {
 			
 			if(!possedeFavori) { //Si la playlist de type Favori n'existe pas
 				//Création d'une playlist de type Favoris pour l'utilisateur connecté
-				plFavoris = new Playlist("Mes favoris2","Favoris","Description",daoTypePlaylist.typeFavoris(),daoVisibilite.typeVisible());
+				plFavoris = new Playlist("Mes favoris","Favoris","Description",daoTypePlaylist.typeFavoris(),daoVisibilite.typeVisible());
 
 				//Ajout de la playlist de type Favoris à la liste des playlists de l'utilisateur connecté
 				daoUtilisateur.getUn(1).getPlaylists().add(plFavoris);
@@ -867,8 +890,7 @@ public class BeanMedia {
 		//Enregistrement de l'ajout
 		daoMedia.sauvegarder(daoMedia.getUn(2));
 		
-		/*if(commentaires == null)
-		{
+		/*if(commentaires == null) {
 			System.out.println("c'est la liste de commentaires qui pose problème (null)");
 		}*/
 		
@@ -939,9 +961,25 @@ public class BeanMedia {
 		return "chargerReponses";
 	}
 	
+	/** 
+	 * Récupération de la liste des commentaires fils associés au commentaire passé en paramètre
+	 * @return
+	 */
 	public ArrayList<Commentaire> mapValue(Commentaire c) {
-		//Récupération des commentaires fils associé au commentaire passé en paramètre
 		return hmReponses.get(c);
+	}
+	
+	/** 
+	 * Nombre de commentaires fils associés au commentaire passé en paramètre
+	 * @return
+	 */
+	public int nbReponses(Commentaire c) {
+		if(hmReponses.get(c) == null) {
+			return 0;
+		}
+		else {
+			return hmReponses.get(c).size();
+		}
 	}
 	
 	/** 

@@ -700,9 +700,3 @@ nav ul li a.current{
 	height: 130px;
 	/*float: left;*/
 }
-
-.ui-button-icon-left .ui-icon .empreintes-icone {
-	background-image:url("#{resource['images:bg1.png']}") !important; /*icones/empreintes-icone-5104-16.png*/ /*TODO*/
-	height:16px;
-	width:16px;
-}

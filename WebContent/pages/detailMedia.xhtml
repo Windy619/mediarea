@@ -101,7 +101,7 @@
 			
 			<br />
 			<br />
-			<p:media value="http://www.youtube.com/v/KZnUr8lcqjo" width="425" height="344" player="flash"/>
+			<!--<p:media value="http://www.youtube.com/v/KZnUr8lcqjo" width="425" height="344" player="flash"/>-->
 			</h:panelGroup>
 			
 			
@@ -148,19 +148,19 @@
 		<!-- Actions possibles -->
 		<p:growl id="messages"/>  
   
-	    <p:splitButton value="Avis" icon="/resources/images/icones/empreintes-icone-5104-16.png" style="font-size: 11px;">  
-	        <p:menuitem value="J'aime" actionListener="#{beanMedia.jAime}" update="messages" icon="/resources/images/icones/heart-ajouter-icone-8199-16.png"/>  
-	        <p:menuitem value="Je n'aime pas" actionListener="#{beanMedia.jeNAimePas}" update="messages" icon="/resources/images/icones/heart-ajouter-icone-8199-16.png"/>  
+	    <p:splitButton value="Avis" icon="ui-icon-person" style="font-size: 11px;">  
+	        <p:menuitem value="J'aime" actionListener="#{beanMedia.jAime}" update="messages" icon="ui-icon-heart"/>  
+	        <p:menuitem value="Je n'aime pas" actionListener="#{beanMedia.jeNAimePas}" update="messages" icon="ui-icon-heart"/>  
 	    </p:splitButton>
 	    
-	    <p:splitButton value="Ajouter à" icon="/resources/images/icones/ajouter-icone-5107-16.png" style="font-size: 11px;">  
-	        <p:menuitem value="Favori" actionListener="#{beanMedia.ajouterAFavori}" update="messages" icon="/resources/images/icones/#{beanMedia.imgFavori}"/><!-- changement image + notify retirer --> 
-	        <p:menuitem value="Playlist" update="messages" icon="/resources/images/icones/player-playlist-icone-7426-16.png" onclick="dlgPlaylist.show();" />  
+	    <p:splitButton value="Ajouter à" icon="ui-icon-plus" style="font-size: 11px;">  
+	        <p:menuitem value="Favori" actionListener="#{beanMedia.ajouterAFavori}" update="messages" icon="ui-icon-star"/><!-- changement image + notify retirer --> 
+	        <p:menuitem value="Playlist" update="messages" icon="ui-icon-video" onclick="dlgPlaylist.show();" />  
 	    </p:splitButton>
 		
-		<p:splitButton value="Partager" icon="/resources/images/icones/sharing-overlay-icone-8730-16.png" style="font-size: 11px;">  
-	        <p:menuitem value="Exporter" actionListener="#{beanMedia.ajouterAFavori}" update="messages" icon="/resources/images/icones/tag-icone-4783-16.png" onclick="dlgExporter.show();" />
-	        <p:menuitem value="Emails et amis" update="messages" icon="/resources/images/icones/email-go-icone-7614-16.png" onclick="dlgExporter.show();" />  
+		<p:splitButton value="Partager" icon="ui-icon-home" style="font-size: 11px;">  
+	        <p:menuitem value="Exporter" update="messages" icon="ui-icon-copy" onclick="dlgExporter.show();" />
+	        <p:menuitem value="Emails et amis" update="messages" icon="ui-icon-mail-open" onclick="dlgExporter.show();" />  
 	    </p:splitButton>
     </h:form>
     	
@@ -313,7 +313,6 @@
 			        	<h:outputText value="Après avoir sélectionné les options souhaitées plus bas, copiez-collez le code d'intégration ci-dessus. Ce dernier change en fonction des options choisies." />
 			        	<br />
 			        	<hr />
-			        	<br />
 			        	<p:selectBooleanCheckbox value="true">  
 				            <p:ajax update="codeIntegration" listener="#{beanMedia.desactiverLecteurIframe}"/>  
 				        </p:selectBooleanCheckbox>
@@ -415,7 +414,7 @@
 	            <!-- Informations sur le média -->
 	            <span class="bold">
 	            	<h:outputText value="Ajouté par " />
-	            	<h:outputLink value="TODO/#{beanMedia.auteur}" title="#{tag.nomTag}">
+	            	<h:outputLink value="TODO/#{beanMedia.auteur}">
 						<h:outputText value="#{beanMedia.auteur}" />
 					</h:outputLink>
 	            	<h:outputText value=" le #{beanMedia.datePublication}" />
@@ -536,7 +535,7 @@
         		
         		<!-- Téléchargement du média -->
         		<h:form>
-	        		<p:commandLink id="downloadLink" value="Télécharger ce média" ajax="false" rendered="#{beanMedia.mediaVisualise.estTelechargementAutorise}">  
+	        		<p:commandLink id="downloadLink" value="Télécharger ce média" ajax="false" actionListener="#{beanMedia.telechargerMedia}" rendered="#{beanMedia.mediaVisualise.estTelechargementAutorise}">  
 					    <p:fileDownload value="#{beanMedia.file}" />  
 					</p:commandLink>
         		</h:form>
@@ -567,6 +566,12 @@
 					<h:outputText value=" Tags : " styleClass="bold" />
 					<br />
 					<p:tagCloud model="#{beanMedia.tagCloud}" />
+					
+					<br />
+					
+					<!--<p:commandButton value="Modifier" update="formTagsCategories" />
+					Champs deviennent éditables au clic sur le bouton Modifier TODO-->
+             				
 				</h:panelGroup>
 				
 				
@@ -586,15 +591,12 @@
 					
 						<br />
 						<br />
-
+						
 						<p:commandButton value="Enregistrer les modifications" update="formTagsCategories" id="enregistrerModif"  
              				actionListener="#{beanMedia.modifierCategoriesTags}" />
 					</h:form>
 				</h:panelGroup>
 			</p:fieldset>
-
-
-
 		    
 			<br />
 			<br />
@@ -629,7 +631,7 @@
 			<h:form id="formMessage">
 				<p:editor id="editor" value="#{beanMedia.commentaireSaisi}" width="565" />
 				<p:inputText id="counter">  
-		            <p:ajax event="keyup" update="nbCaracteresRestants"   
+		            <p:ajax event="keyup" update="nbCaracteresRestants"
 		                    listener="#{beanMedia.decrementerNbCaracteresRestants}"/><!-- TODO nbCaracteresRestants pour p:editor -->
 		        </p:inputText> 
         
@@ -676,17 +678,20 @@
 		        </f:facet>
         
 		        <p:column style="width:16px">  
-		            <p:rowToggler />  
+		            <p:rowToggler />
+		            <h:outputText value="#{beanMedia.nbReponses(commentaire)} réponse(s)" style="font-size: 10px;" />
 		        </p:column> 
 		        
 		            		
 		        	
-		       <p:column style="width:75px">  
+		       <p:column style="width:60px">  
 		            <f:facet name="header">  
 		                    Infos 
 		            </f:facet>
 									<div align="center">
+										<h:outputLink value="TODO/#{commentaire.auteur.pseudo}">
 										<h:outputText value="#{commentaire.auteur.pseudo}" />
+										</h:outputLink>
 										<br />
 										<h:graphicImage value="#{commentaire.auteur.avatar.nomAvatar}" />	
 										<br />
@@ -696,12 +701,25 @@
 											<f:convertDateTime type="both" dateStyle="short" />
 										</h:outputText>							
 									</div>
-								</p:column>		
+								</p:column>
 		        
-		        	<p:column style="width:250px"> 		        		
-						<h:commandLink value="Supprimer" action="#{beanMedia.supprimerCommentaire}">
-			                	<f:param name="idCommentaire" value="#{commentaire.idCommentaire}"/>
-							</h:commandLink>, 
+		        	<p:column style="width:250px">
+		        			<h:panelGroup rendered="#{commentaire.auteur == beanMedia.utilisateurConnecte}">        		
+								<h:commandLink value="Supprimer" action="#{beanMedia.supprimerCommentaire}">
+				                	<f:param name="idCommentaire" value="#{commentaire.idCommentaire}"/>
+								</h:commandLink>
+							</h:panelGroup>
+			
+							<h:panelGroup rendered="#{commentaire.auteur != beanMedia.utilisateurConnecte}">
+								 <h:commandLink value="Signaler comme spam" action="#{beanMedia.signalerCommentaire}">
+									<f:setPropertyActionListener target="#{beanMedia.commentaireAffiche}" value="#{commentaire}" />
+									<rich:componentControl target="popupSignalement" operation="show" />						
+								</h:commandLink><!-- TODO Benjamin -->
+							</h:panelGroup>
+			
+							<!-- Vote pour<br/>
+							Vote contre XXX -->
+							
 							<!--<rich:notify id="notifySuppressionComm" stayTime="1500" sticky="false" nonblocking="false"
 								nonblockingOpacity="0.5" showShadow="false"
 								showCloseButton="true" detail="Le commentaire a été supprimé avec succès !" render="false">							 
@@ -709,15 +727,6 @@
 									Suppression du commentaire
 								</f:facet>
 							</rich:notify>-->
-			
-							<h:commandLink value="Signaler comme spam" action="#{beanMedia.signalerCommentaire}">
-								<f:setPropertyActionListener target="#{beanMedia.commentaireAffiche}" value="#{commentaire}" />
-								<rich:componentControl target="popupSignalement" operation="show" />						
-							</h:commandLink><!-- TODO Benjamin -->
-							
-			
-							<!-- Vote pour<br/>
-							Vote contre XXX -->
 							
 							<hr />
 		        	 
@@ -737,7 +746,7 @@
 		                <f:facet name="header">  
 		                    <h:outputText value="En réponse à : #{commentaire.auteur.pseudo}" />
 		                </f:facet>
-		  
+		  	
 		  				<!--<ui:repeat value="#{beanMedia.mapValue(commentaire)}" var="reponses" id="repeatReponses" rows="10">
 							<h:outputText escape="false" value="#{reponses.contenuCommentaire}" />
 				        	<rich:editor id="editorReponse" value="#{beanMedia.reponseSaisie}" height="100" width="575" style="margin-bottom: 1em;">
@@ -801,27 +810,36 @@
 			</h3>
 			<article class="holder_news">
 				<h:form>
-			        <h:panelGrid columns="1">
-			            <a4j:outputPanel id="panel" layout="block">
 			                <a4j:repeat value="#{beanMedia.listeMediasSuggeres}" var="mediaSuggere" rows="20"
 			                    id="repeat">
-			                    <p:fieldset legend="#{mediaSuggere.titreMedia}" style="float:left; width:200px; padding:5px;">
-			                        <h:panelGrid columns="3">	                            
-			                            <h:graphicImage value="#{mediaSuggere.photo}" alt="flag" style="float: left;" />
-			                            <div style="float: right;">
-			                            	<h:outputText value="de" />
-				                            <h:outputText value="#{mediaSuggere.auteurMedia.pseudo}" style="font-weight:bold;" />
-				                            <h:outputText value="... vues" />
-			                        	</div>
-			                        </h:panelGrid>
-			                    </p:fieldset>
+			                        <p:panelGrid id="gridSuggestions" style="width: 274px;"> 
+			                        	<p:row>
+       										<p:column rowspan="3">
+       											<h:graphicImage value="#{mediaSuggere.photo}" alt="flag" style="float: left;" />
+				                        	</p:column>
+			                        	</p:row>
+				                        <p:row>
+				                        	<p:column>
+				                        		<h:outputLink value="TODO">
+				                        			<h:outputText value="#{mediaSuggere.titreMedia}" />
+				                        		</h:outputLink>
+				                        		<br />
+						                        <h:outputText value="de " />
+						                        <h:outputLink value="TODO/#{mediaSuggere.auteurMedia.pseudo}">
+							                    	<h:outputText value="#{mediaSuggere.auteurMedia.pseudo}" style="font-weight:bold;" />
+												</h:outputLink>
+							                    <br />
+							                    <h:outputText value="... vues" /><!-- TODO -->
+						                    </p:column>
+					                    </p:row>
+        							</p:panelGrid>
 			                    <br />
 			                </a4j:repeat>
-			            </a4j:outputPanel>
-			            <!-- <a4j:outputPanel layout="block">
-			                <rich:dataScroller for="repeat" render="panel" />
-			            </a4j:outputPanel> -->
-			        </h:panelGrid>
+			            	<h:outputLink value="recherche.jsf?TODO">
+								<h:outputText value="" style="font-weight:bold;" />
+							</h:outputLink>
+							<p:commandButton value="Afficher plus de suggestions" 
+            					ajax="false" /><!-- actionListener="" redirection vers recherche.jsf TODO -->
 			    </h:form>
 			</article> 
 		</aside>

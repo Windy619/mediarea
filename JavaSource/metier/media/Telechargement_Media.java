@@ -19,10 +19,19 @@ public class Telechargement_Media {
 	private int nbTelechargement;
 	
 	/**
-	 * Constructeur par défaut
+	 * Constructeur vide
 	 */
 	public Telechargement_Media() {
 		nbTelechargement = 1;
+	}
+	
+	/**
+	 * Constructeur par défaut
+	 * @param nomTag
+	 */
+	public Telechargement_Media(Media media) {
+		this.media = media;
+		nbTelechargement++;
 	}
 	
 	// GETTER SETTER
