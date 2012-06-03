@@ -275,6 +275,24 @@ public class DaoMedia extends Dao<Media> {
 	
 	
 	/**
+	 * Recommendations de médias suivant le média visualisé
+	 * @param Média
+	 * @return Liste de médias
+	 */
+	public List<?> recommendationMediasSuivantMediaVisualise(Media media) {
+		String param = media.getTitreMedia();
+		
+		Query q = session.createQuery("" +
+				"FROM Media " +
+				"WHERE titreMedia LIKE :titreMedia " + //artiste XXX
+				"AND visibilite.idVisibilite = 1"); //public 
+		
+		q.setParameter("titreMedia", param + "%"); //like	
+		
+		return q.list();
+	}
+	
+	/**
 	 * Recuperation du total des vues
 	 * @return Une liste de média
 	 */
@@ -366,11 +384,6 @@ public class DaoMedia extends Dao<Media> {
 	
 	
 	
-	
-	
-	
-	
-	
 	/**
 	 * Nombre de personnes ayant aimé un média
 	 * @param idMedia
@@ -399,7 +412,8 @@ public class DaoMedia extends Dao<Media> {
 		
 		Query q = session.createQuery("" +
 				"FROM Aimer " +
-				"WHERE media.idMedia = :idMedia ");
+				"WHERE media.idMedia = :idMedia " +
+				"AND aAime = false");
 		
 		q.setParameter("idMedia", param);		
 		
@@ -408,7 +422,7 @@ public class DaoMedia extends Dao<Media> {
 	
 
 	/**
-	 * Récupération du nombre de vues par jour TODO
+	 * Récupération du nombre de vues par jour
 	 * @return Une liste de média
 	 * @throws ParseException 
 	 */
@@ -454,10 +468,10 @@ public class DaoMedia extends Dao<Media> {
 		return (Long) q.uniqueResult();
 	}
 	
-	/*public List<?> getCommentaires(Media media) { //à utiliser
+	/*public List<?> getCommentaires(Media media) {
 		Query q = session.createQuery("" +
 				"SELECT m.commentaires " +
-				"FROM Media as m join Commentaire as c " + //join à voir TODO
+				"FROM Media as m join Commentaire as c " +
 				"WHERE m.media = :media AND m.aCommentairesOuverts = true " +
 				"ORDER BY c.dateCommentaire DESC" +
 				"");
