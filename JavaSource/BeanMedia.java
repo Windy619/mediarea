@@ -75,8 +75,9 @@ public class BeanMedia {
 	private double note;
 	private String nomTypeMedia;
 	private String commentaireSaisi;
-	List<Media> listeMediasSuggeres = new ArrayList<Media>();
-	SimpleDateFormat dateFormat;
+	private String reponseSaisie;
+	private List<Media> listeMediasSuggeres = new ArrayList<Media>();
+	private SimpleDateFormat dateFormat;
 	private int nbCaracteresRestants;
 	private Commentaire commentaireAffiche;
 	@Size(min = 3, max = 12, message = "La taille du mot de passe doit être entre 3 et 12")
@@ -86,7 +87,8 @@ public class BeanMedia {
 	private String motTelechargement;
 	private long resultatTotalTelechargementMedia;
 	//private List<Media> mediaDansPanier; //TODO à mettre en SESSION
-	private String raison; //récupéré de la vue
+	private String raisonMedia;
+	private String raisonCommentaire;
 	private Utilisateur util;
 	private long resultatNbAime;
 	private long resultatNbNAimePas;
@@ -116,7 +118,6 @@ public class BeanMedia {
     private int largeur = 320;
     private int hauteur = 180;
  	private String detailNotifyAjoutAuPanier;
- 	private String estNotifieJAime; //TODO suppr
  	private String detailNotificationJAime;
  	private String detailNotificationJeNAimePas;
  	private HashMap<Commentaire, ArrayList<Commentaire>> hmReponses;
@@ -221,7 +222,6 @@ public class BeanMedia {
 	 * @return
 	 */
 	public void processRecherche() throws IOException {
-		estNotifieJAime = null;
 		if(idMediaVisualise == null || idMediaVisualise == "") {
 //			FacesContext.getCurrentInstance().getExternalContext().redirect("/MediArea/pages/erreur.jsf"); //redirection vers la page d'erreur
 			//TODO redirection vers page media indisponible
@@ -397,12 +397,17 @@ public class BeanMedia {
 	public String jAime() {
 		System.out.println("Méthode jAime");
 		
-		context.addMessage(null, new FacesMessage("J'aime ce contenu", detailNotificationJAime)); //TODO afficher detailNotificationJAime
-        		
-		util.getAimeMedias().add(new Aimer(true,mediaVisualise));
-		daoUtilisateur.sauvegarder(util);
+		//Création de l'objet Aimer (true)
+		Aimer a = new Aimer(true,mediaVisualise);
 		
-		estNotifieJAime = "true";
+		//Ajout à la liste des médias aimés
+		util.getAimeMedias().add(a);
+		
+		//Sauvegarde de l'ajout
+		daoUtilisateur.sauvegarder(util);
+				
+		//Affichage de la notification
+		context.addMessage(null, new FacesMessage("J'aime ce contenu", detailNotificationJAime));
 		
 		return "jAime";
 	}
@@ -414,10 +419,17 @@ public class BeanMedia {
 	public String jeNAimePas() {
 		System.out.println("Méthode jeNAimePas");
 		
-		context.addMessage(null, new FacesMessage("Je n'aime pas ce contenu", detailNotificationJeNAimePas));
+		//Création de l'objet Aimer (false)
+		Aimer a = new Aimer(false,mediaVisualise);
 		
-		util.getAimeMedias().add(new Aimer(false,mediaVisualise));
+		//Ajout à la liste des médias aimés
+		util.getAimeMedias().add(a);
+		
+		//Sauvegarde de l'ajout
 		daoUtilisateur.sauvegarder(util);
+
+		//Affichage de la notification
+		context.addMessage(null, new FacesMessage("Je n'aime pas ce contenu", detailNotificationJeNAimePas));
 		
 		return "jeNAimePas";
 	}
@@ -429,10 +441,17 @@ public class BeanMedia {
 	public String signalerMedia() { //retourné obligatoirement un String et non un void
 		System.out.println("Méthode signalerMedia");
 		
-		FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Signalement du média", "Votre rapport a été pris en compte.")); //TODO ne plus afficher ce message lorsque l'on revient sur la pop-up
+		//Création du signalement du média
+		Signalement_Media sm = new Signalement_Media(raisonMedia, daoMedia.getUn(2));
 		
-		util.getSignalementsMedias().add(new Signalement_Media(raison, daoMedia.getUn(2)));
+		//Ajout à la liste des signalements du média
+		util.getSignalementsMedias().add(sm);
+		
+		//Sauvegarde de l'ajout
 		daoUtilisateur.sauvegarder(util);
+		
+		//Affichage de la notification
+		FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Signalement du média", "Votre rapport a été pris en compte.")); //TODO ne plus afficher ce message lorsque l'on revient sur la pop-up
 		
 		return "signalerMedia";
 	}
@@ -442,12 +461,14 @@ public class BeanMedia {
 	 * @return
 	 */
 	public void handleRate(RateEvent rateEvent) {
+		//Récupération de la note assignée
 		note = ((Double) rateEvent.getRating()).intValue();
 		
+        vote();        
+
+        //Affichage de la notification
         message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Notation", "Votre note : " + note);  
         FacesContext.getCurrentInstance().addMessage(null, message);
-        
-        vote();
     }
 	
 	/** 
@@ -456,10 +477,14 @@ public class BeanMedia {
 	 */
 	public String vote() {
 		System.out.println("Méthode vote");
-		System.out.println("Note : " + note);
-		System.out.println("Média : " + mediaVisualise);
 		
-		util.getNoteMedias().add(new Note((int) note, daoMedia.getUn(2))); //media_idMedia + interdire de noter plusieurs fois TODO
+		//Création de la note assignée au média
+		Note n = new Note((int) note, daoMedia.getUn(2));
+		
+		//Ajout à la liste des notes
+		util.getNoteMedias().add(n); //media_idMedia + interdire de noter plusieurs fois TODO
+		
+		//Sauvegarde de l'ajout
 		daoUtilisateur.sauvegarder(util);
 				
 		return "vote";
@@ -487,7 +512,14 @@ public class BeanMedia {
 		
 		if(!existeRegMedia) { //il crée un objet Regarder correspond au média visualisé
 		*/	//System.out.println("Incrémentation (n'existe pas)");
-			util.getRegardeMedias().add(new Regarder(daoMedia.getUn(2)));
+		
+			//Création de l'objet Regarder
+			Regarder r = new Regarder(daoMedia.getUn(2));
+			
+			//Ajout à la liste des médias regardés
+			util.getRegardeMedias().add(r);
+			
+			//Enregistrement de l'ajout
 			daoUtilisateur.sauvegarder(util);
 		/*}*/
 		
@@ -499,21 +531,23 @@ public class BeanMedia {
 	 * @return
 	 */
 	public String ajouterAFavori() {
+		//Récupération des playlists appartenant à l'utilisateur connecté
 		playlistsUtilisateur = daoUtilisateur.getUn(1).getPlaylists();
 		
+		//Ajout au favori
 		if(txtFavori == "Favori")
 		{
 			//System.out.println("Ajout au favori");			
 
-			context.addMessage(null, new FacesMessage("Favori", "Ajoutée à Favoris"));
-			
 			plFavoris = new Playlist();
 			
 			boolean possedeFavori = false;
+			//Parcours de la liste des playlists de l'utilisateur connecté
 			for(Playlist pl : playlistsUtilisateur) {
 				//System.out.println("nom playlist : " + pl.getNomPlaylist());
-				//vérification si l'utilisateur possède déjà une playlist ayant pour type "Favoris"
 				//System.out.println(pl.getType() + " * " + daoTypePlaylist.getUn(2));
+
+				//Vérification si l'utilisateur possède déjà une playlist ayant pour type "Favoris"
 				if(pl.getType().equals(daoTypePlaylist.getUn(2))) { //daoTypePlaylist.getUn(2) <=> favoris
 					possedeFavori = true;
 					plFavoris = pl;
@@ -521,30 +555,46 @@ public class BeanMedia {
 				}
 			}
 			
-			if(!possedeFavori) { //si la playlist de type Favori n'existe pas
-				//création d'une playlist de type Favoris pour l'utilisateur connecté
+			if(!possedeFavori) { //Si la playlist de type Favori n'existe pas
+				//Création d'une playlist de type Favoris pour l'utilisateur connecté
 				plFavoris = new Playlist("Mes favoris2","Favoris","Description",daoTypePlaylist.typeFavoris(),daoVisibilite.typeVisible());
-				//daoPlaylist.sauvegarder(plFavoris);
+
+				//Ajout de la playlist de type Favoris à la liste des playlists de l'utilisateur connecté
 				daoUtilisateur.getUn(1).getPlaylists().add(plFavoris);
+				
+				//Enregistrement de l'ajout
 				daoUtilisateur.sauvegarder(daoUtilisateur.getUn(1));
 			}
 			
-			plFavoris.getMedias().add(daoMedia.getUn(2)); //ajout du média visualisé à la playlist de type Favori de l'utilisateur
+			//Ajout du média visualisé à la playlist de type Favoris de l'utilisateur
+			plFavoris.getMedias().add(daoMedia.getUn(2));
+			
+			//Sauvegarde de l'ajout
 			daoPlaylist.sauvegarder(plFavoris);
 			
+			//Modification du texte affiché sur la vue
 			txtFavori = "Retirer des favoris";
+
+			//Affichage de la notification
+			context.addMessage(null, new FacesMessage("Favori", "Ajoutée à Favoris"));			
 		}
-		else {
+		else { //Retrait au favori
 			//System.out.println("Retrait au favori");
 			
-			context.addMessage(null, new FacesMessage("Favori", "Retirée à Favoris"));
-			
+			//Parcours de la liste des playlists de l'utilisateur connecté
 			for(Playlist pl : playlistsUtilisateur) {
-				if(pl.getType().equals(daoTypePlaylist.getUn(2))) { //possède déjà une playlist de type Favori
-					pl.getMedias().remove(daoMedia.getUn(2)); //suppression du média visualisé de la liste des favoris
+				//Si possède déjà une playlist de type Favori
+				if(pl.getType().equals(daoTypePlaylist.getUn(2))) {
+					//Suppression du média visualisé de la liste des favoris
+					pl.getMedias().remove(daoMedia.getUn(2));
+					
+					//Enregistrement de la suppression
 					daoPlaylist.sauvegarder(pl);
 				}
 			}
+			
+			//Affichage de la notification
+			context.addMessage(null, new FacesMessage("Favori", "Retirée à Favoris"));
 		}
 		
 		return "ajouterAFavori";
@@ -557,28 +607,43 @@ public class BeanMedia {
 	public String ajouterMediaAPlaylist() {
 		System.out.println("ajouterMediaAPlaylist");
 		
+		//Récupération de la liste des playlists de l'utilisateur connecté
 		setPlaylistUt = util.getPlaylists();
+		
+		//Si la playlist ne contient pas le média
 		if(!estAjouteAPlaylist) {
-			System.out.println("Ajouter une vidéo à une playlist");
+			System.out.println("Ajouter un média à une playlist");
+			
+			//Parcours de la liste des playlists de l'utilisateur
 			for(Playlist playlistUt : setPlaylistUt) {
-				//System.out.println(FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("idPlaylist"));
+				//Si la playlist courante parcourue correspond à la playlist à traiter
 				if(playlistUt.getIdPlaylist() == Long.parseLong(FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("idPlaylist"))) {
+					//Ajout du média à la liste des playlists de l'utilisateur
 					playlistUt.getMedias().add(daoMedia.getUn(2));
+					
+					//Enregistrement de l'ajout
 					daoPlaylist.sauvegarder(playlistUt);
 					break;
 				}
 			}
 		}
-		else { //retirer
-			System.out.println("Retirer une vidéo à une playlist");
+		else { //Retrait d'un média à une playlist
+			System.out.println("Retirer un média à une playlist");
+			
+			//Parcours de la liste des playlists de l'utilisateur
 			for(Playlist playlistUt : setPlaylistUt) {
+				//Si la playlist courante parcourue correspond à la playlist à traiter
 				if(playlistUt.getIdPlaylist() == Long.parseLong(FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("idPlaylist"))) {
+					//Suppression du média à la liste des playlists de l'utilisateur
 					playlistUt.getMedias().remove(daoMedia.getUn(2));
+					
+					//Enregistrement de la suppression
 					daoPlaylist.sauvegarder(playlistUt);
 					break;
 				}
 			}
 
+			//Changement de l'image affichée sur la vue
 			imgAjoutPlaylist = "accepter-check-ok-oui-icone-4851-16.png"; //TODO
 		}
 		
@@ -591,18 +656,26 @@ public class BeanMedia {
 	 */
 	public String creerPlaylist() { //TODO à tester
 		System.out.println("Création d'une playlist");
-		//défaut privée TODO
 		
+		//Création de la nouvelle playlist
 		nvlPlaylist = new Playlist(nomPlaylistACreer, descriptionPlaylistACreer, "", daoTypePlaylist.typeAutre(), daoVisibilite.typeVisible()); //visibilité TODO
 		
+		//Si l'utilisateur ne possède pas déjà cette nouvelle playlist
 		if(!daoUtilisateur.getUn(1).getPlaylists().contains(nvlPlaylist)) {
+			//Ajout de la nouvelle playlist à la liste des playlists de l'utilisateur
 			daoUtilisateur.getUn(1).getPlaylists().add(nvlPlaylist);
+			
+			//Sauvegarde de l'ajout
 			daoUtilisateur.sauvegarder(daoUtilisateur.getUn(1));
+			
+			//Affichage de la notification
 			FacesContext.getCurrentInstance().addMessage(null,
-	                new FacesMessage(FacesMessage.SEVERITY_INFO, "Mission accomplie !", "Ce média a été ajouté à votre playlist: ..."));
+	                new FacesMessage("Mission accomplie !", "Ce média a été ajouté à votre playlist: ..."));
 		}
-		else { //playlist déjà existante
-			message = new FacesMessage("La playlist existe déjà");
+		else { //Si la playlist est déjà existante
+			
+			//Affichage de la notification
+			message = new FacesMessage("Attention ! La playlist existe déjà");
 			message.setSeverity(FacesMessage.SEVERITY_ERROR);
 			FacesContext.getCurrentInstance().addMessage(
 					"...", message);
@@ -612,41 +685,62 @@ public class BeanMedia {
 	}
 
 	/** 
-	 * Génération du graphique du nombre de vues du média
+	 * Génération du graphique du nombre de vues du média (ligne)
 	 * @return
 	 */
 	private void creerGraphiqueStatVues() {
-		graphiqueStatVues = new CartesianChartModel();  
+		//Création du graphique
+		graphiqueStatVues = new CartesianChartModel();
 
-		graphiqueVues = new ChartSeries();  
+		//Création de la série du graphique
+		graphiqueVues = new ChartSeries();
+		//Affectation du label associé à la série
 		graphiqueVues.setLabel("Vues totales");
 
+		//Récupération des données nécessaires à la génération du graphique (requête HQL)
         Query resultatStatVues = daoMedia.statVues(daoMedia.getUn(2));
-        //suivant heure et mois TODO
+        //suivant heure et mois XXX
+        
+        //Parcours du SELECT de la requête HQL
         for(Iterator<?> it = resultatStatVues.iterate();it.hasNext();) {
         	Object[] row = (Object[]) it.next();
         
+        	//Mise en place des données pour la génération du graphique (date en abscisse et nombre de vues en ordonnée)
         	graphiqueVues.set(row[0], Integer.parseInt(row[1].toString()));
         }
         
+        //Mise en place de l'échelle des ordonnées (requête HQL)
         maxY = daoMedia.totalVues(daoMedia.getUn(2));
 
+        //Ajout de la série créée au graphique
 		graphiqueStatVues.addSeries(graphiqueVues);
 	}
 	
-	private void creerGraphiqueAimeNAimePas() {  
+	/** 
+	 * Génération du graphique du nombre de J'aime / Je n'aime pas (histogramme horizontal)
+	 * @return
+	 */
+	private void creerGraphiqueAimeNAimePas() {
+		//Création du graphique
 		graphiqueAimeNAimePas = new CartesianChartModel();  
   
+		//Création de la série 1 du graphique
         ChartSeries utilisateursAyantAime = new ChartSeries();  
+        //Affectation du label associé à la série 1
         utilisateursAyantAime.setLabel("Utilisateurs ayant aimé");  
   
-        utilisateursAyantAime.set("1", resultatNbAime);
+        //Mise en place des données pour la génération de la série 1 du graphique
+    	utilisateursAyantAime.set("1", resultatNbAime);
   
-        ChartSeries utilisateursNAyantPasAime = new ChartSeries();  
+    	//Création de la série 2 du graphique
+        ChartSeries utilisateursNAyantPasAime = new ChartSeries();
+        //Affectation du label associé à la série 2
         utilisateursNAyantPasAime.setLabel("Utilisateurs n'ayant pas aimé");  
   
+        //Mise en place des données pour la génération de la série 1 du graphique
         utilisateursNAyantPasAime.set("2", resultatNbNAimePas);
   
+        //Ajout des 2 séries au graphique
         graphiqueAimeNAimePas.addSeries(utilisateursAyantAime);  
         graphiqueAimeNAimePas.addSeries(utilisateursNAyantPasAime);  
     }
@@ -658,6 +752,7 @@ public class BeanMedia {
 	public String alimenterCarouselRecommendationMedias() {
 		//System.out.println("alimenterCarouselRecommendationMedias");
 		
+		//Récupération des médias recommendés ayant le même artiste que le média visualisé (requête HQL)
 		carouselRecommendationMedias = daoMedia.recommendationMediasSuivantMediaVisualise(daoMedia.getUn(2));
 		
 		return "alimenterCarouselRecommendationMedias";
@@ -676,15 +771,17 @@ public class BeanMedia {
 		//Object contentValue = (Content) input.getValue();
 		//System.out.println("Value : "+contentValue);
 		//Object value = ((UIInput) e.getSource()).getSubmittedValue();
+		//Récupération de la valeur du checkbox (pour savoir s'il a été coché ou pas)
 		check = (HtmlSelectBooleanCheckbox)e.getSource();
 		Object checkvar = check.getValue();
 		System.out.println("Value : " + checkvar); //false true TODO
 		
+		//Si ce n'est pas coché
 	    if(! Boolean.parseBoolean(checkvar.toString()))	{
-			codeIntegration = "<object width='" + largeur + "' height='" + hauteur + "'><param name='movie' value='" + url + "'></param><param name='allowFullScreen' value='true'></param><param name='allowscriptaccess' value='always'></param><embed src='http://www.youtube.com/v/ZQ2nCGawrSY?version=3&amp;hl=fr_FR' type='application/x-shockwave-flash' width='" + largeur + "' height='" + hauteur + "' allowscriptaccess='always' allowfullscreen='true'></embed></object>";	
-		}
-		else { //!
 			codeIntegration = "<iframe width='" + largeur + "' height='" + hauteur + "' src='" + url + "' frameborder='0' allowfullscreen></iframe>";
+		}
+		else { //Si c'est coché (Utiliser l'ancien code d'intégration)
+			codeIntegration = "<object width='" + largeur + "' height='" + hauteur + "'><param name='movie' value='" + url + "'></param><param name='allowFullScreen' value='true'></param><param name='allowscriptaccess' value='always'></param><embed src='http://www.youtube.com/v/ZQ2nCGawrSY?version=3&amp;hl=fr_FR' type='application/x-shockwave-flash' width='" + largeur + "' height='" + hauteur + "' allowscriptaccess='always' allowfullscreen='true'></embed></object>";	
 		}
 	}
 	
@@ -695,14 +792,17 @@ public class BeanMedia {
 	public void changerTailleLecteur(AjaxBehaviorEvent e) {
 		System.out.println("changerTailleLecteur");
 		
+		//Si choix d'un lecteur petit coché
 		if(tailleLecteur.equals("petit")) { //TODO tailleLecteur
-        	largeur = 320;
-        	hauteur = 180;
+        	largeur = 320; //changement de la largeur (code d'intégration)
+        	hauteur = 180; //changement de la hauteur (code d'intégration)
         }
+		//Si choix d'un lecteur moyen coché
         else if(tailleLecteur.equals("moyen")) {
         	largeur = 480;
         	hauteur = 270;
         }
+		//Si choix d'un lecteur grand coché
         else if(tailleLecteur.equals("grand")) {
         	largeur = 560;
         	hauteur = 315;
@@ -720,19 +820,19 @@ public class BeanMedia {
 	public String ajouterAuPanier() {
 		System.out.println("ajouterAuPanier");
 		
-		context.addMessage(null, new FacesMessage("Notification", detailNotifyAjoutAuPanier));
-        
-		//mediaDansPanier.add(daoMedia.getUn(2));
+		//Si le média est déjà ajouté au panier
 		if(beanConnexion.getMediaDansPanier().contains(daoMedia.getUn(2))) {
 			detailNotifyAjoutAuPanier = "Le média " + daoMedia.getUn(2).getTitreMedia() + " a déjà été ajouté au panier.";
 		}
+		//Si le média n'est pas encore ajouté au panier
 		else {
 			beanConnexion.getMediaDansPanier().add(daoMedia.getUn(2));
-			detailNotifyAjoutAuPanier = "Le média " + daoMedia.getUn(2).getTitreMedia() + " a été ajouté au panier avec succès !";
+			detailNotifyAjoutAuPanier = "Le média " + daoMedia.getUn(2).getTitreMedia() + " a été ajouté au panier";
 		}
-		
-		//déjà ajouté
-		
+
+		//Affichage de la notification
+		context.addMessage(null, new FacesMessage("Notification", detailNotifyAjoutAuPanier));
+        
 		return "ajouterAuPanier";
 	}
 	
@@ -743,6 +843,7 @@ public class BeanMedia {
 	public String decrementerNbCaracteresRestants() {
 		System.out.println("decrementerNbCaracteresRestants");
 		
+		//Décrémentation du nombre de caractères restants pour la saisie du commentaire
 		nbCaracteresRestants--;
 		
 		return "decrementerNbCaracteresRestants";
@@ -757,8 +858,13 @@ public class BeanMedia {
 		System.out.println("publierCommentaire");
 		System.out.println("commentaire saisi : " + commentaireSaisi);
 		
+		//Création du commentaire
 		Commentaire c = new Commentaire(commentaireSaisi,util);
+		
+		//Ajout du commentaire à la liste de commentaires du média
 		daoMedia.getUn(2).getCommentaires().add(c); //mediaVisualise. TODO
+		
+		//Enregistrement de l'ajout
 		daoMedia.sauvegarder(daoMedia.getUn(2));
 		
 		/*if(commentaires == null)
@@ -766,8 +872,8 @@ public class BeanMedia {
 			System.out.println("c'est la liste de commentaires qui pose problème (null)");
 		}*/
 		
+		//Rechargement de la liste de commentaires
 		//commentaires.add(c);
-		//rechargement de la liste
 		chargerCommentaires();
 		
 		return "publierCommentaire";
@@ -780,7 +886,7 @@ public class BeanMedia {
 	public void chargerCommentaires() {
 		//System.out.println("chargerCommentaires");
 		
-		// On charge les liste des commentaires
+		//Chargement de la liste des commentaires associé au média
 		listeCommentaires = daoMedia.getCommentaires(daoMedia.getUn(2));
 	}
 	
@@ -790,10 +896,14 @@ public class BeanMedia {
 	 */
 	public String chargerReponses() {
 		//System.out.println("chargerReponses");
-				
+		
+		//Récupération de la liste des commentaires réponse du média
 		resultatReponses = daoMedia.getReponses(daoMedia.getUn(2));
+		
+		//Création de la HashMap avec en clé le commentaire père et en valeur la liste des commentaires fils
 		hmReponses = new HashMap<Commentaire, ArrayList<Commentaire>>();
 		
+		//Remplissage de la HashMap ...
 		pere = null;
 		lstFils = new ArrayList<Commentaire>();
 		Commentaire tmp = null;
@@ -816,8 +926,6 @@ public class BeanMedia {
         if (tmp != null && lstFils != null) {
         	hmReponses.put(tmp, lstFils);
         }
-        
-
     	
     	/*Set cles = hmReponses.keySet();
     	Iterator itHm = cles.iterator();
@@ -832,6 +940,7 @@ public class BeanMedia {
 	}
 	
 	public ArrayList<Commentaire> mapValue(Commentaire c) {
+		//Récupération des commentaires fils associé au commentaire passé en paramètre
 		return hmReponses.get(c);
 	}
 	
@@ -842,13 +951,23 @@ public class BeanMedia {
 	public String supprimerCommentaire() {
 		System.out.println("supprimerCommentaire");
 		
-		context.addMessage(null, new FacesMessage("Suppression du commentaire", "Le commentaire a été supprimé"));
+		// Si celui qui tente de supprimer un commentaire est l'utilisateur connecté
+		//if (commSelectionne.getAuteur() == utilisateurConnecte) { //TODO
+			//Suppression du commentaire traité de la liste des commentaires du média
+			daoMedia.getUn(2).getCommentaires().remove(daoCommentaire.getUn(Long.parseLong(FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("idCommentaire"))));
+			
+			//Enregistrement de la modification
+			daoMedia.sauvegarder(daoMedia.getUn(2));
+			
+			//Affichage de la notification
+			context.addMessage(null, new FacesMessage("Suppression du commentaire", "Le commentaire a été supprimé"));
+		//}
 		
-		daoMedia.getUn(2).getCommentaires().remove(daoCommentaire.getUn(Long.parseLong(FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("idCommentaire"))));
+		//Rafraîchissement des listes
+		chargerCommentaires();
+		chargerReponses();
 		
-		daoMedia.sauvegarder(daoMedia.getUn(2));
-		
-		//rafraîchir TODO
+		//update + 2 min TODO
 		
 		return "supprimerCommentaire";
 	}
@@ -860,6 +979,18 @@ public class BeanMedia {
 	public String repondreCommentaire() {
 		System.out.println("repondreCommentaire");
 		
+		// Création d'une nouvelle réponse
+		Commentaire c = new Commentaire(reponseSaisie,util);
+		
+		// Ajout aux réponses du commentaire père
+		daoCommentaire.getUn(2).getCommentairesFils().add(c); //TODO bon commentaire
+		
+		// Sauvegarde de l'ajout
+		daoCommentaire.sauvegarder(daoCommentaire.getUn(2));
+		
+		// Rechargement de la liste de réponses
+		chargerReponses();
+		
 		return "repondreCommentaire";
 	}
 	
@@ -870,19 +1001,24 @@ public class BeanMedia {
 	public String signalerCommentaire() {
 		System.out.println("signalerCommentaire");
 		
+		//interdiction de signaler soi-même
+		//if (commentaireSelectionne.getAuteur() != utilisateurConnecte) {
+			//Création du signalement
+			Signalement_Commentaire sc = new Signalement_Commentaire(raisonCommentaire, daoCommentaire.getUn(2)); //TODOO bon commentaire signalé
+		
+			//Ajout du signalement aux signalements du commentaire existants
+			util.getSignalementsCommentaires().add(sc);
+			
+			//Sauvegarde de l'ajout
+			daoUtilisateur.sauvegarder(util);
+			// TODO => update (car suppression)
+			
+			//Rechargement des listes
+			chargerCommentaires();
+			chargerReponses();
+		//}
 		
 		return "signalerCommentaire";
-	}
-	
-	/** 
-	 * Vote pour un commentaire
-	 * @return
-	 */
-	public String voterPourCommentaire() {
-		System.out.println("voterPour");
-		
-		
-		return "voterPour";
 	}
 
 	/** 
@@ -905,44 +1041,39 @@ public class BeanMedia {
 	}
 
 	/** 
-	 * Téléchargement du média visualisé (redirection)
-	 * @return
-	 */
-	public String telechargerMedia() {
-		try {
-			FacesContext.getCurrentInstance().getExternalContext().redirect("/resources/#{beanMedia.nomTypeMedia}s/#{beanMedia.titreMedia}.mp3");
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		
-		return "telechargerMedia";
-	}
-
-	/** 
 	 * Algorithme des suggestions de média
 	 * @return
 	 */
 	public void algorithmeSuggestions() {
-		tagMedia = mediaVisualise.getTags(); //tags du média visualisé
+		//Récupération de la liste de tags associés au média
+		tagMedia = mediaVisualise.getTags();
 		
+		//Récupération de tous les médias
 		listeTousMedia = daoMedia.getTous();
 		
-		mapOccurrenceTags = new HashMap<Media, Integer>(); //HashMap contenant le nb d'occurrences de tags correspondants dans les médias
+		//Création d'une HashMap contenant le nb d'occurrences de tags correspondants dans les médias
+		mapOccurrenceTags = new HashMap<Media, Integer>();
 		
 		iteratorMedia = tagMedia.iterator();
-		while(iteratorMedia.hasNext()) { //parcours des tags du média visualisé
+		//Parcours des tags du média visualisé
+		while(iteratorMedia.hasNext()) { 
 			//System.out.println("Set tagMedia : " + i.next());
 			tagMediaCourant = iteratorMedia.next();
-			for(Media elMedia : listeTousMedia) { //parcours de tous les médias
-				if(! elMedia.equals(mediaVisualise)) {//tout sauf le média actuellement visualisé
+			
+			//Parcours de tous les médias
+			for(Media elMedia : listeTousMedia) {
+				if(! elMedia.equals(mediaVisualise)) { //tout sauf le média actuellement visualisé
 					setTagMediaCourant = daoMedia.getUn(elMedia.getIdMedia()).getTags();
-					for(Tag tagMediaCourant : setTagMediaCourant) {
-						//System.out.println(svg + "***" + tagMediaCourant + " (" + elMedia.getIdMedia() + ")");
-						if(tagMediaCourant.toString().equals(tagMediaCourant.toString())) {
+					
+					//Parcours des tags associés au média
+					for(Tag tagMediaCourantAutreMedia : setTagMediaCourant) {
+						if(tagMediaCourant.toString().equals(tagMediaCourantAutreMedia.toString())) {
 							if(mapOccurrenceTags.containsKey(elMedia)) {
+								//Incrémentation de l'occurrence de tags du média courant
 								mapOccurrenceTags.put(elMedia, mapOccurrenceTags.get(elMedia) + 1); //tag correspond supplémentaire
 							}
 							else {
+								//Association de 1 au média courant pour la HashMap (la clé n'existe pas encore)
 								mapOccurrenceTags.put(elMedia, 1);
 							}
 						}
@@ -960,12 +1091,17 @@ public class BeanMedia {
 		   System.out.println(cle + " => " + valeur);
 		}*/
 		
+		//Création d'une liste de clés
 		listeMediasSuggeres = new ArrayList<Media>(mapOccurrenceTags.keySet());
 		//System.out.println("size listeMediasSuggeres : " + listeMediasSuggeres.size());
+		
+		//Limitation à 20 médias suggérés
 		if(listeMediasSuggeres.size() < 20) {
+			//Extraction des premiers éléments de la liste des médias suggérés
 			listeMediasSuggeres = listeMediasSuggeres.subList(0, listeMediasSuggeres.size());
 		}
 		else {
+			//Extraiter des 20 premiers médias suggérés
 			listeMediasSuggeres = listeMediasSuggeres.subList(0, 20);
 		}
 		//suggestion en tenant compte du titre et catégories XXX
@@ -1024,12 +1160,12 @@ public class BeanMedia {
 		this.description = description;
 	}	
 	
-	public String getRaison() {
-		return raison;
+	public String getRaisonMedia() {
+		return raisonMedia;
 	}
 	
-	public void setRaison(String raison) {
-		this.raison = raison;
+	public void setRaisonMedia(String raisonMedia) {
+		this.raisonMedia = raisonMedia;
 	}
 	
 	public String getMotVues() {
@@ -1296,14 +1432,6 @@ public class BeanMedia {
 			List<?> carouselRecommendationMedias) {
 		this.carouselRecommendationMedias = carouselRecommendationMedias;
 	}
-
-	public String getEstNotifieJAime() {
-		return estNotifieJAime;
-	}
-	
-	public void setEstNotifieJAime(String estNotifieJAime) {
-		this.estNotifieJAime = estNotifieJAime;
-	}
 	
 	public String getDetailNotificationJAime() {
 		return detailNotificationJAime;
@@ -1382,6 +1510,23 @@ public class BeanMedia {
         return tagCloud;  
     }
 	
+	public String getRaisonCommentaire() {
+		return raisonCommentaire;
+	}
+
+	public void setRaisonCommentaire(String raisonCommentaire) {
+		this.raisonCommentaire = raisonCommentaire;
+	}
+
+	public String getReponseSaisie() {
+		return reponseSaisie;
+	}
+
+	public void setReponseSaisie(String reponseSaisie) {
+		this.reponseSaisie = reponseSaisie;
+	}
+
+
 	public StreamedContent getFile() {  
         return file;  
     }
