@@ -14,22 +14,7 @@
 	<managed-bean>
 		<managed-bean-name>beanInscription</managed-bean-name>
 		<managed-bean-class>BeanInscription</managed-bean-class>
-		<managed-bean-scope>request</managed-bean-scope>
-		<managed-property>
-			<property-name>adrMail</property-name>
-			<property-class>java.lang.String</property-class>
-			<value></value>
-		</managed-property>
-		<managed-property>
-			<property-name>confirm</property-name>
-			<property-class>java.lang.String</property-class>
-			<value></value>
-		</managed-property>
-		<managed-property>
-			<property-name>password</property-name>
-			<property-class>java.lang.String</property-class>
-			<value></value>
-		</managed-property>
+		<managed-bean-scope>session</managed-bean-scope>
 	</managed-bean>
 	
 	
@@ -66,18 +51,33 @@
 		</managed-property>
 	</managed-bean>
 	<managed-bean>
-		<managed-bean-name>beanSuiteInscription</managed-bean-name>
-		<managed-bean-class>BeanSuiteInscription</managed-bean-class>
-		<managed-bean-scope>session</managed-bean-scope>
-		<managed-property>
-			<property-name>numAvatar</property-name>
-			<property-class>java.lang.String</property-class>
-			<value></value>
-		</managed-property>
-	</managed-bean>
-	<managed-bean>
 		<managed-bean-name>beanProfil</managed-bean-name>
 		<managed-bean-class>BeanProfil</managed-bean-class>
+		<managed-bean-scope>session</managed-bean-scope>
+	</managed-bean>
+	<managed-bean>
+		<managed-bean-name>beanRecuperationMDP</managed-bean-name>
+		<managed-bean-class>BeanRecuperationMDP</managed-bean-class>
+		<managed-bean-scope>request</managed-bean-scope>
+	</managed-bean>
+	<managed-bean>
+		<managed-bean-name>beanGestionPlaylist</managed-bean-name>
+		<managed-bean-class>BeanGestionPlaylist</managed-bean-class>
+		<managed-bean-scope>session</managed-bean-scope>
+	</managed-bean>
+	<managed-bean>
+		<managed-bean-name>beanGestionUtilisateursAdmin</managed-bean-name>
+		<managed-bean-class>BeanGestionUtilisateursAdmin</managed-bean-class>
+		<managed-bean-scope>session</managed-bean-scope>
+	</managed-bean>
+	<managed-bean>
+		<managed-bean-name>beanGestionMediasAdmin</managed-bean-name>
+		<managed-bean-class>BeanGestionMediasAdmin</managed-bean-class>
+		<managed-bean-scope>session</managed-bean-scope>
+	</managed-bean>
+	<managed-bean>
+		<managed-bean-name>beanGestionSignalementsAdmin</managed-bean-name>
+		<managed-bean-class>BeanGestionSignalementsAdmin</managed-bean-class>
 		<managed-bean-scope>session</managed-bean-scope>
 	</managed-bean>
 	<managed-bean>
@@ -103,36 +103,12 @@
 			<to-view-id>/pages/home.xhtml</to-view-id>
 			<redirect/>
 		</navigation-case>
+	</navigation-rule>
+	<navigation-rule>
+		<from-view-id>/*</from-view-id>
 		<navigation-case>
 			<from-outcome>isNotConnected</from-outcome>
-			<to-view-id>/pages/monCompte.xhtml</to-view-id>
-		</navigation-case>
-	</navigation-rule>
-	<navigation-rule>
-		<from-view-id>/pages/monCompte.xhtml</from-view-id>
-		<navigation-case>
-			<from-outcome>isCreated</from-outcome>
-			<to-view-id>/pages/suiteInscription.xhtml</to-view-id>
-			<redirect/>
-		</navigation-case>
-		<navigation-case>
-			<from-outcome>isNotCreated</from-outcome>
-			<to-view-id>/pages/monCompte.xhtml</to-view-id>
-		</navigation-case>
-	</navigation-rule>
-	<navigation-rule>
-		<from-view-id>/pages/suiteInscription.xhtml</from-view-id>
-		<navigation-case>
-			<from-outcome>isUpdated</from-outcome>
-			<to-view-id>/pages/profil.xhtml</to-view-id>
-			<redirect/>
-		</navigation-case>
-	</navigation-rule>
-	<navigation-rule>
-		<from-view-id>/pages/profil.xhtml</from-view-id>
-		<navigation-case>
-			<from-outcome>update</from-outcome>
-			<to-view-id>/pages/suiteInscription.xhtml</to-view-id>
+			<to-view-id>/pages/home.xhtml</to-view-id>
 			<redirect/>
 		</navigation-case>
 	</navigation-rule>

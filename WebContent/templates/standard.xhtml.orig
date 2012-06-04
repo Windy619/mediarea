@@ -24,7 +24,6 @@
 	<h:outputScript library="js" name="leanbackPlayer.de.js" />
 	<h:outputScript library="js" name="LBPoption.js" />
 
-	<script type="text/javascript" src="https://apis.google.com/js/plusone.js"></script>
 	<h:outputScript library="js" name="redirection.js" />
 </h:head>
 
@@ -45,7 +44,6 @@
 
 
 	<div id="container">
-			
 		<header>
 			<!--logo-->
 			<a href="home.jsf" id="logo"><h:graphicImage library="images"

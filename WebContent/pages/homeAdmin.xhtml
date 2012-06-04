@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:a4j="http://richfaces.org/a4j"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+<ui:composition template="/templates/standard.xhtml">
+	<ui:define name="pageTitle">Administration du site</ui:define>
+	<ui:define name="content">
+		<section class="group3">
+			<h3>Administration du site</h3>
+			<br/>
+
+			<h:outputLink
+				onclick="document.location.href='gestionUtilisateursAdmin.jsf'"
+				value="gestionUtilisateursAdmin.jsf">
+				<h:outputText value="Gestion des utilisateurs" />
+			</h:outputLink>
+			<br/>
+			<h:outputLink
+				onclick="document.location.href='gestionMediasAdmin.jsf'"
+				value="gestionMediasAdmin.jsf">
+				<h:outputText value="Gestion des medias" />
+			</h:outputLink>
+			<br/>
+			<h:outputLink
+				onclick="document.location.href='gestionSignalementsAdmin.jsf'"
+				value="gestionSignalementsAdmin.jsf">
+				<h:outputText value="Gestion des signalements" />
+			</h:outputLink>
+		</section>
+	</ui:define>
+</ui:composition>
+</html>
