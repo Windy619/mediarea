@@ -75,6 +75,11 @@ public class Playlist {
 		medias = new HashSet<Media>();
 	}
 	
+	public Playlist(String nomPlaylist,String descriptionPlaylist) {
+		this.descriptionPlaylist = descriptionPlaylist;
+		this.nomPlaylist = nomPlaylist;
+	}
+	
 	/**
 	 * Suppression de l'instance
 	 */
@@ -156,6 +161,8 @@ public class Playlist {
 		this.medias = medias;
 	}
 	
-	
+	public String toString(){
+		return ("P"+String.valueOf(idPlaylist));
+	}
 
 }

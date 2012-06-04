@@ -3,9 +3,9 @@ import java.util.List;
 
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
+import javax.servlet.http.HttpSession;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
-
 import metier.media.Media;
 import metier.utilisateur.Utilisateur;
 import dao.utilisateur.DaoUtilisateur;
@@ -35,13 +35,11 @@ public class BeanConnexion {
 	}
 
 	public String getIsAccountOk() {
-		if (identifiant == null) {
-		} else {
+		if (identifiant != null){
 			Utilisateur user = daoUtilisateur.rechercheSurAdrMail(identifiant);
 			if (user == null) {
 				connected = "isNotConnected";
 				isConnected = false;
-				System.out.println("=================DEDANS++++++++++++++++++++++");
 				message = new FacesMessage("Adresse mail inconnu");
 				message.setSeverity(FacesMessage.SEVERITY_ERROR);
 				FacesContext.getCurrentInstance().addMessage(
@@ -77,6 +75,8 @@ public class BeanConnexion {
 		connected = "isNotConnected";
 		isConnected = false;
 		User = null;
+		HttpSession session = (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(false);
+		session.invalidate();
 		return connected;
 	}
 

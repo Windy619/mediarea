@@ -6,6 +6,7 @@ import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
@@ -48,22 +49,22 @@ public class Media {
 	
 	private String titreMedia;
 	
-	@ManyToOne(cascade = {CascadeType.ALL})
+	@ManyToOne
 	private Utilisateur auteurMedia;
 	
-	@ManyToOne(cascade = {CascadeType.ALL})
+	@ManyToOne
 	private Visibilite visibilite;
 	
 	@ManyToOne(cascade = {CascadeType.ALL})
 	private Photo_Couverture photo;
 	
-	@ManyToOne(cascade = {CascadeType.ALL})
+	@ManyToOne
 	private Fichier fichier;	
 	
 	@ManyToOne(cascade = {CascadeType.ALL})
 	private Type_Media type;	
 	
-	@OneToMany(cascade = {CascadeType.ALL})
+	@OneToMany
 	private Set<Categorie_Media> categories;
 	
 	@OneToMany(cascade = {CascadeType.ALL})
@@ -79,6 +80,17 @@ public class Media {
 		categories = new HashSet<Categorie_Media>();
 		tags = new HashSet<Tag>();
 		commentaires = new HashSet<Commentaire>();
+	}
+	
+	public Media(String titreMedia, String descriptionMedia) {
+        this.titreMedia = titreMedia;
+        this.descriptionMedia = descriptionMedia;
+	}
+	
+	public Media(String titreMedia, String descriptionMedia, Type_Media type) {
+        this.titreMedia = titreMedia;
+        this.descriptionMedia = descriptionMedia;
+        this.type = type;
 	}
 	
 	/**
@@ -228,6 +240,9 @@ public class Media {
 	public void setCommentaires(Set<Commentaire> commentaires) {
 		this.commentaires = commentaires;
 	}
+	
+	public String toString(){
+		return ("M"+String.valueOf(idMedia));
 
 	public Fichier getFichier() {
 		return fichier;

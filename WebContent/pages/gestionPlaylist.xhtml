@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:a4j="http://richfaces.org/a4j"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+<ui:composition template="/templates/standard.xhtml">
+	<ui:define name="pageTitle">Profil</ui:define>
+	<ui:define name="content">
+		<section class="group3">
+			<h3>Mes Playlists</h3>
+			<h:outputText value="Mise en forme : " />
+			<h:outputText style="font-weight:bold;color:#ffa741;" value="Playlists Visible" />
+			<h:outputText value=" - " />
+			<h:outputText style="font-weight:bold;color:#534741;" value="Playlists non Visible" />
+			<h:outputText value=" - " />
+			<h:outputText style="font-style:italic;" value="Media" />
+			<br /> <br />
+			<h:form id="form">
+				<p:tree id="media" value="#{beanGestionPlaylist.root}" var="node"
+					selectionMode="single" style="width:90%;"
+					selection="#{beanGestionPlaylist.selectedNode}">
+					<p:treeNode>
+						<h:outputText rendered="#{beanGestionPlaylist.evaluatePlaylist(node) and node.getVisibilite().getIdVisibilite()==1}"
+							style="font-weight:bold;color:#ffa741;" value="#{node.nomPlaylist}" />
+							
+						<h:outputText rendered="#{beanGestionPlaylist.evaluatePlaylist(node) and node.getVisibilite().getIdVisibilite()==2}"
+							style="font-weight:bold;color:#534741;" value="#{node.nomPlaylist}" />
+							
+						<h:outputText rendered="#{beanGestionPlaylist.evaluateMedia(node)}"
+							style="font-style:italic;"
+							value="#{node.titreMedia}" />
+					</p:treeNode>
+				</p:tree>
+				<p:commandButton value="Supprimer Sélection" update="media"
+					actionListener="#{beanGestionPlaylist.delSelectedSingle}" id="btnDel" />
+				<p:commandButton value="Détails du Média sélectionné" id="btnDetail" />
+			<br /> <br /> <br />
+				<p:growl id="growl" sticky="true" showDetail="true" />
+				<p:panel header="Création de Playlist">
+					<h:messages class="ui-messages-error ui-corner-all"
+						errorClass="error" />
+					<h:panelGrid columns="2" columnClasses="label, value"
+						styleClass="grid">
+
+						<h:outputText value="Nom :" />
+						<p:inputText style="background: none repeat scroll 0 0 #DDD;"
+							required="true" label="Nom Playlist" value="#{beanGestionPlaylist.nom}" />
+
+						<h:outputText value="Visible par tous :" />
+						<p:selectBooleanButton value="#{beanGestionPlaylist.visible}"
+							onLabel="Oui" offLabel="Non" />
+ 
+					</h:panelGrid>
+
+					<p:commandButton value="Créer la Playlist" update="growl, media"
+						action="#{beanGestionPlaylist.create}" />
+				</p:panel>
+			</h:form>
+		</section>
+	</ui:define>
+</ui:composition>
+</html>

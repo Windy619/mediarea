@@ -100,7 +100,7 @@ h3{
 	border-bottom:1px dotted black;
 }
 	
-h3 span{
+ h3 span{
 	font-size: 12px;
 	color: black;
 	text-transform:capitalize;
@@ -632,7 +632,7 @@ footer{
 ***************************************************/
 
 .menuBar{
-	background:#534741 !important;
+	background:#534741  !important;
 }
 .menuLink{
 	color:#F15A24;
@@ -640,7 +640,7 @@ footer{
 .menuLink:hover{
 	color: white;
 	text-decoration:underline;
-	cursor: pointer;
+	cursor:  pointer;
 }
 .selected{
 	background:#FFFFFF;
@@ -666,7 +666,7 @@ footer{
 		    	
 .gauche {
 	float: left;
-	width: 380px;
+	width: 420px;
 	position: relative;
 	background:white;
 	padding:5px;
@@ -710,33 +710,4 @@ table input{
 
 .label{
 	width:200px;
-
-.pic {
-	margin-bottom: -4px;
-	margin-right: 2px;
-}
-
-.search .rf-ddm-itm-sel {
-	background-color: transparent;
-	background-image: none;
-	border-color: transparent;
-	cursor: default;
-}
-
-/* Modal panel */
-.rf-pp-shade {
-    background-color: #00000 !important;
-    opacity: 1 !important;
-}
-
-/* jQuery usage */
-.pic-normal {
-	width: 120px;
-	border: 2px solid #ACBECE;
-}
-
-.wrap1 {
-	width: 190px;
-	height: 130px;
-	/*float: left;*/
 }
