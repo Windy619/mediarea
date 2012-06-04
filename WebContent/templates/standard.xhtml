@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:a4j="http://richfaces.org/a4j"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+<h:head>
+	<meta http-equiv="Content-Type"
+		content="application/xhtml+xml; charset=UTF-8" />
+	<h:outputStylesheet library="css" name="styles.css" />
+	<title>MediArea - <ui:insert name="pageTitle" /></title>
+
+	<!-- Lecteur audio/vidéo -->
+	<!-- first: the CSS layout of LeanBack Player -->
+	<h:outputStylesheet library="css" name="leanbackPlayer.default.css" />
+	<!-- second: the Javascript file of LeanBack Player -->
+	<h:outputScript library="js" name="leanbackPlayer.pack.js" />
+	<!-- third: additional language files of LeanBack Player; -->
+	<h:outputScript library="js" name="leanbackPlayer.en.js" />
+	<h:outputScript library="js" name="leanbackPlayer.de.js" />
+	<h:outputScript library="js" name="LBPoption.js" />
+
+	<h:outputScript library="js" name="redirection.js" />
+</h:head>
+
+<h:body>
+
+	<p:stack icon="/resources/images/menu/menu.png">
+		<p:menuitem rendered="#{beanConnexion.isConnected}" value="Amis" icon="/resources/images/menu/amis.png"
+			url="amis.jsf" />
+		<p:menuitem value="Panier" icon="/resources/images/menu/upload.png"
+			url="#" />
+		<p:menuitem rendered="#{beanConnexion.isConnected}" value="Playlist"
+			icon="/resources/images/menu/playlist.png" url="gestionPlaylist.jsf" />
+		<p:menuitem rendered="#{beanConnexion.isConnected}" value="Messagerie"
+			icon="/resources/images/menu/messagerie.png" url="#" />
+		<p:menuitem value="Accueil" icon="/resources/images/menu/home.png"
+			url="home.jsf" />
+	</p:stack>
+
+
+	<div id="container">
+		<header>
+			<!--logo-->
+			<a href="home.jsf" id="logo"><h:graphicImage library="images"
+					name="logo.png" alt="logo" /></a>
+
+			<div id="nav">
+				<h:form>
+					<h:outputLink rendered="#{beanConnexion.isConnected and beanConnexion.user.estAdministrateur==true}" onclick="document.location.href='homeAdmin.jsf'"
+						value="homeAdmin.jsf">
+						<h:outputText value="Administration" />
+					</h:outputLink>
+					<h:outputText rendered="#{beanConnexion.isConnected and beanConnexion.user.estAdministrateur==true}"  value=" | " />
+					<!--Inscription/Profil - Connexion/déconnexion-->
+					<h:outputLink rendered="#{!beanConnexion.isConnected}"
+						onclick="document.location.href='inscription.jsf'"
+						value="inscription.jsf">
+						<h:outputText value="Inscription" />
+					</h:outputLink>
+					<h:outputLink rendered="#{beanConnexion.isConnected}"
+						onclick="document.location.href='profil.jsf'" value="profil.jsf">
+						<h:outputText value="Mon Profil" />
+					</h:outputLink>
+
+					<h:outputText value=" | " />
+
+					<h:outputLink rendered="#{!beanConnexion.isConnected}"
+						id="connexion" value="javascript:void(0)" onclick="dlg.show()">
+						<h:outputText value="Connexion" />
+					</h:outputLink>
+
+					<h:commandLink rendered="#{beanConnexion.isConnected}"
+						id="deconnexion" action="#{beanConnexion.seDeconnecter}"
+						title="deconnexion" value="Déconnexion" />
+				
+				</h:form>
+				<p:growl id="growl" showDetail="false" life="3000" />
+
+				<script type="text/javascript">  
+					    function handleLoginRequest(xhr, status, args) {  
+					        if(args.validationFailed || !args.loggedIn) {  
+					            jQuery('#dialog').effect("shake", { times:3 }, 100);  
+					        } else {  
+					            dlg.hide();  
+					            jQuery('#connexion').fadeOut();  
+					        }  
+					    }  
+					</script>
+
+			</div>
+			<br /> <br />
+			<div id="ssnav">
+				<!--barre de recherche-->
+				<h:form>
+					<p:inputText id="recherche" size="50" label="recherche" />
+					<h:outputLink value="#">
+						<h:graphicImage value="/resources/images/search.png" />
+					</h:outputLink>
+				</h:form>
+			</div>			
+		</header>
+
+		<p:dialog id="dialog" header="Connexion" widgetVar="dlg">
+			<h:form>
+				<h:panelGrid columns="2" cellpadding="5">
+					<h:outputLabel value="Adresse Mail :" />
+					<p:inputText value="#{beanConnexion.identifiant}" id="identifiant"
+						label="identifiant" required="true" />
+					<h:outputLabel value="Password :" />
+					<h:inputSecret value="#{beanConnexion.password}"
+						class="ui-inputfield ui-password ui-widget ui-state-default ui-corner-all"
+						id="password" label="password" required="true" />
+					<p:commandButton id="Login" value="Se connecter" update=":growl"
+						action="#{beanConnexion.getIsAccountOk}"
+						oncomplete="handleLoginRequest(xhr, status, args)" />
+					<br />
+					<h:link value="Mot de passe oublié ?" outcome="recuperationMDP" />
+				</h:panelGrid>
+			</h:form>
+		</p:dialog>
+
+		<div class="holder_content">
+			<ui:insert name="content">
+		 		Content is empty
+		 	</ui:insert>
+		</div>
+	</div>
+
+	<footer>
+		<ui:insert name="footerContent">
+			<ui:include src="../resources/includes/footer_basic.xhtml" />
+		</ui:insert>
+	</footer>
+
+
+
+</h:body>
+
+</html>
