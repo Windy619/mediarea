@@ -123,4 +123,8 @@ public class Commentaire {
 		
 		this.auteur = auteur;
 	}
+
+	public String toString(){
+		return ("C"+String.valueOf(idCommentaire));
+	}
 }

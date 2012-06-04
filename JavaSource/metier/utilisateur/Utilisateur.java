@@ -35,8 +35,8 @@ import metier.media.Visibilite;
 @NamedQueries({
 	@NamedQuery(name = Utilisateur.NQ_VALIDES, query = "FROM Utilisateur WHERE dateBanissement = NULL AND dateSuppressionUtilisateur = NULL"),
 	@NamedQuery(name = Utilisateur.NQ_NON_VALIDES, query = "FROM Utilisateur WHERE dateBanissement != NULL OR dateSuppressionUtilisateur != NULL"),
-	@NamedQuery(name = Utilisateur.NQ_BANNIS, query = "FROM Utilisateur WHERE dateBanissement = NULL"),
-	@NamedQuery(name = Utilisateur.NQ_SUPPRIMES, query = "FROM Utilisateur WHERE dateSuppressionUtilisateur = NULL"),
+	@NamedQuery(name = Utilisateur.NQ_BANNIS, query = "FROM Utilisateur WHERE dateBanissement != NULL"),
+	@NamedQuery(name = Utilisateur.NQ_SUPPRIMES, query = "FROM Utilisateur WHERE dateSuppressionUtilisateur != NULL"),
 	@NamedQuery(name = Utilisateur.NQ_ADMINISTRATEURS, query = "FROM Utilisateur WHERE estAdministrateur IS TRUE"),
 	@NamedQuery(name = Utilisateur.NQ_PSEUDO, query = "FROM Utilisateur WHERE pseudo = :pseudo"),
 	@NamedQuery(name = Utilisateur.NQ_MAIL, query = "FROM Utilisateur WHERE adrMail = :mail")

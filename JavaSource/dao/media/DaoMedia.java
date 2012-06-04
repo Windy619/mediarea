@@ -6,7 +6,9 @@ import java.util.List;
 import metier.media.Categorie;
 import metier.media.Commentaire;
 import metier.media.Media;
+import metier.media.Playlist;
 import metier.media.Type_Media;
+import metier.utilisateur.Utilisateur;
 
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Criterion;
@@ -65,6 +67,17 @@ public class DaoMedia extends Dao<Media> {
         return crit.list(); // On execute la requete		
 	}
 	
+	public Media rechercheSurID(Long recherche) {
+		Long param = recherche;
+		
+		Query q = session.createQuery("" +
+				"FROM Media " +
+				"WHERE idMedia = :recherche");
+		q.setParameter("recherche", param);		
+		
+		return (Media) q.uniqueResult();
+	}
+	
 	/**
 	 * Récupération du top vue
 	 * @return Une liste de média
@@ -121,19 +134,7 @@ public class DaoMedia extends Dao<Media> {
 		
 		return (Long) q.uniqueResult();
 	}
-	
-	
-	
-	
-	
-	
-	
-	
 
-	
-	
-	
-	
 	
 	
 	/**
