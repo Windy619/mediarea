@@ -29,7 +29,7 @@ public class Regarder {
 	@GeneratedValue
 	private long idRegarder;
 	
-	//private long nbVues;
+	private long nbVues;
 	
 	//SimpleDateFormat dateFormat;
 	private Date dateVues;
@@ -49,7 +49,7 @@ public class Regarder {
 	public Regarder(Media media){
 		this.media = media;
 		
-		//this.nbVues = 1;
+		this.nbVues = 0;
 		
 		//dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 		//System.out.println("Date : " + dateFormat.format(new Date()));
@@ -70,13 +70,13 @@ public class Regarder {
 	
 	// GETTER SETTER
 
-	/*public long getNbVues() {
+	public long getNbVues() {
 		return nbVues;
 	}
 
 	public void setNbVues(long nbVues) {
 		this.nbVues = nbVues;
-	}*/
+	}
 
 	public Media getMedia() {
 		return media;

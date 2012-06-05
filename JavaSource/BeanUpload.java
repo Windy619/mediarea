@@ -8,6 +8,8 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
 
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
@@ -15,16 +17,15 @@ import javax.servlet.ServletContext;
 import javax.validation.constraints.Size;
 
 import metier.media.Categorie;
-import metier.media.Categorie_Media;
 import metier.media.Fichier;
 import metier.media.FichierUpload;
 import metier.media.Media;
 import metier.media.Photo_Couverture;
 import metier.media.Type_Media;
-import metier.media.Visibilite;
 import metier.utilisateur.Utilisateur;
 
 import org.primefaces.event.FileUploadEvent;
+import org.primefaces.event.FlowEvent;
 import org.primefaces.model.UploadedFile;
 
 import outil.GoogleImage;
@@ -46,18 +47,15 @@ public class BeanUpload {
 	DaoVisibilite daoVisibilite;
 	
 	// Fichier a uploader
-    private ArrayList<FichierUpload> files = new ArrayList<FichierUpload>();
-    private FichierUpload fichierSelectionne;
+    private FichierUpload fichierUploade = null;
     
     // Formulaire
-    private Long typeMedia;
+    private Type_Media typeMedia;
     @Size(min=0, max=100, message="Le nom du média ne doit pas dépasser 50 caractères")
     private String nomMedia;
-    private Long categorieMedia;
-    private ArrayList<Long> categoriesMedia;
-    private UploadedFile photoMedia;
+    private ArrayList<Categorie> categoriesMedia;
+    private UploadedFile photoMedia = null;
     private String tagsMedia;
-    private Long porteeMedia;
     private String motdepasseMedia;
     private boolean autoriserTelechargementMedia = true;
     private boolean autoriserCommentaireMedia = true;
@@ -66,7 +64,7 @@ public class BeanUpload {
     
     // Boolean
     private boolean afficherFormulaire;
-    private boolean afficherListeUploades;
+    private boolean afficherFichierUploade;
     private boolean afficherMotDePasse;
 
     
@@ -78,9 +76,7 @@ public class BeanUpload {
 	
 	// Autre/Metier
 	private FacesMessage message;
-	private ArrayList<Type_Media> lstTypesMedia;
 	private ArrayList<Categorie> lstCategories;
-	private ArrayList<Visibilite> lstVisibilites;
     
 	/**
 	 * Constructeur
@@ -96,41 +92,46 @@ public class BeanUpload {
 		// Chargement de l'utilisateur connecte
 		beanConnexion = (BeanConnexion) FacesContext.getCurrentInstance().getCurrentInstance().getExternalContext().getSessionMap().get("beanConnexion");
 		
-		// Chargement des types de média disponnibles
-		lstTypesMedia = new ArrayList<Type_Media>(daoTypeMedia.getTous());
-		
-		// Chargement des catégories disponnibles
 		lstCategories = new ArrayList<Categorie>(daoCategorie.getTous());
-		categoriesMedia = new ArrayList<Long>();
+		// Chargement des catégories disponnibles
+		/*for (Categorie categorie : daoCategorie.getTous()) {
+			lstCategories.put(categorie.getNomCategorie(), categorie);
+		}*/
 		
-		// Chargement des types de visibilité		
-		lstVisibilites = new ArrayList<Visibilite>(daoVisibilite.getTous());
+		
+		categoriesMedia = new ArrayList<Categorie>();
 		
 		afficherFormulaire = false;
 		afficherMotDePasse = false;
-		
+				
 		if (beanConnexion != null) {
 			// ON charge l'utilisateur connecte
-			utilisateurConnecte = beanConnexion.getUser();	
-			// Si on trouve l'utilisateur, on charge
-			if (utilisateurConnecte != null) {
-				
-			}
-				
+			utilisateurConnecte = beanConnexion.getUser();					
 		}		
 	}
 	
+	/**
+	 * Upload d'un média
+	 * @return
+	 */
 	public String uploader() {
 		
 		// Création d'un nouvel objet Media
 		Media media = new Media();
 		
-
 		Photo_Couverture pc = new Photo_Couverture();	
-		
+				
 		// Recherche automatique activée
 		if (rechercheAutomatique) {
-			ArrayList<String> lstLien = GoogleImage.rechercheGoogle(nomMedia);
+			
+			ArrayList<String> lstLien = new ArrayList<String>();
+			
+			try {
+				lstLien = GoogleImage.rechercheGoogle(nomMedia);
+			} catch (Exception e) {
+				System.err.println("Impossible de joindre l'api google");
+			}
+			
 			
 			String chemin;
 			String nom;
@@ -163,9 +164,9 @@ public class BeanUpload {
 				chemin = "/images/";
 				nom = "";
 				
-		    	if (isAudio(fichierSelectionne)) {
+		    	if (isAudio(fichierUploade)) {
 		    		nom = "audio128.png";
-		    	} else if (isVideo(fichierSelectionne)) {
+		    	} else if (isVideo(fichierUploade)) {
 		    		nom = "video128.png";
 		    	}
 		    	
@@ -200,14 +201,14 @@ public class BeanUpload {
 			} catch (Exception e) {
 				e.printStackTrace();
 			}			
-		} else {
+		} else { // Photo par défaut
         	
 			String chemin = "/images/";
 			String nom = "";
 			
-	    	if (isAudio(fichierSelectionne)) {
+	    	if (isAudio(fichierUploade)) {
 	    		nom = "audio128.png";
-	    	} else if (isVideo(fichierSelectionne)) {
+	    	} else if (isVideo(fichierUploade)) {
 	    		nom = "video128.png";
 	    	}
 	    	
@@ -227,22 +228,24 @@ public class BeanUpload {
 		}
 		
 		if (typeMedia != null) {
-			media.setType(daoTypeMedia.getUn(typeMedia));
+			media.setType(typeMedia);
+		} else {
+			media.setType(daoTypeMedia.typeSon());
 		}
-		
-		if (porteeMedia != null) {
-			media.setVisibilite(daoVisibilite.getUn(porteeMedia));
-		}
-		
+				
 		if (categoriesMedia != null) {
-			for (Long id : categoriesMedia) {
-				media.getCategories().add(new Categorie_Media(2,id));	
-			}
+			HashSet categories = new HashSet<Categorie>(categoriesMedia);
+			media.getCategories().addAll(categories);	
 		}
 
 		if (motdepasseMedia != null) {
 			// Si un mot de passe a été renseigné, on le crypte et on l'enregistre dans la base
 			media.setMdpMedia(Md5.getHash(motdepasseMedia));
+			// Type non visible
+			media.setVisibilite(daoVisibilite.typeNonVisible());
+		} else {
+			// Type visible
+			media.setVisibilite(daoVisibilite.typeVisible());
 		}
 		
 		media.setDescriptionMedia(descriptionMedia);
@@ -253,7 +256,7 @@ public class BeanUpload {
 		
 		// Et enfin, on ajoute le fichier source du Media :
 		try {
-			File fichierCree = ecrireFichierUploade(fichierSelectionne);
+			File fichierCree = ecrireFichierUploade(fichierUploade);
 			Fichier fichier = new Fichier(fichierCree.getAbsolutePath(),fichierCree.getName());
 			media.setFichier(fichier);			
 		} catch (Exception e) {
@@ -271,11 +274,10 @@ public class BeanUpload {
 		daoUtilisateur.sauvegarder(utilisateurConnecte);
 		
 		// On supprime le fichier de la liste des uploads
-		files.remove(fichierSelectionne);
+		fichierUploade = null;
 		
 		// On remet les valeurs par défaut
 	    nomMedia = "";
-	    photoMedia = null;
 	    tagsMedia = "";
 	    motdepasseMedia = "";
 	    autoriserTelechargementMedia = true;
@@ -286,11 +288,16 @@ public class BeanUpload {
 		
         // On affiche un message à l'utilisateur
         FacesMessage msg = new FacesMessage("Le media : ", media.getTitreMedia() + " a été crée avec succès !");  
-        FacesContext.getCurrentInstance().addMessage(null, msg); 
+        FacesContext.getCurrentInstance().addMessage(null, msg); 		
         
 		return "upload";
 	}
  
+	/**
+	 * Ecriture sur le serveur du fichier à rechercher
+	 * @param urlFichier
+	 * @return
+	 */
     public File ecrireFichierRecherche(String urlFichier) {
     	
 		String chemin = ((ServletContext) FacesContext.getCurrentInstance().getExternalContext().getContext()).getRealPath("resources");
@@ -353,6 +360,12 @@ public class BeanUpload {
 		
     }
     
+    /**
+     * Ecriture sur le serveur du fichier Uploade
+     * @param file
+     * @return
+     * @throws IOException
+     */
     public File ecrireFichierUploade(FichierUpload file) throws IOException {
     	
         // On crée un File physique sur le seveur d'application avec pour nom le timestamp
@@ -369,7 +382,7 @@ public class BeanUpload {
     	}
 
     	 
-        File fileUploaded = new File(chemin + getTimeStamp() + file.getExtension());
+        File fileUploaded = new File(chemin + "/" + getTimeStamp() + file.getExtension());
         fileUploaded.createNewFile();
         
         // On écrit le fichier
@@ -398,36 +411,52 @@ public class BeanUpload {
     }
     
     
+    /**
+     * Listener de fichier Uploadés
+     * @param event
+     */
     public void handleFileUpload(FileUploadEvent event) {  
     	
     	// On récupère l'item uploadé
         UploadedFile item = event.getFile();
         
         // On crée un FichierUpload pour l'affichage des informations
-        FichierUpload file = new FichierUpload();
-        file.setTaille(item.getSize());
-        file.setNom(item.getFileName().substring(0,item.getFileName().length()-4));
-        file.setExtension(item.getFileName().substring(item.getFileName().length()-4));
-        file.setData(item.getContents());
+        FichierUpload fichierUpload = new FichierUpload();
+        fichierUpload.setTaille(item.getSize());
+        fichierUpload.setNom(item.getFileName().substring(0,item.getFileName().length()-4));
+        fichierUpload.setExtension(item.getFileName().substring(item.getFileName().length()-4));
+        fichierUpload.setData(item.getContents());
         
-        file.reCalculerTaille();
+        fichierUpload.reCalculerTaille();
         
         // On ajoute le fichierUpload à la liste
-        files.add(file);
+        fichierUploade = fichierUpload;
+        
+        // Par défaut on peut dire que le nom du média est le nom du fichier !
+        nomMedia = fichierUpload.getNom();
+        tagsMedia = fichierUpload.getNom();
+        motdepasseMedia = "";
+        descriptionMedia = fichierUpload.getNom();      
+        
+        if (isAudio(fichierUpload)) {
+        	typeMedia = daoTypeMedia.typeSon();
+        } else if (isVideo(fichierUpload)) {
+        	typeMedia = daoTypeMedia.typeVideo();
+        }
         
         // On affiche un message à l'utilisateur
-        FacesMessage msg = new FacesMessage("Le fichier : ", file.getNom() + " a été uploadé avec succès !");  
+        FacesMessage msg = new FacesMessage("Le fichier : ", fichierUploade.getNom() + " a été uploadé avec succès !");  
         FacesContext.getCurrentInstance().addMessage(null, msg);  
     }     
     
     public void handlePictureUpload() {  
     	// On affiche un message à l'utilisateur
+    	System.out.println("Handle de la photo");
     	if (photoMedia != null) {
             FacesMessage msg = new FacesMessage("Le fichier : ", photoMedia.getFileName() + " a été uploadé avec succès !");  
             FacesContext.getCurrentInstance().addMessage(null, msg);      		
     	}
-    }      
-    
+    }     
     
     /**
      * Détermine si un fichierUpload est un fichier Audio ou non
@@ -435,7 +464,7 @@ public class BeanUpload {
      * @return
      */
     public boolean isAudio(FichierUpload file) {
-    	if (file.getExtension().matches("(.*)(mp3|wav|riff|ogg)(.*)")) {
+    	if (file != null && file.getExtension().matches("(.*)(mp3|MP3|wav|WAV|riff|ogg)(.*)")) {
     		return true;
     	}
     	
@@ -448,7 +477,7 @@ public class BeanUpload {
      * @return
      */
     public boolean isVideo(FichierUpload file) {
-    	if (file.getExtension().matches("(.*)(mp4|avi)(.*)")) {
+    	if (file != null && file.getExtension().matches("(.*)(mp4|MP4|AVI|avi|wmv|AVI)(.*)")) {
     		return true;
     	}
     	
@@ -461,23 +490,16 @@ public class BeanUpload {
      * @return
      */
     public boolean isImage(FichierUpload file) {
-    	if (file.getExtension().matches("(.*)(png|jpg|JPG|jpeg|JPEG)(.*)")) {
+    	if (file != null && file.getExtension().matches("(.*)(png|PNG|jpg|JPG|jpeg|JPEG)(.*)")) {
     		return true;
     	}
     	
     	return false;
     }    
     
-    public String supprimerFichiersUploades() {
-        
-    	files.clear();
-    
-    	return null;
-    }
-    
     public String supprimerFichierUploade() {
         
-    	files.remove(fichierSelectionne);
+    	fichierUploade = null;
     
     	return null;
     }    
@@ -485,24 +507,17 @@ public class BeanUpload {
     public long getTimeStamp() {
         return System.currentTimeMillis();
     }
-    
-    public int getSize() {
-        if (getFiles().size() > 0) {
-            return getFiles().size();
-        } else {
-            return 0;
-        }
-    }   
+  
     
     // GETTER SETTER
     
-	public ArrayList<FichierUpload> getFiles() {
-		return files;
+	public FichierUpload getFichierUploade() {
+		return fichierUploade;
 	}
 
 
-	public void setFiles(ArrayList<FichierUpload> files) {
-		this.files = files;
+	public void setFichierUploade(FichierUpload file) {
+		this.fichierUploade = file;
 	}
 
 	public boolean isAfficherFormulaire() {
@@ -522,19 +537,11 @@ public class BeanUpload {
 		this.utilisateurConnecte = utilisateurConnecte;
 	}
 
-	public FichierUpload getFichierSelectionne() {
-		return fichierSelectionne;
-	}
-
-	public void setFichierSelectionne(FichierUpload fichierSelectionne) {
-		this.fichierSelectionne = fichierSelectionne;
-	}
-
-	public Long getTypeMedia() {
+	public Type_Media getTypeMedia() {
 		return typeMedia;
 	}
 
-	public void setTypeMedia(Long typeMedia) {
+	public void setTypeMedia(Type_Media typeMedia) {
 		this.typeMedia = typeMedia;
 	}
 
@@ -562,14 +569,6 @@ public class BeanUpload {
 		this.tagsMedia = tagsMedia;
 	}
 
-	public Long getPorteeMedia() {
-		return porteeMedia;
-	}
-
-	public void setPorteeMedia(Long porteeMedia) {
-		this.porteeMedia = porteeMedia;
-	}
-
 	public String getMotdepasseMedia() {
 		return motdepasseMedia;
 	}
@@ -586,30 +585,15 @@ public class BeanUpload {
 		this.descriptionMedia = descriptionMedia;
 	}
 
-	public Long getCategorieMedia() {
-		return categorieMedia;
+
+	public boolean isAfficherFichierUploade() {
+		return afficherFichierUploade;
 	}
 
-	public void setCategorieMedia(Long categorieMedia) {
-		this.categorieMedia = categorieMedia;
+	public void setAfficherFichierUploade(boolean afficherFichierUploade) {
+		this.afficherFichierUploade = afficherFichierUploade;
 	}
-
-	public boolean isAfficherListeUploades() {
-		return afficherListeUploades;
-	}
-
-	public void setAfficherListeUploades(boolean afficherListeUploades) {
-		this.afficherListeUploades = afficherListeUploades;
-	}
-
-	public ArrayList<Type_Media> getLstTypesMedia() {
-		return lstTypesMedia;
-	}
-
-	public void setLstTypesMedia(ArrayList<Type_Media> lstTypesMedia) {
-		this.lstTypesMedia = lstTypesMedia;
-	}
-
+	
 	public ArrayList<Categorie> getLstCategories() {
 		return lstCategories;
 	}
@@ -642,21 +626,12 @@ public class BeanUpload {
 		this.autoriserCommentaireMedia = ouvrirCommentaireMedia;
 	}
 
-	public ArrayList<Long> getCategoriesMedia() {
+	public ArrayList<Categorie> getCategoriesMedia() {
 		return categoriesMedia;
 	}
 
-	public void setCategoriesMedia(ArrayList<Long> categoriesMedia) {
+	public void setCategoriesMedia(ArrayList<Categorie> categoriesMedia) {
 		this.categoriesMedia = categoriesMedia;
-	}
-
-
-	public ArrayList<Visibilite> getLstVisibilites() {
-		return lstVisibilites;
-	}
-
-	public void setLstVisibilites(ArrayList<Visibilite> lstVisibilites) {
-		this.lstVisibilites = lstVisibilites;
 	}
 
 	public boolean isAfficherMotDePasse() {
@@ -675,7 +650,5 @@ public class BeanUpload {
 		this.rechercheAutomatique = rechercheAutomatique;
 	}
 
-	
-	
 	
 }

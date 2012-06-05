@@ -279,37 +279,37 @@ public class Main {
         
         DaoUtilisateur dao = new DaoUtilisateur();
         Utilisateur u = dao.getUn(3);
-        Avatar a = new Avatar("http://127.0.0.1:8085/MediArea/resources/avatar/8.png");
+        Avatar a = new Avatar("http://127.0.0.1:8080/MediArea/resources/avatar/8.png");
         u.setAvatar(a);
         dao.sauvegarder(u);
         
         u = dao.getUn(4);
-        a = new Avatar("http://127.0.0.1:8085/MediArea/resources/avatar/2.png");
+        a = new Avatar("http://127.0.0.1:8080/MediArea/resources/avatar/2.png");
         u.setAvatar(a);
         dao.sauvegarder(u);  
         
         u = dao.getUn(5);
-        a = new Avatar("http://127.0.0.1:8085/MediArea/resources/avatar/3.png");
+        a = new Avatar("http://127.0.0.1:8080/MediArea/resources/avatar/3.png");
         u.setAvatar(a);
         dao.sauvegarder(u); 
         
         u = dao.getUn(6);
-        a = new Avatar("http://127.0.0.1:8085/MediArea/resources/avatar/4.png");
+        a = new Avatar("http://127.0.0.1:8080/MediArea/resources/avatar/4.png");
         u.setAvatar(a);
         dao.sauvegarder(u);         
         
         u = dao.getUn(7);
-        a = new Avatar("http://127.0.0.1:8085/MediArea/resources/avatar/5.png");
+        a = new Avatar("http://127.0.0.1:8080/MediArea/resources/avatar/5.png");
         u.setAvatar(a);
         dao.sauvegarder(u);
         
         u = dao.getUn(1);
-        a = new Avatar("http://127.0.0.1:8085/MediArea/resources/avatar/6.png");
+        a = new Avatar("http://127.0.0.1:8080/MediArea/resources/avatar/6.png");
         u.setAvatar(a);
         dao.sauvegarder(u);       
         
         u = dao.getUn(2);
-        a = new Avatar("http://127.0.0.1:8085/MediArea/resources/avatar/7.png");
+        a = new Avatar("http://127.0.0.1:8080/MediArea/resources/avatar/7.png");
         u.setAvatar(a);
         dao.sauvegarder(u);
         
