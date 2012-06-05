@@ -33,34 +33,7 @@
 </h:head>
 
 <h:body>
-		<p:notificationBar position="top" effect="slide" widgetVar="notif" style="height: 300px">  
-		    <h1> Mes notifications</h1>
-		    
-		    <br />
-		    <p:dataTable id="basic" value="#{beanNotification.listeNotifications}" var="notification">  
-		        <p:column>  
-		            <f:facet name="header">  
-		                    Date  
-		            </f:facet>  
-			    	<h:outputText value="#{notification.dateEnvoiNotification}">
-			    		<f:convertDateTime type="date" pattern="dd/MM/yyyy HH:mm"/>
-			    	</h:outputText>
-		        </p:column>  	
-		        
-		        <p:column>  
-		            <f:facet name="header">  
-		                    Message  
-		            </f:facet>  
-		            <h:outputText value="#{notification.contenuNotification}" /> 
-		        </p:column>
-		          		        	    
-		    </p:dataTable>  
 
-			<br />
-
-			<p:commandButton value="Cacher" onclick="notif.hide()" type="button"/>  
-		</p:notificationBar>  
-		
 	<div id="container">
 			
 		<header>
@@ -77,12 +50,33 @@
 			<ssnav>
 				<h:form>
 					<h:commandLink rendered="#{beanConnexion.isConnected}" action="#{beanConnexion.seDeconnecter}" value="#{beanConnexion.user.adrMail} - D&#233;connexion" />
-										
-					
-					<h:outputText rendered="#{beanConnexion.isConnected}" value="Notifications (#{beanNotification.nbNotifications}) :"/>
-					<p:commandButton rendered="#{beanConnexion.isConnected}" value="Afficher" onclick="notif.show()" type="button" style="height: 30px"/>
+					<p:commandButton rendered="#{beanConnexion.isConnected}" value="Notifications (#{beanNotification.nbNotifications})" onclick="dlg.show()" actionListener="#{beanNotification.lireNotifications}"/>
 
-	
+					<p:dialog id="dialog" header="Notification" widgetVar="dlg">
+
+						<h:outputText rendered="#{empty beanNotification.listeNotifications}" value="Vous n'avez aucune notifications pour le moment !" />
+						
+					    <p:dataTable id="basic" rendered="#{beanNotification.listeNotifications.size() > 0}" value="#{beanNotification.listeNotifications}" paginator="true" rows="4" var="notification">  
+					        <p:column>  
+					            <f:facet name="header">  
+					                    Date  
+					            </f:facet>  
+						    	<h:outputText value="#{notification.dateEnvoiNotification}">
+						    		<f:convertDateTime type="date" pattern="dd/MM/yyyy HH:mm"/>
+						    	</h:outputText>
+					        </p:column>  	
+					        
+					        <p:column>  
+					            <f:facet name="header">  
+					                    Message  
+					            </f:facet>  
+					            <h:outputText value="#{notification.contenuNotification}" /> 
+					        </p:column>
+					          		        	    
+					    </p:dataTable>  
+
+					</p:dialog>		
+																	
 					<br /><br />
 				</h:form>
 			</ssnav>

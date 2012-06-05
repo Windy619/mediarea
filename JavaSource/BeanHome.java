@@ -1,6 +1,8 @@
 import java.io.File;
 import java.util.ArrayList;
 
+import javax.faces.context.FacesContext;
+
 import metier.media.Media;
 import metier.utilisateur.Utilisateur;
 import dao.media.DaoMedia;
@@ -42,6 +44,9 @@ public class BeanHome {
 		topNotationSons = new ArrayList(daoMedia.topNotationAudio());
 		recommendationVideos = new ArrayList();
 		recommendationSons = new ArrayList();
+		
+		// Chargement de l'utilisateur connecte
+		beanConnexion = (BeanConnexion) FacesContext.getCurrentInstance().getCurrentInstance().getExternalContext().getSessionMap().get("beanConnexion");
 		
 		if (beanConnexion != null) {
 			// ON charge l'utilisateur connecte
@@ -89,6 +94,7 @@ public class BeanHome {
 	}
 
 	public Utilisateur getUtilisateurConnecte() {
+		utilisateurConnecte = beanConnexion.getUser();
 		return utilisateurConnecte;
 	}
 
