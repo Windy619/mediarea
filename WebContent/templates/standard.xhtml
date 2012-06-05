@@ -43,7 +43,6 @@
 			url="home.jsf" />
 	</p:stack>
 
-
 	<div id="container">
 			
 		<header>
@@ -75,10 +74,24 @@
 						id="connexion" value="javascript:void(0)" onclick="dlg.show()">
 						<h:outputText value="Connexion" />
 					</h:outputLink>
-
+					            <f:facet name="header">  
+					                    Date  
+					            </f:facet>  
+						    	<h:outputText value="#{notification.dateEnvoiNotification}">
+						    		<f:convertDateTime type="date" pattern="dd/MM/yyyy HH:mm"/>
+						    	</h:outputText>
+					        </p:column>  	
+					        
 					<h:commandLink rendered="#{beanConnexion.isConnected}"
 						id="deconnexion" action="#{beanConnexion.seDeconnecter}"
 						title="deconnexion" value="Déconnexion" />
+					            </f:facet>  
+					            <h:outputText value="#{notification.contenuNotification}" /> 
+					        </p:column>
+					          		        	    
+					    </p:dataTable>  
+
+					</p:dialog>		
 				
 				</h:form>
 				<p:growl id="growl" showDetail="false" life="3000" />

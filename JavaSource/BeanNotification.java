@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.Date;
 
 import javax.faces.context.FacesContext;
 
@@ -41,6 +42,23 @@ public class BeanNotification {
 		}	
 		
 		nbNotifications = String.valueOf(listeNotifications.size());		
+		
+	}
+	
+	/**
+	 * Une fois qu'elles ont été ouvertes, on considère les notifications comme lues
+	 * @return
+	 */
+	public void lireNotifications() {
+		
+		// On met à jour les notifications
+		for (Notification notification : listeNotifications) {
+			notification.setDateLectureNotification(new Date());
+			daoNotification.sauvegarder(notification);
+		}
+		
+		// On vide la liste des notifications
+		listeNotifications.clear();
 		
 	}
 	

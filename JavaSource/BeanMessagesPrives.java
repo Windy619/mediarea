@@ -1,23 +1,34 @@
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Properties;
 
+import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
+import javax.mail.Message;
+import javax.mail.MessagingException;
+import javax.mail.Session;
+import javax.mail.Transport;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeMessage;
 import javax.validation.constraints.Pattern;
 
 import metier.utilisateur.Message_Prive;
 import metier.utilisateur.Notification;
 import metier.utilisateur.Signalement_MessagePrive;
 import metier.utilisateur.Utilisateur;
+
+import org.primefaces.event.SelectEvent;
+
 import dao.utilisateur.DaoMessagePrive;
 import dao.utilisateur.DaoNotification;
 import dao.utilisateur.DaoSignalementMessagePrive;
 import dao.utilisateur.DaoUtilisateur;
 
-/*import java.util.*;
+import java.util.*;
 import javax.mail.*;
 import javax.mail.internet.*;
-import javax.activation.*;*/
+import javax.activation.*;
 
 
 public class BeanMessagesPrives {
@@ -34,7 +45,6 @@ public class BeanMessagesPrives {
 	private String objet;
 	private String contenu;
 	private Message_Prive mpSelectionne;
-	private Message_Prive mpSelectionneDetail;
 	private ArrayList<Message_Prive> messages;	
 	private ArrayList<Message_Prive> reponses;	
 	private ArrayList<String> suggestionUtilisateurs;
@@ -49,8 +59,6 @@ public class BeanMessagesPrives {
 	private Utilisateur utilisateurConnecte;
 	
 	// Boolean
-	private Boolean afficherNouveauMessage;
-	private Boolean afficherReponseMessage;	
 	private Boolean afficherDetailMessage;
 	private Boolean afficherListeMessage;
 	
@@ -101,8 +109,6 @@ public class BeanMessagesPrives {
 		// Règles d'affichages dans la page
 		afficherListeMessage = true;
 		afficherDetailMessage = false;
-		afficherNouveauMessage = false;
-		afficherReponseMessage = false;
 		
 		return "chargerMessages";
 	}
@@ -111,7 +117,7 @@ public class BeanMessagesPrives {
 	 * Réponses d'un message
 	 * @return
 	 */
-	public String chargerReponses() {
+	public String chargerReponses(Message_Prive mpSelectionne) {
 		
 		// On charge les liste des réponses
 		reponses = new ArrayList(daoMessagePrive.getReponses(mpSelectionne,utilisateurConnecte));
@@ -141,8 +147,6 @@ public class BeanMessagesPrives {
 		// Règles d'affichages dans la page
 		afficherListeMessage = true;
 		afficherDetailMessage = false;
-		afficherNouveauMessage = false;
-		afficherReponseMessage = false;
 		
 		return "chargerMessages";
 	}	
@@ -162,8 +166,6 @@ public class BeanMessagesPrives {
 		// Règles d'affichages dans la page
 		afficherListeMessage = true;
 		afficherDetailMessage = false;
-		afficherNouveauMessage = false;
-		afficherReponseMessage = false;
 		
 		return "chargerMessages";
 	}	
@@ -183,8 +185,6 @@ public class BeanMessagesPrives {
 		// Règles d'affichages dans la page
 		afficherListeMessage = true;
 		afficherDetailMessage = false;
-		afficherNouveauMessage = false;
-		afficherReponseMessage = false;
 		
 		return "chargerMessages";
 	}	
@@ -204,8 +204,6 @@ public class BeanMessagesPrives {
 		// Règles d'affichages dans la page
 		afficherListeMessage = true;
 		afficherDetailMessage = false;
-		afficherNouveauMessage = false;
-		afficherReponseMessage = false;
 		
 		
 		return "chargerMessages";
@@ -217,6 +215,7 @@ public class BeanMessagesPrives {
 	 */
 	public String supprimerMessage() {
 					
+		System.out.println(mpSelectionne);
 		// En fonction de si on est emetteur ou destinnataire
 		if (mpSelectionne.getEmetteur() == utilisateurConnecte) {
 			mpSelectionne.setDateSuppressionMessage(new Date());
@@ -226,20 +225,24 @@ public class BeanMessagesPrives {
 		
 		// On enregistre les modifications
 		daoUtilisateur.sauvegarder(utilisateurConnecte);
-			
-		// On recharges des listes si besoins
 		
-		if (afficherListeMessage) {
-			chargerMessages();
-		}
-		
-		if (afficherDetailMessage) {
-			chargerReponses();
-		}
-		
+        // On affiche un message à l'utilisateur
+        FacesMessage msg = new FacesMessage("Message supprimé avec succès !");  
+        FacesContext.getCurrentInstance().addMessage(null, msg); 		
 		
 		return "supprimerMessages";
 	}	
+	
+	/**
+	 * On vide le formulaire
+	 */
+	public String viderFormulaire() {
+		destinataire = "";
+		objet = "";
+		contenu = "";
+		
+		return "viderformulaire";
+	}
 		
 	
 	/**
@@ -269,6 +272,10 @@ public class BeanMessagesPrives {
 			chargerMessages();
 		}
 		
+        // On affiche un message à l'utilisateur
+        FacesMessage msg = new FacesMessage("Réponse envoyé avec succès !");  
+        FacesContext.getCurrentInstance().addMessage(null, msg); 		
+		
 		return "repondreMessage";
 	}
 	
@@ -289,23 +296,20 @@ public class BeanMessagesPrives {
 			// On enregistre
 			daoUtilisateur.sauvegarder(utilisateurConnecte);	
 			
+			// On vide le formulaire
+			viderFormulaire();
+			
 			// On crée une notification
 			Notification notification = new Notification("Un message privé vous à été envoyé de \"" + utilisateurConnecte.getPseudo() + "\"", uDestinataire);
 			notification.setDateEnvoiNotification(new Date());
 			// On l'ajoute à l'utilisateur concerné et on le sauvegarde
 			uDestinataire.getNotifications().add(notification);
-			daoUtilisateur.sauvegarder(uDestinataire);			
-		}
-				
-		
-		// On recharge des listes si besoins
-		
-		if (afficherListeMessage) {
-			chargerMessages();
-		}
-		
-		if (afficherDetailMessage) {
-			chargerReponses();
+			daoUtilisateur.sauvegarder(uDestinataire);		
+			
+	        // On affiche un message à l'utilisateur
+	        FacesMessage msg = new FacesMessage("Message envoyé avec succès !");  
+	        FacesContext.getCurrentInstance().addMessage(null, msg); 	
+	        
 		}
 
 		return "envoyerMessage";
@@ -316,6 +320,8 @@ public class BeanMessagesPrives {
 	 * @return
 	 */
 	public String signalerMessage() {
+		
+		System.out.println(mpSelectionne);
 		
 		// On ne se signale pas nous même ...
 		if (mpSelectionne.getEmetteur() != utilisateurConnecte) {
@@ -331,16 +337,16 @@ public class BeanMessagesPrives {
 			mpSelectionne.getDestinataire().getNotifications().add(notification);
 			daoUtilisateur.sauvegarder(mpSelectionne.getDestinataire());
 
-		}
-		
-		// On recharge des listes si besoins
-		
-		if (afficherListeMessage) {
-			chargerMessages();
-		}
-		
-		if (afficherDetailMessage) {
-			chargerReponses();
+			System.out.println("Message " + mpSelectionne.getContenuMessage() + " signalé !");
+			
+	        // On affiche un message à l'utilisateur
+	        FacesMessage msg = new FacesMessage("Signalement effectué avec succès !");  
+	        FacesContext.getCurrentInstance().addMessage(null, msg); 
+	        
+		} else {
+	        // On affiche un message à l'utilisateur
+	        FacesMessage msg = new FacesMessage("Vous ne pouvez pas vous signaler vous même ... si le message que vous avez écrit est hors charte ou hors règle, vous en subirez cependant les conséquences !");  
+	        FacesContext.getCurrentInstance().addMessage(null, msg); 			
 		}
 
 		return "envoyerMessage";
@@ -350,8 +356,9 @@ public class BeanMessagesPrives {
 	 * Affichage du formulaire de réponse de message
 	 * @return
 	 */
-	public String afficherFormulaireReponseMessage() {
+	public String afficherFormulaireReponseMessage(Message_Prive message) {
 		
+		System.out.println("afficherFormulaireReponseMessage MPSelectionne : " + mpSelectionne);
 		if (mpSelectionne.getEmetteur() == utilisateurConnecte) {
 			destinataire = mpSelectionne.getDestinataire().getAdrMail();
 		} else {
@@ -360,10 +367,7 @@ public class BeanMessagesPrives {
 		
 		objet = mpSelectionne.getObjet();
 		contenu = "";
-		
-		afficherNouveauMessage = false;
-		afficherReponseMessage = true;
-		
+				
 		return "formReponseMessage";
 	}
 	
@@ -377,32 +381,9 @@ public class BeanMessagesPrives {
 		objet = "";
 		contenu = "";
 		
-		afficherNouveauMessage = true;
-		afficherReponseMessage = false;
-		
 		return "formNouveauMessage";
 	}	
-	
-	/**
-	 * Affichage du formulaire de détail d'un message
-	 * @return
-	 */
-	public String afficherFormulaireDetailMessage() {
 		
-		afficherDetailMessage = true;
-		afficherListeMessage = false;
-		afficherNouveauMessage = false;
-		afficherReponseMessage = false;
-		
-		if (mpSelectionne.getDestinataire() == utilisateurConnecte) {
-			mpSelectionne.setDateLecture(new Date());
-			daoMessagePrive.sauvegarder(mpSelectionne);			
-		}
-		
-		chargerReponses();
-		
-		return "formDetailMessage";
-	}		
 	
 	/**
 	 * Autocomplétion pour rechercher une adresse mail valide
@@ -410,8 +391,6 @@ public class BeanMessagesPrives {
 	 * @return
 	 */
 	public List<String> autoCompletion(String search) {
-		System.out.println("autocomplete");
-		
 		// On cherche les utilisateurs
 		List<?> lstUtilisateur = daoUtilisateur.recherche(search);
 		
@@ -453,7 +432,7 @@ public class BeanMessagesPrives {
 	      // Get the default Session object.
 	      Session session = Session.getDefaultInstance(properties);
 
-	      try{
+	      try {
 	         // Create a default MimeMessage object.
 	         MimeMessage message = new MimeMessage(session);
 
@@ -474,12 +453,38 @@ public class BeanMessagesPrives {
 	         // Send message
 	         Transport.send(message);
 	         System.out.println("Sent message successfully....");
-	      }catch (MessagingException mex) {
+	      } catch (MessagingException mex) {
 	         mex.printStackTrace();
 	      }
 	      
 		return "envoyerEmail";
 	}*/
+	
+	public ArrayList<Message_Prive> getMessagesFils(Message_Prive messageMere) {
+		if (messageMere != null) {
+			return new ArrayList(daoMessagePrive.getReponses(messageMere, utilisateurConnecte));
+		} else {
+			return new ArrayList<Message_Prive>();
+		}
+		
+	}
+	
+    public void onRowSelect(SelectEvent event) {  
+        Message_Prive mp = ((Message_Prive) event.getObject());  
+        if (mp != null)
+        	chargerReponses(mp); 
+    }  	
+    
+    public String getCouleurDataTable(Message_Prive mp) {
+    	if (mp.getEmetteur() == utilisateurConnecte && mp.getDateLecture() == null) {
+    		return "color : green";
+    	} else if (mp.getEmetteur() != utilisateurConnecte && mp.getDateLecture() == null) {
+    		return "color : red";
+    	} else {
+    		return null;
+    	}
+    }
+	
 		
 	// GETTER / SETTER
 	
@@ -556,22 +561,6 @@ public class BeanMessagesPrives {
 		this.suggestionUtilisateurs = suggestionUtilisateurs;
 	}
 
-	public Boolean getAfficherNouveauMessage() {
-		return afficherNouveauMessage;
-	}
-
-	public void setAfficherNouveauMessage(Boolean afficherNouveauMessage) {
-		this.afficherNouveauMessage = afficherNouveauMessage;
-	}
-
-	public Boolean getAfficherReponseMessage() {
-		return afficherReponseMessage;
-	}
-
-	public void setAfficherReponseMessage(Boolean afficherReponseMessage) {
-		this.afficherReponseMessage = afficherReponseMessage;
-	}
-
 	public Boolean getAfficherDetailMessage() {
 		return afficherDetailMessage;
 	}
@@ -594,14 +583,6 @@ public class BeanMessagesPrives {
 
 	public void setReponses(ArrayList<Message_Prive> reponses) {
 		this.reponses = reponses;
-	}
-
-	public Message_Prive getMpSelectionneDetail() {
-		return mpSelectionneDetail;
-	}
-
-	public void setMpSelectionneDetail(Message_Prive mpSelectionneDetail) {
-		this.mpSelectionneDetail = mpSelectionneDetail;
 	}
 
 	public Integer getNbMessagesNonLus() {

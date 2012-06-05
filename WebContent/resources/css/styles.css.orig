@@ -185,39 +185,6 @@ h4 span{
 	margin-bottom:10px;
 }
 
-.group3 a{
-	color: #ffa741;
-	font-weight:bold;
-    text-decoration:none;
-}
-
-.group3 a:hover{
-	color: #534741;
-	text-decoration:underline;
-}
-
-footer a{
-	font-size: 13px !important;
-	font-family: arial,sans-serif !important;
-	color: #ffa741;
-	font-weight:bold !important;
-	padding-bottom:8px !important;
-	padding-top:15px !important;
-	background-color:transparent !important;
-	margin-top:0px !important;
-    text-decoration:none;
-}
-
-#dialog a{
-	color: #ffa741;
-	font-weight:bold;
-    text-decoration:none;
-}
-
-#dialog a:hover{
-	color: #534741;
-	text-decoration:underline;
-}
 	
 .group_bannner_left {
 	width: 530px;
@@ -231,7 +198,11 @@ footer a{
 .inputRecherche{
 	font-size:14px !important;
 }
-			
+
+.message_automplete {
+    width:500px;
+}
+
 header{
 	position: relative;
 	float:left;
@@ -363,17 +334,11 @@ header{
 
 footer{
 	position:relative;
-	width:980px;
-	height:50px;
+	height:90px;
 	clear:both;
-	margin:0 auto;
-	text-align:left;
+	width:100%;
+	margin-bottom:18px;
 	background-color:#534741;
-	padding:15px;
-	overflow: hidden; 
-	-moz-box-shadow: 0 0 5px 5px #D8D8D8;
-	-webkit-box-shadow: 0 0 5px 5px #D8D8D8;
-	box-shadow: 0 0 5px 5px #D8D8D8;
 }
 
 #FooterOne, #FooterTwo, #FooterTree {
@@ -383,14 +348,8 @@ footer{
 #FooterTwo{
 	float: right;
     position: relative;
+	top:26px;
 	color:#fff;
-	font-size: 13px !important;
-	font-family: arial,sans-serif !important;
-	font-weight:bold !important;
-	padding-bottom:8px !important;
-	padding-top:15px !important;
-	background-color:transparent !important;
-	margin-top:0px !important;
 }
 
 #FooterTree{
@@ -434,22 +393,29 @@ footer{
 	margin-right:59px;
 }
 
-#nav{
-	float:right;
+nav{
+	position:absolute;
+	width:520px;
+	top:25px;
+	right:0;
+	text-shadow: 0 1px 1px rgba(0,0,0,.3);
+	-webkit-border-radius: .5em; 
+	-moz-border-radius: .5em;
+	border-radius: .5em;
+	-webkit-box-shadow: 0 1px 2px rgba(0,0,0,.2);
+	-moz-box-shadow: 0 1px 2px rgba(0,0,0,.2);
+	box-shadow: 0 1px 2px rgba(0,0,0,.2);
+	background:#534741;
 }
 
-#ssnav{
-	float:right;
-	background-color: #534741;
-    border-radius: 0.5em 0.5em 0.5em 0.5em;
-    float: right;
-    height: 36px;
-    padding: 5px;
-    position: relative;
-    width: 400px;
+ssnav{
+	position:absolute;
+	width:520px;
+	top:75px;
+	right:0;
 }
 
-#ssnav a{
+ssnav a{
 	font-size: 12px;
 	font-family: arial,sans-serif;
 	text-transform:capitalize;
@@ -463,25 +429,28 @@ footer{
     float: right;
 }
 
-#ssnav input{
-	padding:5px;
-	margin-top:5px;
-}
-
-#ssnav a:hover{
+ssnav a:hover{
 	color: #534741;
 	text-decoration:underline;
 }
 
-#ssnav a.current{
+ssnav a.current{
 	background-color:#534741;
 }
 
-#nav a{
-	font-size: 13px;
+nav ul li{
+	float: left;
+	margin-left:16px;
+	line-height:normal;
+}
+
+nav ul li a{
+	font-size: 12px;
 	font-family: arial,sans-serif;
-	color: #ffa741;
-	font-weight:bold;
+	color: white;
+	text-transform:capitalize;
+	font-weight:normal;
+	display:block;	/* IE6, IE7 line height fix */
 	padding-bottom:8px;
 	padding-top:15px;
 	background-color:transparent;
@@ -490,9 +459,14 @@ footer{
     text-decoration:none;
 }
 
-#nav a:hover{
-	color: #534741;
+nav ul li a:hover{
+	color: white;
 	text-decoration:underline;
+}
+
+nav ul li a.current{
+	background-color:#F15A24;
+	padding:15px;
 }
 
 .content_menu{
@@ -632,7 +606,7 @@ footer{
 ***************************************************/
 
 .menuBar{
-	background:#534741  !important;
+	background:#534741 !important;
 }
 .menuLink{
 	color:#F15A24;
@@ -640,13 +614,15 @@ footer{
 .menuLink:hover{
 	color: white;
 	text-decoration:underline;
-	cursor:  pointer;
+	cursor: pointer;
 }
 .selected{
 	background:#FFFFFF;
 }
 
-
+/***************************************************
+				       DATATABLE
+***************************************************/
 
 
 /***************************************************
@@ -666,7 +642,7 @@ footer{
 		    	
 .gauche {
 	float: left;
-	width: 420px;
+	width: 450px;
 	position: relative;
 	background:white;
 	padding:5px;
@@ -675,7 +651,7 @@ footer{
 					
 .droite {
 	float: right;
-	width: 150px;
+	width: 140px;
 	position: relative;
 	background:white;
 	padding:10px;
@@ -700,14 +676,27 @@ footer{
 	color: green;
 }
 
-table input{
-	background: none repeat scroll 0 0 #DDD !important;
+
+.pic {
+	margin-bottom: -4px;
+	margin-right: 2px;
 }
 
-.nonObligatoire input{
-	background: none repeat scroll 0 0 #FFF !important;
+.search .rf-ddm-itm-sel {
+	background-color: transparent;
+	background-image: none;
+	border-color: transparent;
+	cursor: default;
 }
 
-.label{
-	width:200px;
+/* Modal panel */
+.rf-pp-shade {
+    background-color: #00000 !important;
+    opacity: 1 !important;
+}
+
+/* Panel Grid */
+.noBorders tr, .noBorders td {
+    background: none !important;
+    border: none !important;
 }
