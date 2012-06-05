@@ -231,7 +231,11 @@ footer a{
 .inputRecherche{
 	font-size:14px !important;
 }
-			
+
+.message_automplete {
+    width:500px;
+}
+
 header{
 	position: relative;
 	float:left;
@@ -646,7 +650,9 @@ footer{
 	background:#FFFFFF;
 }
 
-
+/***************************************************
+				       DATATABLE
+***************************************************/
 
 
 /***************************************************
