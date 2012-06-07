@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<PROCESS model-entity="JSFProcess">
+ <PROCESS-ITEM NAME="rules:#pages#connexion.xhtml"
+  PATH="/pages/connexion.xhtml" SHAPE="83,82,0,0" model-entity="JSFProcessGroup">
+  <PROCESS-ITEM ID="rules:#pages#connexion.xhtml:0" NAME="item"
+   PATH="/pages/connexion.xhtml" model-entity="JSFProcessItem">
+   <PROCESS-ITEM-OUTPUT ID="connected::#pages#home.xhtml" NAME="output"
+    PATH="/pages/home.xhtml" TARGET="rules:#pages#home.xhtml"
+    TITLE="connected" model-entity="JSFProcessItemOutput"/>
+  </PROCESS-ITEM>
+ </PROCESS-ITEM>
+ <PROCESS-ITEM NAME="rules:#pages#home.xhtml" PATH="/pages/home.xhtml"
+  SHAPE="233,188,0,0" model-entity="JSFProcessGroup" persistent="true"/>
+</PROCESS>

@@ -1,0 +1,39 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:a4j="http://richfaces.org/a4j"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets">
+
+	<section class="group1">
+		<h3>Inscription - ETAPE 1</h3>
+		<h:form id="form-subscribe">
+			<rich:graphValidator value="#{beanInscription}" id="gv">
+				<rich:panel header="Nouveau sur MediArea ?">
+					<rich:message for="gv" />
+					<h:panelGrid columns="3">
+						<h:outputText value="Adresse Mail :" />
+						<h:inputText value="#{beanInscription.adrMail}" id="adrMail" showMessages="true">
+							<rich:validator />
+						</h:inputText>
+						<rich:message for="adrMail" />
+
+						<h:outputText value="Password :" />
+						<h:inputSecret value="#{beanInscription.password}" id="password" showMessages="true">
+							<rich:validator />
+						</h:inputSecret>
+						<rich:message for="password" />
+
+						<h:outputText value="Confirmation Password :" />
+						<h:inputSecret value="#{beanInscription.confirm}" id="confirm" showMessages="true">
+							<rich:validator />
+						</h:inputSecret>
+						<rich:message for="confirm" />
+					</h:panelGrid>
+					<br />					
+					<h:commandButton id="subscribe" action="#{beanInscription.createAccount}" value="S'inscrire" />
+				</rich:panel>
+			</rich:graphValidator>
+		</h:form>
+	</section>
+</ui:composition>
