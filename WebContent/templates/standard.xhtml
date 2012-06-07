@@ -61,11 +61,43 @@
 		</div>
 
 		<header class="group_bannner_left">
-
-			<input type="text" class="inputRecherche" size="53" name="recherche" />
-			<div class="button black">
-				<a href="#">Rechercher</a>
+			<div id="recherche_simple">
+				<h:form>
+					<h:inputText styleClass="inputRecherche" size="56" value="#{beanRecherche.value}" />
+					<p:selectOneButton styleClass="typeMedia" value="#{beanRecherche.typeMedia}">  
+			            <f:selectItem itemLabel="All" itemValue="1" />  
+			            <f:selectItem itemLabel="Video" itemValue="2" />  
+			            <f:selectItem itemLabel="Audio" itemValue="3" />  
+			        </p:selectOneButton>
+					<div class="buttonSearch">
+						<h:commandLink action="#{beanRecherche.rechercher}" value="Rechercher" />
+					</div>
+					<div class="clearfloat"></div>	
+				</h:form>
 			</div>
+			<div id="recherche_av_btn">
+				<h:form>
+					<p:commandButton id="chartBtn" value="Avancée" type="button" />  
+  
+				    <p:overlayPanel id="chartPanel" for="chartBtn" hideEffect="fade" my="right top" at="right bottom">  
+				        <h:form>
+				        	<p:panelGrid columns="2"> 
+				        		<h:outputText value="Titre : " /> <h:inputText value="#{beanRecherche.titre}" />
+				        		<h:outputText value="Auteur : " /> <h:inputText value="#{beanRecherche.auteur}" /> 
+				        		<h:outputText value="Description : " /> <h:inputText value="#{beanRecherche.description}" /> 
+				        		<h:outputText value="Tag : " /> <h:inputText value="#{beanRecherche.tag}" /> 
+				        		<h:outputText value="Catagorie : " /> 
+			        			<p:selectOneMenu id="city" value="#{beanRecherche.categorie}">  
+					                <f:selectItem itemLabel="Sélectionnez" itemValue="" />  
+					                <f:selectItems value="#{beanRecherche.lstCategories}" var="categorie" itemLabel="#{categorie.nomCategorie}" itemValue="#{categorie.idCategorie}"/>   
+					            </p:selectOneMenu>  
+				        		<p:column colspan="2"><h:commandButton action="#{beanRecherche.rechercherAvancee}" value="Rechercher" /></p:column>
+				        	</p:panelGrid>
+				       	</h:form>
+				    </p:overlayPanel>
+				</h:form>
+			</div>
+			<div class="clearfloat"></div>		
 
 		</header>
 

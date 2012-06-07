@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:a4j="http://richfaces.org/a4j"
+      xmlns:rich="http://richfaces.org/rich"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:c="http://java.sun.com/jsp/jstl/core"> 
+
+<f:metadata>
+	<f:viewParam name="v" value="#{beanRecherche.value}"/>
+	<f:viewParam name="ti" value="#{beanRecherche.titre}"/>
+	<f:viewParam name="au" value="#{beanRecherche.auteur}"/>
+	<f:viewParam name="ds" value="#{beanRecherche.description}"/>
+	<f:viewParam name="ta" value="#{beanRecherche.tag}"/>
+	<f:viewParam name="ct" value="#{beanRecherche.categorie}"/>
+	<f:viewParam name="tm" value="#{beanRecherche.typeMedia}"/>
+	<f:viewParam name="tr" value="#{beanRecherche.typeRecherche}"/>
+	<f:viewParam name="t" value="#{beanRecherche.tri}"/>
+	<f:viewParam name="to" value="#{beanRecherche.tri_ordre}"/>
+	<f:viewParam name="nb" value="#{beanRecherche.nb_par_pages}"/>
+	<f:viewParam name="af" value="#{beanRecherche.afficher_par}"/>
+	<f:viewParam name="dl" value="#{beanRecherche.seulementTelechargeable}"/>
+	<f:viewParam name="p" value="#{beanRecherche.page}"/>
+	<f:event type="preRenderView" listener="#{beanRecherche.processRecherchePre()}" onPostback="false"/>
+</f:metadata> 
+     
+<ui:composition template="/templates/standard.xhtml">
+	<ui:define name="pageTitle">Home</ui:define>
+	<ui:define name="content">
+			        
+	</ui:define>
+</ui:composition> 
+</html>
