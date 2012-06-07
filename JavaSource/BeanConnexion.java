@@ -1,8 +1,12 @@
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
+import javax.servlet.http.HttpSession;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
-
+import metier.media.Media;
 import metier.utilisateur.Utilisateur;
 import dao.utilisateur.DaoUtilisateur;
 
@@ -11,22 +15,27 @@ import dao.utilisateur.DaoUtilisateur;
  * 
  */
 public class BeanConnexion {
+	
 	public DaoUtilisateur daoUtilisateur = new DaoUtilisateur();
 	private java.lang.String connected = "";
-	private java.lang.Boolean isConnected = false;
+	private static java.lang.Boolean isConnected = false;
 	private FacesMessage message;
-	private Utilisateur User = null;
+	private static Utilisateur User = null;
 	@Pattern(regexp = "^[\\w\\-]([\\.\\w])+[\\w]+@([\\w\\-]+\\.)+[a-zA-Z]{2,4}$", message = "Mauvaise adresse mail - Veuillez corriger")
 	private java.lang.String identifiant = null;
 	@Size(min = 3, max = 12, message = "La taille du Password doit être entre 3 et 12")
 	private java.lang.String password = null;
+	
+	private List<Media> mediaDansPanier;
+	
 
 	public BeanConnexion() {
+		
+		mediaDansPanier = new ArrayList<Media>();
 	}
 
 	public String getIsAccountOk() {
-		if (identifiant == null) {
-		} else {
+		if (identifiant != null){
 			Utilisateur user = daoUtilisateur.rechercheSurAdrMail(identifiant);
 			if (user == null) {
 				connected = "isNotConnected";
@@ -50,6 +59,15 @@ public class BeanConnexion {
 				}
 			}
 		}
+		
+		return connected;
+	}
+	
+	public String seConnecter(String aMail) {
+		Utilisateur user = daoUtilisateur.rechercheSurAdrMail(aMail);
+		connected = "isConnected";
+		isConnected = true;
+		User = user;
 		return connected;
 	}
 
@@ -57,6 +75,8 @@ public class BeanConnexion {
 		connected = "isNotConnected";
 		isConnected = false;
 		User = null;
+		HttpSession session = (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(false);
+		session.invalidate();
 		return connected;
 	}
 
@@ -89,7 +109,7 @@ public class BeanConnexion {
 	}
 
 	public void setIsConnected(java.lang.Boolean isConnected) {
-		this.isConnected = isConnected;
+		BeanConnexion.isConnected = isConnected;
 	}
 
 	public Utilisateur getUser() {
@@ -100,5 +120,14 @@ public class BeanConnexion {
 		User = user;
 	}
 
+
+	
+	public List<Media> getMediaDansPanier() {
+		return mediaDansPanier;
+	}
+	
+	public void setMediaDansPanier(List<Media> mediaDansPanier) {
+		this.mediaDansPanier = mediaDansPanier;
+	}
 	
 }

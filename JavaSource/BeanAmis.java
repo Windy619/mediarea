@@ -1,11 +1,17 @@
 
 
 import java.util.ArrayList;
+import java.util.Date;
 
-import javax.validation.constraints.Size;
+import javax.faces.application.FacesMessage;
+import javax.faces.context.FacesContext;
 
 import metier.utilisateur.Amitie;
+import metier.utilisateur.Notification;
 import metier.utilisateur.Utilisateur;
+
+import org.primefaces.event.DragDropEvent;
+
 import dao.utilisateur.DaoAmitie;
 import dao.utilisateur.DaoUtilisateur;
 
@@ -19,9 +25,7 @@ public class BeanAmis {
 	private DaoAmitie daoAmitie;
 	
 	// Propriétés
-	@Size(min = 3, message = "La chaine de recherche doit faire au moins trois caractères !")
 	private String rechercheUtilisateur;
-	@Size(min = 3, message = "La chaine de recherche doit faire au moins trois caractères !")
 	private String rechercheAmis;	
 	
 	private Integer nombreAmis;
@@ -42,6 +46,9 @@ public class BeanAmis {
 	// Datagrid
 	private int nbColonneRecherche;
 	private int nbColonneSuggestion;
+	
+	// Bean
+	private BeanConnexion beanConnexion;
 
 	// Utilisateur connecté actuellement
 	private Utilisateur utilisateurConnecte;
@@ -50,31 +57,63 @@ public class BeanAmis {
 	 * Constructeur du bean
 	 */
 	public BeanAmis() {
+		
 		// Initialisation des dao
 		daoUtilisateur = new DaoUtilisateur();
 		daoAmitie = new DaoAmitie();
 		
 		// Maj des boolean de configuration
 		panelSuggestionAffiche = false;
-		panelRechercheAffiche = false;
+		panelRechercheAffiche = true;
+		
+		nombreAmis = 0;
+		nombreUtilisateursTrouves = 0;
+		nombreSuggestions = 0;	
 		
 		nbColonneRecherche = 5;
 		nbColonneSuggestion = 5;		
 		
 		// Chargement de l'utilisateur connecte
-		utilisateurConnecte = daoUtilisateur.getUn(1);	
+		beanConnexion = (BeanConnexion) FacesContext.getCurrentInstance().getCurrentInstance().getExternalContext().getSessionMap().get("beanConnexion");
 		
-		// Chargement des amis
-		chargerAmis();
+		if (beanConnexion != null) {
+			utilisateurConnecte = beanConnexion.getUser();
+			if (utilisateurConnecte != null)
+				chargerAmis();			
+		}
+
+
 	}
 	
-	
+	/**
+	 * On Drop d'un utilisateur dans la zone dropable
+	 * @param ddEvent
+	 */
+    public void onUtilisateurDrop(DragDropEvent ddEvent) {  
+    	// On récupère l'utilisateur nouvelAmis
+        nouvelAmis = ((Utilisateur) ddEvent.getData());  
+        // On crée l'amitié
+        ajouterAmis();
+    }  
+    
+	/**
+	 * On Drop d'un utilisateur dans la zone dropable
+	 * @param ddEvent
+	 */
+    public void onSuggestionDrop(DragDropEvent ddEvent) {  
+    	// On récupère l'utilisateur nouvelAmis
+    	Amitie amis = ((Amitie) ddEvent.getData());
+        nouvelAmis =   amis.getAmi();
+        // On crée l'amitié
+        ajouterAmis();
+    }      
+    
 	/**
 	 * Recherche d'un utilisateur
 	 */
 	public String rechercherUtilisateur() {
 		
-		if (!rechercheUtilisateur.isEmpty()) {
+		if (rechercheUtilisateur != null && !rechercheUtilisateur.isEmpty()) {
 			resultatsRechercheUtilisateur = new ArrayList(daoUtilisateur.rechercheNonAmis(rechercheUtilisateur, utilisateurConnecte));
 			nombreUtilisateursTrouves = resultatsRechercheUtilisateur.size();
 			
@@ -113,6 +152,7 @@ public class BeanAmis {
 		nombreSuggestions = suggestionUtilisateurs.size();
 		
 		panelSuggestionAffiche = true;
+		
 		if (suggestionUtilisateurs.size() < 5) {
 			nbColonneSuggestion = suggestionUtilisateurs.size();
 		}
@@ -151,9 +191,20 @@ public class BeanAmis {
 		
 		utilisateurConnecte.getAmis().add(new Amitie(utilisateurConnecte,nouvelAmis));
 		daoUtilisateur.sauvegarder(utilisateurConnecte);
-		chargerAmis();
-		rechercherUtilisateur();	
 		
+		chargerAmis();
+		
+		// On envoi une notification à l'utilisateur ajouté pour lui signaler
+		Notification notification = new Notification("L'utilisateur \"" + utilisateurConnecte.getPseudo() + "\" vous a ajouter à sa liste d'amis !", nouvelAmis);
+		notification.setDateEnvoiNotification(new Date());
+		// On l'ajoute à l'utilisateur concerné et on le sauvegarde
+		nouvelAmis.getNotifications().add(notification);
+		daoUtilisateur.sauvegarder(nouvelAmis);	
+		
+		// On ajoute un message montrant à l'utilisateur que l'amitié a bien été crée !
+        FacesMessage msg = new FacesMessage(nouvelAmis.getPseudo() + " a bien été ajouté à votre liste d'amis !");  
+        FacesContext.getCurrentInstance().addMessage(null, msg);  
+        
 		return "ajouteramis";
 	}	
 	
@@ -161,17 +212,19 @@ public class BeanAmis {
 	 * Supprimer un amis
 	 */
 	public String supprimerAmis() {
-				
-		System.out.println("AdrMail : " + ancienAmis.getAmi().getAdrMail());
-	
+					
 		utilisateurConnecte.getAmis().remove(ancienAmis);
 		// On sauvegarde l'utilisateur
 		daoUtilisateur.sauvegarder(utilisateurConnecte);
 		
 		daoAmitie.supprimer(ancienAmis);
 		
+		// On charge les amis
 		chargerAmis();
-		rechercherUtilisateur();	
+		
+		// On ajoute un message montrant à l'utilisateur que l'amitié a bien été supprimée !
+        FacesMessage msg = new FacesMessage(ancienAmis.getAmi().getPseudo() + " a bien été retiré de votre liste d'amis !");  
+        FacesContext.getCurrentInstance().addMessage(null, msg);  		
 
 		return "supprimeramis";
 	}	
@@ -210,6 +263,7 @@ public class BeanAmis {
 
 
 	public Utilisateur getUtilisateurConnecte() {
+		utilisateurConnecte = beanConnexion.getUser();
 		return utilisateurConnecte;
 	}
 

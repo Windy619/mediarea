@@ -9,6 +9,9 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinColumns;
+import javax.persistence.JoinTable;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
@@ -46,20 +49,23 @@ public class Media {
 	
 	private String titreMedia;
 	
-	@ManyToOne(cascade = {CascadeType.ALL})
+	@ManyToOne
 	private Utilisateur auteurMedia;
 	
-	@ManyToOne(cascade = {CascadeType.ALL})
+	@ManyToOne
 	private Visibilite visibilite;
 	
 	@ManyToOne(cascade = {CascadeType.ALL})
 	private Photo_Couverture photo;
 	
+	@ManyToOne
+	private Fichier fichier;	
+	
 	@ManyToOne(cascade = {CascadeType.ALL})
 	private Type_Media type;	
 	
-	@OneToMany(cascade = {CascadeType.ALL})
-	private Set<Categorie> categories;
+	@OneToMany
+	private Set<Categorie_Media> categories;
 	
 	@OneToMany(cascade = {CascadeType.ALL})
 	private Set<Tag> tags;
@@ -71,9 +77,20 @@ public class Media {
 	 * Constructeur vide
 	 */
 	public Media(){
-		categories = new HashSet<Categorie>();
+		categories = new HashSet<Categorie_Media>();
 		tags = new HashSet<Tag>();
 		commentaires = new HashSet<Commentaire>();
+	}
+	
+	public Media(String titreMedia, String descriptionMedia) {
+        this.titreMedia = titreMedia;
+        this.descriptionMedia = descriptionMedia;
+	}
+	
+	public Media(String titreMedia, String descriptionMedia, Type_Media type) {
+        this.titreMedia = titreMedia;
+        this.descriptionMedia = descriptionMedia;
+        this.type = type;
 	}
 	
 	/**
@@ -98,7 +115,7 @@ public class Media {
 		this.titreMedia = titreMedia;
 		this.visibilite = visibilite;
 		this.photo = photo;
-		categories = new HashSet<Categorie>();
+		categories = new HashSet<Categorie_Media>();
 		tags = new HashSet<Tag>();
 		commentaires = new HashSet<Commentaire>();
 	}	
@@ -192,11 +209,11 @@ public class Media {
 		this.photo = photo;
 	}
 
-	public Set<Categorie> getCategories() {
+	public Set<Categorie_Media> getCategories() {
 		return categories;
 	}
 
-	public void setCategories(Set<Categorie> categories) {
+	public void setCategories(Set<Categorie_Media> categories) {
 		this.categories = categories;
 	}
 
@@ -222,6 +239,17 @@ public class Media {
 
 	public void setCommentaires(Set<Commentaire> commentaires) {
 		this.commentaires = commentaires;
+	}
+	
+	public String toString(){
+		return ("M"+String.valueOf(idMedia));
+
+	public Fichier getFichier() {
+		return fichier;
+	}
+
+	public void setFichier(Fichier fichier) {
+		this.fichier = fichier;
 	}
 
 	

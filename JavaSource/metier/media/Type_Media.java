@@ -17,8 +17,8 @@ import javax.persistence.NamedQuery;
  */
 @Entity
 @NamedQueries({
-	@NamedQuery(name = Type_Media.NQ_VIDEO, query = "FROM Type_Media WHERE nomTypeMedia = 'video' "),
-	@NamedQuery(name = Type_Media.NQ_AUDIO, query = "FROM Type_Media WHERE nomTypeMedia = 'audio' ")
+	@NamedQuery(name = Type_Media.NQ_VIDEO, query = "FROM Type_Media WHERE nomTypeMedia = 'Video' "),
+	@NamedQuery(name = Type_Media.NQ_AUDIO, query = "FROM Type_Media WHERE nomTypeMedia = 'Son' ")
 })
 /**
  * Class Type_Media
@@ -30,7 +30,7 @@ public class Type_Media {
 
 	public static final String NQ_VIDEO = "categorie_video";
 	
-	public static final String NQ_AUDIO = "categorie_audio";
+	public static final String NQ_AUDIO = "categorie_son";
 	
 	@Id
 	@GeneratedValue

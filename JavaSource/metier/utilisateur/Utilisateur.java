@@ -8,7 +8,6 @@ import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.JoinTable;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
@@ -22,6 +21,7 @@ import metier.media.Playlist;
 import metier.media.Regarder;
 import metier.media.Signalement_Commentaire;
 import metier.media.Signalement_Media;
+import metier.media.Telechargement_Media;
 import metier.media.Visibilite;
 
 
@@ -35,8 +35,8 @@ import metier.media.Visibilite;
 @NamedQueries({
 	@NamedQuery(name = Utilisateur.NQ_VALIDES, query = "FROM Utilisateur WHERE dateBanissement = NULL AND dateSuppressionUtilisateur = NULL"),
 	@NamedQuery(name = Utilisateur.NQ_NON_VALIDES, query = "FROM Utilisateur WHERE dateBanissement != NULL OR dateSuppressionUtilisateur != NULL"),
-	@NamedQuery(name = Utilisateur.NQ_BANNIS, query = "FROM Utilisateur WHERE dateBanissement = NULL"),
-	@NamedQuery(name = Utilisateur.NQ_SUPPRIMES, query = "FROM Utilisateur WHERE dateSuppressionUtilisateur = NULL"),
+	@NamedQuery(name = Utilisateur.NQ_BANNIS, query = "FROM Utilisateur WHERE dateBanissement != NULL"),
+	@NamedQuery(name = Utilisateur.NQ_SUPPRIMES, query = "FROM Utilisateur WHERE dateSuppressionUtilisateur != NULL"),
 	@NamedQuery(name = Utilisateur.NQ_ADMINISTRATEURS, query = "FROM Utilisateur WHERE estAdministrateur IS TRUE"),
 	@NamedQuery(name = Utilisateur.NQ_PSEUDO, query = "FROM Utilisateur WHERE pseudo = :pseudo"),
 	@NamedQuery(name = Utilisateur.NQ_MAIL, query = "FROM Utilisateur WHERE adrMail = :mail")
@@ -136,8 +136,8 @@ public class Utilisateur {
 	
 	@OneToMany(cascade = {CascadeType.ALL})
 	private Set<Signalement_Commentaire> signalementsCommentaires;		
-	
-	@OneToMany(cascade = {CascadeType.ALL})
+
+	@OneToMany(mappedBy = "destinnataireNotification", cascade = {CascadeType.ALL})
 	private Set<Notification> notifications;
 	
 	@OneToMany(cascade = {CascadeType.ALL})
@@ -155,14 +155,16 @@ public class Utilisateur {
 	@OneToMany(cascade = {CascadeType.ALL})
 	private Set<Regarder> regardeMedias;
 	
-	
 	@OneToMany(cascade = {CascadeType.ALL})
 	private Set<Note> noteMedias;
 	
 	@OneToMany(cascade = {CascadeType.ALL})
-	private Set<Message_Mural> messagesMuraux;
+	private Set<Telechargement_Media> telechargementsMedias;	
 	
 	@OneToMany(cascade = {CascadeType.ALL})
+	private Set<Message_Mural> messagesMuraux;
+	
+	@OneToMany(mappedBy = "emetteur", cascade = {CascadeType.ALL})
 	private Set<Message_Prive> messagesPrives;
 		
 	
@@ -217,6 +219,7 @@ public class Utilisateur {
 		signalementsCommentaires = new HashSet<Signalement_Commentaire>();
 		messagesMuraux = new HashSet<Message_Mural>();
 		messagesPrives = new HashSet<Message_Prive>();
+		telechargementsMedias = new HashSet<Telechargement_Media>();
 		
 	}
 	
@@ -251,37 +254,8 @@ public class Utilisateur {
 		notificationParMail = false;	
 		messagesMuraux = new HashSet<Message_Mural>();
 		messagesPrives = new HashSet<Message_Prive>();
+		telechargementsMedias = new HashSet<Telechargement_Media>();
 	}	
-	
-	public Utilisateur (String nomUtilisateur, String prenomUtilisateur, String pseudo){
-		this.nomUtilisateur = nomUtilisateur;
-		this.prenomUtilisateur = prenomUtilisateur;
-		this.pseudo = pseudo;
-//		adrMail = null;
-//		estAdministrateur = false;
-//		mdp = null;
-//		dateInscription = new Date();
-//		avatar = null;
-//		amis = new HashSet<Amitie>();
-//		signalementsUtilisateurs  = new HashSet<Signalement_Utilisateur>();
-//		notifications = new HashSet<Notification>();
-//		medias  = new HashSet<Media>();
-//		playlists  = new HashSet<Playlist>();
-//		commentaires  = new HashSet<Commentaire>();
-//		visibilite = null;
-//		aimeMedias = new HashSet<Aimer>();
-//		regardeMedias = new HashSet<Regarder>();
-//		signalementsMedias = new HashSet<Signalement_Media>();
-//		noteMedias = new HashSet<Note>();
-//		signalementsCommentaires = new HashSet<Signalement_Commentaire>();		
-//		notificationAutomatique = false;
-//		notificationParMail = false;	
-//		messagesMurauxEnvoyes = new HashSet<Message_Mural>();
-//		messagesPrivesEnvoyes = new HashSet<Message_Prive>();
-//		messagesMuraux = new HashSet<Message_Mural>();
-//		messagesPrives = new HashSet<Message_Prive>();
-	}
-
 
 	public Set<Message_Mural> getMessagesMuraux() {
 		return messagesMuraux;
@@ -605,5 +579,17 @@ public class Utilisateur {
 		this.signalementsCommentaires = signalementsCommentaires;
 	}
 
+
+	public Set<Telechargement_Media> getTelechargementsMedias() {
+		return telechargementsMedias;
+	}
+
+
+	public void setTelechargementsMedias(
+			Set<Telechargement_Media> telechargementsMedias) {
+		this.telechargementsMedias = telechargementsMedias;
+	}
+
+	
 	
 }

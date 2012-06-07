@@ -8,6 +8,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 
+import metier.utilisateur.Utilisateur;
+
 /**
  * @author Florence
  * @version 1.0
@@ -31,6 +33,9 @@ public class Signalement_Commentaire {
 	private String raisonSignalementCommentaire;
 	
 	@ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+	private Utilisateur auteurSignalementCommentaire;
+	
+	@ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
 	private Commentaire commentaire;
 
 	/**
@@ -45,10 +50,11 @@ public class Signalement_Commentaire {
 	 * @param raison
 	 * @param commentaire
 	 */
-	public Signalement_Commentaire(String raison, Commentaire commentaire) {
+	public Signalement_Commentaire(String raison, Commentaire commentaire, Utilisateur auteur) {
 		this.dateSignalementCommentaire = new Date();
 		this.raisonSignalementCommentaire = raison;
 		this.commentaire = commentaire;
+		this.auteurSignalementCommentaire = auteur;
 	}	
 
 	/**
@@ -92,5 +98,18 @@ public class Signalement_Commentaire {
 		this.idSignalementCommentaire = idSignalementCommentaire;
 	}
 
+	public String toString(){
+		return ("S"+String.valueOf(idSignalementCommentaire));
+	}
+
+	public Utilisateur getAuteurSignalementCommentaire() {
+		return auteurSignalementCommentaire;
+	}
+
+	public void setAuteurSignalementCommentaire(
+			Utilisateur auteurSignalementCommentaire) {
+		this.auteurSignalementCommentaire = auteurSignalementCommentaire;
+	}	
+	
 	
 }

@@ -1,9 +1,12 @@
 package metier.utilisateur;
 
 import java.util.Date;
+
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 
 /**
  * @author Florence
@@ -30,6 +33,9 @@ public class Notification {
 	private Date dateLectureNotification;
 	
 	private Date dateSuppressionNotification;
+	
+	@ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+	private Utilisateur destinnataireNotification;
 
 	/**
 	 * Constructeur vide
@@ -40,9 +46,10 @@ public class Notification {
 	 * Constructeur par défaut
 	 * @param contenuNotification
 	 */
-	public Notification(String contenuNotification){
+	public Notification(String contenuNotification, Utilisateur destinnataire){
 		this.contenuNotification = contenuNotification;
 		this.dateEnvoiNotification = new Date();
+		this.destinnataireNotification = destinnataire;
 		
 	}	
 
@@ -95,5 +102,14 @@ public class Notification {
 		this.idNotification = idNotification;
 	}
 
+	public Utilisateur getDestinnataireNotification() {
+		return destinnataireNotification;
+	}
+
+	public void setDestinnataireNotification(Utilisateur destinnataireNotification) {
+		this.destinnataireNotification = destinnataireNotification;
+	}
+
+	
 	
 }
