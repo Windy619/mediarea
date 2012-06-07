@@ -93,10 +93,61 @@
 	<managed-bean>
 		<managed-bean-name>beanNotification</managed-bean-name>
 		<managed-bean-class>BeanNotification</managed-bean-class>
-		<managed-bean-scope>request</managed-bean-scope>
-	</managed-bean>
-	
-	<navigation-rule>
+  <managed-bean-scope>request</managed-bean-scope>
+ </managed-bean>
+ <managed-bean>
+  <managed-bean-name>beanRecherche</managed-bean-name>
+  <managed-bean-class>BeanRecherche</managed-bean-class>
+  <managed-bean-scope>session</managed-bean-scope>
+  <managed-property>
+  	<property-name>afficher_par</property-name>
+  	<property-class>java.lang.String</property-class>
+  	<value>1</value>
+  </managed-property>
+  <managed-property>
+  	<property-name>tri</property-name>
+  	<property-class>java.lang.String</property-class>
+  	<value>1</value>
+  </managed-property>
+  <managed-property>
+  	<property-name>tri_ordre</property-name>
+  	<property-class>java.lang.String</property-class>
+  	<value>2</value>
+  </managed-property>
+  <managed-property>
+  	<property-name>nb_par_pages</property-name>
+  	<property-class>java.lang.String</property-class>
+  	<value>15</value>
+  </managed-property>
+  <managed-property>
+  	<property-name>seulementTelechargeable</property-name>
+  	<property-class>java.lang.Boolean</property-class>
+  	<value>false</value>
+  </managed-property>
+  <managed-property>
+  	<property-name>typeMedia</property-name>
+  	<property-class>java.lang.String</property-class>
+  	<value>1</value>
+  </managed-property>
+  <managed-property>
+  	<property-name>typeRecherche</property-name>
+  	<property-class>java.lang.String</property-class>
+  	<value>1</value>
+  </managed-property>
+  <managed-property>
+  	<property-name>page</property-name>
+  	<property-class>java.lang.String</property-class>
+  	<value>1</value>
+  </managed-property>
+ </managed-bean>
+ <navigation-rule>
+   <from-view-id>*</from-view-id> 
+   <navigation-case> 
+     <from-outcome>rechercheMedias</from-outcome> 
+     <to-view-id>/pages/recherche.xhtml</to-view-id> 
+   </navigation-case>
+  </navigation-rule> 
+  <navigation-rule>
 		<from-view-id>/*</from-view-id>
 		<navigation-case>
 			<from-outcome>isConnected</from-outcome>
