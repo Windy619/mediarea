@@ -35,5 +35,6 @@
   <mapping class="metier.utilisateur.Signalement_MessagePrive"/>
   <mapping class="metier.media.Categorie_Media"/>
   <mapping class="metier.media.Fichier"/>
+  <mapping class="metier.media.Telechargement_Media"/>
  </session-factory>
 </hibernate-configuration>

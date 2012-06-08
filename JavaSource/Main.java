@@ -175,7 +175,7 @@ public class Main {
         util.getRegardeMedias().add(new Regarder(daoMedia.getUn(1)));
         util.getSignalementsMedias().add(new Signalement_Media("Pas conforme à la charte", daoMedia.getUn(3)));
         util.getNoteMedias().add(new Note(5,daoMedia.getUn(4)));
-        util.getSignalementsCommentaires().add(new Signalement_Commentaire("Pas conforme a la charte !",daoCommentaire.getUn(1)));
+        util.getSignalementsCommentaires().add(new Signalement_Commentaire("Pas conforme a la charte !",daoCommentaire.getUn(1), daoUtilisateur.getUn(1)));
         util.setAvatar(new Avatar("/resources/avatar/","1.png"));
         util.setAvatar(new Avatar("/resources/avatar/","2.png"));
         util.setAvatar(new Avatar("/resources/avatar/","3.png"));

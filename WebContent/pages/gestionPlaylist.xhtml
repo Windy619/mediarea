@@ -24,7 +24,7 @@
 				<p:tree id="media" value="#{beanGestionPlaylist.root}" var="node"
 					selectionMode="single" style="width:90%;"
 					selection="#{beanGestionPlaylist.selectedNode}">
-					<p:treeNode>
+					<p:treeNode>					
 						<h:outputText rendered="#{beanGestionPlaylist.evaluatePlaylist(node) and node.getVisibilite().getIdVisibilite()==1}"
 							style="font-weight:bold;color:#ffa741;" value="#{node.nomPlaylist}" />
 							
