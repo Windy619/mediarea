@@ -34,21 +34,6 @@
 		<managed-bean-name>beanConnexion</managed-bean-name>
 		<managed-bean-class>BeanConnexion</managed-bean-class>
 		<managed-bean-scope>session</managed-bean-scope>
-		<managed-property>
-			<property-name>password</property-name>
-			<property-class>java.lang.String</property-class>
-			<value />
-		</managed-property>
-		<managed-property>
-			<property-name>identifiant</property-name>
-			<property-class>java.lang.String</property-class>
-			<value></value>
-		</managed-property>
-		<managed-property>
-			<property-name>connected</property-name>
-			<property-class>java.lang.String</property-class>
-			<value></value>
-		</managed-property>
 	</managed-bean>
 	<managed-bean>
 		<managed-bean-name>beanProfil</managed-bean-name>
