@@ -242,7 +242,7 @@ public class Media {
 	}
 	
 	public String toString(){
-		return ("M"+String.valueOf(idMedia));
+		return ("M"+String.valueOf(idMedia));}
 
 	public Fichier getFichier() {
 		return fichier;

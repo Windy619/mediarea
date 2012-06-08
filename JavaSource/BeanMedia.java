@@ -1042,7 +1042,7 @@ public class BeanMedia {
 		//interdiction de signaler soi-même
 		//if (commentaireSelectionne.getAuteur() != utilisateurConnecte) {
 			//Création du signalement
-			Signalement_Commentaire sc = new Signalement_Commentaire(raisonCommentaire, daoCommentaire.getUn(2)); //TODOO bon commentaire signalé
+			Signalement_Commentaire sc = new Signalement_Commentaire(raisonCommentaire, daoCommentaire.getUn(2), daoUtilisateur.getUn(1)); //TODOO bon commentaire signalé
 		
 			//Ajout du signalement aux signalements du commentaire existants
 			util.getSignalementsCommentaires().add(sc);

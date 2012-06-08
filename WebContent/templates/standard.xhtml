@@ -30,6 +30,7 @@
 
 <h:body>
 
+	
 	<p:stack icon="/resources/images/menu/menu.png">
 		<p:menuitem rendered="#{beanConnexion.isConnected}" value="Amis" icon="/resources/images/menu/amis.png"
 			url="amis.jsf" />
@@ -37,8 +38,12 @@
 			url="#" />
 		<p:menuitem rendered="#{beanConnexion.isConnected}" value="Playlist"
 			icon="/resources/images/menu/playlist.png" url="gestionPlaylist.jsf" />
+		<p:menuitem rendered="#{beanConnexion.isConnected}" value="Notification (#{beanNotification.nbNotifications})" onclick="dlgNotification.show()"
+			icon="/resources/images/menu/notification.png" url="#"/>		
+		<p:menuitem rendered="#{beanConnexion.isConnected}" value="Upload"
+			icon="/resources/images/menu/upload2.png" url="upload.jsf"/>				
 		<p:menuitem rendered="#{beanConnexion.isConnected}" value="Messagerie"
-			icon="/resources/images/menu/messagerie.png" url="#" />
+			icon="/resources/images/menu/messagerie.png" url="messagesPrives.jsf" />
 		<p:menuitem value="Accueil" icon="/resources/images/menu/home.png"
 			url="home.jsf" />
 	</p:stack>
@@ -108,10 +113,6 @@
 				</h:form>
 			</div>
 			<div class="clearfloat"></div>		
-					          		        	    
-					    </p:dataTable>  
-
-					</p:dialog>		
 				
 				</h:form>
 				<p:growl id="growl" showDetail="false" life="3000" />
@@ -140,6 +141,32 @@
 			</div>			
 		</header>
 
+
+		<p:dialog id="dialogNotification" header="Notification" widgetVar="dlgNotification">
+
+			<h:outputText rendered="#{empty beanNotification.listeNotifications}" value="Vous n'avez aucune notifications pour le moment !" />
+			
+		    <p:dataTable id="basic" rendered="#{beanNotification.listeNotifications.size() > 0}" value="#{beanNotification.listeNotifications}" paginator="true" rows="4" var="notification">  
+		        <p:column>  
+		            <f:facet name="header">  
+		                    Date  
+		            </f:facet>  
+			    	<h:outputText value="#{notification.dateEnvoiNotification}">
+			    		<f:convertDateTime type="date" pattern="dd/MM/yyyy HH:mm"/>
+			    	</h:outputText>
+		        </p:column>  	
+		        
+		        <p:column>  
+		            <f:facet name="header">  
+		                    Message  
+		            </f:facet>  
+		            <h:outputText value="#{notification.contenuNotification}" /> 
+		        </p:column>
+		          		        	    
+		    </p:dataTable>  
+
+		</p:dialog>	
+					
 		<p:dialog id="dialog" header="Connexion" widgetVar="dlg">
 			<h:form>
 				<h:panelGrid columns="2" cellpadding="5">
