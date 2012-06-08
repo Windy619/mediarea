@@ -1,19 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <pageflow:Pageflow xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:pageflow="http://www.sybase.com/suade/pageflow" id="pf13349388593620" configfile="/MediArea/WebContent/WEB-INF/faces-config.xml">
-  <nodes xsi:type="pageflow:PFPage" name="pages/home.xhtml" x="338" y="1330" id="pf13354298275783" referenceLink="//@navigationRule.1/@navigationCase.0/@toViewId|" inlinks="pf13367735792811 pf13385767264480" path="/pages/home.xhtml"/>
+  <nodes xsi:type="pageflow:PFPage" name="pages/home.xhtml" x="338" y="562" id="pf13354298275783" referenceLink="//@navigationRule.1/@navigationCase.0/@toViewId|" inlinks="pf13367735792811 pf13385767264480" path="/pages/home.xhtml"/>
   <nodes xsi:type="pageflow:PFPage" name="pages/suiteInscription.xhtml" x="122" y="178" id="pf13354298275784" referenceLink="//@navigationRule.3/@fromViewId|" path="/pages/suiteInscription.xhtml"/>
-  <nodes xsi:type="pageflow:PFPage" name="*" x="122" y="946" id="pf13367735792813" referenceLink="//@navigationRule.1/@fromViewId|" outlinks="pf13367735792811 pf13385767264480" path="/*"/>
+  <nodes xsi:type="pageflow:PFPage" name="*" x="122" y="562" id="pf13367735792813" referenceLink="//@navigationRule.1/@fromViewId|" outlinks="pf13367735792811 pf13385767264480" path="/*"/>
   <links id="pf13367735792811" target="pf13354298275783" source="pf13367735792813" outcome="isConnected" redirect="true"/>
   <links id="pf13385767264480" target="pf13354298275783" source="pf13367735792813" outcome="isNotConnected" redirect="true"/>
-  <links id="pf13354298275782" target="pf13354298275784" source="pf13354298275780" outcome="isCreated" redirect="true"/>
-  <links id="pf13354325503377" target="pf13354298275780" source="pf13354298275780" outcome="isNotConnected"/>
-  <links id="pf13354325503378" target="pf13354298275780" source="pf13354298275780" outcome="isNotCreated"/>
-  <links id="pf13372944103741" target="pf13354298275783" source="pf13372944103753" outcome="isConnected" redirect="true"/>
-  <links id="pf13372944103740" target="pf13354298275780" source="pf13372944103753" outcome="isNotConnected"/>
-  <links id="pf13372944103742" target="pf13354298275784" source="pf13354743421924" outcome="update" redirect="true"/>
-  <links id="pf13354325503377" target="pf13354298275780" source="pf13354298275780" outcome="isNotCreated">
-    <bendPoints d1Height="-36" d2Height="-36"/>
-    <bendPoints d1Width="-64" d1Height="-36" d2Width="-64" d2Height="-36"/>
-    <bendPoints d1Width="-64" d2Width="-64"/>
-  </links>
 </pageflow:Pageflow>
