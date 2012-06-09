@@ -9,7 +9,7 @@
     
 <f:metadata>
 	<f:viewParam name="v" value="#{beanMedia.idMediaVisualise}" />
-	<f:event type="preRenderView" listener="#{beanMedia.processRecherche()}" /><!-- TODO pas erreur -->
+	<f:event type="preRenderView" listener="#{beanMedia.processRecherche()}" />
 </f:metadata>
 
 <ui:composition template="/templates/standard.xhtml">
@@ -602,7 +602,7 @@
 			<br />
 			
 			<!-- Carousel des médias suggérés ayant le même artiste que le média visualisé -->
-			<h:panelGroup rendered="#{beanMedia.carouselRecommendationMedias.size() > 0}">
+			<h:panelGroup rendered="#{not empty beanMedia.carouselRecommendationMedias}">
 						<p:carousel value="#{beanMedia.carouselRecommendationMedias}" var="mediaRecommende" itemStyleClass="carItem"  
 			            			easing="easeOutBounce" style="min-width: 600px;">
 						    <h:panelGrid columns="1" style="width: 200px"  cellpadding="5">
