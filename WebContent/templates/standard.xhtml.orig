@@ -100,14 +100,43 @@
 
 			</div>
 			<br /> <br />
-			<div id="ssnav">
-				<!--barre de recherche-->
+			<div id="recherche_simple">
 				<h:form>
-					<p:inputText id="recherche" size="50" label="recherche" />
-					<h:outputLink value="#">
-						<h:graphicImage value="/resources/images/search.png" />
-					</h:outputLink>
+					<h:inputText styleClass="inputRecherche" size="56" value="#{beanRecherche.value}" />
+					<p:selectOneButton styleClass="typeMedia" value="#{beanRecherche.typeMedia}">  
+			            <f:selectItem itemLabel="All" itemValue="1" />  
+			            <f:selectItem itemLabel="Video" itemValue="2" />  
+			            <f:selectItem itemLabel="Audio" itemValue="3" />  
+			        </p:selectOneButton>
+					<div class="buttonSearch">
+						<h:commandLink action="#{beanRecherche.rechercher}" value="Rechercher" />
+					</div>
+					<div class="clearfloat"></div>	
 				</h:form>
+			</div>
+			<div id="recherche_av_btn">
+				<h:form>
+					<p:commandButton id="chartBtn" value="Avancée" type="button" />  
+  
+				    <p:overlayPanel id="chartPanel" for="chartBtn" hideEffect="fade" my="right top" at="right bottom">  
+				        <h:form>
+				        	<p:panelGrid columns="2"> 
+				        		<h:outputText value="Titre : " /> <h:inputText value="#{beanRecherche.titre}" />
+				        		<h:outputText value="Auteur : " /> <h:inputText value="#{beanRecherche.auteur}" /> 
+				        		<h:outputText value="Description : " /> <h:inputText value="#{beanRecherche.description}" /> 
+				        		<h:outputText value="Tag : " /> <h:inputText value="#{beanRecherche.tag}" /> 
+				        		<h:outputText value="Catagorie : " /> 
+			        			<p:selectOneMenu id="city" value="#{beanRecherche.categorie}">  
+					                <f:selectItem itemLabel="Sélectionnez" itemValue="" />  
+					                <f:selectItems value="#{beanRecherche.lstCategories}" var="categorie" itemLabel="#{categorie.nomCategorie}" itemValue="#{categorie.idCategorie}"/>   
+					            </p:selectOneMenu>  
+				        		<p:column colspan="2"><h:commandButton action="#{beanRecherche.rechercherAvancee}" value="Rechercher" /></p:column>
+				        	</p:panelGrid>
+				       	</h:form>
+				    </p:overlayPanel>
+				</h:form>
+			</div>
+			<div class="clearfloat"></div>		
 			</div>			
 		</header>
 
@@ -137,6 +166,54 @@
 
 		</p:dialog>	
 					
+		<p:dialog id="dialog" header="Connexion" widgetVar="dlg">
+			<h:form>
+				<h:panelGrid columns="2" cellpadding="5">
+					<h:outputLabel value="Adresse Mail :" />
+					<p:inputText value="#{beanConnexion.identifiant}" id="identifiant"
+						label="identifiant" required="true" />
+					<h:outputLabel value="Password :" />
+					<h:inputSecret value="#{beanConnexion.password}"
+						class="ui-inputfield ui-password ui-widget ui-state-default ui-corner-all"
+						id="password" label="password" required="true" />
+					<p:commandButton id="Login" value="Se connecter" update=":growl"
+						action="#{beanConnexion.getIsAccountOk}"
+						oncomplete="handleLoginRequest(xhr, status, args)" />
+					<br />
+					<h:link value="Mot de passe oublié ?" outcome="recuperationMDP" />
+				</h:panelGrid>
+			</h:form>
+		</p:dialog>
+					    </p:dataTable>  
+
+					</p:dialog>		
+				
+				</h:form>
+				<p:growl id="growl" showDetail="false" life="3000" />
+
+				<script type="text/javascript">  
+					    function handleLoginRequest(xhr, status, args) {  
+					        if(args.validationFailed || !args.loggedIn) {  
+					            jQuery('#dialog').effect("shake", { times:3 }, 100);  
+					        } else {  
+					            dlg.hide();  
+					            jQuery('#connexion').fadeOut();  
+					        }  
+					    }  
+					</script>
+
+			</div>
+			<br /> <br />
+			<div id="ssnav">
+				<!--barre de recherche-->
+				<h:form>
+					<p:inputText id="recherche" size="50" label="recherche" />
+					<h:outputLink value="#">
+						<h:graphicImage value="/resources/images/search.png" />
+					</h:outputLink>
+				</h:form>
+			</div>			
+
 		<p:dialog id="dialog" header="Connexion" widgetVar="dlg">
 			<h:form>
 				<h:panelGrid columns="2" cellpadding="5">
