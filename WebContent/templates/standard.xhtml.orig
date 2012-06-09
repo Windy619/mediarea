@@ -30,6 +30,7 @@
 
 <h:body>
 
+	
 	<p:stack icon="/resources/images/menu/menu.png">
 		<p:menuitem rendered="#{beanConnexion.isConnected}" value="Amis" icon="/resources/images/menu/amis.png"
 			url="amis.jsf" />
@@ -37,8 +38,12 @@
 			url="#" />
 		<p:menuitem rendered="#{beanConnexion.isConnected}" value="Playlist"
 			icon="/resources/images/menu/playlist.png" url="gestionPlaylist.jsf" />
+		<p:menuitem rendered="#{beanConnexion.isConnected}" value="Notification (#{beanNotification.nbNotifications})" onclick="dlgNotification.show()"
+			icon="/resources/images/menu/notification.png" url="#"/>		
+		<p:menuitem rendered="#{beanConnexion.isConnected}" value="Upload"
+			icon="/resources/images/menu/upload2.png" url="upload.jsf"/>				
 		<p:menuitem rendered="#{beanConnexion.isConnected}" value="Messagerie"
-			icon="/resources/images/menu/messagerie.png" url="#" />
+			icon="/resources/images/menu/messagerie.png" url="messagesPrives.jsf" />
 		<p:menuitem value="Accueil" icon="/resources/images/menu/home.png"
 			url="home.jsf" />
 	</p:stack>
@@ -71,6 +76,30 @@
 					<h:outputText value=" | " />
 
 					<h:outputLink rendered="#{!beanConnexion.isConnected}"
+						id="connexion" value="javascript:void(0)" onclick="dlg.show()">
+						<h:outputText value="Connexion" />
+					</h:outputLink>
+					        
+					<h:commandLink rendered="#{beanConnexion.isConnected}"
+						id="deconnexion" action="#{beanConnexion.seDeconnecter}"
+						title="deconnexion" value="Déconnexion" />
+				
+				</h:form>
+				<p:growl id="growl" showDetail="false" life="3000" />
+
+				<script type="text/javascript">  
+					    function handleLoginRequest(xhr, status, args) {  
+					        if(args.validationFailed || !args.loggedIn) {  
+					            jQuery('#dialog').effect("shake", { times:3 }, 100);  
+					        } else {  
+					            dlg.hide();  
+					            jQuery('#connexion').fadeOut();  
+					        }  
+					    }  
+					</script>
+
+			</div>
+			<br /> <br />
 			<div id="recherche_simple">
 				<h:form>
 					<h:inputText styleClass="inputRecherche" size="56" value="#{beanRecherche.value}" />
@@ -108,7 +137,53 @@
 				</h:form>
 			</div>
 			<div class="clearfloat"></div>		
-					          		        	    
+			</div>			
+		</header>
+
+
+		<p:dialog id="dialogNotification" header="Notification" widgetVar="dlgNotification">
+
+			<h:outputText rendered="#{empty beanNotification.listeNotifications}" value="Vous n'avez aucune notifications pour le moment !" />
+			
+		    <p:dataTable id="basic" rendered="#{beanNotification.listeNotifications.size() > 0}" value="#{beanNotification.listeNotifications}" paginator="true" rows="4" var="notification">  
+		        <p:column>  
+		            <f:facet name="header">  
+		                    Date  
+		            </f:facet>  
+			    	<h:outputText value="#{notification.dateEnvoiNotification}">
+			    		<f:convertDateTime type="date" pattern="dd/MM/yyyy HH:mm"/>
+			    	</h:outputText>
+		        </p:column>  	
+		        
+		        <p:column>  
+		            <f:facet name="header">  
+		                    Message  
+		            </f:facet>  
+		            <h:outputText value="#{notification.contenuNotification}" /> 
+		        </p:column>
+		          		        	    
+		    </p:dataTable>  
+
+		</p:dialog>	
+					
+		<p:dialog id="dialog" header="Connexion" widgetVar="dlg">
+			<h:form>
+				<h:panelGrid columns="2" cellpadding="5">
+					<h:outputLabel value="Adresse Mail :" />
+					<p:inputText value="#{beanConnexion.identifiant}" id="identifiant"
+						label="identifiant" required="true" />
+					<h:outputLabel value="Password :" />
+					<h:inputSecret value="#{beanConnexion.password}"
+						class="ui-inputfield ui-password ui-widget ui-state-default ui-corner-all"
+						id="password" label="password" required="true" />
+					<p:commandButton id="Login" value="Se connecter" update=":growl"
+						action="#{beanConnexion.getIsAccountOk}"
+						oncomplete="handleLoginRequest(xhr, status, args)" />
+					<br />
+					<h:link value="Mot de passe oublié ?" outcome="recuperationMDP" />
+				</h:panelGrid>
+			</h:form>
+		</p:dialog>
 					    </p:dataTable>  
 
 					</p:dialog>		
@@ -138,7 +213,6 @@
 					</h:outputLink>
 				</h:form>
 			</div>			
-		</header>
 
 		<p:dialog id="dialog" header="Connexion" widgetVar="dlg">
 			<h:form>
