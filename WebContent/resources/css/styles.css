@@ -220,12 +220,15 @@ footer a{
 }
 	
 .group_bannner_left {
-	width: 530px;
+	width: 490px;
 	position: absolute;
-	top:108px;
-	right: -10px;
-	background:transparent;
-	margin-top:15px;
+	top:35px;
+	right: 15px;
+	padding:10px 15px;
+	background-color:#534741;
+	-webkit-border-radius: .5em; 
+	-moz-border-radius: .5em;
+	border-radius: .5em;
 }
 
 .inputRecherche{
@@ -260,6 +263,7 @@ header{
 	-webkit-border-radius: .5em; 
 	-moz-border-radius: .5em;
 	border-radius: .5em;
+	
 }
 
 /***************************************************
@@ -704,6 +708,8 @@ table input{
 
 .typeMedia {
 	float: left;
+}
+
 .nonObligatoire input{
 	background: none repeat scroll 0 0 #FFF !important;
 }
@@ -739,8 +745,11 @@ table input{
 #recherche_simple {
 	width: 375px;
 	float: left;
+}
+
 .label{
 	width:200px;
+}
 
 .pic {
 	margin-bottom: -4px;
