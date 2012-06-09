@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:a4j="http://richfaces.org/a4j"
+      xmlns:rich="http://richfaces.org/rich"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:c="http://java.sun.com/jsp/jstl/core"> 
+
+<f:metadata>
+	<f:viewParam name="v" value="#{beanRecherche.value}"/>
+	<f:viewParam name="ti" value="#{beanRecherche.titre}"/>
+	<f:viewParam name="au" value="#{beanRecherche.auteur}"/>
+	<f:viewParam name="ds" value="#{beanRecherche.description}"/>
+	<f:viewParam name="ta" value="#{beanRecherche.tag}"/>
+	<f:viewParam name="ct" value="#{beanRecherche.categorie}"/>
+	<f:viewParam name="tm" value="#{beanRecherche.typeMedia}"/>
+	<f:viewParam name="tr" value="#{beanRecherche.typeRecherche}"/>
+	<f:viewParam name="t" value="#{beanRecherche.tri}"/>
+	<f:viewParam name="to" value="#{beanRecherche.tri_ordre}"/>
+	<f:viewParam name="nb" value="#{beanRecherche.nb_par_pages}"/>
+	<f:viewParam name="af" value="#{beanRecherche.afficher_par}"/>
+	<f:viewParam name="dl" value="#{beanRecherche.seulementTelechargeable}"/>
+	<f:viewParam name="p" value="#{beanRecherche.page}"/>
+	<f:event type="preRenderView" listener="#{beanRecherche.processRecherchePre()}" onPostback="false"/>
+</f:metadata> 
+     
+<ui:composition template="/templates/standard.xhtml">
+	<ui:define name="pageTitle">Home</ui:define>
+	<ui:define name="content">
+		<h:form>  
+		    <p:growl id="growl" showDetail="false" />  
+		    <p:fieldset legend="Options" toggleable="true" toggleSpeed="500" collapsed="true">  
+				<h:panelGrid columns="5" cellpadding="20" columnClasses="search_options,search_options,search_options,search_options"> 
+					<h:column>
+						<h:outputText value="Afficher par" />
+							<p:selectOneListbox value="#{beanRecherche.afficher_par}">  
+			            	<f:selectItem itemLabel="Liste" itemValue="1" />  
+			            	<f:selectItem itemLabel="Miniature" itemValue="2" />     
+			        	</p:selectOneListbox>
+					</h:column>
+					
+					<h:column>
+						<h:outputText value="Trier par" />
+						    <h:panelGrid columns="2" cellpadding="0" columnClasses="search_options,search_options" >
+						        <p:selectOneListbox value="#{beanRecherche.tri}">  
+						            <f:selectItem itemLabel="Pertinence" itemValue="1" />  
+						            <f:selectItem itemLabel="Vues" itemValue="2" />  
+						            <f:selectItem itemLabel="Date" itemValue="3" /> 
+						            <f:selectItem itemLabel="Notes" itemValue="3" />   
+						        </p:selectOneListbox>
+						    
+					        
+						        <p:selectOneListbox value="#{beanRecherche.tri_ordre}">  
+						            <f:selectItem itemLabel="ASC" itemValue="1" />  
+						            <f:selectItem itemLabel="DESC" itemValue="2" />  
+						        </p:selectOneListbox> 
+						    </h:panelGrid>
+					</h:column>			        
+		        	
+		        	<h:column>
+		        		<h:outputText value="Nb / pages" />  
+				        <p:selectOneListbox value="#{beanRecherche.nb_par_pages}">  
+				            <f:selectItem itemLabel="15" itemValue="15" />  
+				            <f:selectItem itemLabel="30" itemValue="30" />  
+				            <f:selectItem itemLabel="45" itemValue="45" />   
+				        </p:selectOneListbox>
+		        	</h:column>			        
+			        
+			        <h:column>
+			        	<h:outputText value="Uniquement téléchargeable" />  <br />
+			        	<p:selectBooleanButton value="#{beanRecherche.seulementTelechargeable}" onLabel="Oui" offLabel="Non" />
+			        </h:column>
+			        <h:column>	
+			        	<p:commandButton action="#{beanRecherche.processFiltre}" value="Valider" />
+			        </h:column>
+		        </h:panelGrid>  
+		    </p:fieldset>  
+		</h:form> 
+		 
+		<section class="group1">
+			
+			<h3>Résultat de recherche</h3>		
+			
+			<a4j:repeat rendered="#{beanRecherche.afficher_par == '1'}" value="#{beanRecherche.resRechMedia}" var="media">
+				<article class="holder_gallery">
+					<h:form>
+						<h:commandLink styleClass="photo_hover2" action="recherche.jsp"><h:graphicImage library="images" name="#{media.photo.cheminPhotoCouverture}"  width="150" height="99" alt="#{media.photo.nomPhotoCouverture}"/></h:commandLink>
+						<h2 class="titre_liste_media"><h:commandLink value="#{media.titreMedia}" action="recherche.jsp" /> </h2> <p class="vues_liste_media">#{beanRecherche.l_mediaVues[media.idMedia]} vues<br /> #{beanRecherche.l_mediaComs[media.idMedia]} coms</p>
+						<p class="description_liste_media">#{media.descriptionMedia}</p>
+						<p class="infos_liste_media">
+						<span class="readmore"><h:commandLink value="Regarder" action="recherche.jsp" /></span>
+						Par <h:commandLink value="#{media.auteurMedia.pseudo}" action="recherche.jsp" />, le <h:outputText value="#{media.datePublication}"><f:convertDateTime type="both" dateStyle="short" /></h:outputText> <br />		
+						</p>
+					</h:form>
+					<div class="clearfloat"></div>
+				</article>
+			</a4j:repeat>
+			
+			<a4j:repeat rendered="#{beanRecherche.afficher_par == '2'}" value="#{beanRecherche.resRechMedia}" var="media">
+				<article class="holder_gallery_min">
+					<h:form>
+						<h:commandLink styleClass="photo_hover2" action="recherche.jsp"><h:graphicImage library="images" name="#{media.photo.cheminPhotoCouverture}"  width="150" height="99" alt="#{media.photo.nomPhotoCouverture}"/> <br /></h:commandLink>
+						<div class="clearfloat"></div>
+						<h2 class="titre_liste_media"><h:commandLink value="#{media.titreMedia}" action="recherche.jsp" /> </h2> 
+						<!-- <p class="vues_liste_media">1.000.000 vues</p> -->
+						<p class="infos_liste_media">
+						Par <h:commandLink value="#{media.auteurMedia.pseudo}" action="recherche.jsp" />, le <h:outputText value="#{media.datePublication}"><f:convertDateTime type="date" dateStyle="short" /></h:outputText> <br />		
+						</p>
+					</h:form>
+				</article>
+			</a4j:repeat>
+
+			<div id="tnt_pagination">
+				<h:form>
+					<h:panelGroup rendered="#{beanRecherche.page == '1'}">
+						<span class="disabled_tnt_pagination">&lt;&lt;</span>
+						<span class="disabled_tnt_pagination">&lt;</span>
+					</h:panelGroup>
+					<h:panelGroup rendered="#{beanRecherche.page != '1'}">
+						<h:commandLink value="&lt;&lt;" action="#{beanRecherche.changePage('1')}" />
+						<h:commandLink value="&lt;" action="#{beanRecherche.changePage('1')}" />
+					</h:panelGroup>
+					<a4j:repeat value="#{beanRecherche.pagination}" var="page">
+						<h:panelGroup rendered="#{beanRecherche.page == page}">
+							<span class="active_tnt_link"><h:outputText value="#{page}" /></span>
+						</h:panelGroup>
+						<h:panelGroup rendered="#{beanRecherche.page != page}">
+							<h:commandLink value="#{page}" action="#{beanRecherche.changePage(page)}"/>
+						</h:panelGroup>
+					</a4j:repeat>
+					
+					<h:panelGroup rendered="#{beanRecherche.page == beanRecherche.nbPages}">
+						<span class="disabled_tnt_pagination">&gt;</span>
+						<span class="disabled_tnt_pagination">&gt;&gt;</span>
+					</h:panelGroup>
+					<h:panelGroup rendered="#{beanRecherche.page != beanRecherche.nbPages}">
+						<h:commandLink value="&gt;" action="#{beanRecherche.changePage('2')}" />
+						<h:commandLink value="&gt;&gt;" action="#{beanRecherche.changePage('2')}" />
+					</h:panelGroup>
+				</h:form>
+			</div>  
+	    </section>
+          
+           
+	    <aside class="group2">
+			<h3>TOP vidéos</h3>
+			<article class="holder_news">
+				<h4>
+					Lorem ipsum<span>10.09.2011</span>
+				</h4>
+				<p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Donec molestie. Sed aliquam sem ut arcu.<span class="readmore">
+				<a href="#">Read more..</a></span></p>
+				
+				<h4>
+					Lorem ipsum<span>10.09.2011</span>
+				</h4>
+				<p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Donec molestie. Sed aliquam sem ut arcu.<span class="readmore">
+				<a href="#">Read more..</a></span></p>
+			</article>  
+			
+			
+			<h3>TOP sons</h3>
+			<article class="holder_news">
+				<h4>
+					Lorem ipsum<span>10.09.2011</span>
+				</h4>
+				<p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Donec molestie. Sed aliquam sem ut arcu.<span class="readmore">
+				<a href="#">Read more..</a></span></p>
+			</article>  
+		</aside>         
+	</ui:define>
+</ui:composition> 
+</html>

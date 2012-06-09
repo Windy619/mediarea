@@ -1,0 +1,243 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:a4j="http://richfaces.org/a4j"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+<ui:composition template="/templates/standard.xhtml">
+	<ui:define name="pageTitle">Identification</ui:define>
+	<ui:define name="content">
+		<section class="group3">
+			<script type="text/javascript">
+				function handleDrop(event, ui) {
+					  var droppedCar = ui.draggable;
+					  droppedCar.fadeOut('fast');
+				}	            
+			 </script>
+			<h3>Inscription</h3>
+			<br />
+			<p>Les champs en fond gris représentent les champs obligatoires.</p>
+			<br />
+			<h:form>
+				<p:growl id="growl" sticky="true" showDetail="true" />
+				<p:tab id="identifiant" title="Identifiant">
+					<p:panel header="Informations connexion">
+						<h:messages class="ui-messages-error ui-corner-all"
+							errorClass="error" />
+						<h:panelGrid columns="2" columnClasses="label, value"
+							styleClass="grid">
+
+							<h:outputText value="Email :" />
+							<p:inputText required="true" label="Email"
+								value="#{beanInscription.adrMail}" />
+
+							<h:outputText value="Mot de passe :" />
+							<p:password required="true" label="Mot de passe"
+								value="#{beanInscription.password}" feedback="true" id="pwd1"
+								match="pwd2" />
+
+							<h:outputText value="Confirmation du Mot de passe :" />
+							<p:password required="true" label="Confirmation mot de passe"
+								value="#{beanInscription.password}" feedback="false" id="pwd2" />
+
+						</h:panelGrid>
+					</p:panel>
+				</p:tab>
+				<br />
+				<p:tab id="avatar" title="Avatar">
+					<p:panel header="Informations avatar">
+						<h:messages class="ui-messages-error ui-corner-all"
+							errorClass="error" />
+						<h:panelGrid columns="2" columnClasses="label, value">
+
+							<h:outputText value="Pseudo :" />
+							<p:inputText required="true" label="Pseudo"
+								value="#{beanInscription.pseudo}" />
+
+						</h:panelGrid>
+						<br />
+						<h:panelGrid columns="3" columnClasses="label, value">
+
+							<h:outputText value="Avatar : " />
+							<p:dataGrid id="datagrid_avatar" var="avatar"
+								value="#{beanInscription.listAvatar}" columns="4" rows="12"
+								paginator="true"
+								paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+								rowsPerPageTemplate="12,16,20">
+
+								<p:column>
+									<p:panel id="pnl_avatar" width="50px">
+										<h:graphicImage
+											value="#{avatar.cheminAvatar}#{avatar.nomAvatar}" />
+									</p:panel>
+
+									<p:draggable for="pnl_avatar" revert="true"
+										handle=".ui-panel-titlebar" stack=".ui-panel" />
+
+								</p:column>
+
+							</p:dataGrid>
+
+							<p:fieldset id="avatar_selectionne" legend="Ajouter">
+
+								<p:outputPanel id="dropArea">
+									<h:outputText value="Déposer un avatar ici"
+										style="font-size:24px;" />
+								</p:outputPanel>
+
+								<p:panel id="pnl_avatar_dropped" width="50px">
+									<h:graphicImage
+										value="#{beanInscription.avatar.cheminAvatar}#{beanInscription.avatar.nomAvatar}" />
+								</p:panel>
+
+
+							</p:fieldset>
+
+							<p:droppable for="avatar_selectionne" tolerance="touch"
+								activeStyleClass="ui-state-highlight"
+								datasource="datagrid_avatar" onDrop="handleDrop">
+								<p:ajax listener="#{beanInscription.onAvatarDrop}"
+									update="datagrid_avatar, pnl_avatar_dropped " />
+							</p:droppable>
+
+
+
+						</h:panelGrid>
+
+					</p:panel>
+				</p:tab>
+				<br />
+				<p:tab id="utilisateur" title="Utilisateur">
+					<p:panel header="Informations personnelles">
+						<h:messages class="ui-messages-error ui-corner-all"
+							errorClass="error" />
+						<h:panelGrid columns="2" columnClasses="label, value"
+							class="nonObligatoire">
+
+							<h:outputText value="Civilité :" />
+							<p:selectOneButton required="false" id="sexe" value="#{beanInscription.sexe}">
+								<f:selectItem itemLabel="Mr" itemValue="Mr" />
+								<f:selectItem itemLabel="Mme" itemValue="Mme" />
+								<f:selectItem itemLabel="Mlle" itemValue="Mlle" />
+							</p:selectOneButton>
+
+							<h:outputText value="Nom :" />
+							<p:inputText required="false" label="Nom"
+								value="#{beanInscription.nomUtilisateur}" />
+
+							<h:outputText value="Prénom :" />
+							<p:inputText required="false" label="Prénom"
+								value="#{beanInscription.prenomUtilisateur}" />
+
+						</h:panelGrid>
+						<h:panelGrid columns="2" columnClasses="label, value">
+
+							<h:outputText value="Date de naissance :" />
+							<p:calendar label="Date de naissance" locale="fr"
+								showButtonPanel="true" navigator="true" required="true"
+								value="#{beanInscription.dateNaissance}" />
+
+						</h:panelGrid>
+						<h:panelGrid columns="2" columnClasses="label, value"
+							class="nonObligatoire">
+
+							<h:outputText value="Profession :" />
+							<p:inputText required="false" label="Profession"
+								value="#{beanInscription.profession}" />
+
+							<h:outputText value="Vos intérêts : " />
+							<p:inputTextarea value="#{beanInscription.interets}"
+								required="false" label="Intérêts" />
+
+						</h:panelGrid>
+					</p:panel>
+				</p:tab>
+				<br />
+				<p:tab id="contact" title="Contact">
+					<p:panel header="Informations contact">
+						<h:messages class="ui-messages-error ui-corner-all"
+							errorClass="error" />
+						<h:panelGrid columns="2" columnClasses="label, value"
+							class="nonObligatoire">
+
+							<h:outputText value="N° et rue :" />
+							<p:inputText required="false" label="Rue"
+								value="#{beanInscription.rue}" />
+
+							<h:outputText value="Code Postal :" />
+							<p:inputText required="false" label="Code Postal"
+								value="#{beanInscription.cp}" />
+
+							<h:outputText value="Ville :" />
+							<p:inputText required="false" label="Ville"
+								value="#{beanInscription.ville}" />
+
+							<h:outputText value="Pays :" />
+							<p:inputText required="false" label="Pays"
+								value="#{beanInscription.pays}" />
+
+							<h:outputText value="Autre Adresse Mail :" />
+							<p:inputText required="false" label="Autre Adresse Mail"
+								value="#{beanInscription.autreAdrMail}" />
+
+							<h:outputText value="Numéro mobile :" />
+							<p:inputText required="false" label="Numéro mobile"
+								value="#{beanInscription.numTelMobile}" />
+
+						</h:panelGrid>
+					</p:panel>
+				</p:tab>
+				<br />
+				<p:tab id="confirm" title="Confirmation">
+					<p:panel header="Confirmation">
+						<h:panelGrid id="confirmation" columns="2">
+							<p:selectBooleanCheckbox value="#{beanInscription.estPublique}"
+								id="estPublique" />
+							<h:outputText
+								value="Je souhaite que mon profil soit visible par tous" />
+
+							<p:selectBooleanCheckbox
+								value="#{beanInscription.notificationAutomatique}"
+								id="notificationAutomatique" />
+							<h:outputText
+								value="Je souhaite mettre les notifications en mode automatique" />
+
+							<p:selectBooleanCheckbox
+								value="#{beanInscription.notificationParMail}"
+								id="notificationParMail" />
+							<h:outputText
+								value="Je souhaite recevoir les notifications par mails" />
+
+						</h:panelGrid>
+
+						<br />
+
+						<h:panelGrid id="conditionsGenerales" columns="2">
+							<h:link value="Consulter les Conditions Générales d'Utilisations"
+								outcome="conditionsGenerales" target="_blank" />
+							<br />
+							<h:outputText
+								value="Accepter les conditions générales d'utilisations :" />
+							<p:selectBooleanButton
+								value="#{beanInscription.conditionsGenerales}" onLabel="Oui"
+								offLabel="Non" />
+						</h:panelGrid>
+
+						<br />
+						<p:captcha label="Captcha" language="fr" theme="white"/> 
+						<br />
+
+						<p:commandButton value="Créer le compte" update="growl"
+							action="#{beanInscription.save}" />
+
+					</p:panel>
+				</p:tab>
+			</h:form>
+		</section>
+	</ui:define>
+</ui:composition>
+</html>

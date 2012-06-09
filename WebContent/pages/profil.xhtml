@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:a4j="http://richfaces.org/a4j"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+<ui:composition template="/templates/standard.xhtml">
+	<ui:define name="pageTitle">Profil</ui:define>
+	<ui:define name="content">
+		<section class="group3">
+			<h3>Mon Profil</h3>
+			<br />
+			<h:form>
+				<p:growl id="growl" sticky="true" showDetail="true" />
+				<p:tab id="alias" title="Alias">
+					<p:panel header="ALIAS">
+						<h:messages class="ui-messages-error ui-corner-all"
+							errorClass="error" />
+						<h:outputText style="font-weight:bold;font-size:40px;"
+							value="#{beanProfil.user.pseudo}" />
+
+
+						<p:graphicImage rendered="#{beanProfil.user.avatar!=null}"
+							value="#{beanProfil.user.avatar.cheminAvatar}#{beanProfil.user.avatar.nomAvatar}"
+							style="float:right;background-image:url('../resources/avatar/0.png');width:64px;height:64px;" />
+
+						<h:panelGrid columns="2" columnClasses="label, value"
+							styleClass="grid">
+
+							<h:outputText value="Email :" />
+							<h:outputText value="#{beanProfil.user.adrMail}" />
+
+							<h:outputText value="Autre Adresse Mail :" />
+							<h:outputText value="#{beanProfil.user.autreAdrMail}" />
+						</h:panelGrid>
+					</p:panel>
+				</p:tab>
+
+				<br />
+
+				<p:tab id="informations" title="Informations">
+					<p:panel header="Informations">
+						<h:messages class="ui-messages-error ui-corner-all"
+							errorClass="error" />
+
+						<h:outputText style="font-weight:bold;font-size:30px;"
+							value="#{beanProfil.user.sexe} #{beanProfil.user.prenomUtilisateur} #{beanProfil.user.nomUtilisateur}" />
+
+						<h:panelGrid columns="2" columnClasses="label, value">
+
+							<h:outputText value="Date de naissance :" />
+
+							<h:outputText value="#{beanProfil.user.dateNaissance}">
+								<f:convertDateTime pattern="dd.MM.yyyy" />
+							</h:outputText>
+
+							<h:outputText value="Profession :" />
+
+							<h:outputText value="#{beanProfil.user.profession}" />
+
+							<h:outputText value="Adresse :" />
+							<h:panelGrid columns="3" columnClasses="label, value">
+								<h:outputText value="#{beanProfil.user.rue} " />
+								<h:outputText rendered="#{beanProfil.user.cp!=0}"
+									value="#{beanProfil.user.cp} " />
+								<h:outputText
+									value="#{beanProfil.user.ville} #{beanProfil.user.pays}" />
+							</h:panelGrid>
+
+							<h:outputText value="Numéro mobile :" />
+							<h:outputText value="#{beanProfil.user.numTelMobile}" />
+
+							<h:outputText value="Vos intérêts : " />
+							<h:outputText value="#{beanProfil.user.interets}" />
+
+						</h:panelGrid>
+					</p:panel>
+				</p:tab>
+
+				<br />
+
+				<p:tab id="options" title="Options">
+					<p:panel header="Options">
+						<h:panelGrid id="confirmation" columns="2">
+							<h:selectBooleanCheckbox value="#{beanProfil.user.estPublique}"
+								disabled="true" />
+							<h:outputText
+								value="Je souhaite que mon profil soit visible par tous" />
+
+							<h:selectBooleanCheckbox
+								value="#{beanProfil.user.notificationAutomatique}"
+								disabled="true" />
+							<h:outputText
+								value="Je souhaite mettre les notifications en mode automatique" />
+
+							<h:selectBooleanCheckbox
+								value="#{beanProfil.user.notificationParMail}" disabled="true" />
+							<h:outputText
+								value="Je souhaite recevoir les notifications par mails" />
+
+						</h:panelGrid>
+
+
+					</p:panel>
+				</p:tab>
+
+				<br />
+					
+				<h:outputLink onclick="document.location.href='inscription.jsf'"
+						value="inscription.jsf">
+						<h:outputText value="Modifier les informations du compte" />
+					</h:outputLink>
+			</h:form>
+		</section>
+	</ui:define>
+</ui:composition>
+</html>
