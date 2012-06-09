@@ -1,12 +1,8 @@
-import java.util.ArrayList;
-import java.util.List;
-
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpSession;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
-import metier.media.Media;
 import metier.utilisateur.Utilisateur;
 import dao.utilisateur.DaoUtilisateur;
 
@@ -26,12 +22,10 @@ public class BeanConnexion {
 	@Size(min = 3, max = 12, message = "La taille du Password doit être entre 3 et 12")
 	private java.lang.String password = null;
 	
-	private List<Media> mediaDansPanier;
 	
 
 	public BeanConnexion() {
 		
-		mediaDansPanier = new ArrayList<Media>();
 	}
 
 	public String getIsAccountOk() {
@@ -118,16 +112,6 @@ public class BeanConnexion {
 
 	public void setUser(Utilisateur user) {
 		User = user;
-	}
-
-
-	
-	public List<Media> getMediaDansPanier() {
-		return mediaDansPanier;
-	}
-	
-	public void setMediaDansPanier(List<Media> mediaDansPanier) {
-		this.mediaDansPanier = mediaDansPanier;
 	}
 	
 }
