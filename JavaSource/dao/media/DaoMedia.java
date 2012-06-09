@@ -1,28 +1,21 @@
 package dao.media;
 
+
 import java.text.ParseException;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
-import metier.media.Categorie;
 import metier.media.Commentaire;
 import metier.media.Media;
-import metier.media.Playlist;
 import metier.media.Type_Media;
 import metier.utilisateur.Utilisateur;
 
-import org.hibernate.Criteria;
 import org.hibernate.Query;
-import org.hibernate.criterion.Criterion;
-import org.hibernate.criterion.LogicalExpression;
-import org.hibernate.criterion.Order;
-import org.hibernate.criterion.Restrictions;
-import org.hibernate.Query;
-
 
 import dao.Dao;
 

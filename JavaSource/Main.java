@@ -241,12 +241,7 @@ public class Main {
         for (Object object : liste) {
 			System.out.println(((Media)object).getTitreMedia());
 		}
-        
-        System.out.println("Media qui correspondent à la recherche : 1");
-        List<?> liste2 = daoMedia.recherche("1");
-        for (Object object : liste2) {
-			System.out.println(((Media)object).getTitreMedia());
-		}        		
+               		
 	}
 	
 	/**
