@@ -1,18 +1,12 @@
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-
-import javax.faces.context.FacesContext;
-import javax.faces.event.ActionEvent;
-
 import dao.media.DaoCategorie;
 import dao.media.DaoMedia;
-import dao.utilisateur.DaoUtilisateur;
-
 import metier.media.Categorie;
 import metier.media.Media;
-import metier.utilisateur.Amitie;
-import metier.utilisateur.Utilisateur;
+
 
 /**
  * 
@@ -145,6 +139,24 @@ public class BeanRecherche {
 		page = p;
 		return "/pages/recherche?faces-redirect=true&amp;includeViewParams=true";
 	}
+	
+	public String accessMedia(Long id) {
+		return "/pages/detailMedia?faces-redirect=true&amp;includeViewParams=true&v="+id;
+	}
+	
+	public String clickOnPublisher(String pseudo) {
+		value = null;
+		titre = null;
+		auteur = null;
+		description = null;
+		tag = null;
+		categorie = null;
+		page = "2";
+		auteur = pseudo;
+		return "/pages/recherche?faces-redirect=true&amp;includeViewParams=true";
+	}
+	
+	
 	
 	public Boolean getSeulementTelechargeable() {
 		return seulementTelechargeable;

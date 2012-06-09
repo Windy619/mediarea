@@ -87,12 +87,12 @@
 			<a4j:repeat rendered="#{beanRecherche.afficher_par == '1'}" value="#{beanRecherche.resRechMedia}" var="media">
 				<article class="holder_gallery">
 					<h:form>
-						<h:commandLink styleClass="photo_hover2" action="recherche.jsp"><h:graphicImage library="images" name="#{media.photo.cheminPhotoCouverture}"  width="150" height="99" alt="#{media.photo.nomPhotoCouverture}"/></h:commandLink>
-						<h2 class="titre_liste_media"><h:commandLink value="#{media.titreMedia}" action="recherche.jsp" /> </h2> <p class="vues_liste_media">#{beanRecherche.l_mediaVues[media.idMedia]} vues<br /> #{beanRecherche.l_mediaComs[media.idMedia]} coms</p>
+						<h:commandLink styleClass="photo_hover2" action="#{beanRecherche.accessMedia(media.idMedia)"><h:graphicImage library="images" name="#{media.photo.cheminPhotoCouverture}"  width="150" height="99" alt="#{media.photo.nomPhotoCouverture}"/></h:commandLink>
+						<h2 class="titre_liste_media"><h:commandLink value="#{media.titreMedia}" action="#{beanRecherche.accessMedia(media.idMedia)" /> </h2> <p class="vues_liste_media">#{beanRecherche.l_mediaVues[media.idMedia]} vues<br /> #{beanRecherche.l_mediaComs[media.idMedia]} coms</p>
 						<p class="description_liste_media">#{media.descriptionMedia}</p>
 						<p class="infos_liste_media">
-						<span class="readmore"><h:commandLink value="Regarder" action="recherche.jsp" /></span>
-						Par <h:commandLink value="#{media.auteurMedia.pseudo}" action="recherche.jsp" />, le <h:outputText value="#{media.datePublication}"><f:convertDateTime type="both" dateStyle="short" /></h:outputText> <br />		
+						<span class="readmore"><h:commandLink value="Regarder" action="#{beanRecherche.accessMedia(media.idMedia)" /></span>
+						Par <h:commandLink value="#{media.auteurMedia.pseudo}" action="#{beanRecherche.clickOnPublisher(media.auteurMedia.pseudo)}" />, le <h:outputText value="#{media.datePublication}"><f:convertDateTime type="both" dateStyle="short" /></h:outputText> <br />		
 						</p>
 					</h:form>
 					<div class="clearfloat"></div>
@@ -102,12 +102,12 @@
 			<a4j:repeat rendered="#{beanRecherche.afficher_par == '2'}" value="#{beanRecherche.resRechMedia}" var="media">
 				<article class="holder_gallery_min">
 					<h:form>
-						<h:commandLink styleClass="photo_hover2" action="recherche.jsp"><h:graphicImage library="images" name="#{media.photo.cheminPhotoCouverture}"  width="150" height="99" alt="#{media.photo.nomPhotoCouverture}"/> <br /></h:commandLink>
+						<h:commandLink styleClass="photo_hover2" action="#{beanRecherche.accessMedia(media.idMedia)"><h:graphicImage library="images" name="#{media.photo.cheminPhotoCouverture}"  width="150" height="99" alt="#{media.photo.nomPhotoCouverture}"/> <br /></h:commandLink>
 						<div class="clearfloat"></div>
-						<h2 class="titre_liste_media"><h:commandLink value="#{media.titreMedia}" action="recherche.jsp" /> </h2> 
+						<h2 class="titre_liste_media"><h:commandLink value="#{media.titreMedia}" action="#{beanRecherche.accessMedia(media.idMedia)" /> </h2> 
 						<!-- <p class="vues_liste_media">1.000.000 vues</p> -->
 						<p class="infos_liste_media">
-						Par <h:commandLink value="#{media.auteurMedia.pseudo}" action="recherche.jsp" />, le <h:outputText value="#{media.datePublication}"><f:convertDateTime type="date" dateStyle="short" /></h:outputText> <br />		
+						Par <h:commandLink value="#{media.auteurMedia.pseudo}" action="#{beanRecherche.clickOnPublisher(media.auteurMedia.pseudo)}" />, le <h:outputText value="#{media.datePublication}"><f:convertDateTime type="date" dateStyle="short" /></h:outputText> <br />		
 						</p>
 					</h:form>
 				</article>
@@ -146,30 +146,50 @@
           
            
 	    <aside class="group2">
-			<h3>TOP vidéos</h3>
+			<h3>Recommendations </h3>
+			<h:outputText value="Pour voir vos recommendations, veuillez vous connecter."  rendered="#{empty beanHome.utilisateurConnecte}"/>
+			
+			<h3>Vidéos </h3>			
 			<article class="holder_news">
-				<h4>
-					Lorem ipsum<span>10.09.2011</span>
-				</h4>
-				<p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Donec molestie. Sed aliquam sem ut arcu.<span class="readmore">
-				<a href="#">Read more..</a></span></p>
-				
-				<h4>
-					Lorem ipsum<span>10.09.2011</span>
-				</h4>
-				<p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Donec molestie. Sed aliquam sem ut arcu.<span class="readmore">
-				<a href="#">Read more..</a></span></p>
-			</article>  
+				<h:outputText value="Aucune vidéo n'a été trouvée."  rendered="#{empty beanHome.recommendationVideos}"/>
+				<a4j:repeat value="#{beanHome.recommendationVideos}" var="video" rows="3" id="listRecommendationVideos">
+					<h4>
+						<h:outputText value="#{video.titreMedia}" />
+						<span>
+							<h:outputText value="#{video.datePublication}">
+								<f:convertDateTime type="date" pattern="dd.MM.yyyy"/>
+							</h:outputText>		
+						</span>	
+					</h4>	
+					<p>
+						<h:outputText value="#{video.descriptionMedia}" />
+						<br />
+						<span class="readmore">				
+							<a href="#">Read more..</a>
+						</span>												
+					</p>
+				</a4j:repeat>
+			</article> 			
+ 
 			
 			
-			<h3>TOP sons</h3>
+			<h3>Sons</h3>
 			<article class="holder_news">
-				<h4>
-					Lorem ipsum<span>10.09.2011</span>
-				</h4>
-				<p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Donec molestie. Sed aliquam sem ut arcu.<span class="readmore">
-				<a href="#">Read more..</a></span></p>
-			</article>  
+				<h:outputText value="Aucun sons n'a été trouvée."  rendered="#{empty beanHome.recommendationSons}"/>
+				<a4j:repeat value="#{beanHome.recommendationSons}" var="son" rows="3" id="listRecommendationSons">
+					<h4>
+						<h:outputText value="#{son.titreMedia}" />
+						<span>
+						<h:outputText value="#{son.datePublication}">
+							<f:convertDateTime type="date" pattern="dd.MM.yyyy"/>
+						</h:outputText>							
+						</span>
+					</h4>
+					<p><h:outputText value="#{son.descriptionMedia}" /><span class="readmore">
+					<a href="#">Read more..</a></span></p>				
+				</a4j:repeat>
+			</article>			
+  
 		</aside>         
 	</ui:define>
 </ui:composition> 
