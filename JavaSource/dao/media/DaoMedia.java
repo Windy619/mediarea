@@ -142,12 +142,13 @@ public class DaoMedia extends Dao<Media> {
 				"SELECT COUNT(DISTINCT m.idMedia) AS NB_MEDIA"
 				+ " FROM Media m "
 				+ " LEFT JOIN  utilisateur ut ON m.auteurMedia_idUtilisateur = ut.idUtilisateur "
-				+ " LEFT JOIN  media_categorie mc ON m.idmedia =  mc.media_idmedia "
+				//+ " LEFT JOIN  media_categorie mc ON m.idmedia =  mc.media_idmedia "
+				+ " LEFT JOIN  media_categorie_media mc ON m.idmedia =  mc.media_idmedia "
 				+ " LEFT JOIN  media_tag mt ON m.idmedia = mt.media_idmedia  "
 				+ " LEFT JOIN  tag ta ON mt.tags_idTag = ta.idTag"
 				+ " LEFT JOIN  note n ON m.idmedia = n.media_idmedia "
 				+ " LEFT JOIN  regarder r ON m.idmedia = r.media_idmedia "
-				+ " LEFT JOIN  media_commentaire c ON m.idmedia = c.media_idmedia "
+				//+ " LEFT JOIN  media_commentaire c ON m.idmedia = c.media_idmedia " ??
 				+ " LEFT JOIN  type_media t ON m.type_idTypeMedia = t.idTypeMedia "
 				+ clauseWhere
 				);
@@ -195,7 +196,7 @@ public class DaoMedia extends Dao<Media> {
 		"SELECT m.idmedia, COUNT(mt.media_idmedia) AS TAG_NB, COUNT(mc.media_idmedia) AS CAT_NB, AVG(n.note) AS NOTE_AVG, SUM(n.note) AS NOTE_NB, SUM(r.nbVues) AS VUES_NB, COUNT(c.media_idmedia) AS COMM_NB, (LENGTH(m.titreMedia) - LENGTH(REPLACE(UPPER(m.titreMedia), '"+titre+"', '')) + 1) AS NB_TITRE, (LENGTH(m.titreMedia) - LENGTH(REPLACE(UPPER(m.descriptionMedia), '"+description+"', '')) + 1) AS NB_DESCRIPTION "
 		+ " FROM Media m "
 		+ " LEFT JOIN  utilisateur ut ON m.auteurMedia_idUtilisateur = ut.idUtilisateur "
-		+ " LEFT JOIN  media_categorie mc ON m.idmedia =  mc.media_idmedia "
+		+ " LEFT JOIN  media_categorie_media mc ON m.idmedia =  mc.media_idmedia "
 		+ " LEFT JOIN  media_tag mt ON m.idmedia = mt.media_idmedia  "
 		+ " LEFT JOIN  tag ta ON mt.tags_idTag = ta.idTag"
 		+ " LEFT JOIN  note n ON m.idmedia = n.media_idmedia "

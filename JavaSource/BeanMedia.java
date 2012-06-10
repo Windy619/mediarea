@@ -117,7 +117,6 @@ public class BeanMedia {
     private String tailleLecteur = "";
     private int largeur = 320;
     private int hauteur = 180;
- 	private String detailNotifyAjoutAuPanier;
  	private String detailNotificationJAime;
  	private String detailNotificationJeNAimePas;
  	private HashMap<Commentaire, ArrayList<Commentaire>> hmReponses;
@@ -837,29 +836,6 @@ public class BeanMedia {
 	}
 	
 	/** 
-	 * Ajout du média au panier
-	 * @return
-	 */
-	public String ajouterAuPanier() {
-		System.out.println("ajouterAuPanier");
-		
-		//Si le média est déjà ajouté au panier
-		if(beanConnexion.getMediaDansPanier().contains(daoMedia.getUn(2))) {
-			detailNotifyAjoutAuPanier = "Le média " + daoMedia.getUn(2).getTitreMedia() + " a déjà été ajouté au panier.";
-		}
-		//Si le média n'est pas encore ajouté au panier
-		else {
-			beanConnexion.getMediaDansPanier().add(daoMedia.getUn(2));
-			detailNotifyAjoutAuPanier = "Le média " + daoMedia.getUn(2).getTitreMedia() + " a été ajouté au panier";
-		}
-
-		//Affichage de la notification
-		context.addMessage(null, new FacesMessage("Notification", detailNotifyAjoutAuPanier));
-        
-		return "ajouterAuPanier";
-	}
-	
-	/** 
 	 * Décrémentation du nombre de caractères restants (composition d'un commentaire)
 	 * @return
 	 */
@@ -1432,14 +1408,6 @@ public class BeanMedia {
 	public void setResultatTotalTelechargementMedia(
 			long resultatTotalTelechargementMedia) {
 		this.resultatTotalTelechargementMedia = resultatTotalTelechargementMedia;
-	}
-	
-	public String getDetailNotifyAjoutAuPanier() {
-		return detailNotifyAjoutAuPanier;
-	}
-	
-	public void setDetailNotifyAjoutAuPanier(String detailNotifyAjoutAuPanier) {
-		this.detailNotifyAjoutAuPanier = detailNotifyAjoutAuPanier;
 	}
 	
 	public CartesianChartModel getGraphiqueStatVues() {  
