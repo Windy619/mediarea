@@ -410,8 +410,8 @@ public class BeanMessagesPrives {
 	 * Envoi d'un email
 	 * @return
 	 */
-	/*public String envoyerEmail() { //TODO
-		//http://www.tutorialspoint.com/java/java_sending_email.htm
+	public String envoyerEmail() { //TODO
+		/*//http://www.tutorialspoint.com/java/java_sending_email.htm
 
 		
 		// Recipient's email ID needs to be mentioned.
@@ -455,10 +455,10 @@ public class BeanMessagesPrives {
 	         System.out.println("Sent message successfully....");
 	      } catch (MessagingException mex) {
 	         mex.printStackTrace();
-	      }
+	      }*/
 	      
 		return "envoyerEmail";
-	}*/
+	}
 	
 	public ArrayList<Message_Prive> getMessagesFils(Message_Prive messageMere) {
 		if (messageMere != null) {
