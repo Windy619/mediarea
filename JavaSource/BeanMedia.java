@@ -148,6 +148,7 @@ public class BeanMedia {
  	private Set<Tag> setTagMediaCourant;
  	private StreamedContent file;
  	private TagCloudModel tagCloud;
+ 	private boolean estCommentairesAutorise;
  	
  	// Compteur
  	
@@ -246,6 +247,8 @@ public class BeanMedia {
 				datePublication = dateFormat.format(mediaVisualise.getDatePublication());
 				
 				description = mediaVisualise.getDescriptionMedia();
+				
+				estCommentairesAutorise = mediaVisualise.isaCommentairesOuverts();
 				
 				listeNomCategories = new ArrayList<String>();
 				setCategoriesMedia = mediaVisualise.getCategories();
@@ -1532,6 +1535,13 @@ public class BeanMedia {
 		this.reponseSaisie = reponseSaisie;
 	}
 
+	public boolean isEstCommentairesAutorise() {
+		return estCommentairesAutorise;
+	}
+
+	public void setEstAutoriseCommentaires(boolean estAutoriseCommentaires) {
+		this.estCommentairesAutorise = estAutoriseCommentaires;
+	}
 
 	public StreamedContent getFile() {  
         return file;  

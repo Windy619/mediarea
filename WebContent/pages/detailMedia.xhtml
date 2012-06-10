@@ -108,7 +108,7 @@
 			<br /><br /><br />
 				
 		
-			<h:panelGroup rendered="#{beanMedia.nomTypeMedia == 'Son' }">
+			<h:panelGroup rendered="#{beanMedia.nomTypeMedia == 'Son'}">
 				<!-- surrounding element with class - needed!! -->
 				<div class="leanback-player-audio" style="width:612px; z-index: 0;"><!-- width="350px" -->
 				    <!-- Lecteur audio -->
@@ -132,10 +132,6 @@
 				</div>
 			</h:panelGroup>
 			
-			<h:form>
-		        <a4j:jsFunction name="incrementerNbVues" action="#{beanMedia.incrNbVues}">
-		        </a4j:jsFunction>
-		    </h:form>
 			
 		
 		<!-- S'abonner et Se désabonner XXX -->
@@ -160,7 +156,7 @@
 		
 		<p:splitButton value="Partager" icon="ui-icon-home" style="font-size: 11px;">  
 	        <p:menuitem value="Exporter" update="messages" icon="ui-icon-copy" onclick="dlgExporter.show();" />
-	        <p:menuitem value="Emails et amis" update="messages" icon="ui-icon-mail-open" onclick="dlgExporter.show();" />  
+	        <p:menuitem value="Emails et amis" update="messages" icon="ui-icon-mail-open" onclick="dlgEmail.show();" />  
 	    </p:splitButton>
     </h:form>
     	
@@ -235,7 +231,9 @@
 		        </p>
 		    <!--</rich:popupPanel>-->
 		    </p:dialog>
-	        
+		    
+		    
+		    
 	        <!-- Pop-up permettant la création d'une nouvelle playlist -->
 	        <!--<rich:popupPanel id="popupCreerPlaylist" modal="false" autosized="true" resizeable="false" style="z-index: 99999;">-->
 			<p:dialog id="popupCreerPlaylist" header="Créer une nouvelle playlist" widgetVar="dlgCreerPlaylist" showEffect="explode" hideEffect="bounce">
@@ -267,7 +265,7 @@
 	             
 		    <!--</rich:popupPanel>-->
 	        </p:dialog>
-	        
+	        </h:form>
 	        
 	        
 	        
@@ -290,12 +288,12 @@
 	    </p:panel>  
 	  
 	    <p:commandButton value="Ajax Submit" update="panel2" id="ajax" />-->
-	        </h:form>
+	        
 	        
 	        
         
-        	<!-- Pop-up permettant d'exporter le média -->
-        	<h:form>
+        	<!-- Pop-up permettant d'exporter le média --> 
+        	<h:form>       	
 			    <!--<rich:popupPanel id="popupExporter" modal="false" autosized="true" resizeable="false" style="z-index: 99999;">-->
 			    <p:dialog id="popupExporter" header="Personnaliser le lecteur exportable" widgetVar="dlgExporter" showEffect="explode" hideEffect="bounce" width="480">
 			        	<h:outputText value="Lien : " styleClass="bold"/>
@@ -340,51 +338,52 @@
 			        	<br />
 			    <!--</rich:popupPanel>-->
 			    </p:dialog>
-			    
+			   </h:form>
 			    
 			    <!-- Pop-up permettant d'envoyer un email -->
-			    <!--<rich:popupPanel id="popupEmail" modal="false" autosized="true" resizeable="false" style="z-index: 99999;">-->
 			    <p:dialog id="popupEmail" header="Choisissez vos destinataires" widgetVar="dlgEmail" showEffect="explode" hideEffect="bounce"><!-- TODO à ouvrir -->
-			        <h:panelGrid><!-- columns="2" columnClasses="top,top" --><!-- TODO voir Benjamin -->
-						<h:outputText value="De : " />
-						<h:inputText value="#{beanMessagesPrives.utilisateurConnecte.adrMail}" style="width: 500px" disabled="true" />
-						
-						<h:outputText value=" A : " />
-						<rich:autocomplete id="destinataire" mode="ajax" value="#{beanMessagesPrives.destinataire}"
-						tokens=", " minChars="1" autoFill="false" autocompleteMethod="#{beanMessagesPrives.autoCompletion}" 
-						autocompleteList="#{beanMessagesPrives.suggestionUtilisateurs}" style="width: 500px" /><!-- TODO -->
-						
-						<h:outputText value=" Objet : " />
-						<h:inputText id="objet" value="#{beanMessagesPrives.objet}" style="width: 500px" />
+			        
+					<h:form id="formNouveauMessage">
 					
-						<h:outputText value="Message :"/>
-						<rich:editor value="#{beanMessagesPrives.contenu}" 
-						theme="advanced" width="500" height="250" viewMode="visual">	
-						</rich:editor>
-					</h:panelGrid>
-								
-					<br />
-					
-					<h:commandButton value="Envoyer le message" action="#{beanMedia.envoyerEmail}" >
-					</h:commandButton>
-					
-					<h:commandButton value="Vider formulaire">
-						<f:setPropertyActionListener target="#{beanMessagesPrives.destinataire}" value="#{message.destinataire.adrMail}" />
-						<f:setPropertyActionListener target="#{beanMessagesPrives.objet}" value="" />
-						<f:setPropertyActionListener target="#{beanMessagesPrives.contenu}" value="" />					
-					</h:commandButton>
-			    <!--</rich:popupPanel>-->
+						<h:panelGrid columns="2" columnClasses="top,top">
+							<h:outputText value="De : " />
+							<p:inputText
+								value="#{beanMessagesPrives.utilisateurConnecte.adrMail}"
+								style="width: 500px" disabled="true" />
+	
+							<h:outputText value=" A : " />
+							<p:autoComplete id="destinataire" maxResults="5"
+								value="#{beanMessagesPrives.destinataire}"
+								styleClass="message_automplete"
+								completeMethod="#{beanMessagesPrives.autoCompletion}"
+								style="width: 500px" />
+	
+							<h:outputText value=" Objet : " />
+							<p:inputText id="objet" value="#{beanMessagesPrives.objet}"
+								style="width: 500px" />
+	
+							<h:outputText value="Message :" />
+							<p:editor id="editorNouveauMessage"
+								value="#{beanMessagesPrives.contenu}" width="500" height="250" />
+	
+						</h:panelGrid>
+	
+						<br />
+	
+						<p:commandButton value="Envoyer le message"
+							action="#{beanMessagesPrives.envoyerEmail}"
+							onclick="dlgNouveauMessage.hide()">
+						</p:commandButton>
+					</h:form>
 			    </p:dialog>
 			    
 			    <!-- Indication si le média est aimé ou non -->
-				<rich:inputNumberSlider value="#{beanMedia.resultatNbAime}" style="max-width:100px;" maxValue="#{beanMedia.resultatNbNAimePas}"
-        			step="1" showArrows="true" showTooltip="false" disabled="true" orientation="vertical" />
+			    
+			    
+				<br />
         		<br />
-        		<br />
-        		
-	        </h:form>
-	            
-	            <!-- Réseaux sociaux -->
+			    
+			    <!-- Réseaux sociaux -->
 	            <div style="float: left;">
 	            <!-- https://dev.twitter.com/docs/tweet-button : Tweet Button -->
 				<a href="https://twitter.com/share" class="twitter-share-button" data-via="twitterapi" data-lang="en">Tweet</a>
@@ -414,7 +413,7 @@
 	            <!-- Informations sur le média -->
 	            <span class="bold">
 	            	<h:outputText value="Ajouté par " />
-	            	<h:outputLink value="TODO/#{beanMedia.auteur}">
+	            	<h:outputLink value="" action="">
 						<h:outputText value="#{beanMedia.auteur}" />
 					</h:outputLink>
 	            	<h:outputText value=" le #{beanMedia.datePublication}" />
@@ -423,8 +422,6 @@
 	            <h:outputText value="#{beanMedia.description}" />
         	<!-- </rich:panel> -->
         	</p:fieldset>
-        	
-        	
         	
         	<!-- Partie droite -->
         	<p:fieldset styleClass="droite">
@@ -441,7 +438,6 @@
 		        <br />
 		        <br />  
         		
-        		
         	<!-- Notation par estimation étoile du média -->
         	<h:form>
         		<div style="float:left;">
@@ -453,22 +449,22 @@
 			        </p:rating>
 			    </h:panelGrid>
         		</div>
-        		
+        	</h:form>
         		<br />
         		<br />
-        		
+        	<h:form>	
         		<div style="float:left;">
-        			<a4j:commandButton value="Exporter" image="/resources/images/icones/tag-icone-4783-32.png" alt="Exporter" onclick="dlgExporter.show();" title="Exporter ce média sur votre blog ou site" />
+        			<p:commandButton value="Exporter" image="/resources/images/icones/tag-icone-4783-32.png" alt="Exporter" onclick="dlgExporter.show();" title="Exporter ce média sur votre blog ou site" />
         			<p:spacer width="20" />
         			<!-- Affichage des statistiques associés au média -->
-        			<a4j:commandButton value="Visualiser statistiques" image="/resources/images/icones/graphique-en-ligne-icone-4887-32.png" alt="Statistiques" onclick="dlgStatistiques.show();" title="Statistiques" />
+        			<p:commandButton value="Visualiser statistiques" image="/resources/images/icones/graphique-en-ligne-icone-4887-32.png" alt="Statistiques" onclick="dlgStatistiques.show();" title="Statistiques" />
         			<p:spacer width="20" />
         			<!-- Signalement du média -->
-        			<a4j:commandButton value="Signaler" image="/resources/images/icones/drapeau-rouge-icone-6492-32.png" alt="Peut offenser" onclick="dlgSignaler.show();" title="Signaler ce média" />
+        			<p:commandButton value="Signaler" image="/resources/images/icones/drapeau-rouge-icone-6492-32.png" alt="Peut offenser" onclick="dlgSignaler.show();" title="Signaler ce média" />
 	            </div>
-	         </h:form>  
-	         
-	         	<!-- Pop-up permettant de visualiser les statistiques du média -->
+	        </h:form>
+	            
+	            <!-- Pop-up permettant de visualiser les statistiques du média -->
         		<h:form>	        		
 	        		<p:dialog id="popupStatistiques" header="Statistiques" widgetVar="dlgStatistiques" showEffect="explode" hideEffect="bounce">
 				        <h:outputText value="#{beanMedia.resultatTotalVuesMedia} vue#{beanMedia.motVues} - "/> 
@@ -491,7 +487,6 @@
 				        </h:panelGroup>
 				    </p:dialog>
 				</h:form>
-				
 				
 				<!-- Pop-up permettant de signaler un média -->
         		<h:form>
@@ -517,13 +512,13 @@
 			    </p:dialog>
 			    </h:form>
 			    
-	            <br /><br />
+			    <br /><br />
         		
         		<!-- Artiste : <h:outputText value="" /><br /> XXX -->
         		
         		<!-- Ajout au panier du média -->
         		<h:form>
-        			<a4j:commandButton value="Ajouter #{beanMedia.titreMedia} au panier" title="Ajouter #{beanMedia.titreMedia} au panier" actionListener="#{beanPanier.ajouterAuPanier}" image="/resources/images/icones/panier-ajouter-icone-5924-32.png" rendered="#{beanMedia.mediaVisualise.estTelechargementAutorise}" />
+        			<p:commandButton value="Ajouter #{beanMedia.titreMedia} au panier" title="Ajouter #{beanMedia.titreMedia} au panier" actionListener="#{beanPanier.ajouterAuPanier}" image="/resources/images/icones/panier-ajouter-icone-5924-32.png" rendered="#{beanMedia.mediaVisualise.estTelechargementAutorise}" />
 					<!--<rich:notify id="notifyAjoutAuPanier" stayTime="1500" sticky="false" nonblocking="false"
 			        nonblockingOpacity="0.5" showShadow="false"
 			        showCloseButton="true" detail="#{beanPanier.detailNotifyAjoutAuPanier}">			 
@@ -539,9 +534,13 @@
 					    <p:fileDownload value="#{beanMedia.file}" />  
 					</p:commandLink>
         		</h:form>
+	         
+	         	
         	</p:fieldset>
         	
         	<div style="clear: both;"></div>
+			
+			<div style="clear: both;"></div>
 
 			<!-- Plus -->
 			<p:fieldset legend="Plus" toggleable="true" toggleSpeed="500">
@@ -550,13 +549,13 @@
 					<h:graphicImage value="/resources/images/icones/documents-tiroirs-classeurs-icone-6679-16.png" />
                     <h:outputText value=" Catégories : " styleClass="bold" />
 					<br />
-					<a4j:repeat value="#{beanMedia.listeNomCategories}" var="categ"
+					<ui:repeat value="#{beanMedia.listeNomCategories}" var="categ"
 						rows="20" id="repeatCategories">
 						<h:outputLink value="recherche.jsf?categ=#{categ}"
 							title="#{categ}">
 							<h:outputText value="#{categ}" />
 						</h:outputLink>
-					</a4j:repeat>
+					</ui:repeat>
 	
 					<br />
 					<br />
@@ -625,10 +624,14 @@
   
   				<!-- Commentaires -->
 		        <p:tab title="Commentaires (#{beanMedia.nbCommentaires})">  
-		            
+		        
+		        <h:panelGroup rendered="#{! beanMedia.estCommentairesAutorise}">
+		        	<h:outputText value="Commentaires non autorisés" />
+		        </h:panelGroup>
+  				<h:panelGroup rendered="#{beanMedia.estCommentairesAutorise}">
 		    
 		   	<!-- Edition d'un commentaire -->
-			<h:form id="formMessage">
+			<h:form id="formCommentaire">
 				<p:editor id="editor" value="#{beanMedia.commentaireSaisi}" width="565" />
 				<p:inputText id="counter">  
 		            <p:ajax event="keyup" update="nbCaracteresRestants"
@@ -652,14 +655,12 @@
 				
 				<br />
 		        
-           		<p:commandButton id="publier" value="Publier" update="formMessage" icon="ui-icon-disk" actionListener="#{beanMedia.publierCommentaire}" />
+           		<p:commandButton id="publier" value="Publier" update="listeCommentairesReponses" icon="ui-icon-disk" actionListener="#{beanMedia.publierCommentaire}" />
 				
 		        <br />
 		 
-    		</h:form>
 		    <br /><br />  		
     
-    		<h:form id="formTest">
     		<p:panel id="test" >
     			<h:outputText value="#{beanMedia.listeCommentaires.size()}" />
     		</p:panel>
@@ -668,7 +669,7 @@
     		<br />
     		    		
     		<!-- Affichage des commentaires et actions possibles sur ceux-ci -->
-    		<p:dataTable id="tableCommentairesReponses" var="commentaire" value="#{beanMedia.listeCommentaires}"
+    		<p:dataTable id="listeCommentairesReponses" var="commentaire" value="#{beanMedia.listeCommentaires}"
     			paginator="true" rows="10"  
                  paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"  
                  rowsPerPageTemplate="5,10,15">  
@@ -704,19 +705,30 @@
 								</p:column>
 		        
 		        	<p:column style="width:250px">
+		
+						<f:facet name="header">  
+			                    Contenu  
+			            </f:facet>
+			            
+						<h:outputText escape="false" value="#{commentaire.contenuCommentaire}" />
+						
+						<hr /><!-- TODO => -->
 		        			<h:panelGroup rendered="#{commentaire.auteur == beanMedia.utilisateurConnecte}">        		
-								<h:commandLink value="Supprimer" action="#{beanMedia.supprimerCommentaire}">
-				                	<f:param name="idCommentaire" value="#{commentaire.idCommentaire}"/>
-								</h:commandLink>
+								<p:commandButton id="suppressionCommentaire" action="#{beanMedia.supprimerCommentaire}"  
+          										icon="ui-icon-trash" title="Supprimer"> <!-- TODO  update=":formCommentaire:listeCommentairesReponses :commentaires" -->
+          										<f:setPropertyActionListener target="#{beanMedia.commentaireAffiche}" value="#{commentaire}" />          										
+         								</p:commandButton>
 							</h:panelGroup>
-			
-							<h:panelGroup rendered="#{commentaire.auteur != beanMedia.utilisateurConnecte}">
-								 <h:commandLink value="Signaler comme spam" action="#{beanMedia.signalerCommentaire}">
-									<f:setPropertyActionListener target="#{beanMedia.commentaireAffiche}" value="#{commentaire}" />
-									<rich:componentControl target="popupSignalement" operation="show" />						
-								</h:commandLink><!-- TODO Benjamin -->
+							<!--<p:commandButton id="repondreCommentaire" 
+          										icon="ui-icon-mail-closed" title="Répondre"> 
+          										<f:setPropertyActionListener target="#{beanMedia.commentaireAffiche}" value="#{commentaire}" /> 										
+          								</p:commandButton>-->
+							<h:panelGroup rendered="#{commentaire.auteur != beanMedia.utilisateurConnecte}">										
+									    <p:commandButton id="signalerCommentaire" 
+          										icon="ui-icon-alert" title="Signaler" oncomplete="dlgSignalementCommentaire.show()"> 
+          										<f:setPropertyActionListener target="#{beanMedia.commentaireAffiche}" value="#{commentaire}" />       										
+         								</p:commandButton>							
 							</h:panelGroup>
-			
 							<!-- Vote pour<br/>
 							Vote contre XXX -->
 							
@@ -727,13 +739,6 @@
 									Suppression du commentaire
 								</f:facet>
 							</rich:notify>-->
-							
-							<hr />
-		        	 
-			            <f:facet name="header">  
-			                    Contenu  
-			            </f:facet>
-						<h:outputText escape="false" value="#{commentaire.contenuCommentaire}" />						
 		        	</p:column>
 		        
 		        <!-- Affichage des réponses associées à chaque commentaire affiché -->
@@ -761,11 +766,12 @@
 		    </p:dataTable>
 		    </h:form>
 		    
+		    	</h:panelGroup>
 		    	</p:tab>
 		    	
 		    	<!-- Liste des médias du même auteur que le média visualisé -->
 		    	<p:tab title="Médias de #{beanMedia.auteur}">
-		    		<a4j:outputPanel id="gallery">
+		    		<p:outputPanel id="gallery">
 		    			<ui:repeat value="#{beanMedia.listeMediasDeAuteur}" var="mediaDeAuteur" id="repeatMediaDeAuteur" rows="10">
 				        	<div style="float: left;">
 				        	<h:graphicImage value="/resources/images/icones/{mediaDeAuteur.photo}" style="width: 120px;" />
@@ -774,15 +780,10 @@
 				        	</h:outputLink>
 				        	</div>
 				        </ui:repeat>
-				    </a4j:outputPanel>
+				    </p:outputPanel>
 				 
 				    <br style="clear: both" />
 				 
-				    <rich:jQuery selector="#gallery img" query="addClass('pic-normal')" />
-				    <rich:jQuery selector="#gallery img" query="wrap('&lt;div class=\'wrap1\'&gt;&lt;/div&gt;')" />
-				    <rich:jQuery selector="#gallery img" event="mouseover" query="jQuery(this).stop().animate({width:'180px'})" />
-				    <rich:jQuery selector="#gallery img" event="mouseout" query="jQuery(this).stop().animate({width:'120px'})" />
-		    	
 		    		<!-- Voir les prochaines vidéos >> XXX -->
 		    	</p:tab>
 		    	
@@ -799,7 +800,21 @@
 				<br />
 			</p:tabView>
 			<!-- Regarder plus de vidéos de l'auteur XXX -->
+			
+			<p:dialog id="dialogSignalementCommentaire" widgetVar="dlgSignalementCommentaire" modal="false" autosized="true"
+				resizeable="false" header="Signalement d'un commentaire - Attention">				
+				<h:form>
+					<h:outputText
+						value="Etes-vous sur de vouloir signaler ce commentaire ?" />
+						<br /><br />
+					<p:commandButton value="Oui" oncomplete="dlgSignalementCommentaire.hide()"
+						action="#{beanMedia.signalerCommentaire}"><!-- update=":messages" -->
+					</p:commandButton>						
+					<p:commandButton value="Annuler" onclick="dlgSignalementCommentaire.hide()"/>
+				</h:form>
+			</p:dialog>
 		</section>
+		
 		
 		
 		
@@ -810,7 +825,7 @@
 			</h3>
 			<article class="holder_news">
 				<h:form>
-			                <a4j:repeat value="#{beanMedia.listeMediasSuggeres}" var="mediaSuggere" rows="20"
+			                <ui:repeat value="#{beanMedia.listeMediasSuggeres}" var="mediaSuggere" rows="20"
 			                    id="repeat">
 			                        <p:panelGrid id="gridSuggestions" style="width: 274px;"> 
 			                        	<p:row>
@@ -834,7 +849,7 @@
 					                    </p:row>
         							</p:panelGrid>
 			                    <br />
-			                </a4j:repeat>
+			                </ui:repeat>
 			            	<h:outputLink value="recherche.jsf?TODO">
 								<h:outputText value="" style="font-weight:bold;" />
 							</h:outputLink>
