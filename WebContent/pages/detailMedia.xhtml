@@ -523,10 +523,10 @@
         		
         		<!-- Ajout au panier du média -->
         		<h:form>
-        			<a4j:commandButton value="Ajouter #{beanMedia.titreMedia} au panier" title="Ajouter #{beanMedia.titreMedia} au panier" actionListener="#{beanMedia.ajouterAuPanier}" image="/resources/images/icones/panier-ajouter-icone-5924-32.png" rendered="#{beanMedia.mediaVisualise.estTelechargementAutorise}" />
+        			<a4j:commandButton value="Ajouter #{beanMedia.titreMedia} au panier" title="Ajouter #{beanMedia.titreMedia} au panier" actionListener="#{beanPanier.ajouterAuPanier}" image="/resources/images/icones/panier-ajouter-icone-5924-32.png" rendered="#{beanMedia.mediaVisualise.estTelechargementAutorise}" />
 					<!--<rich:notify id="notifyAjoutAuPanier" stayTime="1500" sticky="false" nonblocking="false"
 			        nonblockingOpacity="0.5" showShadow="false"
-			        showCloseButton="true" detail="#{beanMedia.detailNotifyAjoutAuPanier}">			 
+			        showCloseButton="true" detail="#{beanPanier.detailNotifyAjoutAuPanier}">			 
 				        <f:facet name="summary">
 				            Notification
 				        </f:facet>			        

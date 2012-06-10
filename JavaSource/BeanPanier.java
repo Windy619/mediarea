@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
+import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletOutputStream;
@@ -23,6 +24,9 @@ import metier.media.Media;
 public class BeanPanier {
 	
 	private List<Media> mediaDansPanier;
+ 	private String detailNotifyAjoutAuPanier;
+ 	private static DaoMedia daoMedia;
+ 	private FacesContext context = FacesContext.getCurrentInstance();
 
 	public BeanPanier() {
 		DaoMedia daoMedia = new DaoMedia();
@@ -32,6 +36,29 @@ public class BeanPanier {
 		mediaDansPanier.add(daoMedia.getUn(3));
 		mediaDansPanier.add(daoMedia.getUn(4));
 		mediaDansPanier.add(daoMedia.getUn(5));
+	}
+		
+	/** 
+	 * Ajout du média au panier
+	 * @return
+	 */
+	public String ajouterAuPanier() {
+		System.out.println("ajouterAuPanier");
+		
+		//Si le média est déjà ajouté au panier
+		if(mediaDansPanier.contains(daoMedia.getUn(2))) {
+			detailNotifyAjoutAuPanier = "Le média " + daoMedia.getUn(2).getTitreMedia() + " a déjà été ajouté au panier.";
+		}
+		//Si le média n'est pas encore ajouté au panier
+		else {
+			mediaDansPanier.add(daoMedia.getUn(2));
+			detailNotifyAjoutAuPanier = "Le média " + daoMedia.getUn(2).getTitreMedia() + " a été ajouté au panier";
+		}
+
+		//Affichage de la notification
+		context.addMessage(null, new FacesMessage("Notification", detailNotifyAjoutAuPanier));
+        
+		return "ajouterAuPanier";
 	}
 	
 	public String downloadPanier() {
@@ -142,9 +169,11 @@ public class BeanPanier {
 		this.mediaDansPanier = mediaDansPanier;
 	}
 	
+	public String getDetailNotifyAjoutAuPanier() {
+		return detailNotifyAjoutAuPanier;
+	}
 	
-	
-	
-	
-
+	public void setDetailNotifyAjoutAuPanier(String detailNotifyAjoutAuPanier) {
+		this.detailNotifyAjoutAuPanier = detailNotifyAjoutAuPanier;
+	}
 }
