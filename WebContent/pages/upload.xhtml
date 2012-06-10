@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="ISO-8859-1"?>
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
 	xmlns:h="http://java.sun.com/jsf/html"
@@ -10,17 +10,17 @@
 
 <ui:composition template="/templates/standard.xhtml">
 
-	<ui:define name="pageTitle">Upload de mÃ©dia</ui:define>
+	<ui:define name="pageTitle">Upload de média</ui:define>
 
 	<ui:define name="content">
 
 		<section class="group3">
-			<h3>Upload de mÃ©dia</h3>
+			<h3>Upload de média</h3>
 
 			<br />
 
 			<h:outputText rendered="#{empty beanUpload.utilisateurConnecte}"
-				value="L'upload de MÃ©dia est reservÃ© aux utilisateurs inscrits ! Pour profiter de cette fonctionnalitÃ©, veuillez vous inscrire ou vous connecter." />
+				value="L'upload de Média est reservé aux utilisateurs inscrits ! Pour profiter de cette fonctionnalité, veuillez vous inscrire ou vous connecter." />
 
 			<h:form enctype="multipart/form-data"
 				rendered="#{not empty beanUpload.utilisateurConnecte}">
@@ -72,7 +72,7 @@
 					
 					<p:tabView id="tabView" effect="fade">
 
-						<p:tab title="Informations gÃ©nÃ©rales">
+						<p:tab title="Informations générales">
 							<h:panelGrid columns="3" columnClasses="top,top">
 
 								<h:outputText value="Nom :" />
@@ -80,7 +80,7 @@
 									id="nomMedia" />
 								<p:message for="nomMedia" />
 
-								<h:outputText value="CatÃ©gorie :" />
+								<h:outputText value="Catégorie :" />
 								<p:selectCheckboxMenu value="#{beanUpload.categoriesMedia}"
 									label="Categories du Media" style="width: 410px"
 									id="categorieMedia">
@@ -105,13 +105,13 @@
 									action="#{beanUpload.uploader}"	actionListener="#{beanUpload.handlePictureUpload}" 
 									id="btnValider" onclick="dlg_captcha.show()"/>
 								<p:message for="btnValider">
-									En cliquant sur "Valider" vous vous engagez Ã  respecter la charte et les rÃ¨gles du site :
+									En cliquant sur "Valider" vous vous engagez à respecter la charte et les règles du site :
 									<h:outputLink value="charte.jsf">
 										<h:outputText value="Charte" styleClass="menuLink"></h:outputText>
 									</h:outputLink>
 									et
 									<h:outputLink value="charte.jsf">
-										<h:outputText value="RÃ¨gles" styleClass="menuLink"></h:outputText>
+										<h:outputText value="Règles" styleClass="menuLink"></h:outputText>
 									</h:outputLink>																			 
 								</p:message>		
 													
@@ -120,10 +120,10 @@
 
 						</p:tab>
 
-						<p:tab title="Informations complÃ©mentaires">
+						<p:tab title="Informations complémentaires">
 							<h:panelGrid columns="3" columnClasses="top,top">
 								
-								<h:outputText value="Autoriser le tÃ©lÃ©chargement du MÃ©dia ?"
+								<h:outputText value="Autoriser le téléchargement du Média ?"
 									id="autoriserTelechargmentMedia" />
 								<p:selectBooleanButton  value="#{beanUpload.autoriserTelechargementMedia}" onLabel="Oui" offLabel="Non" 
 									onIcon="ui-icon-check" offIcon="ui-icon-close"/>  															
@@ -141,7 +141,7 @@
 									promptLabel="Veuillez entrer un mot de passe"
 									weakLabel="Mot de passe faible !"
 									goodLabel="Mot de passe valide"
-									strongLabel="Mot de passe trÃ©s sÃ©curisÃ© !" />
+									strongLabel="Mot de passe trés sécurisé !" />
 								<p:message for="motdepasseMedia" />					
 								
 								<h:outputText value="Photo :" />
@@ -166,9 +166,7 @@
 					    
  	  		   					<br /> <br />
 				        					        
-		            	<p:commandButton id="btnValiderDialog" value="Valider !"  action="#{beanUpload.uploader}" actionListener="#{beanUpload.handlePictureUpload}" ajax="false" >
-		            		<f:setPropertyActionListener target="#{beanUpload.fichierSelectionne}" value="#{fichier}"></f:setPropertyActionListener>
-		            	</p:commandButton>	
+		            	<p:commandButton id="btnValiderDialog" value="Valider !"  action="#{beanUpload.uploader}" actionListener="#{beanUpload.handlePictureUpload}" ajax="false" />
 			            	
 		   			</p:dialog>
 

@@ -12683,3 +12683,1069 @@ javax.naming.NoInitialContextException: Need to specify class name in environmen
 18:57:46,643  INFO SchemaExport:234 - Running hbm2ddl schema export
 18:57:46,665  INFO SchemaExport:262 - exporting generated schema to database
 18:58:04,933  INFO SchemaExport:281 - schema export complete
+23:48:10,114  INFO Version:37 - Hibernate Commons Annotations 3.2.0.Final
+23:48:10,181  INFO Environment:593 - Hibernate 3.6.0.Final
+23:48:10,186  INFO Environment:626 - hibernate.properties not found
+23:48:10,211  INFO Environment:804 - Bytecode provider name : javassist
+23:48:10,217  INFO Environment:685 - using JDK 1.4 java.sql.Timestamp handling
+23:48:10,385  INFO Configuration:2126 - configuring from resource: /hibernate.cfg.xml
+23:48:10,385  INFO Configuration:2145 - Configuration resource: /hibernate.cfg.xml
+23:48:10,532  WARN DTDEntityResolver:73 - recognized obsolete hibernate namespace http://hibernate.sourceforge.net/. Use namespace http://www.hibernate.org/dtd/ instead. Refer to Hibernate 3.6 Migration Guide!
+23:48:10,655  INFO Configuration:2267 - Configured SessionFactory: sessionFactory
+23:48:10,817  INFO AnnotationBinder:532 - Binding entity from annotated class: metier.media.Aimer
+23:48:10,888  INFO EntityBinder:519 - Bind entity metier.media.Aimer on table Aimer
+23:48:10,985  INFO AnnotationBinder:532 - Binding entity from annotated class: metier.media.Categorie
+23:48:10,987  INFO QueryBinder:86 - Binding Named query: categorie => FROM Categorie WHERE nomCategorie = :nom 
+23:48:10,987  INFO EntityBinder:519 - Bind entity metier.media.Categorie on table Categorie
+23:48:10,989  INFO AnnotationBinder:532 - Binding entity from annotated class: metier.media.Commentaire
+23:48:10,990  INFO EntityBinder:519 - Bind entity metier.media.Commentaire on table Commentaire
+23:48:11,038  INFO AnnotationBinder:532 - Binding entity from annotated class: metier.media.Media
+23:48:11,039  INFO EntityBinder:519 - Bind entity metier.media.Media on table Media
+23:48:11,055  INFO AnnotationBinder:532 - Binding entity from annotated class: metier.media.Note
+23:48:11,056  INFO EntityBinder:519 - Bind entity metier.media.Note on table Note
+23:48:11,058  INFO AnnotationBinder:532 - Binding entity from annotated class: metier.utilisateur.Notification
+23:48:11,058  INFO EntityBinder:519 - Bind entity metier.utilisateur.Notification on table Notification
+23:48:11,061  INFO AnnotationBinder:532 - Binding entity from annotated class: metier.media.Photo_Couverture
+23:48:11,061  INFO EntityBinder:519 - Bind entity metier.media.Photo_Couverture on table Photo_Couverture
+23:48:11,063  INFO AnnotationBinder:532 - Binding entity from annotated class: metier.media.Playlist
+23:48:11,064  INFO EntityBinder:519 - Bind entity metier.media.Playlist on table Playlist
+23:48:11,069  INFO AnnotationBinder:532 - Binding entity from annotated class: metier.media.Regarder
+23:48:11,069  INFO EntityBinder:519 - Bind entity metier.media.Regarder on table Regarder
+23:48:11,071  INFO AnnotationBinder:532 - Binding entity from annotated class: metier.media.Signalement_Commentaire
+23:48:11,072  INFO EntityBinder:519 - Bind entity metier.media.Signalement_Commentaire on table Signalement_Commentaire
+23:48:11,074  INFO AnnotationBinder:532 - Binding entity from annotated class: metier.media.Signalement_Media
+23:48:11,075  INFO EntityBinder:519 - Bind entity metier.media.Signalement_Media on table Signalement_Media
+23:48:11,077  INFO AnnotationBinder:532 - Binding entity from annotated class: metier.media.Tag
+23:48:11,077  INFO EntityBinder:519 - Bind entity metier.media.Tag on table Tag
+23:48:11,079  INFO AnnotationBinder:532 - Binding entity from annotated class: metier.media.Type_Media
+23:48:11,079  INFO QueryBinder:86 - Binding Named query: categorie_video => FROM Type_Media WHERE nomTypeMedia = 'Video' 
+23:48:11,079  INFO QueryBinder:86 - Binding Named query: categorie_son => FROM Type_Media WHERE nomTypeMedia = 'Son' 
+23:48:11,080  INFO EntityBinder:519 - Bind entity metier.media.Type_Media on table Type_Media
+23:48:11,082  INFO AnnotationBinder:532 - Binding entity from annotated class: metier.media.Type_Playlist
+23:48:11,082  INFO QueryBinder:86 - Binding Named query: type_playlist_favoris => FROM Type_Playlist WHERE nomTypePlaylist = 'favoris' 
+23:48:11,082  INFO QueryBinder:86 - Binding Named query: type_playlist_en_cours => FROM Type_Playlist WHERE nomTypePlaylist = 'en_cours' 
+23:48:11,083  INFO QueryBinder:86 - Binding Named query: type_playlist_autre => FROM Type_Playlist WHERE nomTypePlaylist = 'autre' 
+23:48:11,083  INFO EntityBinder:519 - Bind entity metier.media.Type_Playlist on table Type_Playlist
+23:48:11,084  INFO AnnotationBinder:532 - Binding entity from annotated class: metier.media.Visibilite
+23:48:11,085  INFO QueryBinder:86 - Binding Named query: public => FROM Visibilite WHERE nomVisibilite = 'Public'
+23:48:11,085  INFO QueryBinder:86 - Binding Named query: prive => FROM Visibilite WHERE nomVisibilite = 'Prive'
+23:48:11,085  INFO EntityBinder:519 - Bind entity metier.media.Visibilite on table Visibilite
+23:48:11,086  INFO AnnotationBinder:532 - Binding entity from annotated class: metier.utilisateur.Amitie
+23:48:11,087  INFO EntityBinder:519 - Bind entity metier.utilisateur.Amitie on table Amitie
+23:48:11,090  INFO AnnotationBinder:532 - Binding entity from annotated class: metier.utilisateur.Avatar
+23:48:11,090  INFO EntityBinder:519 - Bind entity metier.utilisateur.Avatar on table Avatar
+23:48:11,092  INFO AnnotationBinder:532 - Binding entity from annotated class: metier.utilisateur.Message_Mural
+23:48:11,093  INFO EntityBinder:519 - Bind entity metier.utilisateur.Message_Mural on table Message_Mural
+23:48:11,100  INFO AnnotationBinder:532 - Binding entity from annotated class: metier.utilisateur.Message_Prive
+23:48:11,100  INFO EntityBinder:519 - Bind entity metier.utilisateur.Message_Prive on table Message_Prive
+23:48:11,105  INFO AnnotationBinder:532 - Binding entity from annotated class: metier.utilisateur.Signalement_Utilisateur
+23:48:11,105  INFO EntityBinder:519 - Bind entity metier.utilisateur.Signalement_Utilisateur on table Signalement_Utilisateur
+23:48:11,107  INFO AnnotationBinder:532 - Binding entity from annotated class: metier.utilisateur.Utilisateur
+23:48:11,108  INFO QueryBinder:86 - Binding Named query: utilisateur_valides => FROM Utilisateur WHERE dateBanissement = NULL AND dateSuppressionUtilisateur = NULL
+23:48:11,108  INFO QueryBinder:86 - Binding Named query: utilisateur_non_valides => FROM Utilisateur WHERE dateBanissement != NULL OR dateSuppressionUtilisateur != NULL
+23:48:11,108  INFO QueryBinder:86 - Binding Named query: utilisateur_bannis => FROM Utilisateur WHERE dateBanissement != NULL
+23:48:11,108  INFO QueryBinder:86 - Binding Named query: utilisateur_supprimes => FROM Utilisateur WHERE dateSuppressionUtilisateur != NULL
+23:48:11,109  INFO QueryBinder:86 - Binding Named query: utilisateur_administrateurs => FROM Utilisateur WHERE estAdministrateur IS TRUE
+23:48:11,109  INFO QueryBinder:86 - Binding Named query: utilisateur_pseudo => FROM Utilisateur WHERE pseudo = :pseudo
+23:48:11,109  INFO QueryBinder:86 - Binding Named query: utilisateur_mail => FROM Utilisateur WHERE adrMail = :mail
+23:48:11,109  INFO EntityBinder:519 - Bind entity metier.utilisateur.Utilisateur on table Utilisateur
+23:48:11,132  INFO AnnotationBinder:532 - Binding entity from annotated class: metier.utilisateur.Signalement_MessagePrive
+23:48:11,133  INFO EntityBinder:519 - Bind entity metier.utilisateur.Signalement_MessagePrive on table Signalement_MessagePrive
+23:48:11,135  INFO AnnotationBinder:532 - Binding entity from annotated class: metier.media.Categorie_Media
+23:48:11,135  INFO EntityBinder:519 - Bind entity metier.media.Categorie_Media on table Categorie_Media
+23:48:11,137  INFO AnnotationBinder:532 - Binding entity from annotated class: metier.media.Fichier
+23:48:11,137  INFO EntityBinder:519 - Bind entity metier.media.Fichier on table Fichier
+23:48:11,139  INFO AnnotationBinder:532 - Binding entity from annotated class: metier.media.Telechargement_Media
+23:48:11,139  INFO EntityBinder:519 - Bind entity metier.media.Telechargement_Media on table Telechargement_Media
+23:48:11,167  INFO CollectionBinder:745 - Mapping collection: metier.utilisateur.Utilisateur.amis -> Amitie
+23:48:11,167  INFO CollectionBinder:745 - Mapping collection: metier.utilisateur.Utilisateur.messagesPrives -> Message_Prive
+23:48:11,168  INFO CollectionBinder:745 - Mapping collection: metier.utilisateur.Utilisateur.notifications -> Notification
+23:48:11,169  INFO Configuration:1646 - Hibernate Validator not found: ignoring
+23:48:11,196  INFO Version:24 - Hibernate Validator 4.2.0.Final
+23:48:11,398  INFO HibernateSearchEventListenerRegister:75 - Unable to find org.hibernate.search.event.FullTextIndexEventListener on the classpath. Hibernate Search is not enabled.
+23:48:11,411  INFO DriverManagerConnectionProvider:64 - Using Hibernate built-in connection pool (not for production use!)
+23:48:11,411  INFO DriverManagerConnectionProvider:65 - Hibernate connection pool size: 20
+23:48:11,412  INFO DriverManagerConnectionProvider:68 - autocommit mode: false
+23:48:11,428  INFO DriverManagerConnectionProvider:103 - using driver: com.mysql.jdbc.Driver at URL: jdbc:mysql://localhost/MediArea
+23:48:11,428  INFO DriverManagerConnectionProvider:109 - connection properties: {user=root, password=****}
+23:48:11,905  INFO SettingsFactory:117 - Database ->
+       name : MySQL
+    version : 5.5.22
+      major : 5
+      minor : 5
+23:48:11,905  INFO SettingsFactory:123 - Driver ->
+       name : MySQL-AB JDBC Driver
+    version : mysql-connector-java-5.1.6 ( Revision: ${svn.Revision} )
+      major : 5
+      minor : 1
+23:48:11,942  INFO Dialect:108 - Using dialect: org.hibernate.dialect.MySQLDialect
+23:48:11,961  INFO JdbcSupportLoader:79 - Disabling contextual LOB creation as JDBC driver reported JDBC version [3] less than 4
+23:48:11,964  INFO TransactionFactoryFactory:59 - Using default transaction strategy (direct JDBC transactions)
+23:48:11,967  INFO TransactionManagerLookupFactory:80 - No TransactionManagerLookup configured (in JTA environment, use of read-write or transactional second-level cache is not recommended)
+23:48:11,967  INFO SettingsFactory:179 - Automatic flush during beforeCompletion(): disabled
+23:48:11,967  INFO SettingsFactory:183 - Automatic session close at end of transaction: disabled
+23:48:11,967  INFO SettingsFactory:190 - JDBC batch size: 15
+23:48:11,967  INFO SettingsFactory:193 - JDBC batch updates for versioned data: disabled
+23:48:11,969  INFO SettingsFactory:198 - Scrollable result sets: enabled
+23:48:11,969  INFO SettingsFactory:206 - JDBC3 getGeneratedKeys(): enabled
+23:48:11,969  INFO SettingsFactory:214 - Connection release mode: auto
+23:48:11,970  INFO SettingsFactory:238 - Maximum outer join fetch depth: 2
+23:48:11,970  INFO SettingsFactory:241 - Default batch fetch size: 1
+23:48:11,971  INFO SettingsFactory:245 - Generate SQL with comments: disabled
+23:48:11,971  INFO SettingsFactory:249 - Order SQL updates by primary key: disabled
+23:48:11,971  INFO SettingsFactory:253 - Order SQL inserts for batching: disabled
+23:48:11,971  INFO SettingsFactory:431 - Query translator: org.hibernate.hql.ast.ASTQueryTranslatorFactory
+23:48:11,974  INFO ASTQueryTranslatorFactory:47 - Using ASTQueryTranslatorFactory
+23:48:11,974  INFO SettingsFactory:261 - Query language substitutions: {}
+23:48:11,974  INFO SettingsFactory:266 - JPA-QL strict compliance: disabled
+23:48:11,975  INFO SettingsFactory:271 - Second-level cache: enabled
+23:48:11,975  INFO SettingsFactory:275 - Query cache: disabled
+23:48:11,975  INFO SettingsFactory:406 - Cache region factory : org.hibernate.cache.impl.NoCachingRegionFactory
+23:48:11,977  INFO SettingsFactory:285 - Optimize cache for minimal puts: disabled
+23:48:11,977  INFO SettingsFactory:294 - Structured second-level cache entries: disabled
+23:48:11,991  INFO SettingsFactory:323 - Statistics: disabled
+23:48:11,991  INFO SettingsFactory:327 - Deleted entity synthetic identifier rollback: disabled
+23:48:11,992  INFO SettingsFactory:343 - Default entity-mode: pojo
+23:48:11,992  INFO SettingsFactory:347 - Named query checking : enabled
+23:48:11,992  INFO SettingsFactory:351 - Check Nullability in Core (should be disabled when Bean Validation is on): disabled
+23:48:12,021  INFO SessionFactoryImpl:200 - building session factory
+23:48:12,666  INFO SessionFactoryObjectFactory:109 - Factory name: sessionFactory
+23:48:12,668  INFO NamingHelper:49 - JNDI InitialContext properties:{}
+23:48:12,673  WARN SessionFactoryObjectFactory:121 - Could not bind factory to JNDI
+javax.naming.NoInitialContextException: Need to specify class name in environment or system property, or as an applet parameter, or in an application resource file:  java.naming.factory.initial
+	at javax.naming.spi.NamingManager.getInitialContext(NamingManager.java:645)
+	at javax.naming.InitialContext.getDefaultInitCtx(InitialContext.java:288)
+	at javax.naming.InitialContext.getURLOrDefaultInitCtx(InitialContext.java:325)
+	at javax.naming.InitialContext.getNameParser(InitialContext.java:480)
+	at org.hibernate.util.NamingHelper.bind(NamingHelper.java:75)
+	at org.hibernate.impl.SessionFactoryObjectFactory.addInstance(SessionFactoryObjectFactory.java:113)
+	at org.hibernate.impl.SessionFactoryImpl.<init>(SessionFactoryImpl.java:365)
+	at org.hibernate.cfg.Configuration.buildSessionFactory(Configuration.java:1842)
+	at dao.Hibernate.<init>(Hibernate.java:40)
+	at dao.Hibernate.getInstance(Hibernate.java:225)
+	at dao.Dao.<init>(Dao.java:42)
+	at dao.utilisateur.DaoUtilisateur.<init>(DaoUtilisateur.java:18)
+	at Main.<clinit>(Main.java:39)
+23:48:12,686  INFO SchemaUpdate:155 - Running hbm2ddl schema update
+23:48:12,686  INFO SchemaUpdate:167 - fetching database metadata
+23:48:12,688  INFO SchemaUpdate:179 - updating schema
+23:48:12,724  INFO DatabaseMetadata:119 - table not found: Aimer
+23:48:12,725  INFO DatabaseMetadata:119 - table not found: Amitie
+23:48:12,727  INFO DatabaseMetadata:119 - table not found: Avatar
+23:48:12,728  INFO DatabaseMetadata:119 - table not found: Categorie
+23:48:12,729  INFO DatabaseMetadata:119 - table not found: Categorie_Media
+23:48:12,730  INFO DatabaseMetadata:119 - table not found: Commentaire
+23:48:12,732  INFO DatabaseMetadata:119 - table not found: Commentaire_Commentaire
+23:48:12,734  INFO DatabaseMetadata:119 - table not found: Fichier
+23:48:12,736  INFO DatabaseMetadata:119 - table not found: Media
+23:48:12,738  INFO DatabaseMetadata:119 - table not found: Media_Categorie_Media
+23:48:12,739  INFO DatabaseMetadata:119 - table not found: Media_Commentaire
+23:48:12,740  INFO DatabaseMetadata:119 - table not found: Media_Tag
+23:48:12,741  INFO DatabaseMetadata:119 - table not found: Message_Mural
+23:48:12,742  INFO DatabaseMetadata:119 - table not found: Message_Prive
+23:48:12,744  INFO DatabaseMetadata:119 - table not found: Message_Prive_Message_Prive
+23:48:12,745  INFO DatabaseMetadata:119 - table not found: Note
+23:48:12,746  INFO DatabaseMetadata:119 - table not found: Notification
+23:48:12,747  INFO DatabaseMetadata:119 - table not found: Photo_Couverture
+23:48:12,749  INFO DatabaseMetadata:119 - table not found: Playlist
+23:48:12,750  INFO DatabaseMetadata:119 - table not found: Playlist_Media
+23:48:12,752  INFO DatabaseMetadata:119 - table not found: Regarder
+23:48:12,753  INFO DatabaseMetadata:119 - table not found: Signalement_Commentaire
+23:48:12,755  INFO DatabaseMetadata:119 - table not found: Signalement_Media
+23:48:12,757  INFO DatabaseMetadata:119 - table not found: Signalement_MessagePrive
+23:48:12,758  INFO DatabaseMetadata:119 - table not found: Signalement_Utilisateur
+23:48:12,760  INFO DatabaseMetadata:119 - table not found: Tag
+23:48:12,761  INFO DatabaseMetadata:119 - table not found: Telechargement_Media
+23:48:12,762  INFO DatabaseMetadata:119 - table not found: Type_Media
+23:48:12,763  INFO DatabaseMetadata:119 - table not found: Type_Playlist
+23:48:12,764  INFO DatabaseMetadata:119 - table not found: Utilisateur
+23:48:12,766  INFO DatabaseMetadata:119 - table not found: Utilisateur_Aimer
+23:48:12,767  INFO DatabaseMetadata:119 - table not found: Utilisateur_Commentaire
+23:48:12,768  INFO DatabaseMetadata:119 - table not found: Utilisateur_Media
+23:48:12,770  INFO DatabaseMetadata:119 - table not found: Utilisateur_Message_Mural
+23:48:12,771  INFO DatabaseMetadata:119 - table not found: Utilisateur_Note
+23:48:12,772  INFO DatabaseMetadata:119 - table not found: Utilisateur_Playlist
+23:48:12,773  INFO DatabaseMetadata:119 - table not found: Utilisateur_Regarder
+23:48:12,774  INFO DatabaseMetadata:119 - table not found: Utilisateur_Signalement_Commentaire
+23:48:12,775  INFO DatabaseMetadata:119 - table not found: Utilisateur_Signalement_Media
+23:48:12,776  INFO DatabaseMetadata:119 - table not found: Utilisateur_Signalement_Utilisateur
+23:48:12,777  INFO DatabaseMetadata:119 - table not found: Utilisateur_Telechargement_Media
+23:48:12,778  INFO DatabaseMetadata:119 - table not found: Visibilite
+23:48:12,778  INFO DatabaseMetadata:119 - table not found: Aimer
+23:48:12,780  INFO DatabaseMetadata:119 - table not found: Amitie
+23:48:12,781  INFO DatabaseMetadata:119 - table not found: Avatar
+23:48:12,782  INFO DatabaseMetadata:119 - table not found: Categorie
+23:48:12,783  INFO DatabaseMetadata:119 - table not found: Categorie_Media
+23:48:12,784  INFO DatabaseMetadata:119 - table not found: Commentaire
+23:48:12,785  INFO DatabaseMetadata:119 - table not found: Commentaire_Commentaire
+23:48:12,786  INFO DatabaseMetadata:119 - table not found: Fichier
+23:48:12,787  INFO DatabaseMetadata:119 - table not found: Media
+23:48:12,788  INFO DatabaseMetadata:119 - table not found: Media_Categorie_Media
+23:48:12,789  INFO DatabaseMetadata:119 - table not found: Media_Commentaire
+23:48:12,790  INFO DatabaseMetadata:119 - table not found: Media_Tag
+23:48:12,791  INFO DatabaseMetadata:119 - table not found: Message_Mural
+23:48:12,792  INFO DatabaseMetadata:119 - table not found: Message_Prive
+23:48:12,793  INFO DatabaseMetadata:119 - table not found: Message_Prive_Message_Prive
+23:48:12,794  INFO DatabaseMetadata:119 - table not found: Note
+23:48:12,795  INFO DatabaseMetadata:119 - table not found: Notification
+23:48:12,797  INFO DatabaseMetadata:119 - table not found: Photo_Couverture
+23:48:12,798  INFO DatabaseMetadata:119 - table not found: Playlist
+23:48:12,798  INFO DatabaseMetadata:119 - table not found: Playlist_Media
+23:48:12,800  INFO DatabaseMetadata:119 - table not found: Regarder
+23:48:12,802  INFO DatabaseMetadata:119 - table not found: Signalement_Commentaire
+23:48:12,804  INFO DatabaseMetadata:119 - table not found: Signalement_Media
+23:48:12,805  INFO DatabaseMetadata:119 - table not found: Signalement_MessagePrive
+23:48:12,806  INFO DatabaseMetadata:119 - table not found: Signalement_Utilisateur
+23:48:12,807  INFO DatabaseMetadata:119 - table not found: Tag
+23:48:12,808  INFO DatabaseMetadata:119 - table not found: Telechargement_Media
+23:48:12,809  INFO DatabaseMetadata:119 - table not found: Type_Media
+23:48:12,809  INFO DatabaseMetadata:119 - table not found: Type_Playlist
+23:48:12,810  INFO DatabaseMetadata:119 - table not found: Utilisateur
+23:48:12,812  INFO DatabaseMetadata:119 - table not found: Utilisateur_Aimer
+23:48:12,813  INFO DatabaseMetadata:119 - table not found: Utilisateur_Commentaire
+23:48:12,814  INFO DatabaseMetadata:119 - table not found: Utilisateur_Media
+23:48:12,815  INFO DatabaseMetadata:119 - table not found: Utilisateur_Message_Mural
+23:48:12,816  INFO DatabaseMetadata:119 - table not found: Utilisateur_Note
+23:48:12,818  INFO DatabaseMetadata:119 - table not found: Utilisateur_Playlist
+23:48:12,819  INFO DatabaseMetadata:119 - table not found: Utilisateur_Regarder
+23:48:12,820  INFO DatabaseMetadata:119 - table not found: Utilisateur_Signalement_Commentaire
+23:48:12,822  INFO DatabaseMetadata:119 - table not found: Utilisateur_Signalement_Media
+23:48:12,823  INFO DatabaseMetadata:119 - table not found: Utilisateur_Signalement_Utilisateur
+23:48:12,824  INFO DatabaseMetadata:119 - table not found: Utilisateur_Telechargement_Media
+23:48:12,825  INFO DatabaseMetadata:119 - table not found: Visibilite
+23:48:37,997  INFO Version:37 - Hibernate Commons Annotations 3.2.0.Final
+23:48:38,013  INFO Environment:593 - Hibernate 3.6.0.Final
+23:48:38,018  INFO Environment:626 - hibernate.properties not found
+23:48:38,023  INFO Environment:804 - Bytecode provider name : javassist
+23:48:38,029  INFO Environment:685 - using JDK 1.4 java.sql.Timestamp handling
+23:48:38,147  INFO Configuration:2126 - configuring from resource: /hibernate.cfg.xml
+23:48:38,147  INFO Configuration:2145 - Configuration resource: /hibernate.cfg.xml
+23:48:38,225  WARN DTDEntityResolver:73 - recognized obsolete hibernate namespace http://hibernate.sourceforge.net/. Use namespace http://www.hibernate.org/dtd/ instead. Refer to Hibernate 3.6 Migration Guide!
+23:48:38,300  INFO Configuration:2267 - Configured SessionFactory: sessionFactory
+23:48:38,417  INFO AnnotationBinder:532 - Binding entity from annotated class: metier.media.Aimer
+23:48:38,477  INFO EntityBinder:519 - Bind entity metier.media.Aimer on table Aimer
+23:48:38,563  INFO AnnotationBinder:532 - Binding entity from annotated class: metier.media.Categorie
+23:48:38,565  INFO QueryBinder:86 - Binding Named query: categorie => FROM Categorie WHERE nomCategorie = :nom 
+23:48:38,566  INFO EntityBinder:519 - Bind entity metier.media.Categorie on table Categorie
+23:48:38,567  INFO AnnotationBinder:532 - Binding entity from annotated class: metier.media.Commentaire
+23:48:38,568  INFO EntityBinder:519 - Bind entity metier.media.Commentaire on table Commentaire
+23:48:38,616  INFO AnnotationBinder:532 - Binding entity from annotated class: metier.media.Media
+23:48:38,617  INFO EntityBinder:519 - Bind entity metier.media.Media on table Media
+23:48:38,633  INFO AnnotationBinder:532 - Binding entity from annotated class: metier.media.Note
+23:48:38,633  INFO EntityBinder:519 - Bind entity metier.media.Note on table Note
+23:48:38,635  INFO AnnotationBinder:532 - Binding entity from annotated class: metier.utilisateur.Notification
+23:48:38,636  INFO EntityBinder:519 - Bind entity metier.utilisateur.Notification on table Notification
+23:48:38,639  INFO AnnotationBinder:532 - Binding entity from annotated class: metier.media.Photo_Couverture
+23:48:38,639  INFO EntityBinder:519 - Bind entity metier.media.Photo_Couverture on table Photo_Couverture
+23:48:38,641  INFO AnnotationBinder:532 - Binding entity from annotated class: metier.media.Playlist
+23:48:38,642  INFO EntityBinder:519 - Bind entity metier.media.Playlist on table Playlist
+23:48:38,646  INFO AnnotationBinder:532 - Binding entity from annotated class: metier.media.Regarder
+23:48:38,647  INFO EntityBinder:519 - Bind entity metier.media.Regarder on table Regarder
+23:48:38,649  INFO AnnotationBinder:532 - Binding entity from annotated class: metier.media.Signalement_Commentaire
+23:48:38,650  INFO EntityBinder:519 - Bind entity metier.media.Signalement_Commentaire on table Signalement_Commentaire
+23:48:38,652  INFO AnnotationBinder:532 - Binding entity from annotated class: metier.media.Signalement_Media
+23:48:38,653  INFO EntityBinder:519 - Bind entity metier.media.Signalement_Media on table Signalement_Media
+23:48:38,655  INFO AnnotationBinder:532 - Binding entity from annotated class: metier.media.Tag
+23:48:38,656  INFO EntityBinder:519 - Bind entity metier.media.Tag on table Tag
+23:48:38,657  INFO AnnotationBinder:532 - Binding entity from annotated class: metier.media.Type_Media
+23:48:38,657  INFO QueryBinder:86 - Binding Named query: categorie_video => FROM Type_Media WHERE nomTypeMedia = 'Video' 
+23:48:38,657  INFO QueryBinder:86 - Binding Named query: categorie_son => FROM Type_Media WHERE nomTypeMedia = 'Son' 
+23:48:38,658  INFO EntityBinder:519 - Bind entity metier.media.Type_Media on table Type_Media
+23:48:38,660  INFO AnnotationBinder:532 - Binding entity from annotated class: metier.media.Type_Playlist
+23:48:38,661  INFO QueryBinder:86 - Binding Named query: type_playlist_favoris => FROM Type_Playlist WHERE nomTypePlaylist = 'favoris' 
+23:48:38,661  INFO QueryBinder:86 - Binding Named query: type_playlist_en_cours => FROM Type_Playlist WHERE nomTypePlaylist = 'en_cours' 
+23:48:38,661  INFO QueryBinder:86 - Binding Named query: type_playlist_autre => FROM Type_Playlist WHERE nomTypePlaylist = 'autre' 
+23:48:38,661  INFO EntityBinder:519 - Bind entity metier.media.Type_Playlist on table Type_Playlist
+23:48:38,663  INFO AnnotationBinder:532 - Binding entity from annotated class: metier.media.Visibilite
+23:48:38,663  INFO QueryBinder:86 - Binding Named query: public => FROM Visibilite WHERE nomVisibilite = 'Public'
+23:48:38,663  INFO QueryBinder:86 - Binding Named query: prive => FROM Visibilite WHERE nomVisibilite = 'Prive'
+23:48:38,664  INFO EntityBinder:519 - Bind entity metier.media.Visibilite on table Visibilite
+23:48:38,665  INFO AnnotationBinder:532 - Binding entity from annotated class: metier.utilisateur.Amitie
+23:48:38,666  INFO EntityBinder:519 - Bind entity metier.utilisateur.Amitie on table Amitie
+23:48:38,669  INFO AnnotationBinder:532 - Binding entity from annotated class: metier.utilisateur.Avatar
+23:48:38,669  INFO EntityBinder:519 - Bind entity metier.utilisateur.Avatar on table Avatar
+23:48:38,671  INFO AnnotationBinder:532 - Binding entity from annotated class: metier.utilisateur.Message_Mural
+23:48:38,671  INFO EntityBinder:519 - Bind entity metier.utilisateur.Message_Mural on table Message_Mural
+23:48:38,679  INFO AnnotationBinder:532 - Binding entity from annotated class: metier.utilisateur.Message_Prive
+23:48:38,679  INFO EntityBinder:519 - Bind entity metier.utilisateur.Message_Prive on table Message_Prive
+23:48:38,684  INFO AnnotationBinder:532 - Binding entity from annotated class: metier.utilisateur.Signalement_Utilisateur
+23:48:38,684  INFO EntityBinder:519 - Bind entity metier.utilisateur.Signalement_Utilisateur on table Signalement_Utilisateur
+23:48:38,687  INFO AnnotationBinder:532 - Binding entity from annotated class: metier.utilisateur.Utilisateur
+23:48:38,687  INFO QueryBinder:86 - Binding Named query: utilisateur_valides => FROM Utilisateur WHERE dateBanissement = NULL AND dateSuppressionUtilisateur = NULL
+23:48:38,687  INFO QueryBinder:86 - Binding Named query: utilisateur_non_valides => FROM Utilisateur WHERE dateBanissement != NULL OR dateSuppressionUtilisateur != NULL
+23:48:38,687  INFO QueryBinder:86 - Binding Named query: utilisateur_bannis => FROM Utilisateur WHERE dateBanissement != NULL
+23:48:38,688  INFO QueryBinder:86 - Binding Named query: utilisateur_supprimes => FROM Utilisateur WHERE dateSuppressionUtilisateur != NULL
+23:48:38,688  INFO QueryBinder:86 - Binding Named query: utilisateur_administrateurs => FROM Utilisateur WHERE estAdministrateur IS TRUE
+23:48:38,688  INFO QueryBinder:86 - Binding Named query: utilisateur_pseudo => FROM Utilisateur WHERE pseudo = :pseudo
+23:48:38,688  INFO QueryBinder:86 - Binding Named query: utilisateur_mail => FROM Utilisateur WHERE adrMail = :mail
+23:48:38,689  INFO EntityBinder:519 - Bind entity metier.utilisateur.Utilisateur on table Utilisateur
+23:48:38,711  INFO AnnotationBinder:532 - Binding entity from annotated class: metier.utilisateur.Signalement_MessagePrive
+23:48:38,711  INFO EntityBinder:519 - Bind entity metier.utilisateur.Signalement_MessagePrive on table Signalement_MessagePrive
+23:48:38,713  INFO AnnotationBinder:532 - Binding entity from annotated class: metier.media.Categorie_Media
+23:48:38,714  INFO EntityBinder:519 - Bind entity metier.media.Categorie_Media on table Categorie_Media
+23:48:38,715  INFO AnnotationBinder:532 - Binding entity from annotated class: metier.media.Fichier
+23:48:38,716  INFO EntityBinder:519 - Bind entity metier.media.Fichier on table Fichier
+23:48:38,717  INFO AnnotationBinder:532 - Binding entity from annotated class: metier.media.Telechargement_Media
+23:48:38,718  INFO EntityBinder:519 - Bind entity metier.media.Telechargement_Media on table Telechargement_Media
+23:48:38,746  INFO CollectionBinder:745 - Mapping collection: metier.utilisateur.Utilisateur.amis -> Amitie
+23:48:38,747  INFO CollectionBinder:745 - Mapping collection: metier.utilisateur.Utilisateur.messagesPrives -> Message_Prive
+23:48:38,747  INFO CollectionBinder:745 - Mapping collection: metier.utilisateur.Utilisateur.notifications -> Notification
+23:48:38,749  INFO Configuration:1646 - Hibernate Validator not found: ignoring
+23:48:38,775  INFO Version:24 - Hibernate Validator 4.2.0.Final
+23:48:38,941  INFO HibernateSearchEventListenerRegister:75 - Unable to find org.hibernate.search.event.FullTextIndexEventListener on the classpath. Hibernate Search is not enabled.
+23:48:38,953  INFO DriverManagerConnectionProvider:64 - Using Hibernate built-in connection pool (not for production use!)
+23:48:38,954  INFO DriverManagerConnectionProvider:65 - Hibernate connection pool size: 20
+23:48:38,954  INFO DriverManagerConnectionProvider:68 - autocommit mode: false
+23:48:38,962  INFO DriverManagerConnectionProvider:103 - using driver: com.mysql.jdbc.Driver at URL: jdbc:mysql://localhost/MediArea
+23:48:38,962  INFO DriverManagerConnectionProvider:109 - connection properties: {user=root, password=****}
+23:48:39,341  INFO SettingsFactory:117 - Database ->
+       name : MySQL
+    version : 5.5.22
+      major : 5
+      minor : 5
+23:48:39,341  INFO SettingsFactory:123 - Driver ->
+       name : MySQL-AB JDBC Driver
+    version : mysql-connector-java-5.1.6 ( Revision: ${svn.Revision} )
+      major : 5
+      minor : 1
+23:48:39,378  INFO Dialect:108 - Using dialect: org.hibernate.dialect.MySQLDialect
+23:48:39,398  INFO JdbcSupportLoader:79 - Disabling contextual LOB creation as JDBC driver reported JDBC version [3] less than 4
+23:48:39,400  INFO TransactionFactoryFactory:59 - Using default transaction strategy (direct JDBC transactions)
+23:48:39,403  INFO TransactionManagerLookupFactory:80 - No TransactionManagerLookup configured (in JTA environment, use of read-write or transactional second-level cache is not recommended)
+23:48:39,403  INFO SettingsFactory:179 - Automatic flush during beforeCompletion(): disabled
+23:48:39,403  INFO SettingsFactory:183 - Automatic session close at end of transaction: disabled
+23:48:39,404  INFO SettingsFactory:190 - JDBC batch size: 15
+23:48:39,404  INFO SettingsFactory:193 - JDBC batch updates for versioned data: disabled
+23:48:39,405  INFO SettingsFactory:198 - Scrollable result sets: enabled
+23:48:39,405  INFO SettingsFactory:206 - JDBC3 getGeneratedKeys(): enabled
+23:48:39,405  INFO SettingsFactory:214 - Connection release mode: auto
+23:48:39,407  INFO SettingsFactory:238 - Maximum outer join fetch depth: 2
+23:48:39,407  INFO SettingsFactory:241 - Default batch fetch size: 1
+23:48:39,407  INFO SettingsFactory:245 - Generate SQL with comments: disabled
+23:48:39,407  INFO SettingsFactory:249 - Order SQL updates by primary key: disabled
+23:48:39,407  INFO SettingsFactory:253 - Order SQL inserts for batching: disabled
+23:48:39,407  INFO SettingsFactory:431 - Query translator: org.hibernate.hql.ast.ASTQueryTranslatorFactory
+23:48:39,411  INFO ASTQueryTranslatorFactory:47 - Using ASTQueryTranslatorFactory
+23:48:39,411  INFO SettingsFactory:261 - Query language substitutions: {}
+23:48:39,411  INFO SettingsFactory:266 - JPA-QL strict compliance: disabled
+23:48:39,411  INFO SettingsFactory:271 - Second-level cache: enabled
+23:48:39,411  INFO SettingsFactory:275 - Query cache: disabled
+23:48:39,412  INFO SettingsFactory:406 - Cache region factory : org.hibernate.cache.impl.NoCachingRegionFactory
+23:48:39,413  INFO SettingsFactory:285 - Optimize cache for minimal puts: disabled
+23:48:39,414  INFO SettingsFactory:294 - Structured second-level cache entries: disabled
+23:48:39,428  INFO SettingsFactory:323 - Statistics: disabled
+23:48:39,428  INFO SettingsFactory:327 - Deleted entity synthetic identifier rollback: disabled
+23:48:39,428  INFO SettingsFactory:343 - Default entity-mode: pojo
+23:48:39,429  INFO SettingsFactory:347 - Named query checking : enabled
+23:48:39,429  INFO SettingsFactory:351 - Check Nullability in Core (should be disabled when Bean Validation is on): disabled
+23:48:39,457  INFO SessionFactoryImpl:200 - building session factory
+23:48:40,181  INFO SessionFactoryObjectFactory:109 - Factory name: sessionFactory
+23:48:40,183  INFO NamingHelper:49 - JNDI InitialContext properties:{}
+23:48:40,188  WARN SessionFactoryObjectFactory:121 - Could not bind factory to JNDI
+javax.naming.NoInitialContextException: Need to specify class name in environment or system property, or as an applet parameter, or in an application resource file:  java.naming.factory.initial
+	at javax.naming.spi.NamingManager.getInitialContext(NamingManager.java:645)
+	at javax.naming.InitialContext.getDefaultInitCtx(InitialContext.java:288)
+	at javax.naming.InitialContext.getURLOrDefaultInitCtx(InitialContext.java:325)
+	at javax.naming.InitialContext.getNameParser(InitialContext.java:480)
+	at org.hibernate.util.NamingHelper.bind(NamingHelper.java:75)
+	at org.hibernate.impl.SessionFactoryObjectFactory.addInstance(SessionFactoryObjectFactory.java:113)
+	at org.hibernate.impl.SessionFactoryImpl.<init>(SessionFactoryImpl.java:365)
+	at org.hibernate.cfg.Configuration.buildSessionFactory(Configuration.java:1842)
+	at dao.Hibernate.<init>(Hibernate.java:40)
+	at dao.Hibernate.getInstance(Hibernate.java:225)
+	at dao.Dao.<init>(Dao.java:42)
+	at dao.utilisateur.DaoUtilisateur.<init>(DaoUtilisateur.java:18)
+	at Main.<clinit>(Main.java:39)
+23:48:40,291  INFO SchemaExport:234 - Running hbm2ddl schema export
+23:48:40,314  INFO SchemaExport:262 - exporting generated schema to database
+23:49:09,079  INFO SchemaExport:281 - schema export complete
+23:49:11,101 ERROR AbstractFlushingEventListener:324 - Could not synchronize database state with session
+org.hibernate.TransientObjectException: object references an unsaved transient instance - save the transient instance before flushing: metier.media.Categorie_Media
+	at org.hibernate.engine.ForeignKeys.getEntityIdentifierIfNotUnsaved(ForeignKeys.java:243)
+	at org.hibernate.type.EntityType.getIdentifier(EntityType.java:456)
+	at org.hibernate.type.ManyToOneType.nullSafeSet(ManyToOneType.java:121)
+	at org.hibernate.persister.collection.AbstractCollectionPersister.writeElement(AbstractCollectionPersister.java:815)
+	at org.hibernate.persister.collection.AbstractCollectionPersister.insertRows(AbstractCollectionPersister.java:1424)
+	at org.hibernate.action.CollectionUpdateAction.execute(CollectionUpdateAction.java:86)
+	at org.hibernate.engine.ActionQueue.execute(ActionQueue.java:273)
+	at org.hibernate.engine.ActionQueue.executeActions(ActionQueue.java:265)
+	at org.hibernate.engine.ActionQueue.executeActions(ActionQueue.java:187)
+	at org.hibernate.event.def.AbstractFlushingEventListener.performExecutions(AbstractFlushingEventListener.java:321)
+	at org.hibernate.event.def.DefaultFlushEventListener.onFlush(DefaultFlushEventListener.java:51)
+	at org.hibernate.impl.SessionImpl.flush(SessionImpl.java:1216)
+	at org.hibernate.impl.SessionImpl.managedFlush(SessionImpl.java:383)
+	at org.hibernate.transaction.JDBCTransaction.commit(JDBCTransaction.java:133)
+	at dao.Hibernate.commitTransaction(Hibernate.java:141)
+	at dao.Dao.sauvegarder(Dao.java:60)
+	at Main.ajouter_objets_media(Main.java:143)
+	at Main.main(Main.java:266)
+23:49:11,135 ERROR AbstractFlushingEventListener:324 - Could not synchronize database state with session
+org.hibernate.TransientObjectException: object references an unsaved transient instance - save the transient instance before flushing: metier.media.Categorie_Media
+	at org.hibernate.engine.ForeignKeys.getEntityIdentifierIfNotUnsaved(ForeignKeys.java:243)
+	at org.hibernate.type.EntityType.getIdentifier(EntityType.java:456)
+	at org.hibernate.type.ManyToOneType.nullSafeSet(ManyToOneType.java:121)
+	at org.hibernate.persister.collection.AbstractCollectionPersister.writeElement(AbstractCollectionPersister.java:815)
+	at org.hibernate.persister.collection.AbstractCollectionPersister.insertRows(AbstractCollectionPersister.java:1424)
+	at org.hibernate.action.CollectionUpdateAction.execute(CollectionUpdateAction.java:86)
+	at org.hibernate.engine.ActionQueue.execute(ActionQueue.java:273)
+	at org.hibernate.engine.ActionQueue.executeActions(ActionQueue.java:265)
+	at org.hibernate.engine.ActionQueue.executeActions(ActionQueue.java:187)
+	at org.hibernate.event.def.AbstractFlushingEventListener.performExecutions(AbstractFlushingEventListener.java:321)
+	at org.hibernate.event.def.DefaultFlushEventListener.onFlush(DefaultFlushEventListener.java:51)
+	at org.hibernate.impl.SessionImpl.flush(SessionImpl.java:1216)
+	at org.hibernate.impl.SessionImpl.managedFlush(SessionImpl.java:383)
+	at org.hibernate.transaction.JDBCTransaction.commit(JDBCTransaction.java:133)
+	at dao.Hibernate.commitTransaction(Hibernate.java:141)
+	at dao.Dao.sauvegarder(Dao.java:60)
+	at Main.ajouter_objets_playlist(Main.java:153)
+	at Main.main(Main.java:267)
+23:49:11,151 ERROR AbstractFlushingEventListener:324 - Could not synchronize database state with session
+org.hibernate.TransientObjectException: object references an unsaved transient instance - save the transient instance before flushing: metier.media.Categorie_Media
+	at org.hibernate.engine.ForeignKeys.getEntityIdentifierIfNotUnsaved(ForeignKeys.java:243)
+	at org.hibernate.type.EntityType.getIdentifier(EntityType.java:456)
+	at org.hibernate.type.ManyToOneType.nullSafeSet(ManyToOneType.java:121)
+	at org.hibernate.persister.collection.AbstractCollectionPersister.writeElement(AbstractCollectionPersister.java:815)
+	at org.hibernate.persister.collection.AbstractCollectionPersister.insertRows(AbstractCollectionPersister.java:1424)
+	at org.hibernate.action.CollectionUpdateAction.execute(CollectionUpdateAction.java:86)
+	at org.hibernate.engine.ActionQueue.execute(ActionQueue.java:273)
+	at org.hibernate.engine.ActionQueue.executeActions(ActionQueue.java:265)
+	at org.hibernate.engine.ActionQueue.executeActions(ActionQueue.java:187)
+	at org.hibernate.event.def.AbstractFlushingEventListener.performExecutions(AbstractFlushingEventListener.java:321)
+	at org.hibernate.event.def.DefaultFlushEventListener.onFlush(DefaultFlushEventListener.java:51)
+	at org.hibernate.impl.SessionImpl.flush(SessionImpl.java:1216)
+	at org.hibernate.impl.SessionImpl.managedFlush(SessionImpl.java:383)
+	at org.hibernate.transaction.JDBCTransaction.commit(JDBCTransaction.java:133)
+	at dao.Hibernate.commitTransaction(Hibernate.java:141)
+	at dao.Dao.sauvegarder(Dao.java:60)
+	at Main.ajouter_objets_commentaire(Main.java:112)
+	at Main.main(Main.java:268)
+23:49:11,164 ERROR AbstractFlushingEventListener:324 - Could not synchronize database state with session
+org.hibernate.TransientObjectException: object references an unsaved transient instance - save the transient instance before flushing: metier.media.Categorie_Media
+	at org.hibernate.engine.ForeignKeys.getEntityIdentifierIfNotUnsaved(ForeignKeys.java:243)
+	at org.hibernate.type.EntityType.getIdentifier(EntityType.java:456)
+	at org.hibernate.type.ManyToOneType.nullSafeSet(ManyToOneType.java:121)
+	at org.hibernate.persister.collection.AbstractCollectionPersister.writeElement(AbstractCollectionPersister.java:815)
+	at org.hibernate.persister.collection.AbstractCollectionPersister.insertRows(AbstractCollectionPersister.java:1424)
+	at org.hibernate.action.CollectionUpdateAction.execute(CollectionUpdateAction.java:86)
+	at org.hibernate.engine.ActionQueue.execute(ActionQueue.java:273)
+	at org.hibernate.engine.ActionQueue.executeActions(ActionQueue.java:265)
+	at org.hibernate.engine.ActionQueue.executeActions(ActionQueue.java:187)
+	at org.hibernate.event.def.AbstractFlushingEventListener.performExecutions(AbstractFlushingEventListener.java:321)
+	at org.hibernate.event.def.DefaultFlushEventListener.onFlush(DefaultFlushEventListener.java:51)
+	at org.hibernate.impl.SessionImpl.flush(SessionImpl.java:1216)
+	at org.hibernate.impl.SessionImpl.managedFlush(SessionImpl.java:383)
+	at org.hibernate.transaction.JDBCTransaction.commit(JDBCTransaction.java:133)
+	at dao.Hibernate.commitTransaction(Hibernate.java:141)
+	at dao.Dao.sauvegarder(Dao.java:60)
+	at Main.main(Main.java:279)
+23:49:11,176 ERROR AbstractFlushingEventListener:324 - Could not synchronize database state with session
+org.hibernate.TransientObjectException: object references an unsaved transient instance - save the transient instance before flushing: metier.media.Categorie_Media
+	at org.hibernate.engine.ForeignKeys.getEntityIdentifierIfNotUnsaved(ForeignKeys.java:243)
+	at org.hibernate.type.EntityType.getIdentifier(EntityType.java:456)
+	at org.hibernate.type.ManyToOneType.nullSafeSet(ManyToOneType.java:121)
+	at org.hibernate.persister.collection.AbstractCollectionPersister.writeElement(AbstractCollectionPersister.java:815)
+	at org.hibernate.persister.collection.AbstractCollectionPersister.insertRows(AbstractCollectionPersister.java:1424)
+	at org.hibernate.action.CollectionUpdateAction.execute(CollectionUpdateAction.java:86)
+	at org.hibernate.engine.ActionQueue.execute(ActionQueue.java:273)
+	at org.hibernate.engine.ActionQueue.executeActions(ActionQueue.java:265)
+	at org.hibernate.engine.ActionQueue.executeActions(ActionQueue.java:187)
+	at org.hibernate.event.def.AbstractFlushingEventListener.performExecutions(AbstractFlushingEventListener.java:321)
+	at org.hibernate.event.def.DefaultFlushEventListener.onFlush(DefaultFlushEventListener.java:51)
+	at org.hibernate.impl.SessionImpl.flush(SessionImpl.java:1216)
+	at org.hibernate.impl.SessionImpl.managedFlush(SessionImpl.java:383)
+	at org.hibernate.transaction.JDBCTransaction.commit(JDBCTransaction.java:133)
+	at dao.Hibernate.commitTransaction(Hibernate.java:141)
+	at dao.Dao.sauvegarder(Dao.java:60)
+	at Main.main(Main.java:284)
+23:49:11,189 ERROR AbstractFlushingEventListener:324 - Could not synchronize database state with session
+org.hibernate.TransientObjectException: object references an unsaved transient instance - save the transient instance before flushing: metier.media.Categorie_Media
+	at org.hibernate.engine.ForeignKeys.getEntityIdentifierIfNotUnsaved(ForeignKeys.java:243)
+	at org.hibernate.type.EntityType.getIdentifier(EntityType.java:456)
+	at org.hibernate.type.ManyToOneType.nullSafeSet(ManyToOneType.java:121)
+	at org.hibernate.persister.collection.AbstractCollectionPersister.writeElement(AbstractCollectionPersister.java:815)
+	at org.hibernate.persister.collection.AbstractCollectionPersister.insertRows(AbstractCollectionPersister.java:1424)
+	at org.hibernate.action.CollectionUpdateAction.execute(CollectionUpdateAction.java:86)
+	at org.hibernate.engine.ActionQueue.execute(ActionQueue.java:273)
+	at org.hibernate.engine.ActionQueue.executeActions(ActionQueue.java:265)
+	at org.hibernate.engine.ActionQueue.executeActions(ActionQueue.java:187)
+	at org.hibernate.event.def.AbstractFlushingEventListener.performExecutions(AbstractFlushingEventListener.java:321)
+	at org.hibernate.event.def.DefaultFlushEventListener.onFlush(DefaultFlushEventListener.java:51)
+	at org.hibernate.impl.SessionImpl.flush(SessionImpl.java:1216)
+	at org.hibernate.impl.SessionImpl.managedFlush(SessionImpl.java:383)
+	at org.hibernate.transaction.JDBCTransaction.commit(JDBCTransaction.java:133)
+	at dao.Hibernate.commitTransaction(Hibernate.java:141)
+	at dao.Dao.sauvegarder(Dao.java:60)
+	at Main.main(Main.java:289)
+23:49:11,207 ERROR AbstractFlushingEventListener:324 - Could not synchronize database state with session
+org.hibernate.TransientObjectException: object references an unsaved transient instance - save the transient instance before flushing: metier.media.Categorie_Media
+	at org.hibernate.engine.ForeignKeys.getEntityIdentifierIfNotUnsaved(ForeignKeys.java:243)
+	at org.hibernate.type.EntityType.getIdentifier(EntityType.java:456)
+	at org.hibernate.type.ManyToOneType.nullSafeSet(ManyToOneType.java:121)
+	at org.hibernate.persister.collection.AbstractCollectionPersister.writeElement(AbstractCollectionPersister.java:815)
+	at org.hibernate.persister.collection.AbstractCollectionPersister.insertRows(AbstractCollectionPersister.java:1424)
+	at org.hibernate.action.CollectionUpdateAction.execute(CollectionUpdateAction.java:86)
+	at org.hibernate.engine.ActionQueue.execute(ActionQueue.java:273)
+	at org.hibernate.engine.ActionQueue.executeActions(ActionQueue.java:265)
+	at org.hibernate.engine.ActionQueue.executeActions(ActionQueue.java:187)
+	at org.hibernate.event.def.AbstractFlushingEventListener.performExecutions(AbstractFlushingEventListener.java:321)
+	at org.hibernate.event.def.DefaultFlushEventListener.onFlush(DefaultFlushEventListener.java:51)
+	at org.hibernate.impl.SessionImpl.flush(SessionImpl.java:1216)
+	at org.hibernate.impl.SessionImpl.managedFlush(SessionImpl.java:383)
+	at org.hibernate.transaction.JDBCTransaction.commit(JDBCTransaction.java:133)
+	at dao.Hibernate.commitTransaction(Hibernate.java:141)
+	at dao.Dao.sauvegarder(Dao.java:60)
+	at Main.main(Main.java:294)
+23:49:11,225 ERROR AbstractFlushingEventListener:324 - Could not synchronize database state with session
+org.hibernate.TransientObjectException: object references an unsaved transient instance - save the transient instance before flushing: metier.media.Categorie_Media
+	at org.hibernate.engine.ForeignKeys.getEntityIdentifierIfNotUnsaved(ForeignKeys.java:243)
+	at org.hibernate.type.EntityType.getIdentifier(EntityType.java:456)
+	at org.hibernate.type.ManyToOneType.nullSafeSet(ManyToOneType.java:121)
+	at org.hibernate.persister.collection.AbstractCollectionPersister.writeElement(AbstractCollectionPersister.java:815)
+	at org.hibernate.persister.collection.AbstractCollectionPersister.insertRows(AbstractCollectionPersister.java:1424)
+	at org.hibernate.action.CollectionUpdateAction.execute(CollectionUpdateAction.java:86)
+	at org.hibernate.engine.ActionQueue.execute(ActionQueue.java:273)
+	at org.hibernate.engine.ActionQueue.executeActions(ActionQueue.java:265)
+	at org.hibernate.engine.ActionQueue.executeActions(ActionQueue.java:187)
+	at org.hibernate.event.def.AbstractFlushingEventListener.performExecutions(AbstractFlushingEventListener.java:321)
+	at org.hibernate.event.def.DefaultFlushEventListener.onFlush(DefaultFlushEventListener.java:51)
+	at org.hibernate.impl.SessionImpl.flush(SessionImpl.java:1216)
+	at org.hibernate.impl.SessionImpl.managedFlush(SessionImpl.java:383)
+	at org.hibernate.transaction.JDBCTransaction.commit(JDBCTransaction.java:133)
+	at dao.Hibernate.commitTransaction(Hibernate.java:141)
+	at dao.Dao.sauvegarder(Dao.java:60)
+	at Main.main(Main.java:299)
+23:49:11,239 ERROR AbstractFlushingEventListener:324 - Could not synchronize database state with session
+org.hibernate.TransientObjectException: object references an unsaved transient instance - save the transient instance before flushing: metier.media.Categorie_Media
+	at org.hibernate.engine.ForeignKeys.getEntityIdentifierIfNotUnsaved(ForeignKeys.java:243)
+	at org.hibernate.type.EntityType.getIdentifier(EntityType.java:456)
+	at org.hibernate.type.ManyToOneType.nullSafeSet(ManyToOneType.java:121)
+	at org.hibernate.persister.collection.AbstractCollectionPersister.writeElement(AbstractCollectionPersister.java:815)
+	at org.hibernate.persister.collection.AbstractCollectionPersister.insertRows(AbstractCollectionPersister.java:1424)
+	at org.hibernate.action.CollectionUpdateAction.execute(CollectionUpdateAction.java:86)
+	at org.hibernate.engine.ActionQueue.execute(ActionQueue.java:273)
+	at org.hibernate.engine.ActionQueue.executeActions(ActionQueue.java:265)
+	at org.hibernate.engine.ActionQueue.executeActions(ActionQueue.java:187)
+	at org.hibernate.event.def.AbstractFlushingEventListener.performExecutions(AbstractFlushingEventListener.java:321)
+	at org.hibernate.event.def.DefaultFlushEventListener.onFlush(DefaultFlushEventListener.java:51)
+	at org.hibernate.impl.SessionImpl.flush(SessionImpl.java:1216)
+	at org.hibernate.impl.SessionImpl.managedFlush(SessionImpl.java:383)
+	at org.hibernate.transaction.JDBCTransaction.commit(JDBCTransaction.java:133)
+	at dao.Hibernate.commitTransaction(Hibernate.java:141)
+	at dao.Dao.sauvegarder(Dao.java:60)
+	at Main.main(Main.java:304)
+23:49:11,251 ERROR AbstractFlushingEventListener:324 - Could not synchronize database state with session
+org.hibernate.TransientObjectException: object references an unsaved transient instance - save the transient instance before flushing: metier.media.Categorie_Media
+	at org.hibernate.engine.ForeignKeys.getEntityIdentifierIfNotUnsaved(ForeignKeys.java:243)
+	at org.hibernate.type.EntityType.getIdentifier(EntityType.java:456)
+	at org.hibernate.type.ManyToOneType.nullSafeSet(ManyToOneType.java:121)
+	at org.hibernate.persister.collection.AbstractCollectionPersister.writeElement(AbstractCollectionPersister.java:815)
+	at org.hibernate.persister.collection.AbstractCollectionPersister.insertRows(AbstractCollectionPersister.java:1424)
+	at org.hibernate.action.CollectionUpdateAction.execute(CollectionUpdateAction.java:86)
+	at org.hibernate.engine.ActionQueue.execute(ActionQueue.java:273)
+	at org.hibernate.engine.ActionQueue.executeActions(ActionQueue.java:265)
+	at org.hibernate.engine.ActionQueue.executeActions(ActionQueue.java:187)
+	at org.hibernate.event.def.AbstractFlushingEventListener.performExecutions(AbstractFlushingEventListener.java:321)
+	at org.hibernate.event.def.DefaultFlushEventListener.onFlush(DefaultFlushEventListener.java:51)
+	at org.hibernate.impl.SessionImpl.flush(SessionImpl.java:1216)
+	at org.hibernate.impl.SessionImpl.managedFlush(SessionImpl.java:383)
+	at org.hibernate.transaction.JDBCTransaction.commit(JDBCTransaction.java:133)
+	at dao.Hibernate.commitTransaction(Hibernate.java:141)
+	at dao.Dao.sauvegarder(Dao.java:60)
+	at Main.main(Main.java:309)
+23:49:11,280 ERROR AbstractFlushingEventListener:324 - Could not synchronize database state with session
+org.hibernate.TransientObjectException: object references an unsaved transient instance - save the transient instance before flushing: metier.media.Categorie_Media
+	at org.hibernate.engine.ForeignKeys.getEntityIdentifierIfNotUnsaved(ForeignKeys.java:243)
+	at org.hibernate.type.EntityType.getIdentifier(EntityType.java:456)
+	at org.hibernate.type.ManyToOneType.nullSafeSet(ManyToOneType.java:121)
+	at org.hibernate.persister.collection.AbstractCollectionPersister.writeElement(AbstractCollectionPersister.java:815)
+	at org.hibernate.persister.collection.AbstractCollectionPersister.insertRows(AbstractCollectionPersister.java:1424)
+	at org.hibernate.action.CollectionUpdateAction.execute(CollectionUpdateAction.java:86)
+	at org.hibernate.engine.ActionQueue.execute(ActionQueue.java:273)
+	at org.hibernate.engine.ActionQueue.executeActions(ActionQueue.java:265)
+	at org.hibernate.engine.ActionQueue.executeActions(ActionQueue.java:187)
+	at org.hibernate.event.def.AbstractFlushingEventListener.performExecutions(AbstractFlushingEventListener.java:321)
+	at org.hibernate.event.def.DefaultFlushEventListener.onFlush(DefaultFlushEventListener.java:51)
+	at org.hibernate.impl.SessionImpl.flush(SessionImpl.java:1216)
+	at org.hibernate.impl.SessionImpl.managedFlush(SessionImpl.java:383)
+	at org.hibernate.transaction.JDBCTransaction.commit(JDBCTransaction.java:133)
+	at dao.Hibernate.commitTransaction(Hibernate.java:141)
+	at dao.Dao.sauvegarder(Dao.java:60)
+	at Main.main(Main.java:339)
+23:49:11,283 ERROR AbstractFlushingEventListener:324 - Could not synchronize database state with session
+org.hibernate.TransientObjectException: object references an unsaved transient instance - save the transient instance before flushing: metier.media.Categorie_Media
+	at org.hibernate.engine.ForeignKeys.getEntityIdentifierIfNotUnsaved(ForeignKeys.java:243)
+	at org.hibernate.type.EntityType.getIdentifier(EntityType.java:456)
+	at org.hibernate.type.ManyToOneType.nullSafeSet(ManyToOneType.java:121)
+	at org.hibernate.persister.collection.AbstractCollectionPersister.writeElement(AbstractCollectionPersister.java:815)
+	at org.hibernate.persister.collection.AbstractCollectionPersister.insertRows(AbstractCollectionPersister.java:1424)
+	at org.hibernate.action.CollectionUpdateAction.execute(CollectionUpdateAction.java:86)
+	at org.hibernate.engine.ActionQueue.execute(ActionQueue.java:273)
+	at org.hibernate.engine.ActionQueue.executeActions(ActionQueue.java:265)
+	at org.hibernate.engine.ActionQueue.executeActions(ActionQueue.java:187)
+	at org.hibernate.event.def.AbstractFlushingEventListener.performExecutions(AbstractFlushingEventListener.java:321)
+	at org.hibernate.event.def.DefaultFlushEventListener.onFlush(DefaultFlushEventListener.java:51)
+	at org.hibernate.impl.SessionImpl.flush(SessionImpl.java:1216)
+	at org.hibernate.impl.SessionImpl.managedFlush(SessionImpl.java:383)
+	at org.hibernate.transaction.JDBCTransaction.commit(JDBCTransaction.java:133)
+	at dao.Hibernate.commitTransaction(Hibernate.java:141)
+	at dao.Dao.sauvegarder(Dao.java:60)
+	at Main.main(Main.java:340)
+23:49:11,287 ERROR AbstractFlushingEventListener:324 - Could not synchronize database state with session
+org.hibernate.TransientObjectException: object references an unsaved transient instance - save the transient instance before flushing: metier.media.Categorie_Media
+	at org.hibernate.engine.ForeignKeys.getEntityIdentifierIfNotUnsaved(ForeignKeys.java:243)
+	at org.hibernate.type.EntityType.getIdentifier(EntityType.java:456)
+	at org.hibernate.type.ManyToOneType.nullSafeSet(ManyToOneType.java:121)
+	at org.hibernate.persister.collection.AbstractCollectionPersister.writeElement(AbstractCollectionPersister.java:815)
+	at org.hibernate.persister.collection.AbstractCollectionPersister.insertRows(AbstractCollectionPersister.java:1424)
+	at org.hibernate.action.CollectionUpdateAction.execute(CollectionUpdateAction.java:86)
+	at org.hibernate.engine.ActionQueue.execute(ActionQueue.java:273)
+	at org.hibernate.engine.ActionQueue.executeActions(ActionQueue.java:265)
+	at org.hibernate.engine.ActionQueue.executeActions(ActionQueue.java:187)
+	at org.hibernate.event.def.AbstractFlushingEventListener.performExecutions(AbstractFlushingEventListener.java:321)
+	at org.hibernate.event.def.DefaultFlushEventListener.onFlush(DefaultFlushEventListener.java:51)
+	at org.hibernate.impl.SessionImpl.flush(SessionImpl.java:1216)
+	at org.hibernate.impl.SessionImpl.managedFlush(SessionImpl.java:383)
+	at org.hibernate.transaction.JDBCTransaction.commit(JDBCTransaction.java:133)
+	at dao.Hibernate.commitTransaction(Hibernate.java:141)
+	at dao.Dao.sauvegarder(Dao.java:60)
+	at Main.main(Main.java:341)
+23:52:33,250  INFO Version:37 - Hibernate Commons Annotations 3.2.0.Final
+23:52:33,266  INFO Environment:593 - Hibernate 3.6.0.Final
+23:52:33,271  INFO Environment:626 - hibernate.properties not found
+23:52:33,276  INFO Environment:804 - Bytecode provider name : javassist
+23:52:33,282  INFO Environment:685 - using JDK 1.4 java.sql.Timestamp handling
+23:52:33,404  INFO Configuration:2126 - configuring from resource: /hibernate.cfg.xml
+23:52:33,404  INFO Configuration:2145 - Configuration resource: /hibernate.cfg.xml
+23:52:33,483  WARN DTDEntityResolver:73 - recognized obsolete hibernate namespace http://hibernate.sourceforge.net/. Use namespace http://www.hibernate.org/dtd/ instead. Refer to Hibernate 3.6 Migration Guide!
+23:52:33,557  INFO Configuration:2267 - Configured SessionFactory: sessionFactory
+23:52:33,676  INFO AnnotationBinder:532 - Binding entity from annotated class: metier.media.Aimer
+23:52:33,734  INFO EntityBinder:519 - Bind entity metier.media.Aimer on table Aimer
+23:52:33,820  INFO AnnotationBinder:532 - Binding entity from annotated class: metier.media.Categorie
+23:52:33,822  INFO QueryBinder:86 - Binding Named query: categorie => FROM Categorie WHERE nomCategorie = :nom 
+23:52:33,822  INFO EntityBinder:519 - Bind entity metier.media.Categorie on table Categorie
+23:52:33,824  INFO AnnotationBinder:532 - Binding entity from annotated class: metier.media.Commentaire
+23:52:33,825  INFO EntityBinder:519 - Bind entity metier.media.Commentaire on table Commentaire
+23:52:33,874  INFO AnnotationBinder:532 - Binding entity from annotated class: metier.media.Media
+23:52:33,875  INFO EntityBinder:519 - Bind entity metier.media.Media on table Media
+23:52:33,897  INFO AnnotationBinder:532 - Binding entity from annotated class: metier.media.Note
+23:52:33,897  INFO EntityBinder:519 - Bind entity metier.media.Note on table Note
+23:52:33,899  INFO AnnotationBinder:532 - Binding entity from annotated class: metier.utilisateur.Notification
+23:52:33,900  INFO EntityBinder:519 - Bind entity metier.utilisateur.Notification on table Notification
+23:52:33,903  INFO AnnotationBinder:532 - Binding entity from annotated class: metier.media.Photo_Couverture
+23:52:33,903  INFO EntityBinder:519 - Bind entity metier.media.Photo_Couverture on table Photo_Couverture
+23:52:33,905  INFO AnnotationBinder:532 - Binding entity from annotated class: metier.media.Playlist
+23:52:33,906  INFO EntityBinder:519 - Bind entity metier.media.Playlist on table Playlist
+23:52:33,911  INFO AnnotationBinder:532 - Binding entity from annotated class: metier.media.Regarder
+23:52:33,911  INFO EntityBinder:519 - Bind entity metier.media.Regarder on table Regarder
+23:52:33,914  INFO AnnotationBinder:532 - Binding entity from annotated class: metier.media.Signalement_Commentaire
+23:52:33,914  INFO EntityBinder:519 - Bind entity metier.media.Signalement_Commentaire on table Signalement_Commentaire
+23:52:33,917  INFO AnnotationBinder:532 - Binding entity from annotated class: metier.media.Signalement_Media
+23:52:33,918  INFO EntityBinder:519 - Bind entity metier.media.Signalement_Media on table Signalement_Media
+23:52:33,920  INFO AnnotationBinder:532 - Binding entity from annotated class: metier.media.Tag
+23:52:33,921  INFO EntityBinder:519 - Bind entity metier.media.Tag on table Tag
+23:52:33,922  INFO AnnotationBinder:532 - Binding entity from annotated class: metier.media.Type_Media
+23:52:33,923  INFO QueryBinder:86 - Binding Named query: categorie_video => FROM Type_Media WHERE nomTypeMedia = 'Video' 
+23:52:33,923  INFO QueryBinder:86 - Binding Named query: categorie_son => FROM Type_Media WHERE nomTypeMedia = 'Son' 
+23:52:33,923  INFO EntityBinder:519 - Bind entity metier.media.Type_Media on table Type_Media
+23:52:33,925  INFO AnnotationBinder:532 - Binding entity from annotated class: metier.media.Type_Playlist
+23:52:33,925  INFO QueryBinder:86 - Binding Named query: type_playlist_favoris => FROM Type_Playlist WHERE nomTypePlaylist = 'favoris' 
+23:52:33,926  INFO QueryBinder:86 - Binding Named query: type_playlist_en_cours => FROM Type_Playlist WHERE nomTypePlaylist = 'en_cours' 
+23:52:33,926  INFO QueryBinder:86 - Binding Named query: type_playlist_autre => FROM Type_Playlist WHERE nomTypePlaylist = 'autre' 
+23:52:33,926  INFO EntityBinder:519 - Bind entity metier.media.Type_Playlist on table Type_Playlist
+23:52:33,928  INFO AnnotationBinder:532 - Binding entity from annotated class: metier.media.Visibilite
+23:52:33,928  INFO QueryBinder:86 - Binding Named query: public => FROM Visibilite WHERE nomVisibilite = 'Public'
+23:52:33,928  INFO QueryBinder:86 - Binding Named query: prive => FROM Visibilite WHERE nomVisibilite = 'Prive'
+23:52:33,928  INFO EntityBinder:519 - Bind entity metier.media.Visibilite on table Visibilite
+23:52:33,930  INFO AnnotationBinder:532 - Binding entity from annotated class: metier.utilisateur.Amitie
+23:52:33,931  INFO EntityBinder:519 - Bind entity metier.utilisateur.Amitie on table Amitie
+23:52:33,934  INFO AnnotationBinder:532 - Binding entity from annotated class: metier.utilisateur.Avatar
+23:52:33,934  INFO EntityBinder:519 - Bind entity metier.utilisateur.Avatar on table Avatar
+23:52:33,936  INFO AnnotationBinder:532 - Binding entity from annotated class: metier.utilisateur.Message_Mural
+23:52:33,939  INFO EntityBinder:519 - Bind entity metier.utilisateur.Message_Mural on table Message_Mural
+23:52:33,946  INFO AnnotationBinder:532 - Binding entity from annotated class: metier.utilisateur.Message_Prive
+23:52:33,947  INFO EntityBinder:519 - Bind entity metier.utilisateur.Message_Prive on table Message_Prive
+23:52:33,951  INFO AnnotationBinder:532 - Binding entity from annotated class: metier.utilisateur.Signalement_Utilisateur
+23:52:33,952  INFO EntityBinder:519 - Bind entity metier.utilisateur.Signalement_Utilisateur on table Signalement_Utilisateur
+23:52:33,954  INFO AnnotationBinder:532 - Binding entity from annotated class: metier.utilisateur.Utilisateur
+23:52:33,954  INFO QueryBinder:86 - Binding Named query: utilisateur_valides => FROM Utilisateur WHERE dateBanissement = NULL AND dateSuppressionUtilisateur = NULL
+23:52:33,955  INFO QueryBinder:86 - Binding Named query: utilisateur_non_valides => FROM Utilisateur WHERE dateBanissement != NULL OR dateSuppressionUtilisateur != NULL
+23:52:33,955  INFO QueryBinder:86 - Binding Named query: utilisateur_bannis => FROM Utilisateur WHERE dateBanissement != NULL
+23:52:33,955  INFO QueryBinder:86 - Binding Named query: utilisateur_supprimes => FROM Utilisateur WHERE dateSuppressionUtilisateur != NULL
+23:52:33,955  INFO QueryBinder:86 - Binding Named query: utilisateur_administrateurs => FROM Utilisateur WHERE estAdministrateur IS TRUE
+23:52:33,955  INFO QueryBinder:86 - Binding Named query: utilisateur_pseudo => FROM Utilisateur WHERE pseudo = :pseudo
+23:52:33,955  INFO QueryBinder:86 - Binding Named query: utilisateur_mail => FROM Utilisateur WHERE adrMail = :mail
+23:52:33,956  INFO EntityBinder:519 - Bind entity metier.utilisateur.Utilisateur on table Utilisateur
+23:52:33,981  INFO AnnotationBinder:532 - Binding entity from annotated class: metier.utilisateur.Signalement_MessagePrive
+23:52:33,982  INFO EntityBinder:519 - Bind entity metier.utilisateur.Signalement_MessagePrive on table Signalement_MessagePrive
+23:52:33,984  INFO AnnotationBinder:532 - Binding entity from annotated class: metier.media.Categorie_Media
+23:52:33,984  INFO EntityBinder:519 - Bind entity metier.media.Categorie_Media on table Categorie_Media
+23:52:33,986  INFO AnnotationBinder:532 - Binding entity from annotated class: metier.media.Fichier
+23:52:33,986  INFO EntityBinder:519 - Bind entity metier.media.Fichier on table Fichier
+23:52:33,988  INFO AnnotationBinder:532 - Binding entity from annotated class: metier.media.Telechargement_Media
+23:52:33,988  INFO EntityBinder:519 - Bind entity metier.media.Telechargement_Media on table Telechargement_Media
+23:53:08,813  INFO Version:37 - Hibernate Commons Annotations 3.2.0.Final
+23:53:08,829  INFO Environment:593 - Hibernate 3.6.0.Final
+23:53:08,833  INFO Environment:626 - hibernate.properties not found
+23:53:08,839  INFO Environment:804 - Bytecode provider name : javassist
+23:53:08,844  INFO Environment:685 - using JDK 1.4 java.sql.Timestamp handling
+23:53:08,963  INFO Configuration:2126 - configuring from resource: /hibernate.cfg.xml
+23:53:08,963  INFO Configuration:2145 - Configuration resource: /hibernate.cfg.xml
+23:53:09,042  WARN DTDEntityResolver:73 - recognized obsolete hibernate namespace http://hibernate.sourceforge.net/. Use namespace http://www.hibernate.org/dtd/ instead. Refer to Hibernate 3.6 Migration Guide!
+23:53:09,119  INFO Configuration:2267 - Configured SessionFactory: sessionFactory
+23:53:09,246  INFO AnnotationBinder:532 - Binding entity from annotated class: metier.media.Aimer
+23:53:09,308  INFO EntityBinder:519 - Bind entity metier.media.Aimer on table Aimer
+23:53:09,404  INFO AnnotationBinder:532 - Binding entity from annotated class: metier.media.Categorie
+23:53:09,405  INFO QueryBinder:86 - Binding Named query: categorie => FROM Categorie WHERE nomCategorie = :nom 
+23:53:09,406  INFO EntityBinder:519 - Bind entity metier.media.Categorie on table Categorie
+23:53:09,408  INFO AnnotationBinder:532 - Binding entity from annotated class: metier.media.Commentaire
+23:53:09,409  INFO EntityBinder:519 - Bind entity metier.media.Commentaire on table Commentaire
+23:53:09,459  INFO AnnotationBinder:532 - Binding entity from annotated class: metier.media.Media
+23:53:09,460  INFO EntityBinder:519 - Bind entity metier.media.Media on table Media
+23:53:09,480  INFO AnnotationBinder:532 - Binding entity from annotated class: metier.media.Note
+23:53:09,481  INFO EntityBinder:519 - Bind entity metier.media.Note on table Note
+23:53:09,483  INFO AnnotationBinder:532 - Binding entity from annotated class: metier.utilisateur.Notification
+23:53:09,483  INFO EntityBinder:519 - Bind entity metier.utilisateur.Notification on table Notification
+23:53:09,486  INFO AnnotationBinder:532 - Binding entity from annotated class: metier.media.Photo_Couverture
+23:53:09,487  INFO EntityBinder:519 - Bind entity metier.media.Photo_Couverture on table Photo_Couverture
+23:53:09,489  INFO AnnotationBinder:532 - Binding entity from annotated class: metier.media.Playlist
+23:53:09,490  INFO EntityBinder:519 - Bind entity metier.media.Playlist on table Playlist
+23:53:09,494  INFO AnnotationBinder:532 - Binding entity from annotated class: metier.media.Regarder
+23:53:09,495  INFO EntityBinder:519 - Bind entity metier.media.Regarder on table Regarder
+23:53:09,497  INFO AnnotationBinder:532 - Binding entity from annotated class: metier.media.Signalement_Commentaire
+23:53:09,498  INFO EntityBinder:519 - Bind entity metier.media.Signalement_Commentaire on table Signalement_Commentaire
+23:53:09,501  INFO AnnotationBinder:532 - Binding entity from annotated class: metier.media.Signalement_Media
+23:53:09,501  INFO EntityBinder:519 - Bind entity metier.media.Signalement_Media on table Signalement_Media
+23:53:09,504  INFO AnnotationBinder:532 - Binding entity from annotated class: metier.media.Tag
+23:53:09,504  INFO EntityBinder:519 - Bind entity metier.media.Tag on table Tag
+23:53:09,506  INFO AnnotationBinder:532 - Binding entity from annotated class: metier.media.Type_Media
+23:53:09,506  INFO QueryBinder:86 - Binding Named query: categorie_video => FROM Type_Media WHERE nomTypeMedia = 'Video' 
+23:53:09,506  INFO QueryBinder:86 - Binding Named query: categorie_son => FROM Type_Media WHERE nomTypeMedia = 'Son' 
+23:53:09,507  INFO EntityBinder:519 - Bind entity metier.media.Type_Media on table Type_Media
+23:53:09,509  INFO AnnotationBinder:532 - Binding entity from annotated class: metier.media.Type_Playlist
+23:53:09,509  INFO QueryBinder:86 - Binding Named query: type_playlist_favoris => FROM Type_Playlist WHERE nomTypePlaylist = 'favoris' 
+23:53:09,509  INFO QueryBinder:86 - Binding Named query: type_playlist_en_cours => FROM Type_Playlist WHERE nomTypePlaylist = 'en_cours' 
+23:53:09,509  INFO QueryBinder:86 - Binding Named query: type_playlist_autre => FROM Type_Playlist WHERE nomTypePlaylist = 'autre' 
+23:53:09,510  INFO EntityBinder:519 - Bind entity metier.media.Type_Playlist on table Type_Playlist
+23:53:09,511  INFO AnnotationBinder:532 - Binding entity from annotated class: metier.media.Visibilite
+23:53:09,511  INFO QueryBinder:86 - Binding Named query: public => FROM Visibilite WHERE nomVisibilite = 'Public'
+23:53:09,512  INFO QueryBinder:86 - Binding Named query: prive => FROM Visibilite WHERE nomVisibilite = 'Prive'
+23:53:09,512  INFO EntityBinder:519 - Bind entity metier.media.Visibilite on table Visibilite
+23:53:09,513  INFO AnnotationBinder:532 - Binding entity from annotated class: metier.utilisateur.Amitie
+23:53:09,514  INFO EntityBinder:519 - Bind entity metier.utilisateur.Amitie on table Amitie
+23:53:09,517  INFO AnnotationBinder:532 - Binding entity from annotated class: metier.utilisateur.Avatar
+23:53:09,518  INFO EntityBinder:519 - Bind entity metier.utilisateur.Avatar on table Avatar
+23:53:09,520  INFO AnnotationBinder:532 - Binding entity from annotated class: metier.utilisateur.Message_Mural
+23:53:09,522  INFO EntityBinder:519 - Bind entity metier.utilisateur.Message_Mural on table Message_Mural
+23:53:09,529  INFO AnnotationBinder:532 - Binding entity from annotated class: metier.utilisateur.Message_Prive
+23:53:09,530  INFO EntityBinder:519 - Bind entity metier.utilisateur.Message_Prive on table Message_Prive
+23:53:09,535  INFO AnnotationBinder:532 - Binding entity from annotated class: metier.utilisateur.Signalement_Utilisateur
+23:53:09,536  INFO EntityBinder:519 - Bind entity metier.utilisateur.Signalement_Utilisateur on table Signalement_Utilisateur
+23:53:09,538  INFO AnnotationBinder:532 - Binding entity from annotated class: metier.utilisateur.Utilisateur
+23:53:09,538  INFO QueryBinder:86 - Binding Named query: utilisateur_valides => FROM Utilisateur WHERE dateBanissement = NULL AND dateSuppressionUtilisateur = NULL
+23:53:09,538  INFO QueryBinder:86 - Binding Named query: utilisateur_non_valides => FROM Utilisateur WHERE dateBanissement != NULL OR dateSuppressionUtilisateur != NULL
+23:53:09,539  INFO QueryBinder:86 - Binding Named query: utilisateur_bannis => FROM Utilisateur WHERE dateBanissement != NULL
+23:53:09,539  INFO QueryBinder:86 - Binding Named query: utilisateur_supprimes => FROM Utilisateur WHERE dateSuppressionUtilisateur != NULL
+23:53:09,539  INFO QueryBinder:86 - Binding Named query: utilisateur_administrateurs => FROM Utilisateur WHERE estAdministrateur IS TRUE
+23:53:09,539  INFO QueryBinder:86 - Binding Named query: utilisateur_pseudo => FROM Utilisateur WHERE pseudo = :pseudo
+23:53:09,539  INFO QueryBinder:86 - Binding Named query: utilisateur_mail => FROM Utilisateur WHERE adrMail = :mail
+23:53:09,540  INFO EntityBinder:519 - Bind entity metier.utilisateur.Utilisateur on table Utilisateur
+23:53:09,566  INFO AnnotationBinder:532 - Binding entity from annotated class: metier.utilisateur.Signalement_MessagePrive
+23:53:09,567  INFO EntityBinder:519 - Bind entity metier.utilisateur.Signalement_MessagePrive on table Signalement_MessagePrive
+23:53:09,568  INFO AnnotationBinder:532 - Binding entity from annotated class: metier.media.Categorie_Media
+23:53:09,569  INFO EntityBinder:519 - Bind entity metier.media.Categorie_Media on table Categorie_Media
+23:53:09,570  INFO AnnotationBinder:532 - Binding entity from annotated class: metier.media.Fichier
+23:53:09,571  INFO EntityBinder:519 - Bind entity metier.media.Fichier on table Fichier
+23:53:09,573  INFO AnnotationBinder:532 - Binding entity from annotated class: metier.media.Telechargement_Media
+23:53:09,573  INFO EntityBinder:519 - Bind entity metier.media.Telechargement_Media on table Telechargement_Media
+23:54:11,058  INFO Version:37 - Hibernate Commons Annotations 3.2.0.Final
+23:54:11,074  INFO Environment:593 - Hibernate 3.6.0.Final
+23:54:11,078  INFO Environment:626 - hibernate.properties not found
+23:54:11,084  INFO Environment:804 - Bytecode provider name : javassist
+23:54:11,090  INFO Environment:685 - using JDK 1.4 java.sql.Timestamp handling
+23:54:11,212  INFO Configuration:2126 - configuring from resource: /hibernate.cfg.xml
+23:54:11,212  INFO Configuration:2145 - Configuration resource: /hibernate.cfg.xml
+23:54:11,294  WARN DTDEntityResolver:73 - recognized obsolete hibernate namespace http://hibernate.sourceforge.net/. Use namespace http://www.hibernate.org/dtd/ instead. Refer to Hibernate 3.6 Migration Guide!
+23:54:11,372  INFO Configuration:2267 - Configured SessionFactory: sessionFactory
+23:54:11,496  INFO AnnotationBinder:532 - Binding entity from annotated class: metier.media.Aimer
+23:54:11,554  INFO EntityBinder:519 - Bind entity metier.media.Aimer on table Aimer
+23:54:11,640  INFO AnnotationBinder:532 - Binding entity from annotated class: metier.media.Categorie
+23:54:11,642  INFO QueryBinder:86 - Binding Named query: categorie => FROM Categorie WHERE nomCategorie = :nom 
+23:54:11,643  INFO EntityBinder:519 - Bind entity metier.media.Categorie on table Categorie
+23:54:11,645  INFO AnnotationBinder:532 - Binding entity from annotated class: metier.media.Commentaire
+23:54:11,646  INFO EntityBinder:519 - Bind entity metier.media.Commentaire on table Commentaire
+23:54:11,694  INFO AnnotationBinder:532 - Binding entity from annotated class: metier.media.Media
+23:54:11,694  INFO EntityBinder:519 - Bind entity metier.media.Media on table Media
+23:54:11,710  INFO AnnotationBinder:532 - Binding entity from annotated class: metier.media.Note
+23:54:11,711  INFO EntityBinder:519 - Bind entity metier.media.Note on table Note
+23:54:11,713  INFO AnnotationBinder:532 - Binding entity from annotated class: metier.utilisateur.Notification
+23:54:11,713  INFO EntityBinder:519 - Bind entity metier.utilisateur.Notification on table Notification
+23:54:11,716  INFO AnnotationBinder:532 - Binding entity from annotated class: metier.media.Photo_Couverture
+23:54:11,717  INFO EntityBinder:519 - Bind entity metier.media.Photo_Couverture on table Photo_Couverture
+23:54:11,718  INFO AnnotationBinder:532 - Binding entity from annotated class: metier.media.Playlist
+23:54:11,719  INFO EntityBinder:519 - Bind entity metier.media.Playlist on table Playlist
+23:54:11,724  INFO AnnotationBinder:532 - Binding entity from annotated class: metier.media.Regarder
+23:54:11,724  INFO EntityBinder:519 - Bind entity metier.media.Regarder on table Regarder
+23:54:11,727  INFO AnnotationBinder:532 - Binding entity from annotated class: metier.media.Signalement_Commentaire
+23:54:11,727  INFO EntityBinder:519 - Bind entity metier.media.Signalement_Commentaire on table Signalement_Commentaire
+23:54:11,730  INFO AnnotationBinder:532 - Binding entity from annotated class: metier.media.Signalement_Media
+23:54:11,731  INFO EntityBinder:519 - Bind entity metier.media.Signalement_Media on table Signalement_Media
+23:54:11,733  INFO AnnotationBinder:532 - Binding entity from annotated class: metier.media.Tag
+23:54:11,734  INFO EntityBinder:519 - Bind entity metier.media.Tag on table Tag
+23:54:11,735  INFO AnnotationBinder:532 - Binding entity from annotated class: metier.media.Type_Media
+23:54:11,735  INFO QueryBinder:86 - Binding Named query: categorie_video => FROM Type_Media WHERE nomTypeMedia = 'Video' 
+23:54:11,736  INFO QueryBinder:86 - Binding Named query: categorie_son => FROM Type_Media WHERE nomTypeMedia = 'Son' 
+23:54:11,736  INFO EntityBinder:519 - Bind entity metier.media.Type_Media on table Type_Media
+23:54:11,738  INFO AnnotationBinder:532 - Binding entity from annotated class: metier.media.Type_Playlist
+23:54:11,739  INFO QueryBinder:86 - Binding Named query: type_playlist_favoris => FROM Type_Playlist WHERE nomTypePlaylist = 'favoris' 
+23:54:11,739  INFO QueryBinder:86 - Binding Named query: type_playlist_en_cours => FROM Type_Playlist WHERE nomTypePlaylist = 'en_cours' 
+23:54:11,739  INFO QueryBinder:86 - Binding Named query: type_playlist_autre => FROM Type_Playlist WHERE nomTypePlaylist = 'autre' 
+23:54:11,739  INFO EntityBinder:519 - Bind entity metier.media.Type_Playlist on table Type_Playlist
+23:54:11,741  INFO AnnotationBinder:532 - Binding entity from annotated class: metier.media.Visibilite
+23:54:11,741  INFO QueryBinder:86 - Binding Named query: public => FROM Visibilite WHERE nomVisibilite = 'Public'
+23:54:11,741  INFO QueryBinder:86 - Binding Named query: prive => FROM Visibilite WHERE nomVisibilite = 'Prive'
+23:54:11,742  INFO EntityBinder:519 - Bind entity metier.media.Visibilite on table Visibilite
+23:54:11,743  INFO AnnotationBinder:532 - Binding entity from annotated class: metier.utilisateur.Amitie
+23:54:11,744  INFO EntityBinder:519 - Bind entity metier.utilisateur.Amitie on table Amitie
+23:54:11,747  INFO AnnotationBinder:532 - Binding entity from annotated class: metier.utilisateur.Avatar
+23:54:11,748  INFO EntityBinder:519 - Bind entity metier.utilisateur.Avatar on table Avatar
+23:54:11,750  INFO AnnotationBinder:532 - Binding entity from annotated class: metier.utilisateur.Message_Mural
+23:54:11,750  INFO EntityBinder:519 - Bind entity metier.utilisateur.Message_Mural on table Message_Mural
+23:54:11,758  INFO AnnotationBinder:532 - Binding entity from annotated class: metier.utilisateur.Message_Prive
+23:54:11,758  INFO EntityBinder:519 - Bind entity metier.utilisateur.Message_Prive on table Message_Prive
+23:54:11,764  INFO AnnotationBinder:532 - Binding entity from annotated class: metier.utilisateur.Signalement_Utilisateur
+23:54:11,764  INFO EntityBinder:519 - Bind entity metier.utilisateur.Signalement_Utilisateur on table Signalement_Utilisateur
+23:54:11,766  INFO AnnotationBinder:532 - Binding entity from annotated class: metier.utilisateur.Utilisateur
+23:54:11,767  INFO QueryBinder:86 - Binding Named query: utilisateur_valides => FROM Utilisateur WHERE dateBanissement = NULL AND dateSuppressionUtilisateur = NULL
+23:54:11,767  INFO QueryBinder:86 - Binding Named query: utilisateur_non_valides => FROM Utilisateur WHERE dateBanissement != NULL OR dateSuppressionUtilisateur != NULL
+23:54:11,767  INFO QueryBinder:86 - Binding Named query: utilisateur_bannis => FROM Utilisateur WHERE dateBanissement != NULL
+23:54:11,767  INFO QueryBinder:86 - Binding Named query: utilisateur_supprimes => FROM Utilisateur WHERE dateSuppressionUtilisateur != NULL
+23:54:11,767  INFO QueryBinder:86 - Binding Named query: utilisateur_administrateurs => FROM Utilisateur WHERE estAdministrateur IS TRUE
+23:54:11,768  INFO QueryBinder:86 - Binding Named query: utilisateur_pseudo => FROM Utilisateur WHERE pseudo = :pseudo
+23:54:11,768  INFO QueryBinder:86 - Binding Named query: utilisateur_mail => FROM Utilisateur WHERE adrMail = :mail
+23:54:11,768  INFO EntityBinder:519 - Bind entity metier.utilisateur.Utilisateur on table Utilisateur
+23:54:11,792  INFO AnnotationBinder:532 - Binding entity from annotated class: metier.utilisateur.Signalement_MessagePrive
+23:54:11,793  INFO EntityBinder:519 - Bind entity metier.utilisateur.Signalement_MessagePrive on table Signalement_MessagePrive
+23:54:11,795  INFO AnnotationBinder:532 - Binding entity from annotated class: metier.media.Categorie_Media
+23:54:11,795  INFO EntityBinder:519 - Bind entity metier.media.Categorie_Media on table Categorie_Media
+23:54:11,797  INFO AnnotationBinder:532 - Binding entity from annotated class: metier.media.Fichier
+23:54:11,797  INFO EntityBinder:519 - Bind entity metier.media.Fichier on table Fichier
+23:54:11,799  INFO AnnotationBinder:532 - Binding entity from annotated class: metier.media.Telechargement_Media
+23:54:11,799  INFO EntityBinder:519 - Bind entity metier.media.Telechargement_Media on table Telechargement_Media
+23:54:11,830  INFO CollectionBinder:745 - Mapping collection: metier.utilisateur.Utilisateur.amis -> Amitie
+23:54:11,831  INFO CollectionBinder:745 - Mapping collection: metier.utilisateur.Utilisateur.messagesPrives -> Message_Prive
+23:54:11,831  INFO CollectionBinder:745 - Mapping collection: metier.utilisateur.Utilisateur.notifications -> Notification
+23:54:11,833  INFO Configuration:1646 - Hibernate Validator not found: ignoring
+23:54:11,860  INFO Version:24 - Hibernate Validator 4.2.0.Final
+23:54:12,025  INFO HibernateSearchEventListenerRegister:75 - Unable to find org.hibernate.search.event.FullTextIndexEventListener on the classpath. Hibernate Search is not enabled.
+23:54:12,037  INFO DriverManagerConnectionProvider:64 - Using Hibernate built-in connection pool (not for production use!)
+23:54:12,038  INFO DriverManagerConnectionProvider:65 - Hibernate connection pool size: 20
+23:54:12,038  INFO DriverManagerConnectionProvider:68 - autocommit mode: false
+23:54:12,047  INFO DriverManagerConnectionProvider:103 - using driver: com.mysql.jdbc.Driver at URL: jdbc:mysql://localhost/MediArea
+23:54:12,047  INFO DriverManagerConnectionProvider:109 - connection properties: {user=root, password=****}
+23:54:12,436  INFO SettingsFactory:117 - Database ->
+       name : MySQL
+    version : 5.5.22
+      major : 5
+      minor : 5
+23:54:12,436  INFO SettingsFactory:123 - Driver ->
+       name : MySQL-AB JDBC Driver
+    version : mysql-connector-java-5.1.6 ( Revision: ${svn.Revision} )
+      major : 5
+      minor : 1
+23:54:12,473  INFO Dialect:108 - Using dialect: org.hibernate.dialect.MySQLDialect
+23:54:12,493  INFO JdbcSupportLoader:79 - Disabling contextual LOB creation as JDBC driver reported JDBC version [3] less than 4
+23:54:12,495  INFO TransactionFactoryFactory:59 - Using default transaction strategy (direct JDBC transactions)
+23:54:12,498  INFO TransactionManagerLookupFactory:80 - No TransactionManagerLookup configured (in JTA environment, use of read-write or transactional second-level cache is not recommended)
+23:54:12,499  INFO SettingsFactory:179 - Automatic flush during beforeCompletion(): disabled
+23:54:12,499  INFO SettingsFactory:183 - Automatic session close at end of transaction: disabled
+23:54:12,499  INFO SettingsFactory:190 - JDBC batch size: 15
+23:54:12,499  INFO SettingsFactory:193 - JDBC batch updates for versioned data: disabled
+23:54:12,500  INFO SettingsFactory:198 - Scrollable result sets: enabled
+23:54:12,501  INFO SettingsFactory:206 - JDBC3 getGeneratedKeys(): enabled
+23:54:12,501  INFO SettingsFactory:214 - Connection release mode: auto
+23:54:12,502  INFO SettingsFactory:238 - Maximum outer join fetch depth: 2
+23:54:12,502  INFO SettingsFactory:241 - Default batch fetch size: 1
+23:54:12,502  INFO SettingsFactory:245 - Generate SQL with comments: disabled
+23:54:12,502  INFO SettingsFactory:249 - Order SQL updates by primary key: disabled
+23:54:12,503  INFO SettingsFactory:253 - Order SQL inserts for batching: disabled
+23:54:12,503  INFO SettingsFactory:431 - Query translator: org.hibernate.hql.ast.ASTQueryTranslatorFactory
+23:54:12,506  INFO ASTQueryTranslatorFactory:47 - Using ASTQueryTranslatorFactory
+23:54:12,506  INFO SettingsFactory:261 - Query language substitutions: {}
+23:54:12,506  INFO SettingsFactory:266 - JPA-QL strict compliance: disabled
+23:54:12,506  INFO SettingsFactory:271 - Second-level cache: enabled
+23:54:12,507  INFO SettingsFactory:275 - Query cache: disabled
+23:54:12,507  INFO SettingsFactory:406 - Cache region factory : org.hibernate.cache.impl.NoCachingRegionFactory
+23:54:12,508  INFO SettingsFactory:285 - Optimize cache for minimal puts: disabled
+23:54:12,509  INFO SettingsFactory:294 - Structured second-level cache entries: disabled
+23:54:12,523  INFO SettingsFactory:323 - Statistics: disabled
+23:54:12,523  INFO SettingsFactory:327 - Deleted entity synthetic identifier rollback: disabled
+23:54:12,523  INFO SettingsFactory:343 - Default entity-mode: pojo
+23:54:12,523  INFO SettingsFactory:347 - Named query checking : enabled
+23:54:12,523  INFO SettingsFactory:351 - Check Nullability in Core (should be disabled when Bean Validation is on): disabled
+23:54:12,553  INFO SessionFactoryImpl:200 - building session factory
+23:54:13,204  INFO SessionFactoryObjectFactory:109 - Factory name: sessionFactory
+23:54:13,206  INFO NamingHelper:49 - JNDI InitialContext properties:{}
+23:54:13,211  WARN SessionFactoryObjectFactory:121 - Could not bind factory to JNDI
+javax.naming.NoInitialContextException: Need to specify class name in environment or system property, or as an applet parameter, or in an application resource file:  java.naming.factory.initial
+	at javax.naming.spi.NamingManager.getInitialContext(NamingManager.java:645)
+	at javax.naming.InitialContext.getDefaultInitCtx(InitialContext.java:288)
+	at javax.naming.InitialContext.getURLOrDefaultInitCtx(InitialContext.java:325)
+	at javax.naming.InitialContext.getNameParser(InitialContext.java:480)
+	at org.hibernate.util.NamingHelper.bind(NamingHelper.java:75)
+	at org.hibernate.impl.SessionFactoryObjectFactory.addInstance(SessionFactoryObjectFactory.java:113)
+	at org.hibernate.impl.SessionFactoryImpl.<init>(SessionFactoryImpl.java:365)
+	at org.hibernate.cfg.Configuration.buildSessionFactory(Configuration.java:1842)
+	at dao.Hibernate.<init>(Hibernate.java:40)
+	at dao.Hibernate.getInstance(Hibernate.java:225)
+	at dao.Dao.<init>(Dao.java:42)
+	at dao.utilisateur.DaoUtilisateur.<init>(DaoUtilisateur.java:18)
+	at Main.<clinit>(Main.java:39)
+23:54:13,294  INFO SchemaExport:234 - Running hbm2ddl schema export
+23:54:13,296  INFO SchemaExport:262 - exporting generated schema to database
+23:54:28,476  INFO SchemaExport:281 - schema export complete
+00:02:00,574  INFO Version:37 - Hibernate Commons Annotations 3.2.0.Final
+00:02:00,620  INFO Environment:593 - Hibernate 3.6.0.Final
+00:02:00,624  INFO Environment:626 - hibernate.properties not found
+00:02:00,629  INFO Environment:804 - Bytecode provider name : javassist
+00:02:00,635  INFO Environment:685 - using JDK 1.4 java.sql.Timestamp handling
+00:02:00,756  INFO Configuration:2126 - configuring from resource: /hibernate.cfg.xml
+00:02:00,756  INFO Configuration:2145 - Configuration resource: /hibernate.cfg.xml
+00:02:00,835  WARN DTDEntityResolver:73 - recognized obsolete hibernate namespace http://hibernate.sourceforge.net/. Use namespace http://www.hibernate.org/dtd/ instead. Refer to Hibernate 3.6 Migration Guide!
+00:02:01,157  INFO Configuration:2267 - Configured SessionFactory: sessionFactory
+00:02:01,276  INFO AnnotationBinder:532 - Binding entity from annotated class: metier.media.Aimer
+00:02:01,340  INFO EntityBinder:519 - Bind entity metier.media.Aimer on table Aimer
+00:02:01,426  INFO AnnotationBinder:532 - Binding entity from annotated class: metier.media.Categorie
+00:02:01,428  INFO QueryBinder:86 - Binding Named query: categorie => FROM Categorie WHERE nomCategorie = :nom 
+00:02:01,428  INFO EntityBinder:519 - Bind entity metier.media.Categorie on table Categorie
+00:02:01,430  INFO AnnotationBinder:532 - Binding entity from annotated class: metier.media.Commentaire
+00:02:01,431  INFO EntityBinder:519 - Bind entity metier.media.Commentaire on table Commentaire
+00:02:01,479  INFO AnnotationBinder:532 - Binding entity from annotated class: metier.media.Media
+00:02:01,479  INFO EntityBinder:519 - Bind entity metier.media.Media on table Media
+00:02:01,495  INFO AnnotationBinder:532 - Binding entity from annotated class: metier.media.Note
+00:02:01,496  INFO EntityBinder:519 - Bind entity metier.media.Note on table Note
+00:02:01,498  INFO AnnotationBinder:532 - Binding entity from annotated class: metier.utilisateur.Notification
+00:02:01,499  INFO EntityBinder:519 - Bind entity metier.utilisateur.Notification on table Notification
+00:02:01,502  INFO AnnotationBinder:532 - Binding entity from annotated class: metier.media.Photo_Couverture
+00:02:01,502  INFO EntityBinder:519 - Bind entity metier.media.Photo_Couverture on table Photo_Couverture
+00:02:01,504  INFO AnnotationBinder:532 - Binding entity from annotated class: metier.media.Playlist
+00:02:01,505  INFO EntityBinder:519 - Bind entity metier.media.Playlist on table Playlist
+00:02:01,510  INFO AnnotationBinder:532 - Binding entity from annotated class: metier.media.Regarder
+00:02:01,510  INFO EntityBinder:519 - Bind entity metier.media.Regarder on table Regarder
+00:02:01,512  INFO AnnotationBinder:532 - Binding entity from annotated class: metier.media.Signalement_Commentaire
+00:02:01,513  INFO EntityBinder:519 - Bind entity metier.media.Signalement_Commentaire on table Signalement_Commentaire
+00:02:01,516  INFO AnnotationBinder:532 - Binding entity from annotated class: metier.media.Signalement_Media
+00:02:01,516  INFO EntityBinder:519 - Bind entity metier.media.Signalement_Media on table Signalement_Media
+00:02:01,518  INFO AnnotationBinder:532 - Binding entity from annotated class: metier.media.Tag
+00:02:01,519  INFO EntityBinder:519 - Bind entity metier.media.Tag on table Tag
+00:02:01,520  INFO AnnotationBinder:532 - Binding entity from annotated class: metier.media.Type_Media
+00:02:01,521  INFO QueryBinder:86 - Binding Named query: categorie_video => FROM Type_Media WHERE nomTypeMedia = 'Video' 
+00:02:01,521  INFO QueryBinder:86 - Binding Named query: categorie_son => FROM Type_Media WHERE nomTypeMedia = 'Son' 
+00:02:01,521  INFO EntityBinder:519 - Bind entity metier.media.Type_Media on table Type_Media
+00:02:01,524  INFO AnnotationBinder:532 - Binding entity from annotated class: metier.media.Type_Playlist
+00:02:01,524  INFO QueryBinder:86 - Binding Named query: type_playlist_favoris => FROM Type_Playlist WHERE nomTypePlaylist = 'favoris' 
+00:02:01,524  INFO QueryBinder:86 - Binding Named query: type_playlist_en_cours => FROM Type_Playlist WHERE nomTypePlaylist = 'en_cours' 
+00:02:01,525  INFO QueryBinder:86 - Binding Named query: type_playlist_autre => FROM Type_Playlist WHERE nomTypePlaylist = 'autre' 
+00:02:01,525  INFO EntityBinder:519 - Bind entity metier.media.Type_Playlist on table Type_Playlist
+00:02:01,526  INFO AnnotationBinder:532 - Binding entity from annotated class: metier.media.Visibilite
+00:02:01,527  INFO QueryBinder:86 - Binding Named query: public => FROM Visibilite WHERE nomVisibilite = 'Public'
+00:02:01,527  INFO QueryBinder:86 - Binding Named query: prive => FROM Visibilite WHERE nomVisibilite = 'Prive'
+00:02:01,527  INFO EntityBinder:519 - Bind entity metier.media.Visibilite on table Visibilite
+00:02:01,528  INFO AnnotationBinder:532 - Binding entity from annotated class: metier.utilisateur.Amitie
+00:02:01,529  INFO EntityBinder:519 - Bind entity metier.utilisateur.Amitie on table Amitie
+00:02:01,532  INFO AnnotationBinder:532 - Binding entity from annotated class: metier.utilisateur.Avatar
+00:02:01,533  INFO EntityBinder:519 - Bind entity metier.utilisateur.Avatar on table Avatar
+00:02:01,534  INFO AnnotationBinder:532 - Binding entity from annotated class: metier.utilisateur.Message_Mural
+00:02:01,535  INFO EntityBinder:519 - Bind entity metier.utilisateur.Message_Mural on table Message_Mural
+00:02:01,542  INFO AnnotationBinder:532 - Binding entity from annotated class: metier.utilisateur.Message_Prive
+00:02:01,542  INFO EntityBinder:519 - Bind entity metier.utilisateur.Message_Prive on table Message_Prive
+00:02:01,548  INFO AnnotationBinder:532 - Binding entity from annotated class: metier.utilisateur.Signalement_Utilisateur
+00:02:01,549  INFO EntityBinder:519 - Bind entity metier.utilisateur.Signalement_Utilisateur on table Signalement_Utilisateur
+00:02:01,551  INFO AnnotationBinder:532 - Binding entity from annotated class: metier.utilisateur.Utilisateur
+00:02:01,551  INFO QueryBinder:86 - Binding Named query: utilisateur_valides => FROM Utilisateur WHERE dateBanissement = NULL AND dateSuppressionUtilisateur = NULL
+00:02:01,552  INFO QueryBinder:86 - Binding Named query: utilisateur_non_valides => FROM Utilisateur WHERE dateBanissement != NULL OR dateSuppressionUtilisateur != NULL
+00:02:01,552  INFO QueryBinder:86 - Binding Named query: utilisateur_bannis => FROM Utilisateur WHERE dateBanissement != NULL
+00:02:01,552  INFO QueryBinder:86 - Binding Named query: utilisateur_supprimes => FROM Utilisateur WHERE dateSuppressionUtilisateur != NULL
+00:02:01,552  INFO QueryBinder:86 - Binding Named query: utilisateur_administrateurs => FROM Utilisateur WHERE estAdministrateur IS TRUE
+00:02:01,552  INFO QueryBinder:86 - Binding Named query: utilisateur_pseudo => FROM Utilisateur WHERE pseudo = :pseudo
+00:02:01,552  INFO QueryBinder:86 - Binding Named query: utilisateur_mail => FROM Utilisateur WHERE adrMail = :mail
+00:02:01,553  INFO EntityBinder:519 - Bind entity metier.utilisateur.Utilisateur on table Utilisateur
+00:02:01,575  INFO AnnotationBinder:532 - Binding entity from annotated class: metier.utilisateur.Signalement_MessagePrive
+00:02:01,576  INFO EntityBinder:519 - Bind entity metier.utilisateur.Signalement_MessagePrive on table Signalement_MessagePrive
+00:02:01,578  INFO AnnotationBinder:532 - Binding entity from annotated class: metier.media.Categorie_Media
+00:02:01,578  INFO EntityBinder:519 - Bind entity metier.media.Categorie_Media on table Categorie_Media
+00:02:01,580  INFO AnnotationBinder:532 - Binding entity from annotated class: metier.media.Fichier
+00:02:01,580  INFO EntityBinder:519 - Bind entity metier.media.Fichier on table Fichier
+00:02:01,582  INFO AnnotationBinder:532 - Binding entity from annotated class: metier.media.Telechargement_Media
+00:02:01,582  INFO EntityBinder:519 - Bind entity metier.media.Telechargement_Media on table Telechargement_Media
+00:02:01,611  INFO CollectionBinder:745 - Mapping collection: metier.utilisateur.Utilisateur.amis -> Amitie
+00:02:01,611  INFO CollectionBinder:745 - Mapping collection: metier.utilisateur.Utilisateur.messagesPrives -> Message_Prive
+00:02:01,611  INFO CollectionBinder:745 - Mapping collection: metier.utilisateur.Utilisateur.notifications -> Notification
+00:02:01,613  INFO Configuration:1646 - Hibernate Validator not found: ignoring
+00:02:01,639  INFO Version:24 - Hibernate Validator 4.2.0.Final
+00:02:01,801  INFO HibernateSearchEventListenerRegister:75 - Unable to find org.hibernate.search.event.FullTextIndexEventListener on the classpath. Hibernate Search is not enabled.
+00:02:01,814  INFO DriverManagerConnectionProvider:64 - Using Hibernate built-in connection pool (not for production use!)
+00:02:01,814  INFO DriverManagerConnectionProvider:65 - Hibernate connection pool size: 20
+00:02:01,814  INFO DriverManagerConnectionProvider:68 - autocommit mode: false
+00:02:01,822  INFO DriverManagerConnectionProvider:103 - using driver: com.mysql.jdbc.Driver at URL: jdbc:mysql://localhost/MediArea
+00:02:01,823  INFO DriverManagerConnectionProvider:109 - connection properties: {user=root, password=****}
+00:02:02,200  INFO SettingsFactory:117 - Database ->
+       name : MySQL
+    version : 5.5.22
+      major : 5
+      minor : 5
+00:02:02,201  INFO SettingsFactory:123 - Driver ->
+       name : MySQL-AB JDBC Driver
+    version : mysql-connector-java-5.1.6 ( Revision: ${svn.Revision} )
+      major : 5
+      minor : 1
+00:02:02,237  INFO Dialect:108 - Using dialect: org.hibernate.dialect.MySQLDialect
+00:02:02,257  INFO JdbcSupportLoader:79 - Disabling contextual LOB creation as JDBC driver reported JDBC version [3] less than 4
+00:02:02,259  INFO TransactionFactoryFactory:59 - Using default transaction strategy (direct JDBC transactions)
+00:02:02,262  INFO TransactionManagerLookupFactory:80 - No TransactionManagerLookup configured (in JTA environment, use of read-write or transactional second-level cache is not recommended)
+00:02:02,262  INFO SettingsFactory:179 - Automatic flush during beforeCompletion(): disabled
+00:02:02,262  INFO SettingsFactory:183 - Automatic session close at end of transaction: disabled
+00:02:02,263  INFO SettingsFactory:190 - JDBC batch size: 15
+00:02:02,263  INFO SettingsFactory:193 - JDBC batch updates for versioned data: disabled
+00:02:02,264  INFO SettingsFactory:198 - Scrollable result sets: enabled
+00:02:02,264  INFO SettingsFactory:206 - JDBC3 getGeneratedKeys(): enabled
+00:02:02,265  INFO SettingsFactory:214 - Connection release mode: auto
+00:02:02,266  INFO SettingsFactory:238 - Maximum outer join fetch depth: 2
+00:02:02,266  INFO SettingsFactory:241 - Default batch fetch size: 1
+00:02:02,266  INFO SettingsFactory:245 - Generate SQL with comments: disabled
+00:02:02,266  INFO SettingsFactory:249 - Order SQL updates by primary key: disabled
+00:02:02,266  INFO SettingsFactory:253 - Order SQL inserts for batching: disabled
+00:02:02,267  INFO SettingsFactory:431 - Query translator: org.hibernate.hql.ast.ASTQueryTranslatorFactory
+00:02:02,270  INFO ASTQueryTranslatorFactory:47 - Using ASTQueryTranslatorFactory
+00:02:02,270  INFO SettingsFactory:261 - Query language substitutions: {}
+00:02:02,270  INFO SettingsFactory:266 - JPA-QL strict compliance: disabled
+00:02:02,270  INFO SettingsFactory:271 - Second-level cache: enabled
+00:02:02,270  INFO SettingsFactory:275 - Query cache: disabled
+00:02:02,271  INFO SettingsFactory:406 - Cache region factory : org.hibernate.cache.impl.NoCachingRegionFactory
+00:02:02,272  INFO SettingsFactory:285 - Optimize cache for minimal puts: disabled
+00:02:02,273  INFO SettingsFactory:294 - Structured second-level cache entries: disabled
+00:02:02,288  INFO SettingsFactory:323 - Statistics: disabled
+00:02:02,288  INFO SettingsFactory:327 - Deleted entity synthetic identifier rollback: disabled
+00:02:02,289  INFO SettingsFactory:343 - Default entity-mode: pojo
+00:02:02,289  INFO SettingsFactory:347 - Named query checking : enabled
+00:02:02,289  INFO SettingsFactory:351 - Check Nullability in Core (should be disabled when Bean Validation is on): disabled
+00:02:02,317  INFO SessionFactoryImpl:200 - building session factory
+00:02:02,955  INFO SessionFactoryObjectFactory:109 - Factory name: sessionFactory
+00:02:02,958  INFO NamingHelper:49 - JNDI InitialContext properties:{}
+00:02:02,963  WARN SessionFactoryObjectFactory:121 - Could not bind factory to JNDI
+javax.naming.NoInitialContextException: Need to specify class name in environment or system property, or as an applet parameter, or in an application resource file:  java.naming.factory.initial
+	at javax.naming.spi.NamingManager.getInitialContext(NamingManager.java:645)
+	at javax.naming.InitialContext.getDefaultInitCtx(InitialContext.java:288)
+	at javax.naming.InitialContext.getURLOrDefaultInitCtx(InitialContext.java:325)
+	at javax.naming.InitialContext.getNameParser(InitialContext.java:480)
+	at org.hibernate.util.NamingHelper.bind(NamingHelper.java:75)
+	at org.hibernate.impl.SessionFactoryObjectFactory.addInstance(SessionFactoryObjectFactory.java:113)
+	at org.hibernate.impl.SessionFactoryImpl.<init>(SessionFactoryImpl.java:365)
+	at org.hibernate.cfg.Configuration.buildSessionFactory(Configuration.java:1842)
+	at dao.Hibernate.<init>(Hibernate.java:40)
+	at dao.Hibernate.getInstance(Hibernate.java:225)
+	at dao.Dao.<init>(Dao.java:42)
+	at dao.utilisateur.DaoUtilisateur.<init>(DaoUtilisateur.java:18)
+	at Main.<clinit>(Main.java:39)
+00:02:03,043  INFO SchemaExport:234 - Running hbm2ddl schema export
+00:02:03,045  INFO SchemaExport:262 - exporting generated schema to database
+00:02:17,433  INFO SchemaExport:281 - schema export complete
