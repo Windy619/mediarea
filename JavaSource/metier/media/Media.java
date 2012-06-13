@@ -58,13 +58,13 @@ public class Media {
 	@ManyToOne(cascade = {CascadeType.ALL})
 	private Photo_Couverture photo;
 	
-	@ManyToOne
+	@ManyToOne(cascade = {CascadeType.ALL})
 	private Fichier fichier;	
 	
 	@ManyToOne(cascade = {CascadeType.ALL})
 	private Type_Media type;	
 	
-	@OneToMany
+	@OneToMany(cascade = {CascadeType.ALL})
 	private Set<Categorie_Media> categories;
 	
 	@OneToMany(cascade = {CascadeType.ALL})
