@@ -468,7 +468,7 @@
         		<h:form>	        		
 	        		<p:dialog id="popupStatistiques" header="Statistiques" widgetVar="dlgStatistiques" showEffect="explode" hideEffect="bounce">
 				        <h:outputText value="#{beanMedia.resultatTotalVuesMedia} vue#{beanMedia.motVues} - "/> 
-				        <h:outputText value="#{beanMedia.nbCommentaires} com. - " />
+				        <h:outputText value="#{beanMediaCommentaire.nbCommentaires} com. - " />
 				        <h:outputText value="TODO fav. - " />
 				        <h:outputText value="#{beanMedia.resultatTotalVotesMedia} vote#{beanMedia.motVotes}"/>
 				        <br />  
@@ -623,23 +623,23 @@
 			<p:tabView effect="fade" effectDuration="normal">  
   
   				<!-- Commentaires -->
-		        <p:tab title="Commentaires (#{beanMedia.nbCommentaires})">  
+		        <p:tab title="Commentaires (#{beanMediaCommentaire.nbCommentaires})">  
 		        
-		        <h:panelGroup rendered="#{! beanMedia.estCommentairesAutorise}">
+		        <h:panelGroup rendered="#{! beanMediaCommentaire.estCommentairesAutorise}">
 		        	<h:outputText value="Commentaires non autorisés" />
 		        </h:panelGroup>
-  				<h:panelGroup rendered="#{beanMedia.estCommentairesAutorise}">
+  				<h:panelGroup rendered="#{beanMediaCommentaire.estCommentairesAutorise}">
 		    
 		   	<!-- Edition d'un commentaire -->
 			<h:form id="formCommentaire">
-				<p:editor id="editor" value="#{beanMedia.commentaireSaisi}" width="565" />
+				<p:editor id="editor" value="#{beanMediaCommentaire.commentaireSaisi}" width="565" />
 				<p:inputText id="counter">  
 		            <p:ajax event="keyup" update="nbCaracteresRestants"
-		                    listener="#{beanMedia.decrementerNbCaracteresRestants}"/><!-- TODO nbCaracteresRestants pour p:editor -->
+		                    listener="#{beanMediaCommentaire.decrementerNbCaracteresRestants}"/><!-- TODO nbCaracteresRestants pour p:editor -->
 		        </p:inputText> 
         
 		        <br />
-		        <h:outputText id="nbCaracteresRestants" value="#{beanMedia.nbCaracteresRestants} caractères restants" style="float:left;" /><!-- TODO mettre à jour caractères restants -->
+		        <h:outputText id="nbCaracteresRestants" value="#{beanMediaCommentaire.nbCaracteresRestants} caractères restants" style="float:left;" /><!-- TODO mettre à jour caractères restants -->
 		        <br />
   
 			    <h:panelGrid columns="2" style="margin-top:10px">  
@@ -650,26 +650,26 @@
 			    </h:panelGrid>  
 			  
 			    <p:dialog header="Content" widgetVar="dlg" showEffect="fade" hideEffect="fade" modal="true">  
-			        <h:outputText id="display" value="#{beanMedia.commentaireSaisi}" escape="false" />  
+			        <h:outputText id="display" value="#{beanMediaCommentaire.commentaireSaisi}" escape="false" />  
 			    </p:dialog>				
 				
 				<br />
 		        
-           		<p:commandButton id="publier" value="Publier" update="listeCommentairesReponses" icon="ui-icon-disk" actionListener="#{beanMedia.publierCommentaire}" />
+           		<p:commandButton id="publier" value="Publier" update="listeCommentairesReponses" icon="ui-icon-disk" actionListener="#{beanMediaCommentaire.publierCommentaire}" />
 				
 		        <br />
 		 
 		    <br /><br />  		
     
     		<p:panel id="test" >
-    			<h:outputText value="#{beanMedia.listeCommentaires.size()}" />
+    			<h:outputText value="#{beanMediaCommentaire.listeCommentaires.size()}" />
     		</p:panel>
     		
     		<br />
     		<br />
     		    		
     		<!-- Affichage des commentaires et actions possibles sur ceux-ci -->
-    		<p:dataTable id="listeCommentairesReponses" var="commentaire" value="#{beanMedia.listeCommentaires}"
+    		<p:dataTable id="listeCommentairesReponses" var="commentaire" value="#{beanMediaCommentaire.listeCommentaires}"
     			paginator="true" rows="10"  
                  paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"  
                  rowsPerPageTemplate="5,10,15">  
@@ -680,7 +680,7 @@
         
 		        <p:column style="width:16px">  
 		            <p:rowToggler />
-		            <h:outputText value="#{beanMedia.nbReponses(commentaire)} réponse(s)" style="font-size: 10px;" />
+		            <h:outputText value="#{beanMediaCommentaire.nbReponses(commentaire)} réponse(s)" style="font-size: 10px;" />
 		        </p:column> 
 		        
 		            		
@@ -714,19 +714,19 @@
 						
 						<hr /><!-- TODO => -->
 		        			<h:panelGroup rendered="#{commentaire.auteur == beanMedia.utilisateurConnecte}">        		
-								<p:commandButton id="suppressionCommentaire" action="#{beanMedia.supprimerCommentaire}"  
+								<p:commandButton id="suppressionCommentaire" action="#{beanMediaCommentaire.supprimerCommentaire}"  
           										icon="ui-icon-trash" title="Supprimer"> <!-- TODO  update=":formCommentaire:listeCommentairesReponses :commentaires" -->
-          										<f:setPropertyActionListener target="#{beanMedia.commentaireAffiche}" value="#{commentaire}" />          										
+          										<f:setPropertyActionListener target="#{beanMediaCommentaire.commentaireAffiche}" value="#{commentaire}" />          										
          								</p:commandButton>
 							</h:panelGroup>
 							<!--<p:commandButton id="repondreCommentaire" 
           										icon="ui-icon-mail-closed" title="Répondre"> 
-          										<f:setPropertyActionListener target="#{beanMedia.commentaireAffiche}" value="#{commentaire}" /> 										
+          										<f:setPropertyActionListener target="#{beanMediaCommentaire.commentaireAffiche}" value="#{commentaire}" /> 										
           								</p:commandButton>-->
 							<h:panelGroup rendered="#{commentaire.auteur != beanMedia.utilisateurConnecte}">										
 									    <p:commandButton id="signalerCommentaire" 
           										icon="ui-icon-alert" title="Signaler" oncomplete="dlgSignalementCommentaire.show()"> 
-          										<f:setPropertyActionListener target="#{beanMedia.commentaireAffiche}" value="#{commentaire}" />       										
+          										<f:setPropertyActionListener target="#{beanMediaCommentaire.commentaireAffiche}" value="#{commentaire}" />       										
          								</p:commandButton>							
 							</h:panelGroup>
 							<!-- Vote pour<br/>
@@ -752,12 +752,12 @@
 		                    <h:outputText value="En réponse à : #{commentaire.auteur.pseudo}" />
 		                </f:facet>
 		  	
-		  				<!--<ui:repeat value="#{beanMedia.mapValue(commentaire)}" var="reponses" id="repeatReponses" rows="10">
+		  				<!--<ui:repeat value="#{beanMediaCommentaire.mapValue(commentaire)}" var="reponses" id="repeatReponses" rows="10">
 							<h:outputText escape="false" value="#{reponses.contenuCommentaire}" />
-				        	<rich:editor id="editorReponse" value="#{beanMedia.reponseSaisie}" height="100" width="575" style="margin-bottom: 1em;">
+				        	<rich:editor id="editorReponse" value="#{beanMediaCommentaire.reponseSaisie}" height="100" width="575" style="margin-bottom: 1em;">
 				       		</rich:editor>
-				       		<p:commandButton value="Répondre" actionListener="#{beanMedia.repondreCommentaire}" style="float: right;">
-								<f:setPropertyActionListener target="#{beanMedia.commentaireAffiche}" value="#{commentaire}" />						
+				       		<p:commandButton value="Répondre" actionListener="#{beanMediaCommentaire.repondreCommentaire}" style="float: right;">
+								<f:setPropertyActionListener target="#{beanMediaCommentaire.commentaireAffiche}" value="#{commentaire}" />						
 							</p:commandButton>
 						</ui:repeat>--> <!-- TODO afficher réponses -->
 		            </h:panelGrid>  
@@ -808,7 +808,7 @@
 						value="Etes-vous sur de vouloir signaler ce commentaire ?" />
 						<br /><br />
 					<p:commandButton value="Oui" oncomplete="dlgSignalementCommentaire.hide()"
-						action="#{beanMedia.signalerCommentaire}"><!-- update=":messages" -->
+						action="#{beanMediaCommentaire.signalerCommentaire}"><!-- update=":messages" -->
 					</p:commandButton>						
 					<p:commandButton value="Annuler" onclick="dlgSignalementCommentaire.hide()"/>
 				</h:form>
@@ -825,12 +825,12 @@
 			</h3>
 			<article class="holder_news">
 				<h:form>
-			                <ui:repeat value="#{beanMedia.listeMediasSuggeres}" var="mediaSuggere" rows="20"
+			                <ui:repeat value="#{beanMediaSuggestions.listeMediasSuggeres}" var="mediaSuggere" rows="20"
 			                    id="repeat">
 			                        <p:panelGrid id="gridSuggestions" style="width: 274px;"> 
 			                        	<p:row>
        										<p:column rowspan="3">
-       											<h:graphicImage value="#{mediaSuggere.photo}" alt="flag" style="float: left;" />
+       											<h:graphicImage value="#{mediaSuggere.photo.cheminPhotoCouverture}#{mediaSuggere.photo.nomPhotoCouverture}" alt="flag" style="float: left;" />
 				                        	</p:column>
 			                        	</p:row>
 				                        <p:row>
