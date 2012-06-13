@@ -1,28 +1,21 @@
 package dao.media;
 
+
 import java.text.ParseException;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
-import metier.media.Categorie;
 import metier.media.Commentaire;
 import metier.media.Media;
-import metier.media.Playlist;
 import metier.media.Type_Media;
 import metier.utilisateur.Utilisateur;
 
-import org.hibernate.Criteria;
 import org.hibernate.Query;
-import org.hibernate.criterion.Criterion;
-import org.hibernate.criterion.LogicalExpression;
-import org.hibernate.criterion.Order;
-import org.hibernate.criterion.Restrictions;
-import org.hibernate.Query;
-
 
 import dao.Dao;
 
@@ -149,12 +142,13 @@ public class DaoMedia extends Dao<Media> {
 				"SELECT COUNT(DISTINCT m.idMedia) AS NB_MEDIA"
 				+ " FROM Media m "
 				+ " LEFT JOIN  utilisateur ut ON m.auteurMedia_idUtilisateur = ut.idUtilisateur "
-				+ " LEFT JOIN  media_categorie mc ON m.idmedia =  mc.media_idmedia "
+				//+ " LEFT JOIN  media_categorie mc ON m.idmedia =  mc.media_idmedia "
+				+ " LEFT JOIN  media_categorie_media mc ON m.idmedia =  mc.media_idmedia "
 				+ " LEFT JOIN  media_tag mt ON m.idmedia = mt.media_idmedia  "
 				+ " LEFT JOIN  tag ta ON mt.tags_idTag = ta.idTag"
 				+ " LEFT JOIN  note n ON m.idmedia = n.media_idmedia "
 				+ " LEFT JOIN  regarder r ON m.idmedia = r.media_idmedia "
-				+ " LEFT JOIN  media_commentaire c ON m.idmedia = c.media_idmedia "
+				//+ " LEFT JOIN  media_commentaire c ON m.idmedia = c.media_idmedia " ??
 				+ " LEFT JOIN  type_media t ON m.type_idTypeMedia = t.idTypeMedia "
 				+ clauseWhere
 				);
@@ -202,7 +196,7 @@ public class DaoMedia extends Dao<Media> {
 		"SELECT m.idmedia, COUNT(mt.media_idmedia) AS TAG_NB, COUNT(mc.media_idmedia) AS CAT_NB, AVG(n.note) AS NOTE_AVG, SUM(n.note) AS NOTE_NB, SUM(r.nbVues) AS VUES_NB, COUNT(c.media_idmedia) AS COMM_NB, (LENGTH(m.titreMedia) - LENGTH(REPLACE(UPPER(m.titreMedia), '"+titre+"', '')) + 1) AS NB_TITRE, (LENGTH(m.titreMedia) - LENGTH(REPLACE(UPPER(m.descriptionMedia), '"+description+"', '')) + 1) AS NB_DESCRIPTION "
 		+ " FROM Media m "
 		+ " LEFT JOIN  utilisateur ut ON m.auteurMedia_idUtilisateur = ut.idUtilisateur "
-		+ " LEFT JOIN  media_categorie mc ON m.idmedia =  mc.media_idmedia "
+		+ " LEFT JOIN  media_categorie_media mc ON m.idmedia =  mc.media_idmedia "
 		+ " LEFT JOIN  media_tag mt ON m.idmedia = mt.media_idmedia  "
 		+ " LEFT JOIN  tag ta ON mt.tags_idTag = ta.idTag"
 		+ " LEFT JOIN  note n ON m.idmedia = n.media_idmedia "
@@ -700,23 +694,31 @@ public class DaoMedia extends Dao<Media> {
 				""); //requête SQL (pour faire un join)
 
 		query.setParameter("media", media);
-		
+				
 		List result = query.list();
-		String listids = "";
-		Iterator it= result.iterator();
-		while (it.hasNext()) // tant que l'on a un élément non parcouru
+		if(! result.toString().equals("[]"))
 		{
-			Object[] o = (Object[]) it.next();
-            if(!listids.equals(""))
-                   listids += ", ";
-            listids += o[0].toString();
+			String listids = "";
+			Iterator it= result.iterator();
+			while (it.hasNext()) // tant que l'on a un élément non parcouru
+			{
+				Object[] o = (Object[]) it.next();
+	            if(!listids.equals(""))
+	                   listids += ", ";
+	            listids += o[0].toString();
+			}
+			
+			Query q = session.createQuery("" +
+					"FROM Commentaire as c " +
+					"WHERE c.idCommentaire IN (" + listids +") " + //identifiants des commentaires récupérés avec la requête SQL
+					"ORDER BY c.dateCommentaire DESC");
+			  
+			return q.list();
 		}
-		Query q = session.createQuery("" +
-				"FROM Commentaire as c " +
-				"WHERE c.idCommentaire IN (" + listids +") " + //identifiants des commentaires récupérés avec la requête SQL
-				"ORDER BY c.dateCommentaire DESC");
-		  
-		return q.list();
+		else
+		{
+			return null;
+		}
 	}
 	
 	public Query getReponses(Media media) {

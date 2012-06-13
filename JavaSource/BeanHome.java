@@ -58,6 +58,10 @@ public class BeanHome {
 		}			
 	}	
 	
+	public String accessMedia(Long id) {
+		return "/pages/detailMedia?faces-redirect=true&amp;includeViewParams=true&v="+id;
+	}	
+	
 	// GETTER SETTER
 	
 	public ArrayList<Media> getNouvellesVideos() {
