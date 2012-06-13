@@ -48,7 +48,6 @@ import dao.utilisateur.*;
 public class BeanMedia {
 	// DAO
 	private static DaoMedia daoMedia;
-	private static DaoCommentaire daoCommentaire;
 	public static DaoTelechargementMedia daoTelechargementMedia;
 	private static DaoUtilisateur daoUtilisateur;
 	public static DaoTypePlaylist daoTypePlaylist;
@@ -63,23 +62,15 @@ public class BeanMedia {
 	private String idMediaVisualise;
 	private Media mediaVisualise;
 	private String titreMedia; //nécessaire de faire appel à l'objet car #{beanMedia.mediaVisualise.titreMedia} ne fonctionne pas
-	private long nbCommentaires;
 	private String auteur;
 	private String datePublication;
 	private String description;
 	private List<String> listeNomCategories;
 	private List<String> listeNomTags;
-	private List<Commentaire> listeCommentaires;
-	private List<Commentaire> listeReponses;
 	//private DataModel dataModel = new ListDataModel();
 	private double note;
 	private String nomTypeMedia;
-	private String commentaireSaisi;
-	private String reponseSaisie;
-	private List<Media> listeMediasSuggeres = new ArrayList<Media>();
 	private SimpleDateFormat dateFormat;
-	private int nbCaracteresRestants;
-	private Commentaire commentaireAffiche;
 	@Size(min = 3, max = 12, message = "La taille du mot de passe doit être entre 3 et 12")
 	private String motDePasseMedia;
 	private long resultatTotalVuesMedia;
@@ -88,7 +79,6 @@ public class BeanMedia {
 	private long resultatTotalTelechargementMedia;
 	//private List<Media> mediaDansPanier; //TODO à mettre en SESSION
 	private String raisonMedia;
-	private String raisonCommentaire;
 	private Utilisateur util;
 	private long resultatNbAime;
 	private long resultatNbNAimePas;
@@ -119,8 +109,6 @@ public class BeanMedia {
     private int hauteur = 180;
  	private String detailNotificationJAime;
  	private String detailNotificationJeNAimePas;
- 	private HashMap<Commentaire, ArrayList<Commentaire>> hmReponses;
- 	private FacesContext context = FacesContext.getCurrentInstance();
  	private List<Media> listeMediasDeAuteur;
  	private List<Playlist> listePlaylistsAvecMedia;
  	private List<Playlist> listeTousPlaylist;
@@ -137,18 +125,9 @@ public class BeanMedia {
  	private Playlist nvlPlaylist;
  	private ChartSeries graphiqueVues;
  	private HtmlSelectBooleanCheckbox check;
- 	Query resultatReponses;
- 	private Commentaire pere;
- 	private ArrayList<Commentaire> lstFils;
- 	private Set<Tag> tagMedia;
- 	private List<Media> listeTousMedia;
- 	private Iterator<Tag> iteratorMedia;
- 	private HashMap<Media, Integer> mapOccurrenceTags;
- 	private Tag tagMediaCourant;
- 	private Set<Tag> setTagMediaCourant;
  	private StreamedContent file;
  	private TagCloudModel tagCloud;
- 	private boolean estCommentairesAutorise;
+ 	private FacesContext context;
  	
  	// Compteur
  	
@@ -163,7 +142,7 @@ public class BeanMedia {
  	/**
 	 * Constructeur du Bean
 	 */
-	public BeanMedia() {		
+	public BeanMedia() {
 		// Chargement de l'utilisateur connecte
 		beanConnexion = (BeanConnexion) FacesContext.getCurrentInstance().getCurrentInstance().getExternalContext().getSessionMap().get("beanConnexion");
 		
@@ -184,13 +163,12 @@ public class BeanMedia {
 		daoPlaylist = new DaoPlaylist();
 		daoVisibilite = new DaoVisibilite();
 		daoTelechargementMedia = new DaoTelechargementMedia();
-		daoCommentaire = new DaoCommentaire();
-		nbCaracteresRestants = 500;
 		
 		
 		util = daoUtilisateur.getUn(1);
 		//mediaDansPanier = new ArrayList<Media>();
-		//commentaireSaisi = "Réagir à propos de ce média.";
+		
+		context = FacesContext.getCurrentInstance();
 		
 		//estNotifieJAime = false;
 		if(utilisateurConnecte != null) {
@@ -237,10 +215,7 @@ public class BeanMedia {
 				//mediaVisualise = daoMedia.getUn(2);
 						
 				titreMedia = mediaVisualise.getTitreMedia();
-				
-				//nbCommentaires = String.valueOf(mediaVisualise.getCommentaires().size()); //toujours renseigné une chaîne de caractères pour un outputText
-				nbCommentaires = mediaVisualise.getCommentaires().size(); //Converter en JSF
-				
+								
 				auteur = mediaVisualise.getAuteurMedia().getNomUtilisateur();
 				
 				dateFormat = new SimpleDateFormat("dd MMMM yyyy H:m");
@@ -248,7 +223,6 @@ public class BeanMedia {
 				
 				description = mediaVisualise.getDescriptionMedia();
 				
-				estCommentairesAutorise = mediaVisualise.isaCommentairesOuverts();
 				
 				listeNomCategories = new ArrayList<String>();
 				setCategoriesMedia = mediaVisualise.getCategories();
@@ -277,12 +251,6 @@ public class BeanMedia {
 					listeNomTags.add(tagNext.getNomTag());
 					tagCloud.addTag(new DefaultTagCloudItem(tagNext.getNomTag(), "recherche.jsf?", (int) Math.random() * 5)); //TODO lien
 				}
-		        
-				//Chargement des commentaires
-				chargerCommentaires();
-				
-				//Chargement des réponses
-				chargerReponses();
 				
 				nomTypeMedia = mediaVisualise.getType().getNomTypeMedia();
 
@@ -294,9 +262,7 @@ public class BeanMedia {
 					if(elPlaylist.getMedias().contains(daoMedia.getUn(2)))
 						listePlaylistsAvecMedia.add(elPlaylist);
 				}
-				
-				algorithmeSuggestions();
-					
+									
 				//***********************************************
 				
 				//Regarder
@@ -836,207 +802,7 @@ public class BeanMedia {
 		System.out.println("/" + tailleLecteur + " ==> " + largeur + "***" + hauteur);
 		codeIntegration = "<object width='" + largeur + "' height='" + hauteur + "'><param name='movie' value='" + url + "'></param><param name='allowFullScreen' value='true'></param><param name='allowscriptaccess' value='always'></param><embed src='http://www.youtube.com/v/ZQ2nCGawrSY?version=3&amp;hl=fr_FR' type='application/x-shockwave-flash' width='" + largeur + "' height='" + hauteur + "' allowscriptaccess='always' allowfullscreen='true'></embed></object>";	
 		//code object aussi TODO
-	}
-	
-	/** 
-	 * Décrémentation du nombre de caractères restants (composition d'un commentaire)
-	 * @return
-	 */
-	public String decrementerNbCaracteresRestants() {
-		System.out.println("decrementerNbCaracteresRestants");
-		
-		//Décrémentation du nombre de caractères restants pour la saisie du commentaire
-		nbCaracteresRestants--;
-		
-		return "decrementerNbCaracteresRestants";
-	}
-	
-	/** 
-	 * Publication du commentaire
-	 * @return
-	 */
-	//public void publierCommentaire(AjaxBehaviorEvent e) {
-	public String publierCommentaire() {
-		System.out.println("publierCommentaire");
-		System.out.println("commentaire saisi : " + commentaireSaisi);
-		
-		//Création du commentaire
-		Commentaire c = new Commentaire(commentaireSaisi,util);
-		
-		//Ajout du commentaire à la liste de commentaires du média
-		daoMedia.getUn(2).getCommentaires().add(c); //mediaVisualise. TODO
-		
-		//Enregistrement de l'ajout
-		daoMedia.sauvegarder(daoMedia.getUn(2));
-		
-		/*if(commentaires == null) {
-			System.out.println("c'est la liste de commentaires qui pose problème (null)");
-		}*/
-		
-		//Rechargement de la liste de commentaires
-		//commentaires.add(c);
-		chargerCommentaires();
-		
-		return "publierCommentaire";
-	}
-	
-	/** 
-	 * Chargement de la liste de commentaires
-	 * @return
-	 */
-	public void chargerCommentaires() {
-		//System.out.println("chargerCommentaires");
-		
-		//Chargement de la liste des commentaires associé au média
-		listeCommentaires = daoMedia.getCommentaires(daoMedia.getUn(2));
-	}
-	
-	/** 
-	 * Chargement de la liste des réponses associée à un commentaire
-	 * @return
-	 */
-	public String chargerReponses() {
-		//System.out.println("chargerReponses");
-		
-		//Récupération de la liste des commentaires réponse du média
-		resultatReponses = daoMedia.getReponses(daoMedia.getUn(2));
-		
-		//Création de la HashMap avec en clé le commentaire père et en valeur la liste des commentaires fils
-		hmReponses = new HashMap<Commentaire, ArrayList<Commentaire>>();
-		
-		//Remplissage de la HashMap ...
-		pere = null;
-		lstFils = new ArrayList<Commentaire>();
-		Commentaire tmp = null;
-		
-        for(Iterator<?> it = resultatReponses.iterate(); it.hasNext(); ) {
-        	Object[] rowCommentaire = (Object[]) it.next();
-        	
-        	pere = (Commentaire)rowCommentaire[0];
-        	
-        	if (tmp == null || tmp == pere ) {
-        		tmp = pere;
-            	lstFils.add((Commentaire)rowCommentaire[1]);        		
-        	} else  {
-        		hmReponses.put(tmp, lstFils);
-        		tmp = null;
-        		lstFils.clear();
-        	}
-		}  
-        
-        if (tmp != null && lstFils != null) {
-        	hmReponses.put(tmp, lstFils);
-        }
-    	
-    	/*Set cles = hmReponses.keySet();
-    	Iterator itHm = cles.iterator();
-    	while(itHm.hasNext()) {
-    		Commentaire cle = (Commentaire)itHm.next();
-    		Object valeur = hmReponses.get(cle); //parcourir l'Arraylist
-    		System.out.println("Contenu comm père : " + cle.getContenuCommentaire());
-    		System.out.println("Contenu comms fils : " + valeur);
-    	}*/
-		
-		return "chargerReponses";
-	}
-	
-	/** 
-	 * Récupération de la liste des commentaires fils associés au commentaire passé en paramètre
-	 * @return
-	 */
-	public ArrayList<Commentaire> mapValue(Commentaire c) {
-		return hmReponses.get(c);
-	}
-	
-	/** 
-	 * Nombre de commentaires fils associés au commentaire passé en paramètre
-	 * @return
-	 */
-	public int nbReponses(Commentaire c) {
-		if(hmReponses.get(c) == null) {
-			return 0;
-		}
-		else {
-			return hmReponses.get(c).size();
-		}
-	}
-	
-	/** 
-	 * Suppression du commentaire
-	 * @return
-	 */
-	public String supprimerCommentaire() {
-		System.out.println("supprimerCommentaire");
-		
-		// Si celui qui tente de supprimer un commentaire est l'utilisateur connecté
-		//if (commSelectionne.getAuteur() == utilisateurConnecte) { //TODO
-			//Suppression du commentaire traité de la liste des commentaires du média
-			daoMedia.getUn(2).getCommentaires().remove(daoCommentaire.getUn(Long.parseLong(FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("idCommentaire"))));
-			
-			//Enregistrement de la modification
-			daoMedia.sauvegarder(daoMedia.getUn(2));
-			
-			//Affichage de la notification
-			context.addMessage(null, new FacesMessage("Suppression du commentaire", "Le commentaire a été supprimé"));
-		//}
-		
-		//Rafraîchissement des listes
-		chargerCommentaires();
-		chargerReponses();
-		
-		//update + 2 min TODO
-		
-		return "supprimerCommentaire";
-	}
-
-	/** 
-	 * Réponse à un commentaire
-	 * @return
-	 */
-	public String repondreCommentaire() {
-		System.out.println("repondreCommentaire");
-		
-		// Création d'une nouvelle réponse
-		Commentaire c = new Commentaire(reponseSaisie,util);
-		
-		// Ajout aux réponses du commentaire père
-		daoCommentaire.getUn(2).getCommentairesFils().add(c); //TODO bon commentaire
-		
-		// Sauvegarde de l'ajout
-		daoCommentaire.sauvegarder(daoCommentaire.getUn(2));
-		
-		// Rechargement de la liste de réponses
-		chargerReponses();
-		
-		return "repondreCommentaire";
-	}
-	
-	/** 
-	 * Signalement d'un commentaire
-	 * @return
-	 */
-	public String signalerCommentaire() {
-		System.out.println("signalerCommentaire");
-		
-		//interdiction de signaler soi-même
-		//if (commentaireSelectionne.getAuteur() != utilisateurConnecte) {
-			//Création du signalement
-			Signalement_Commentaire sc = new Signalement_Commentaire(raisonCommentaire, daoCommentaire.getUn(2), daoUtilisateur.getUn(1)); //TODOO bon commentaire signalé
-		
-			//Ajout du signalement aux signalements du commentaire existants
-			util.getSignalementsCommentaires().add(sc);
-			
-			//Sauvegarde de l'ajout
-			daoUtilisateur.sauvegarder(util);
-			// TODO => update (car suppression)
-			
-			//Rechargement des listes
-			chargerCommentaires();
-			chargerReponses();
-		//}
-		
-		return "signalerCommentaire";
-	}
+	}	
 
 	/** 
 	 * Modification des catégories et tags d'un média (si propriétaire)
@@ -1055,73 +821,6 @@ public class BeanMedia {
 		//sauvegarder
 		
 		return "modifierCategoriesTags";
-	}
-
-	/** 
-	 * Algorithme des suggestions de média
-	 * @return
-	 */
-	public void algorithmeSuggestions() {
-		//Récupération de la liste de tags associés au média
-		tagMedia = mediaVisualise.getTags();
-		
-		//Récupération de tous les médias
-		listeTousMedia = daoMedia.getTous();
-		
-		//Création d'une HashMap contenant le nb d'occurrences de tags correspondants dans les médias
-		mapOccurrenceTags = new HashMap<Media, Integer>();
-		
-		iteratorMedia = tagMedia.iterator();
-		//Parcours des tags du média visualisé
-		while(iteratorMedia.hasNext()) { 
-			//System.out.println("Set tagMedia : " + i.next());
-			tagMediaCourant = iteratorMedia.next();
-			
-			//Parcours de tous les médias
-			for(Media elMedia : listeTousMedia) {
-				if(! elMedia.equals(mediaVisualise)) { //tout sauf le média actuellement visualisé
-					setTagMediaCourant = daoMedia.getUn(elMedia.getIdMedia()).getTags();
-					
-					//Parcours des tags associés au média
-					for(Tag tagMediaCourantAutreMedia : setTagMediaCourant) {
-						if(tagMediaCourant.toString().equals(tagMediaCourantAutreMedia.toString())) {
-							if(mapOccurrenceTags.containsKey(elMedia)) {
-								//Incrémentation de l'occurrence de tags du média courant
-								mapOccurrenceTags.put(elMedia, mapOccurrenceTags.get(elMedia) + 1); //tag correspond supplémentaire
-							}
-							else {
-								//Association de 1 au média courant pour la HashMap (la clé n'existe pas encore)
-								mapOccurrenceTags.put(elMedia, 1);
-							}
-						}
-					}
-				}
-			}
-		}
-		
-		/*//Affichage de la HashMap
-		Set cles = map.keySet();
-		Iterator it = cles.iterator();
-		while (it.hasNext()){
-		   Object cle = it.next();
-		   Object valeur = map.get(cle);
-		   System.out.println(cle + " => " + valeur);
-		}*/
-		
-		//Création d'une liste de clés
-		listeMediasSuggeres = new ArrayList<Media>(mapOccurrenceTags.keySet());
-		//System.out.println("size listeMediasSuggeres : " + listeMediasSuggeres.size());
-		
-		//Limitation à 20 médias suggérés
-		if(listeMediasSuggeres.size() < 20) {
-			//Extraction des premiers éléments de la liste des médias suggérés
-			listeMediasSuggeres = listeMediasSuggeres.subList(0, listeMediasSuggeres.size());
-		}
-		else {
-			//Extraiter des 20 premiers médias suggérés
-			listeMediasSuggeres = listeMediasSuggeres.subList(0, 20);
-		}
-		//suggestion en tenant compte du titre et catégories XXX
 	}
 
 	
@@ -1143,14 +842,6 @@ public class BeanMedia {
 	
 	public void setTitreMedia(String titreMedia) {
 		this.titreMedia = titreMedia;
-	}
-	
-	public long getNbCommentaires() {
-		return nbCommentaires;
-	}
-	
-	public void setNbCommentaires(long nbCommentaires) {
-		this.nbCommentaires = nbCommentaires;
 	}
 	
 	public String getAuteur() {
@@ -1238,22 +929,6 @@ public class BeanMedia {
 	
 	public void setNomAvatar(String nomAvatar) {
 		this.nomAvatar = nomAvatar;
-	}
-	
-	public String getCommentaireSaisi() {
-		return commentaireSaisi;
-	}
-	
-	public void setCommentaireSaisi(String commentaireSaisi) {
-		this.commentaireSaisi = commentaireSaisi;
-	}
-	
-	public List<Media> getListeMediasSuggeres() {
-		return listeMediasSuggeres;
-	}
-	
-	public void setListeMediasSuggeres(List<Media> listeMediasSuggeres) {
-		this.listeMediasSuggeres = listeMediasSuggeres;
 	}
 	
 	public List<String> getListeNomTags() {
@@ -1388,22 +1063,6 @@ public class BeanMedia {
 		this.utilisateurConnecte = utilisateurConnecte;
 	}
 	
-	public int getNbCaracteresRestants() {
-		return nbCaracteresRestants;
-	}
-	
-	public void setNbCaracteresRestants(int nbCaracteresRestants) {
-		this.nbCaracteresRestants = nbCaracteresRestants;
-	}
-	
-	public Commentaire getCommentaireAffiche() {
-		return commentaireAffiche;
-	}
-	
-	public void setCommentaireAffiche(Commentaire commentaireAffiche) {
-		this.commentaireAffiche = commentaireAffiche;
-	}
-	
 	public long getResultatTotalTelechargementMedia() {
 		return resultatTotalTelechargementMedia;
 	}
@@ -1474,22 +1133,6 @@ public class BeanMedia {
 		this.motDePasseMedia = motDePasseMedia;
 	}
 	
-	public List<Commentaire> getListeCommentaires() {
-		return listeCommentaires;
-	}
-	
-	public void setListeCommentaires(List<Commentaire> listeCommentaires) {
-		this.listeCommentaires = listeCommentaires;
-	}
-	
-	public List<Commentaire> getListeReponses() {
-		return listeReponses;
-	}
-	
-	public void setListeReponses(List<Commentaire> listeReponses) {
-		this.listeReponses = listeReponses;
-	}
-	
 	public String getMotTelechargement() {
 		return motTelechargement;
 	}
@@ -1515,34 +1158,10 @@ public class BeanMedia {
 		this.listePlaylistsAvecMedia = listePlaylistsAvecMedia;
 	}
 	
-	public TagCloudModel getTagCloud() {  
+	public TagCloudModel getTagCloud() {
         return tagCloud;  
     }
 	
-	public String getRaisonCommentaire() {
-		return raisonCommentaire;
-	}
-
-	public void setRaisonCommentaire(String raisonCommentaire) {
-		this.raisonCommentaire = raisonCommentaire;
-	}
-
-	public String getReponseSaisie() {
-		return reponseSaisie;
-	}
-
-	public void setReponseSaisie(String reponseSaisie) {
-		this.reponseSaisie = reponseSaisie;
-	}
-
-	public boolean isEstCommentairesAutorise() {
-		return estCommentairesAutorise;
-	}
-
-	public void setEstAutoriseCommentaires(boolean estAutoriseCommentaires) {
-		this.estCommentairesAutorise = estAutoriseCommentaires;
-	}
-
 	public StreamedContent getFile() {  
         return file;  
     }
