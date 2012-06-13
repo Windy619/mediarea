@@ -4,6 +4,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import javax.faces.context.FacesContext;
+
 import metier.media.*;
 import dao.media.*;
 
@@ -26,11 +28,19 @@ public class BeanMediaSuggestions {
  	private HashMap<Media, Integer> mapOccurrenceTags;
  	private Tag tagMediaCourant;
  	private Set<Tag> setTagMediaCourant;
+ 	
+ 	// Bean
+ 	private BeanMedia beanMedia;
+ 	
 	
 	/**
 	 * Constructeur du Bean
 	 */
-	public BeanMediaSuggestions() {	
+	public BeanMediaSuggestions() {
+		// Chargement du média visualisé
+		beanMedia = (BeanMedia) FacesContext.getCurrentInstance().getCurrentInstance().getExternalContext().getSessionMap().get("beanMedia");
+		
+		//Instantiation des Dao
 		daoMedia = new DaoMedia();
 		
 		listeMediasSuggeres = new ArrayList<Media>();
@@ -45,7 +55,7 @@ public class BeanMediaSuggestions {
 	 */
 	public void algorithmeSuggestions() {
 		//Récupération de la liste de tags associés au média
-		tagMedia = daoMedia.getUn(2).getTags();
+		tagMedia = beanMedia.getMediaVisualise().getTags();
 		//System.out.println("tagMedia : " + tagMedia);
 		
 		//Récupération de tous les médias
@@ -62,7 +72,7 @@ public class BeanMediaSuggestions {
 			
 			//Parcours de tous les médias
 			for(Media elMedia : listeTousMedia) {
-				if(! elMedia.equals(null)) { //if(! elMedia.equals(daoMedia.getUn(2))) { TODO //tout sauf le média actuellement visualisé
+				if(! elMedia.equals(null)) { //if(! elMedia.equals(beanMedia.getMediaVisualise())) { TODO //tout sauf le média actuellement visualisé
 					setTagMediaCourant = daoMedia.getUn(elMedia.getIdMedia()).getTags();
 					
 					//Parcours des tags associés au média

@@ -42,11 +42,17 @@ public class BeanMediaCommentaire {
 	private List<Commentaire> listeReponses;
 	private Commentaire commentaireAffiche;
 	
+	// Bean
+	private BeanMedia beanMedia;
+	 	
 	
 	/**
 	 * Constructeur du Bean
 	 */
 	public BeanMediaCommentaire() {
+		// Chargement du média visualisé
+		beanMedia = (BeanMedia) FacesContext.getCurrentInstance().getCurrentInstance().getExternalContext().getSessionMap().get("beanMedia");
+		
 		//Instantiation des Dao
 		daoMedia = new DaoMedia();
 		daoUtilisateur = new DaoUtilisateur();
@@ -56,9 +62,9 @@ public class BeanMediaCommentaire {
 		context = FacesContext.getCurrentInstance();
 		
 		//nbCommentaires = String.valueOf(mediaVisualise.getCommentaires().size()); //toujours renseigné une chaîne de caractères pour un outputText
-		nbCommentaires = daoMedia.getUn(2).getCommentaires().size(); //Converter en JSF
+		nbCommentaires = beanMedia.getMediaVisualise().getCommentaires().size(); //Converter en JSF
 		
-		estCommentairesAutorise = daoMedia.getUn(2).isaCommentairesOuverts();
+		estCommentairesAutorise = beanMedia.getMediaVisualise().isaCommentairesOuverts();
 		
 		nbCaracteresRestants = 500;
 		
@@ -95,10 +101,10 @@ public class BeanMediaCommentaire {
 		Commentaire c = new Commentaire(commentaireSaisi,util);
 		
 		//Ajout du commentaire à la liste de commentaires du média
-		daoMedia.getUn(2).getCommentaires().add(c); //mediaVisualise. TODO
+		beanMedia.getMediaVisualise().getCommentaires().add(c); //mediaVisualise. TODO
 		
 		//Enregistrement de l'ajout
-		daoMedia.sauvegarder(daoMedia.getUn(2));
+		daoMedia.sauvegarder(beanMedia.getMediaVisualise());
 		
 		/*if(commentaires == null) {
 			System.out.println("c'est la liste de commentaires qui pose problème (null)");
@@ -119,7 +125,7 @@ public class BeanMediaCommentaire {
 		//System.out.println("chargerCommentaires");
 		
 		//Chargement de la liste des commentaires associé au média
-		listeCommentaires = daoMedia.getCommentaires(daoMedia.getUn(2));
+		listeCommentaires = daoMedia.getCommentaires(beanMedia.getMediaVisualise());
 	}
 	
 	/** 
@@ -130,7 +136,7 @@ public class BeanMediaCommentaire {
 		//System.out.println("chargerReponses");
 		
 		//Récupération de la liste des commentaires réponse du média
-		resultatReponses = daoMedia.getReponses(daoMedia.getUn(2));
+		resultatReponses = daoMedia.getReponses(beanMedia.getMediaVisualise());
 		
 		//Création de la HashMap avec en clé le commentaire père et en valeur la liste des commentaires fils
 		hmReponses = new HashMap<Commentaire, ArrayList<Commentaire>>();
@@ -202,10 +208,10 @@ public class BeanMediaCommentaire {
 		// Si celui qui tente de supprimer un commentaire est l'utilisateur connecté
 		//if (commSelectionne.getAuteur() == utilisateurConnecte) { //TODO
 			//Suppression du commentaire traité de la liste des commentaires du média
-			daoMedia.getUn(2).getCommentaires().remove(daoCommentaire.getUn(Long.parseLong(FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("idCommentaire"))));
+			beanMedia.getMediaVisualise().getCommentaires().remove(daoCommentaire.getUn(Long.parseLong(FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("idCommentaire"))));
 			
 			//Enregistrement de la modification
-			daoMedia.sauvegarder(daoMedia.getUn(2));
+			daoMedia.sauvegarder(beanMedia.getMediaVisualise());
 			
 			//Affichage de la notification
 			context.addMessage(null, new FacesMessage("Suppression du commentaire", "Le commentaire a été supprimé"));

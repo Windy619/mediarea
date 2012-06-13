@@ -1,15 +1,18 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html"
-    xmlns:f="http://java.sun.com/jsf/core" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:a4j="http://richfaces.org/a4j"
+<html xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:f="http://java.sun.com/jsf/core" 
+    xmlns:ui="http://java.sun.com/jsf/facelets" 
+    xmlns:a4j="http://richfaces.org/a4j"
     xmlns:rich="http://richfaces.org/rich"
     xmlns:p="http://primefaces.org/ui">    
     <!--xmlns:c="http://java.sun.com/jstl/core"-->
     
 <f:metadata>
 	<f:viewParam name="v" value="#{beanMedia.idMediaVisualise}" />
-	<f:event type="preRenderView" listener="#{beanMedia.processRecherche()}" />
+	<f:event type="preRenderView" listener="#{beanMedia.processMediaPre()}" onPostback="false" />
 </f:metadata>
 
 <ui:composition template="/templates/standard.xhtml">
@@ -64,13 +67,13 @@
 			    		<source src="../resources/videos/720p/elephants_dream_1280x720_2.30.ogv" type='video/ogg; codecs="theora, vorbis"'/>
 		-->	
 				    	<!-- subtitle-references with <track>-element -->
-		 				<!--<track enabled="true" kind="subtitles" label="عربي" srclang="ar" type="text/x-srt" src="../resources/subtitles/elephants_dream/arabic_ar.srt"></track>
-						<track enabled="true" kind="subtitles" label="中文" srclang="zh" type="text/x-srt" src="../resources/subtitles/elephants_dream/chinese_zh.srt"></track>
+		 				<!--<track enabled="true" kind="subtitles" label="????" srclang="ar" type="text/x-srt" src="../resources/subtitles/elephants_dream/arabic_ar.srt"></track>
+						<track enabled="true" kind="subtitles" label="??" srclang="zh" type="text/x-srt" src="../resources/subtitles/elephants_dream/chinese_zh.srt"></track>
 						<track enabled="true" kind="subtitles" label="Deutsch" srclang="de" type="text/x-srt" src="../resources/subtitles/elephants_dream/german_de.srt"></track>
 						<track enabled="true" kind="subtitles" label="English" srclang="en" type="text/x-srt" src="../resources/subtitles/elephants_dream/english_en.srt"></track>
 		 				<track enabled="true" kind="subtitles" label="Español" srclang="es" type="text/x-srt" src="../resources/subtitles/elephants_dream/spanish_es.srt"></track>
 						<track enabled="true" kind="subtitles" label="Français" srclang="fr" type="text/x-srt" src="../resources/subtitles/elephants_dream/french_fr.srt"></track>
-						<track enabled="true" kind="subtitles" label="日本語" srclang="ja" type="text/x-srt" src="../resources/subtitles/elephants_dream/japanese_ja.srt"></track>
+						<track enabled="true" kind="subtitles" label="???" srclang="ja" type="text/x-srt" src="../resources/subtitles/elephants_dream/japanese_ja.srt"></track>
 						<track enabled="true" kind="subtitles" label="Svenska" srclang="sv" type="text/x-srt" src="../resources/subtitles/elephants_dream/svenska_sv.srt"></track>-->
 					    
 					    <!-- Flash-Fallback -->
@@ -242,8 +245,8 @@
 			        <h:panelGrid columns="3">  
 			            <h:outputLabel for="nomPlaylistACreer" value="Nom : *" />  
 			            <p:inputText id="nomPlaylistACreer"   
-			                value="#{beanMedia.nomPlaylistACreer}" required="true" label="Firstname">  
-			                <f:validateLength minimum="30" />  
+			                value="#{beanMedia.nomPlaylistACreer}" required="true" label="Nom">  
+			                <f:validateLength minimum="1" />  
 			            </p:inputText>  
 			            <p:message for="nomPlaylistACreer" />  
 			              
@@ -774,7 +777,7 @@
 		    		<p:outputPanel id="gallery">
 		    			<ui:repeat value="#{beanMedia.listeMediasDeAuteur}" var="mediaDeAuteur" id="repeatMediaDeAuteur" rows="10">
 				        	<div style="float: left;">
-				        	<h:graphicImage value="/resources/images/icones/{mediaDeAuteur.photo}" style="width: 120px;" />
+				        	<h:graphicImage library="images" name="#{mediaDeAuteur.photo.cheminPhotoCouverture}"  width="120" alt="#{mediaDeAuteur.photo.nomPhotoCouverture}"/>
 				        	<h:outputLink value="detailMedia.jsf?v=#{mediaDeAuteur.idMedia}" title="#{mediaDeAuteur.titreMedia}">
 				        		<h:outputText value="#{mediaDeAuteur.titreMedia}" />
 				        	</h:outputLink>
@@ -830,7 +833,7 @@
 			                        <p:panelGrid id="gridSuggestions" style="width: 274px;"> 
 			                        	<p:row>
        										<p:column rowspan="3">
-       											<h:graphicImage value="#{mediaSuggere.photo.cheminPhotoCouverture}#{mediaSuggere.photo.nomPhotoCouverture}" alt="flag" style="float: left;" />
+       											<h:graphicImage library="images" name="#{mediaSuggere.photo.cheminPhotoCouverture}"  width="100" height="59" alt="#{mediaSuggere.photo.nomPhotoCouverture}" style="float: left;" />       											
 				                        	</p:column>
 			                        	</p:row>
 				                        <p:row>
