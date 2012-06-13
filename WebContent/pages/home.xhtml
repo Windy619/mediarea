@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:a4j="http://richfaces.org/a4j"
+      xmlns:rich="http://richfaces.org/rich"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"> 
+      
+<ui:composition template="/templates/standard.xhtml">
+	<ui:define name="pageTitle">Home</ui:define>
+	<ui:define name="content">
+		<section class="group1">
+		
+			<h3>Nouvelles Vidéos</h3>	
+			<h:outputText value="Aucune vidéo n'a été trouvée."  rendered="#{empty beanHome.nouvellesVideos}"/>
+	    	<a4j:repeat value="#{beanHome.nouvellesVideos}" var="video" rows="5" id="listNouvellesVideos">
+				<article class="holder_gallery">
+					<a class="photo_hover2" href="#"><h:graphicImage value="/resources/images/#{video.photo.nomPhotoCouverture}"  width="150" height="150" alt="picture1"/></a>
+					<h2><h:outputText value="#{video.titreMedia}" /></h2>
+					<p><h:outputText value="#{video.descriptionMedia}" /></p> 
+					<span class="readmore"><a href="#">Read more..</a></span>
+				</article>
+	        </a4j:repeat>
+			
+			<h3>Nouveaux Sons</h3>		
+			<h:outputText value="Aucun sons n'a été trouvée."  rendered="#{empty beanHome.nouveauxSons}"/>
+			<a4j:repeat value="#{beanHome.nouveauxSons}" var="son" rows="5" id="listNouveauxSons">
+				<article class="holder_gallery">
+					<a class="photo_hover2" href="#"><h:graphicImage value="/resources/images/#{son.photo.nomPhotoCouverture}"  width="150" height="150" alt="picture1"/></a>
+					<h2><h:outputText value="#{son.titreMedia}" /></h2>
+					<p><h:outputText value="#{son.descriptionMedia}" /></p> 
+					<span class="readmore"><a href="#">Read more..</a></span>
+				</article>			
+			</a4j:repeat>
+			
+			<h3>Top Videos</h3>
+			<h:outputText value="Aucune vidéo n'a été trouvée."  rendered="#{empty beanHome.topNotationVideos}"/>		
+			<a4j:repeat value="#{beanHome.topNotationVideos}" var="video" rows="5" id="listTopVideos">
+				<article class="holder_gallery">
+					<a class="photo_hover2" href="#"><h:graphicImage value="/resources/images/#{video.photo.nomPhotoCouverture}"  width="150" height="150" alt="picture1"/></a>
+					<h2><h:outputText value="#{video.titreMedia}" /></h2>
+					<p><h:outputText value="#{video.descriptionMedia}" /></p> 
+					<span class="readmore"><a href="#">Read more..</a></span>
+				</article>			
+			</a4j:repeat>
+			
+			<h3>Top Sons</h3>	
+			<h:outputText value="Aucun sons n'a été trouvée."  rendered="#{empty beanHome.topNotationSons}"/>	
+			<a4j:repeat value="#{beanHome.topNotationSons}" var="son" rows="5" id="listTopSons">
+				<article class="holder_gallery">
+					<a class="photo_hover2" href="#"><h:graphicImage value="/resources/images/#{son.photo.nomPhotoCouverture}"  width="150" height="150" alt="picture1"/></a>
+					<h2><h:outputText value="#{son.titreMedia}" /></h2>
+					<p><h:outputText value="#{son.descriptionMedia}" /></p> 
+					<span class="readmore"><a href="#">Read more..</a></span>
+				</article>			
+			</a4j:repeat>
+									
+	    </section>
+              
+	    <aside class="group2">
+			<h3>Recommendations </h3>
+			<h:outputText value="Pour voir vos recommendations, veuillez vous connecter."  rendered="#{empty beanHome.utilisateurConnecte}"/>
+			
+			<h3>Vidéos </h3>			
+			<article class="holder_news">
+				<h:outputText value="Aucune vidéo n'a été trouvée."  rendered="#{empty beanHome.recommendationVideos}"/>
+				<a4j:repeat value="#{beanHome.recommendationVideos}" var="video" rows="3" id="listRecommendationVideos">
+					<h4>
+						<h:outputText value="#{video.titreMedia}" />
+						<span>
+							<h:outputText value="#{video.datePublication}">
+								<f:convertDateTime type="date" pattern="dd.MM.yyyy"/>
+							</h:outputText>		
+						</span>	
+					</h4>	
+					<p>
+						<h:outputText value="#{video.descriptionMedia}" />
+						<br />
+						<span class="readmore">				
+							<a href="#">Read more..</a>
+						</span>												
+					</p>
+				</a4j:repeat>
+			</article> 			
+ 
+			
+			
+			<h3>Sons</h3>
+			<article class="holder_news">
+				<h:outputText value="Aucun sons n'a été trouvée."  rendered="#{empty beanHome.recommendationSons}"/>
+				<a4j:repeat value="#{beanHome.recommendationSons}" var="son" rows="3" id="listRecommendationSons">
+					<h4>
+						<h:outputText value="#{son.titreMedia}" />
+						<span>
+						<h:outputText value="#{son.datePublication}">
+							<f:convertDateTime type="date" pattern="dd.MM.yyyy"/>
+						</h:outputText>							
+						</span>
+					</h4>
+					<p><h:outputText value="#{son.descriptionMedia}" /><span class="readmore">
+					<a href="#">Read more..</a></span></p>				
+				</a4j:repeat>
+			</article>			
+  
+		</aside>         
+	</ui:define>
+</ui:composition> 
+</html>

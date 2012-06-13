@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:a4j="http://richfaces.org/a4j"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+<ui:composition template="/templates/standard.xhtml">
+	<ui:define name="pageTitle">Administration du site - Gestion des signalements</ui:define>
+	<ui:define name="content">
+		<section class="group3">
+			<h3>Gestion des signalements</h3>
+			<br /> <br />
+			<h:form id="form">
+				<p:tree id="sc" value="#{beanGestionSignalementsAdmin.root}"
+					var="node" selectionMode="single" style="width:90%;"
+					selection="#{beanGestionSignalementsAdmin.selectedNode}">
+					<p:treeNode>
+						<h:outputText
+							rendered="#{beanGestionSignalementsAdmin.evaluateCommentaire(node)}"
+							style="font-weight:bold;color:#534741;"
+							value="#{node.contenuCommentaire}" />
+
+						<h:outputText
+							rendered="#{beanGestionSignalementsAdmin.evaluateSignalementCommentaire(node)}"
+							style="font-style:italic;"
+							value="#{node.raisonSignalementCommentaire}" />
+					</p:treeNode>
+				</p:tree>
+				<p:commandButton value="Supprimer Sélection" update="sc"
+					actionListener="#{beanGestionSignalementsAdmin.delSelectedSingle}"
+					id="btnDel" />
+			</h:form>
+		</section>
+	</ui:define>
+</ui:composition>
+</html>
