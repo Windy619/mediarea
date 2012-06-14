@@ -41,11 +41,7 @@ public class BeanPanier {
 		DaoMedia daoMedia = new DaoMedia();
 		
 		mediaDansPanier = new ArrayList<Media>();
-		mediaDansPanier.add(daoMedia.getUn(1));
-		mediaDansPanier.add(daoMedia.getUn(2));
-		mediaDansPanier.add(daoMedia.getUn(3));
-		mediaDansPanier.add(daoMedia.getUn(4));
-		mediaDansPanier.add(daoMedia.getUn(5));
+		//mediaDansPanier.add(daoMedia.getUn(29));
 	}
 		
 	/** 
@@ -107,7 +103,7 @@ public class BeanPanier {
 
 
             for (int i = 0; i < mediaDansPanier.size(); i++) { // On boucle pour ajouter tout les fichier au rar
-           		File f = new File(request.getRealPath(mediaDansPanier.get(i).getFichier().getCheminFichier())); // on récupère le fichier
+           		File f = new File(mediaDansPanier.get(i).getFichier().getCheminFichier()); // on récupère le fichier
 
                 FileInputStream fis = new FileInputStream(f);
                 BufferedInputStream bus = new BufferedInputStream(fis,BUFFER);
