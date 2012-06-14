@@ -103,7 +103,7 @@ public class BeanPanier {
             for (int i = 0; i < mediaDansPanier.size(); i++) { // On boucle pour ajouter tout les fichier au rar
            		File f = new File(mediaDansPanier.get(i).getFichier().getCheminFichier()); // on récupère le fichier
            		System.out.println("Le media : " + mediaDansPanier.get(i).getFichier().getCheminFichier());
-                //FileInputStream fis = new FileInputStream(f);
+                FileInputStream fis = new FileInputStream(f);
                 BufferedInputStream bus = new BufferedInputStream(fis,BUFFER);
 
                 ZipEntry entry = new ZipEntry(f.getName()); // nom du fichier dans l'archive
