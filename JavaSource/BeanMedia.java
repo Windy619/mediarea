@@ -131,6 +131,8 @@ public class BeanMedia {
  	private Playlist playlistSelectionnee;
  	private boolean jAimeDisabled;
  	private boolean jeNAimePasDisabled;
+ 	/*private String nomFichierMedia;
+ 	private String cheminFichierMedia;*/
  	
  	// Compteur
  	
@@ -200,7 +202,8 @@ public class BeanMedia {
 	
 
 	public String redirigerErreur() {
-		return "/pages/erreur";
+		//return "/pages/erreur";
+		return "/pages/erreur?faces-redirect=true&amp;includeViewParams=true";
 	}
 	
 	/** 
@@ -210,8 +213,8 @@ public class BeanMedia {
 	public void processMediaPre() throws IOException {		
 		if(idMediaVisualise == null || idMediaVisualise == "") {
 			System.out.println("redirection idMediaVisualise null");
-			//FacesContext.getCurrentInstance().getExternalContext().redirect("/MediArea/pages/erreur.jsf"); //redirection vers la page d'erreur
-			redirigerErreur();
+			FacesContext.getCurrentInstance().getExternalContext().redirect("/MediArea/pages/erreur.jsf"); //redirection vers la page d'erreur
+			redirigerErreur(); //TODO
 			//redirection vers page media indisponible XXX
 		}
 		else {
@@ -264,8 +267,9 @@ public class BeanMedia {
 					tagCloud.addTag(new DefaultTagCloudItem(tagNext.getNomTag(), "recherche.jsf?", (int) Math.random() * 5)); //TODO lien
 				}
 				
+				//System.out.println("type media : " + mediaVisualise.getType());
 				nomTypeMedia = mediaVisualise.getType().getNomTypeMedia();
-
+				
 				listeMediasDeAuteur = new ArrayList<Media>(daoUtilisateur.getUn(1).getMedias());
 				
 				listeTousPlaylist = daoPlaylist.getTous();
@@ -274,7 +278,10 @@ public class BeanMedia {
 					if(elPlaylist.getMedias().contains(mediaVisualise))
 						listePlaylistsAvecMedia.add(elPlaylist);
 				}
-									
+				
+				/*nomFichierMedia = "elephants_dream_640x360_2.30.mp4";
+				cheminFichierMedia = "../resources/videos/";*/
+				
 				//***********************************************
 				
 				//Regarder
@@ -288,7 +295,7 @@ public class BeanMedia {
 				
 				resultatTotalTelechargementMedia = daoMedia.totalTelechargement(mediaVisualise);
 				
-				if(resultatTotalTelechargementMedia > 0) {
+				if(resultatTotalTelechargementMedia > 1) {
 					motTelechargement = "s"; //"telechargements" au pluriel
 				}
 				
@@ -393,7 +400,7 @@ public class BeanMedia {
 				
 				//Note
 				resultatTotalVotesMedia = daoMedia.totalVotes(mediaVisualise);
-				if(resultatTotalVotesMedia > 0)	{
+				if(resultatTotalVotesMedia > 1)	{
 					motVotes = "s"; //"vues" au pluriel
 				}
 				
@@ -1305,6 +1312,22 @@ public class BeanMedia {
 	public void setJeNAimePasDisabled(boolean jeNAimePasDisabled) {
 		this.jeNAimePasDisabled = jeNAimePasDisabled;
 	}
+	
+	/*public String getNomFichierMedia() {
+		return nomFichierMedia;
+	}
+
+	public void setNomFichierMedia(String nomFichierMedia) {
+		this.nomFichierMedia = nomFichierMedia;
+	}*/
+
+	/*public String getCheminFichierMedia() {
+		return cheminFichierMedia;
+	}
+
+	public void setCheminFichierMedia(String cheminFichierMedia) {
+		this.cheminFichierMedia = cheminFichierMedia;
+	}*/
 
 	public StreamedContent getFile() {  
         return file;  

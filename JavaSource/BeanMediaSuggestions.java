@@ -22,6 +22,7 @@ public class BeanMediaSuggestions {
 	
 	// Propriétés
 	private List<Media> listeMediasSuggeres;
+ 	private List<Media>listeMediasSuggeresTotal;
  	private Set<Tag> tagMedia;
  	private List<Media> listeTousMedia;
  	private Iterator<Tag> iteratorMedia;
@@ -105,6 +106,8 @@ public class BeanMediaSuggestions {
 		listeMediasSuggeres = new ArrayList<Media>(mapOccurrenceTags.keySet());
 		//System.out.println("size listeMediasSuggeres : " + listeMediasSuggeres.size());
 		
+		listeMediasSuggeresTotal = listeMediasSuggeres;
+		
 		//Limitation à 20 médias suggérés
 		if(listeMediasSuggeres.size() < 20) {
 			//Extraction des premiers éléments de la liste des médias suggérés
@@ -128,4 +131,12 @@ public class BeanMediaSuggestions {
 	public void setListeMediasSuggeres(List<Media> listeMediasSuggeres) {
 		this.listeMediasSuggeres = listeMediasSuggeres;
 	}
+	
+	public List<Media> getListeMediasSuggeresTotal() {
+		return listeMediasSuggeresTotal;
+	}
+	
+	public void setListeMediasSuggeresTotal(List<Media> listeMediasSuggeresTotal) {
+		this.listeMediasSuggeresTotal = listeMediasSuggeresTotal;
+	}	
 }

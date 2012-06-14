@@ -63,12 +63,12 @@ public class Main {
 		Visibilite visible = daoVisibilite.typeVisible();
 		Visibilite nonVisible = daoVisibilite.typeNonVisible();
 		
-		daoMedia.sauvegarder(new Media(true, daoUtilisateur.getUn(1),"Description1",false,null,"La terre est Ronde",visible,null));
-		daoMedia.sauvegarder(new Media(true, daoUtilisateur.getUn(1),"Description2",false,null,"Thor HD",visible,null));
-		daoMedia.sauvegarder(new Media(true, daoUtilisateur.getUn(2),"Description3",false,null,"Hulk",nonVisible,null));
-		daoMedia.sauvegarder(new Media(true, daoUtilisateur.getUn(3),"Description4",false,null,"Titre",nonVisible,null));
-		daoMedia.sauvegarder(new Media(true, daoUtilisateur.getUn(4),"Description5",false,null,"Youtube1",visible,null));
-		daoMedia.sauvegarder(new Media(true, daoUtilisateur.getUn(5),"Description6",false,null,"Dailymotion",visible,null));
+		daoMedia.sauvegarder(new Media(true, daoUtilisateur.getUn(1),"Description1",false,null,"La terre est Ronde",visible,null, daoTypeMedia.typeVideo()));
+		daoMedia.sauvegarder(new Media(true, daoUtilisateur.getUn(1),"Description2",false,null,"Thor HD",visible,null, daoTypeMedia.typeVideo()));
+		daoMedia.sauvegarder(new Media(true, daoUtilisateur.getUn(2),"Description3",false,null,"Hulk",nonVisible,null, daoTypeMedia.typeVideo()));
+		daoMedia.sauvegarder(new Media(true, daoUtilisateur.getUn(3),"Description4",false,null,"Titre",nonVisible,null, daoTypeMedia.typeVideo()));
+		daoMedia.sauvegarder(new Media(true, daoUtilisateur.getUn(4),"Description5",false,null,"Youtube1",visible,null, daoTypeMedia.typeVideo()));
+		daoMedia.sauvegarder(new Media(true, daoUtilisateur.getUn(5),"Description6",false,null,"Dailymotion",visible,null, daoTypeMedia.typeVideo()));
 	}
 	
 	public static void creer_utilisateurs() {
