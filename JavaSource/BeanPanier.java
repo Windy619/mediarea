@@ -87,8 +87,6 @@ public class BeanPanier {
 		FileOutputStream fos;
         BufferedOutputStream bos;
         ZipOutputStream zos;
-        ServletContext request = 
-        		(ServletContext)FacesContext.getCurrentInstance().getExternalContext().getRequest();
 
         try {
 
@@ -104,8 +102,8 @@ public class BeanPanier {
 
             for (int i = 0; i < mediaDansPanier.size(); i++) { // On boucle pour ajouter tout les fichier au rar
            		File f = new File(mediaDansPanier.get(i).getFichier().getCheminFichier()); // on récupère le fichier
-
-                FileInputStream fis = new FileInputStream(f);
+           		System.out.println("Le media : " + mediaDansPanier.get(i).getFichier().getCheminFichier());
+                //FileInputStream fis = new FileInputStream(f);
                 BufferedInputStream bus = new BufferedInputStream(fis,BUFFER);
 
                 ZipEntry entry = new ZipEntry(f.getName()); // nom du fichier dans l'archive
@@ -139,7 +137,7 @@ public class BeanPanier {
             int length = 0;
             os = response.getOutputStream();
 
-            String mimetype = null; // ???
+            //String mimetype = null; // ???
 
             response.setContentType("application/zip");
             response.setContentLength((int) panierCompresse.length()); // taille du fichier
