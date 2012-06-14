@@ -84,7 +84,7 @@ public class BeanMedia {
 	private long resultatNbNAimePas;
 	private String nomAvatar;
 	private String txtFavori;
-	private String imgFavori;
+	//private String imgFavori;
 	private List<Playlist> listePlaylistUt;
 	private String imgAjoutPlaylist;
 	private boolean estAjouteAPlaylist = false;
@@ -128,6 +128,9 @@ public class BeanMedia {
  	private StreamedContent file;
  	private TagCloudModel tagCloud;
  	private FacesContext context;
+ 	private Playlist playlistSelectionnee;
+ 	private boolean jAimeDisabled;
+ 	private boolean jeNAimePasDisabled;
  	
  	// Compteur
  	
@@ -171,6 +174,7 @@ public class BeanMedia {
 		
 		//estNotifieJAime = false;
 		if(utilisateurConnecte != null) {
+			System.out.println(mediaVisualise + "*******************" + daoVisibilite.getUn(2));
 			if(mediaVisualise.getVisibilite().equals(daoVisibilite.getUn(2))) { //si privé
 				 if(! utilisateurConnecte.getAmis().contains(mediaVisualise.getAuteurMedia())) {//et que l'utilisateur n'est pas un ami
 					 System.out.println("demande d'un mot de passe"); //demande d'un mot de passe
@@ -195,23 +199,30 @@ public class BeanMedia {
 	
 	
 
+	public String redirigerErreur() {
+		return "/pages/erreur";
+	}
+	
 	/** 
 	 * Fonction appelée avant l'affichage de la page
 	 * @return
 	 */
 	public void processMediaPre() throws IOException {		
 		if(idMediaVisualise == null || idMediaVisualise == "") {
-//			FacesContext.getCurrentInstance().getExternalContext().redirect("/MediArea/pages/erreur.jsf"); //redirection vers la page d'erreur
-			//TODO redirection vers page media indisponible
+			System.out.println("redirection idMediaVisualise null");
+			//FacesContext.getCurrentInstance().getExternalContext().redirect("/MediArea/pages/erreur.jsf"); //redirection vers la page d'erreur
+			redirigerErreur();
+			//redirection vers page media indisponible XXX
 		}
 		else {
 			mediaVisualise = daoMedia.getUn(Long.parseLong(idMediaVisualise));
 			if(mediaVisualise == null) { //id de media passé en paramètre GET n'existe pas
-//				FacesContext.getCurrentInstance().getExternalContext().redirect("/MediArea/pages/erreur.jsf"); //redirection vers la page d'erreur
+				System.out.println("redirection mediaVisualise null");
+				FacesContext.getCurrentInstance().getExternalContext().redirect("/MediArea/pages/erreur.jsf"); //redirection vers la page d'erreur
 			}
 		}
 		
-		
+		System.out.println(idMediaVisualise + " ******* " + mediaVisualise);
 		
 				//Media
 						
@@ -287,6 +298,29 @@ public class BeanMedia {
 				resultatNbAime = daoMedia.nbAimeMedia(mediaVisualise.getIdMedia()).size();
 				resultatNbNAimePas = daoMedia.nbAimeNAimePas(mediaVisualise.getIdMedia()).size();
 				
+				//désactivation de "J'aime" si l'utilisateur aime déjà ce média
+				if (util.getAimeMedias().toString().equals("[]")) {
+					jAimeDisabled = false;
+					jeNAimePasDisabled = true;
+				}
+				else
+				{
+					for (Aimer aimerUt : util.getAimeMedias()) {
+						if(aimerUt.isaAime() && aimerUt.getMedia().equals(mediaVisualise)) {
+							//System.out.println("activer J'aime");
+							jAimeDisabled = true;
+							jeNAimePasDisabled = false;
+							break;
+						}
+						else  {
+							//System.out.println("activer Je n'aime pas");
+							jAimeDisabled = false;
+							jeNAimePasDisabled = true;
+							break;
+						}
+					}
+				}
+				
 				//***********************************************
 				
 				//Avatar
@@ -295,18 +329,36 @@ public class BeanMedia {
 				//***********************************************
 								
 				//Playlist
-				imgFavori = "add-star-award-icone-8518-16.png";
+				//imgFavori = "add-star-award-icone-8518-16.png";
+				//System.out.println("Playlist utilisateur : " + playlistsUtilisateur);
 				playlistsUtilisateur = daoUtilisateur.getUn(1).getPlaylists();
-				for(Playlist pl : playlistsUtilisateur) {
-					if(pl.getType().equals(daoTypePlaylist.getUn(2))) {
-						if(pl.getMedias().contains(mediaVisualise)) {
-							txtFavori = "Retirer des favoris";
-							imgFavori = "star-award-delete-icone-5901-16.png";
+				if(playlistsUtilisateur.toString().equals("[]")) {
+					txtFavori = "Favori";
+				}
+				else {
+					boolean existeFavori = false;
+					for(Playlist pl : playlistsUtilisateur) {
+						if(pl.getType().equals(daoTypePlaylist.getUn(2))) {
+							for (Media mediaPl : pl.getMedias()) {
+								if(mediaPl.equals(mediaVisualise)) {
+									txtFavori = "Retirer des favoris";
+									existeFavori = true;
+									break;
+								}
+							}
+							/*if(pl.getMedias().contains(mediaVisualise)) {
+								txtFavori = "Retirer des favoris";
+								//imgFavori = "star-award-delete-icone-5901-16.png";
+							}*/
+							//else {
+							//	txtFavori = "Favori";
+							//	imgFavori = "add-star-award-icone-8518-16.png";
+							//}
 						}
-						//else {
-						//	txtFavori = "Favori";
-						//	imgFavori = "add-star-award-icone-8518-16.png";
-						//}
+					}
+					
+					if(! existeFavori) {
+						txtFavori = "Favori";
 					}
 				}
 				
@@ -377,18 +429,40 @@ public class BeanMedia {
 	public String jAime() {
 		System.out.println("Méthode jAime");
 		
-		//Création de l'objet Aimer (true)
-		Aimer a = new Aimer(true,mediaVisualise);
-		
-		//Ajout à la liste des médias aimés
-		util.getAimeMedias().add(a);
-		
-		//Sauvegarde de l'ajout
-		daoUtilisateur.sauvegarder(util);
+		//Si l'utilisateur a déjà aimé ou pas aimé
+		boolean existeAimer = false;
+		for (Aimer aimerUt : util.getAimeMedias()) {
+			if(aimerUt.getMedia().equals(mediaVisualise)) { //Aimer de l'utilisateur du média visualisé
+				// On met à true aAime de l'objet Aimer déjà existant
+				aimerUt.setaAime(true);
+				existeAimer = true;
 				
+				//Sauvegarde de la modification
+				daoAimer.sauvegarder(aimerUt);
+				break;
+			}
+		}
+		
+		if(! existeAimer) {
+			//Création de l'objet Aimer (true)
+			Aimer a = new Aimer(true, mediaVisualise);
+					
+			//Ajout à la liste des médias aimés
+			util.getAimeMedias().add(a);
+			
+			//Sauvegarde de l'ajout
+			daoUtilisateur.sauvegarder(util);
+		}
+		
 		//Affichage de la notification
 		//context.addMessage(null, new FacesMessage("J'aime ce contenu", detailNotificationJAime));
 		FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("J'aime ce contenu", detailNotificationJAime));
+		
+		//désactivation de "J'aime"
+		jAimeDisabled = true;
+		
+		//activation de "Je n'aime pas"
+		jeNAimePasDisabled = false;
 		
 		return "jAime";
 	}
@@ -400,17 +474,39 @@ public class BeanMedia {
 	public String jeNAimePas() {
 		System.out.println("Méthode jeNAimePas");
 		
-		//Création de l'objet Aimer (false)
-		Aimer a = new Aimer(false,mediaVisualise);
+		//Si l'utilisateur a déjà aimé ou pas aimé
+		boolean existeAimer = false;
+		for (Aimer aimerUt : util.getAimeMedias()) {
+			if(aimerUt.getMedia().equals(mediaVisualise)) { //Aimer de l'utilisateur du média visualisé
+				// On met à false aAime de l'objet Aimer déjà existant
+				aimerUt.setaAime(false);
+				existeAimer = true;
+					
+				//Sauvegarde de la modification
+				daoAimer.sauvegarder(aimerUt);
+				break;
+			}
+		}
 		
-		//Ajout à la liste des médias aimés
-		util.getAimeMedias().add(a);
+		if(! existeAimer) {
+			//Création de l'objet Aimer (false)
+			Aimer a = new Aimer(false,mediaVisualise);
+			
+			//Ajout à la liste des médias aimés
+			util.getAimeMedias().add(a);
+			
+			//Sauvegarde de l'ajout
+			daoUtilisateur.sauvegarder(util);
+		}
 		
-		//Sauvegarde de l'ajout
-		daoUtilisateur.sauvegarder(util);
-
 		//Affichage de la notification
 		FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Je n'aime pas ce contenu", detailNotificationJeNAimePas));
+		
+		//désactivation de "Je n'aime pas"
+		jeNAimePasDisabled = true;
+		
+		//activation de "J'aime"
+		jAimeDisabled = false;
 		
 		return "jeNAimePas";
 	}
@@ -444,14 +540,14 @@ public class BeanMedia {
 	public String telechargerMedia() { //TODO rentrer dedans
 		System.out.println("méthode telechargerMedia");
 		
-		//Création de l'objet Telechargement_Media
+		/*//Création de l'objet Telechargement_Media
 		Telechargement_Media tm = new Telechargement_Media(mediaVisualise);
 		
 		//Ajout du téléchargement à la liste de médias téléchargés
 		daoUtilisateur.getUn(1).getTelechargementsMedias().add(tm);
 		
 		//Sauvegarde de l'ajout
-		daoUtilisateur.sauvegarder(daoUtilisateur.getUn(1));
+		daoUtilisateur.sauvegarder(daoUtilisateur.getUn(1));*/
 		
 		return "telechargerMedia";
 	}
@@ -535,9 +631,9 @@ public class BeanMedia {
 		playlistsUtilisateur = daoUtilisateur.getUn(1).getPlaylists();
 		
 		//Ajout au favori
-		if(txtFavori == "Favori")
+		if(txtFavori.equals("Favori"))
 		{
-			//System.out.println("Ajout au favori");			
+			System.out.println("Ajout au favori");			
 
 			plFavoris = new Playlist();
 			
@@ -570,7 +666,7 @@ public class BeanMedia {
 			plFavoris.getMedias().add(mediaVisualise);
 			
 			//Sauvegarde de l'ajout
-			daoPlaylist.sauvegarder(plFavoris);
+			daoPlaylist.sauvegarder(daoPlaylist.getUn(plFavoris.getIdPlaylist()));			
 			
 			//Modification du texte affiché sur la vue
 			txtFavori = "Retirer des favoris";
@@ -579,7 +675,7 @@ public class BeanMedia {
 			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Favori", "Ajoutée à Favoris"));			
 		}
 		else { //Retrait au favori
-			//System.out.println("Retrait au favori");
+			System.out.println("Retrait au favori");
 			
 			//Parcours de la liste des playlists de l'utilisateur connecté
 			for(Playlist pl : playlistsUtilisateur) {
@@ -595,6 +691,7 @@ public class BeanMedia {
 			
 			//Affichage de la notification
 			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Favori", "Retirée à Favoris"));
+			
 		}
 		
 		return "ajouterAFavori";
@@ -605,9 +702,11 @@ public class BeanMedia {
 	 * @return
 	 */
 	public String ajouterMediaAPlaylist() {
-		System.out.println("ajouterMediaAPlaylist");
+		System.out.println("ajouterMediaAPlaylist");	
+
+		System.out.println("Playlist sélectionnée : " + playlistSelectionnee);
 		
-		//Récupération de la liste des playlists de l'utilisateur connecté
+		/*//Récupération de la liste des playlists de l'utilisateur connecté
 		setPlaylistUt = util.getPlaylists();
 		
 		//Si la playlist ne contient pas le média
@@ -617,7 +716,8 @@ public class BeanMedia {
 			//Parcours de la liste des playlists de l'utilisateur
 			for(Playlist playlistUt : setPlaylistUt) {
 				//Si la playlist courante parcourue correspond à la playlist à traiter
-				if(playlistUt.getIdPlaylist() == Long.parseLong(FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("idPlaylist"))) {
+				//if(playlistUt.getIdPlaylist() == Long.parseLong(FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("idPlaylist"))) {
+				if(playlistUt.getIdPlaylist() == playlistSelectionne.getIdPlaylist()) {
 					//Ajout du média à la liste des playlists de l'utilisateur
 					playlistUt.getMedias().add(mediaVisualise);
 					
@@ -645,7 +745,7 @@ public class BeanMedia {
 
 			//Changement de l'image affichée sur la vue
 			imgAjoutPlaylist = "accepter-check-ok-oui-icone-4851-16.png"; //TODO
-		}
+		}*/
 		
 		return "ajouterMediaAPlaylist";
 	}
@@ -675,7 +775,7 @@ public class BeanMedia {
 			daoUtilisateur.getUn(1).getPlaylists().add(nvlPlaylist);
 			
 			//Sauvegarde de l'ajout
-			/////////////////daoUtilisateur.sauvegarder(daoUtilisateur.getUn(1));
+			/////daoUtilisateur.sauvegarder(daoUtilisateur.getUn(1));
 			
 			//Affichage de la notification
 			FacesContext.getCurrentInstance().addMessage(null,
@@ -783,13 +883,15 @@ public class BeanMedia {
 		//Récupération de la valeur du checkbox (pour savoir s'il a été coché ou pas)
 		check = (HtmlSelectBooleanCheckbox)e.getSource();
 		Object checkvar = check.getValue();
-		System.out.println("Value : " + checkvar); //false true TODO
+		System.out.println("Value : " + checkvar);
 		
 		//Si ce n'est pas coché
 	    if(! Boolean.parseBoolean(checkvar.toString()))	{
-			codeIntegration = "<iframe width='" + largeur + "' height='" + hauteur + "' src='" + url + "' frameborder='0' allowfullscreen></iframe>";
+			System.out.println("Code d'intégration par défaut");
+	    	codeIntegration = "<iframe width='" + largeur + "' height='" + hauteur + "' src='" + url + "' frameborder='0' allowfullscreen></iframe>";
 		}
 		else { //Si c'est coché (Utiliser l'ancien code d'intégration)
+			System.out.println("Code d'intégration ancien");
 			codeIntegration = "<object width='" + largeur + "' height='" + hauteur + "'><param name='movie' value='" + url + "'></param><param name='allowFullScreen' value='true'></param><param name='allowscriptaccess' value='always'></param><embed src='http://www.youtube.com/v/ZQ2nCGawrSY?version=3&amp;hl=fr_FR' type='application/x-shockwave-flash' width='" + largeur + "' height='" + hauteur + "' allowscriptaccess='always' allowfullscreen='true'></embed></object>";	
 		}
 	}
@@ -816,10 +918,10 @@ public class BeanMedia {
         	largeur = 560;
         	hauteur = 315;
         }
-		//taille personnalisée TODO
 		System.out.println("/" + tailleLecteur + " ==> " + largeur + "***" + hauteur);
+		
 		codeIntegration = "<object width='" + largeur + "' height='" + hauteur + "'><param name='movie' value='" + url + "'></param><param name='allowFullScreen' value='true'></param><param name='allowscriptaccess' value='always'></param><embed src='http://www.youtube.com/v/ZQ2nCGawrSY?version=3&amp;hl=fr_FR' type='application/x-shockwave-flash' width='" + largeur + "' height='" + hauteur + "' allowscriptaccess='always' allowfullscreen='true'></embed></object>";	
-		//code object aussi TODO
+		//or TODO ancien code
 	}	
 
 	/** 
@@ -1135,13 +1237,13 @@ public class BeanMedia {
 		this.detailNotificationJeNAimePas = detailNotificationJeNAimePas;
 	}
 	
-	public String getImgFavori() {
+	/*public String getImgFavori() {
 		return imgFavori;
 	}
 	
 	public void setImgFavori(String imgFavori) {
 		this.imgFavori = imgFavori;
-	}
+	}*/
 	
 	public String getMotDePasseMedia() {
 		return motDePasseMedia;
@@ -1180,6 +1282,30 @@ public class BeanMedia {
         return tagCloud;  
     }
 	
+	public Playlist getPlaylistSelectionnee() {
+		return playlistSelectionnee;
+	}
+	
+	public void setPlaylistSelectionnee(Playlist playlistSelectionnee) {
+		this.playlistSelectionnee = playlistSelectionnee;
+	}
+	
+	public boolean isjAimeDisabled() {
+		return jAimeDisabled;
+	}
+
+	public void setjAimeDisabled(boolean jAimeDisabled) {
+		this.jAimeDisabled = jAimeDisabled;
+	}
+
+	public boolean isJeNAimePasDisabled() {
+		return jeNAimePasDisabled;
+	}
+
+	public void setJeNAimePasDisabled(boolean jeNAimePasDisabled) {
+		this.jeNAimePasDisabled = jeNAimePasDisabled;
+	}
+
 	public StreamedContent getFile() {  
         return file;  
     }

@@ -23,13 +23,23 @@ import metier.media.Media;
 
 public class BeanPanier {
 	
+	// DAO
+ 	private static DaoMedia daoMedia;
+ 	
+ 	// Propriétés
 	private List<Media> mediaDansPanier;
  	private String detailNotifyAjoutAuPanier;
- 	private static DaoMedia daoMedia;
- 	private FacesContext context = FacesContext.getCurrentInstance();
+ 	
+ 	// Bean
+ 	private BeanMedia beanMedia;
 
 	public BeanPanier() {
+		// Chargement du média visualisé
+		beanMedia = (BeanMedia) FacesContext.getCurrentInstance().getCurrentInstance().getExternalContext().getSessionMap().get("beanMedia");
+		
+		//Instantiation des Dao
 		DaoMedia daoMedia = new DaoMedia();
+		
 		mediaDansPanier = new ArrayList<Media>();
 		mediaDansPanier.add(daoMedia.getUn(1));
 		mediaDansPanier.add(daoMedia.getUn(2));
@@ -46,18 +56,34 @@ public class BeanPanier {
 		System.out.println("ajouterAuPanier");
 		
 		//Si le média est déjà ajouté au panier
-		if(mediaDansPanier.contains(daoMedia.getUn(2))) {
-			detailNotifyAjoutAuPanier = "Le média " + daoMedia.getUn(2).getTitreMedia() + " a déjà été ajouté au panier.";
+		//if(mediaDansPanier.contains(daoMedia.getUn(2))) {
+		boolean existeMediaDansPanier = false;
+		for (Media elMediaPanier : mediaDansPanier) {
+			if(elMediaPanier.equals(beanMedia.getMediaVisualise()))
+			{
+				System.out.println("Media était déjà présent dans panier");
+				detailNotifyAjoutAuPanier = "Le média " + beanMedia.getMediaVisualise().getTitreMedia() + " a déjà été ajouté au panier.";
+				existeMediaDansPanier = true;
+				break;
+			}
 		}
 		//Si le média n'est pas encore ajouté au panier
-		else {
+		//else {
+		if(! existeMediaDansPanier) {
+			//System.out.println("Media n'était pas présent dans panier");
 			mediaDansPanier.add(daoMedia.getUn(2));
-			detailNotifyAjoutAuPanier = "Le média " + daoMedia.getUn(2).getTitreMedia() + " a été ajouté au panier";
+			detailNotifyAjoutAuPanier = "Le média " + beanMedia.getMediaVisualise().getTitreMedia() + " a été ajouté au panier";
 		}
 
 		//Affichage de la notification
-		context.addMessage(null, new FacesMessage("Notification", detailNotifyAjoutAuPanier));
-        
+		FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Panier", detailNotifyAjoutAuPanier));
+		
+		/*System.out.println("Panier : ");
+		for (Media mediaContenu : mediaDansPanier) {
+			System.out.println(mediaContenu.getTitreMedia() + " - ");
+		}*/
+		
+		
 		return "ajouterAuPanier";
 	}
 	
@@ -134,7 +160,7 @@ public class BeanPanier {
             os.flush();
             
         } catch (IOException ex) {
-            System.out.println("Toto erreur");
+            System.out.println("erreur");
         }
         finally {
             try {
