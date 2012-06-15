@@ -9,9 +9,6 @@ import javax.faces.context.FacesContext;
 import metier.media.*;
 import dao.media.*;
 
-import metier.utilisateur.*;
-import dao.utilisateur.*;
-
 /**
  * @author Florence
  *
@@ -41,11 +38,13 @@ public class BeanMediaSuggestions {
 		// Chargement du média visualisé
 		beanMedia = (BeanMedia) FacesContext.getCurrentInstance().getCurrentInstance().getExternalContext().getSessionMap().get("beanMedia");
 		
-		//Instantiation des Dao
+		// Instantiation des Dao
 		daoMedia = new DaoMedia();
 		
+		// Création de la liste qui contiendra les médias suggérés
 		listeMediasSuggeres = new ArrayList<Media>();
 		
+		// Appel à l'algorithme générant les médias suggérés
 		algorithmeSuggestions();
 	}
 	
@@ -55,23 +54,23 @@ public class BeanMediaSuggestions {
 	 * @return
 	 */
 	public void algorithmeSuggestions() {
-		//Récupération de la liste de tags associés au média
+		// Récupération de la liste de tags associés au média
 		tagMedia = beanMedia.getMediaVisualise().getTags();
 		//System.out.println("tagMedia : " + tagMedia);
 		
-		//Récupération de tous les médias
+		// Récupération de tous les médias
 		listeTousMedia = daoMedia.getTous();
 		
-		//Création d'une HashMap contenant le nb d'occurrences de tags correspondants dans les médias
+		// Création d'une HashMap contenant le nb d'occurrences de tags correspondants dans les médias
 		mapOccurrenceTags = new HashMap<Media, Integer>();
 		
 		iteratorMedia = tagMedia.iterator();
-		//Parcours des tags du média visualisé
+		// Parcours des tags du média visualisé
 		while(iteratorMedia.hasNext()) { 
 			tagMediaCourant = iteratorMedia.next();
 			//System.out.println("Set tagMedia : " + tagMediaCourant);
 			
-			//Parcours de tous les médias
+			// Parcours de tous les médias
 			for(Media elMedia : listeTousMedia) {
 				if(! elMedia.equals(null)) { //if(! elMedia.equals(beanMedia.getMediaVisualise())) { TODO //tout sauf le média actuellement visualisé
 					setTagMediaCourant = daoMedia.getUn(elMedia.getIdMedia()).getTags();
@@ -80,11 +79,11 @@ public class BeanMediaSuggestions {
 					for(Tag tagMediaCourantAutreMedia : setTagMediaCourant) {
 						if(tagMediaCourant.toString().equals(tagMediaCourantAutreMedia.toString())) {
 							if(mapOccurrenceTags.containsKey(elMedia)) {
-								//Incrémentation de l'occurrence de tags du média courant
+								// Incrémentation de l'occurrence de tags du média courant
 								mapOccurrenceTags.put(elMedia, mapOccurrenceTags.get(elMedia) + 1); //tag correspond supplémentaire
 							}
 							else {
-								//Association de 1 au média courant pour la HashMap (la clé n'existe pas encore)
+								// Association de 1 au média courant pour la HashMap (la clé n'existe pas encore)
 								mapOccurrenceTags.put(elMedia, 1);
 							}
 						}
@@ -102,19 +101,19 @@ public class BeanMediaSuggestions {
 		   System.out.println(cle + " => " + valeur);
 		}*/
 		
-		//Création d'une liste de clés
+		// Création d'une liste de clés
 		listeMediasSuggeres = new ArrayList<Media>(mapOccurrenceTags.keySet());
 		//System.out.println("size listeMediasSuggeres : " + listeMediasSuggeres.size());
 		
 		listeMediasSuggeresTotal = listeMediasSuggeres;
 		
-		//Limitation à 20 médias suggérés
+		// Limitation à 20 médias suggérés
 		if(listeMediasSuggeres.size() < 20) {
-			//Extraction des premiers éléments de la liste des médias suggérés
+			// Extraction des premiers éléments de la liste des médias suggérés
 			listeMediasSuggeres = listeMediasSuggeres.subList(0, listeMediasSuggeres.size());
 		}
 		else {
-			//Extraiter des 20 premiers médias suggérés
+			// Extraction des 20 premiers médias suggérés
 			listeMediasSuggeres = listeMediasSuggeres.subList(0, 20);
 		}
 		//suggestion en tenant compte du titre et catégories XXX
