@@ -77,7 +77,6 @@ public class BeanMedia {
 	private String motVues;
 	private String motTelechargement;
 	private long resultatTotalTelechargementMedia;
-	//private List<Media> mediaDansPanier; //TODO à mettre en SESSION
 	private String raisonMedia;
 	private Utilisateur util;
 	private long resultatNbAime;
@@ -105,8 +104,8 @@ public class BeanMedia {
     private String lien;
     private String url;
     private String tailleLecteur = "";
-    private int largeur = 320;
-    private int hauteur = 180;
+    private int largeur;
+    private int hauteur;
  	private String detailNotificationJAime;
  	private String detailNotificationJeNAimePas;
  	private List<Media> listeMediasDeAuteur;
@@ -326,8 +325,17 @@ public class BeanMedia {
 				.getExternalContext().getRequest();
 		url = req.getRequestURL().toString();
 
-		/*codeIntegration = "<iframe width='320' height='180' src='" + url
-				+ "' frameborder='0' allowfullscreen></iframe>";*/
+		/*if(codeIntegration.equals("")) {
+			codeIntegration = "<iframe width='320' height='180' src='" + url
+				+ "' frameborder='0' allowfullscreen></iframe>";
+		}*/
+		
+		if(largeur == 0) {
+			largeur = 320;
+		}
+		
+		if(hauteur == 0)
+			hauteur = 180;
 
 		processMedia();
 	}
@@ -451,7 +459,6 @@ public class BeanMedia {
 		listePlaylistUt = new ArrayList<Playlist>(daoUtilisateur.getUn(1).getPlaylists());
 		
 		setPlaylistUt = util.getPlaylists();
-		//imgAjoutPlaylist = "accepter-check-ok-oui-icone-4851-16.png"; //TODO
 		
 		for(Playlist playlistUt : setPlaylistUt) {
 				if(playlistUt.getMedias().contains(mediaVisualise)) {
@@ -462,7 +469,7 @@ public class BeanMedia {
 		}
 
 		if(!estAjouteAPlaylist) {
-			imgAjoutPlaylist = "fermer-croix-supprimer-erreurs-sortie-icone-4368-16.png"; //TODO
+			imgAjoutPlaylist = "fermer-croix-supprimer-erreurs-sortie-icone-4368-16.png";
 		}
 		
 		return "mettre_en_place_playlists";
@@ -583,17 +590,17 @@ public class BeanMedia {
 	 * Téléchargement d'un média
 	 * @return
 	 */
-	public String telechargerMedia() { //TODO rentrer dedans
+	public String telechargerMedia() {
 		System.out.println("méthode telechargerMedia");
 		
-		/*//Création de l'objet Telechargement_Media
+		//Création de l'objet Telechargement_Media
 		Telechargement_Media tm = new Telechargement_Media(mediaVisualise);
 		
 		//Ajout du téléchargement à la liste de médias téléchargés
 		daoUtilisateur.getUn(1).getTelechargementsMedias().add(tm);
 		
 		//Sauvegarde de l'ajout
-		daoUtilisateur.sauvegarder(daoUtilisateur.getUn(1));*/
+		daoUtilisateur.sauvegarder(daoUtilisateur.getUn(1));
 		
 		return "telechargerMedia";
 	}
@@ -801,7 +808,7 @@ public class BeanMedia {
 	 * Création d'une playlist
 	 * @return
 	 */
-	public String creerPlaylist() { //TODO à tester
+	public String creerPlaylist() {
 		System.out.println("Création d'une playlist");
 		
 		//Création de la nouvelle playlist
@@ -921,14 +928,6 @@ public class BeanMedia {
 	public void desactiverLecteurIframe(AjaxBehaviorEvent e) {
 		System.out.println("desactiverLecteurIframe");
 		
-		FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("test")); 
-		
-		//UIComponent source = (UIComponent)e.getSource();
-	    //System.out.println("Value:"+((HtmlSelectBooleanCheckbox)source).getValue());
-		//UIInput input = (UIInput) e.getComponent();
-		//Object contentValue = (Content) input.getValue();
-		//System.out.println("Value : "+contentValue);
-		//Object value = ((UIInput) e.getSource()).getSubmittedValue();
 		//Récupération de la valeur du checkbox (pour savoir s'il a été coché ou pas)
 		check = (HtmlSelectBooleanCheckbox)e.getSource();
 		Object checkvar = check.getValue();
@@ -936,11 +935,11 @@ public class BeanMedia {
 		
 		//Si ce n'est pas coché
 	    if(! Boolean.parseBoolean(checkvar.toString()))	{
-			System.out.println("Code d'intégration par défaut");
+			//System.out.println("Code d'intégration par défaut");
 	    	codeIntegration = "<iframe width='" + largeur + "' height='" + hauteur + "' src='" + url + "' frameborder='0' allowfullscreen></iframe>";
 		}
 		else { //Si c'est coché (Utiliser l'ancien code d'intégration)
-			System.out.println("Code d'intégration ancien");
+			//System.out.println("Code d'intégration ancien");
 			codeIntegration = "<object width='" + largeur + "' height='" + hauteur + "'><param name='movie' value='" + url + "'></param><param name='allowFullScreen' value='true'></param><param name='allowscriptaccess' value='always'></param><embed src='http://www.youtube.com/v/ZQ2nCGawrSY?version=3&amp;hl=fr_FR' type='application/x-shockwave-flash' width='" + largeur + "' height='" + hauteur + "' allowscriptaccess='always' allowfullscreen='true'></embed></object>";	
 		}
 	}
@@ -967,11 +966,10 @@ public class BeanMedia {
         	largeur = 560;
         	hauteur = 315;
         }
-		System.out.println("/" + tailleLecteur + " ==> " + largeur + "***" + hauteur);
+		System.out.println(tailleLecteur + " ==> " + largeur + "***" + hauteur);
 		
 		codeIntegration = "<object width='" + largeur + "' height='" + hauteur + "'><param name='movie' value='" + url + "'></param><param name='allowFullScreen' value='true'></param><param name='allowscriptaccess' value='always'></param><embed src='http://www.youtube.com/v/ZQ2nCGawrSY?version=3&amp;hl=fr_FR' type='application/x-shockwave-flash' width='" + largeur + "' height='" + hauteur + "' allowscriptaccess='always' allowfullscreen='true'></embed></object>";	
-		//or TODO ancien code
-	}	
+	}
 
 	/** 
 	 * Modification des catégories et tags d'un média (si propriétaire)
