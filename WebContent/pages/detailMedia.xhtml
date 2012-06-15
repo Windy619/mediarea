@@ -58,7 +58,7 @@
 					 href="../resources/videos/#{beanMedia.mediaVisualise.fichier.nomFichier}"
 					 style="display:block;width:612px;height:404px"  
 					 id="player">
-				</a><!-- TODO incrementerNbVues() -->
+				</a>
 			
 				<!-- this will install flowplayer inside previous A- tag. -->
 				<script>
@@ -259,16 +259,15 @@
 			        	<br />
 			        	<h:outputText value="Copier le code d'intégration" styleClass="bold" />
 			        	<br />
-			        	<p:inputTextarea id="codeIntegration" value="#{beanMedia.codeIntegration}" cols="60" rows="5">
+			        	<p:inputTextarea id="codeIntegration" value="#{beanMedia.codeIntegration}" cols="60" rows="9">
 			        	</p:inputTextarea>
 			        	<br />
 			        	<h:outputText value="Après avoir sélectionné les options souhaitées plus bas, copiez-collez le code d'intégration ci-dessus. Ce dernier change en fonction des options choisies." />
 			        	<br />
 			        	<hr />
-			        	<p:inputText id="codeIntegration2" value="#{beanMedia.codeIntegration}" />
 			        	<p:selectBooleanCheckbox value="true">  
-				            <p:ajax update=":msg" listener="#{beanMedia.desactiverLecteurIframe}"/>  
-				        </p:selectBooleanCheckbox><!-- TODO update -->
+				            <p:ajax event="change" update="codeIntegration" listener="#{beanMedia.desactiverLecteurIframe}"/>  
+				        </p:selectBooleanCheckbox>
 				        <h:outputText value="Utiliser l'ancien code d'intégration" />
 			        	<br />
 			        	<hr />
@@ -281,7 +280,7 @@
 							<f:selectItem id="petit" itemLabel="Petit (320x180)" itemValue="petit" />
 							<f:selectItem id="moyen" itemLabel="Moyen (480x270)" itemValue="moyen" />
 							<f:selectItem id="grand" itemLabel="Grand (560x315)" itemValue="grand" />							
-			        	</p:selectOneRadio><!--TODO update--><!-- execute="@form"  -->
+			        	</p:selectOneRadio><!-- execute="@form"  -->
 			        	<!--<f:selectItem id="personnalisee" itemLabel="Taille personnalisée" itemValue="taillePersonnalisee" /> XXX-->
 			        	<!--<p:selectManyCheckbox value="#{beanMedia.tailleLecteur}" update="codeIntegration">
 				            <f:selectItem itemLabel="Petit (320x180)" itemValue="petit" />
@@ -409,7 +408,7 @@
         		<br />
         	<h:form>	
         		<div style="float:left;">
-        			<!--<p:commandButton value="Exporter" image="/resources/images/icones/tag-icone-4783-32.png" alt="Exporter" onclick="dlgExporter.show();" title="Exporter ce média sur votre blog ou site" />--><!-- TODO a4j -->
+        			<!--<p:commandButton value="Exporter" image="/resources/images/icones/tag-icone-4783-32.png" alt="Exporter" onclick="dlgExporter.show();" title="Exporter ce média sur votre blog ou site" />-->
         			<p:commandButton value="Exporter" icon="ui-icon-carat-2-e-w" alt="Exporter" onclick="dlgExporter.show();" title="Exporter ce média sur votre blog ou site" style="float: left;" />
         			<p:spacer width="20" />
         			<!-- Affichage des statistiques associés au média -->
@@ -460,7 +459,7 @@
 						    counterTemplate="{0} caractères restants." autoResize="false" value="#{beanMedia.raisonMedia}" required="true"/>  
 						  
 						<h:outputText id="counter" />
-						<p:message for="raisonSignalementMedia" /><!-- TODO required raison -->
+						<p:message for="raisonSignalementMedia" />
 						<!-- ou Motif du signalement (liste déroulante) -->
 			       	</p>
 			       	<p>
