@@ -29,6 +29,7 @@ public class BeanPanier {
  	// Propriétés
 	private List<Media> mediaDansPanier;
  	private String detailNotifyAjoutAuPanier;
+ 	private FacesMessage message;
  	
  	// Bean
  	private BeanMedia beanMedia;
@@ -59,7 +60,12 @@ public class BeanPanier {
 			{
 				System.out.println("Media était déjà présent dans panier");
 				detailNotifyAjoutAuPanier = "Le média " + beanMedia.getMediaVisualise().getTitreMedia() + " a déjà été ajouté au panier.";
-				existeMediaDansPanier = true;
+				existeMediaDansPanier = true;				
+
+				// Préparation du message de la notification
+				message = new FacesMessage("Panier : " + detailNotifyAjoutAuPanier);
+				message.setSeverity(FacesMessage.SEVERITY_WARN);
+				
 				break;
 			}
 		}
@@ -69,10 +75,13 @@ public class BeanPanier {
 			//System.out.println("Media n'était pas présent dans panier");
 			mediaDansPanier.add(beanMedia.getMediaVisualise());
 			detailNotifyAjoutAuPanier = "Le média " + beanMedia.getMediaVisualise().getTitreMedia() + " a été ajouté au panier";
+			
+			// Préparation du message de la notification
+			message = new FacesMessage("Panier : " + detailNotifyAjoutAuPanier);
 		}
 
 		//Affichage de la notification
-		FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Panier" + detailNotifyAjoutAuPanier));
+		FacesContext.getCurrentInstance().addMessage(null, message);
 		
 		/*System.out.println("Panier : ");
 		for (Media mediaContenu : mediaDansPanier) {

@@ -1,9 +1,7 @@
-import java.awt.event.ActionEvent;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -11,13 +9,9 @@ import java.util.Set;
 import java.io.InputStream;
 
 import javax.faces.application.FacesMessage;
-import javax.faces.component.UIComponent;
-import javax.faces.component.html.HtmlDataTable;
 import javax.faces.component.html.HtmlSelectBooleanCheckbox;
 import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpServletRequest;
-import javax.validation.constraints.AssertTrue;
-import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 import javax.faces.event.AjaxBehaviorEvent;
 import javax.faces.model.SelectItem;
@@ -85,7 +79,7 @@ public class BeanMedia {
 	private String txtFavori;
 	//private String imgFavori;
 	private List<Playlist> listePlaylistUt;
-	private String imgAjoutPlaylist;
+	//private String imgAjoutPlaylist;
 	private boolean estAjouteAPlaylist = false;
 	@Size(min = 0, message = "Ce champ est requis.")
     private String nomPlaylistACreer;
@@ -103,7 +97,7 @@ public class BeanMedia {
 	private String codeIntegration;
     private String lien;
     private String url;
-    private String tailleLecteur = "";
+    private String tailleLecteur;
     private int largeur;
     private int hauteur;
  	private String detailNotificationJAime;
@@ -191,6 +185,13 @@ public class BeanMedia {
 			detailNotificationJAime = "Connectez-vous ou inscrivez-vous dès maintenant !";
 			detailNotificationJeNAimePas = "Connectez-vous ou inscrivez-vous dès maintenant !";
 		}
+		
+		codeIntegration = "";
+		tailleLecteur = "";
+		
+		mettreEnPlaceFavoris();
+
+		mettreEnPlacePlaylists();
 	}
 	
 	
@@ -233,9 +234,9 @@ public class BeanMedia {
 
 		description = mediaVisualise.getDescriptionMedia();
 
-		mettre_en_place_categories();
+		mettreEnPlaceCategories();
 
-		mettre_en_place_tags();
+		mettreEnPlaceTags();
 
 		// System.out.println("type media : " + mediaVisualise.getType());
 		nomTypeMedia = mediaVisualise.getType().getNomTypeMedia();
@@ -256,11 +257,11 @@ public class BeanMedia {
 		InputStream stream = ((ServletContext) FacesContext
 				.getCurrentInstance().getExternalContext().getContext())
 				.getResourceAsStream("C:/Users/Public/Pictures/Sample Pictures/Hortensias.jpg");
-		System.out.println("Nom fichier : "
+		/*System.out.println("Nom fichier : "
 				+ mediaVisualise.getFichier().getNomFichier());
 		file = new DefaultStreamedContent(stream, "images/jpg",
 				"downloaded_file.jpg"); // TODO chemin vers média à télécharger
-
+		*/
 		resultatTotalTelechargementMedia = daoMedia
 				.totalTelechargement(mediaVisualise);
 
@@ -279,7 +280,7 @@ public class BeanMedia {
 		
 		// --- Aimer ---
 
-		mettre_en_place_aime_aime_pas();
+		mettreEnPlaceAimeAimePas();
 
 		// ***********************************************
 
@@ -289,10 +290,6 @@ public class BeanMedia {
 		// ***********************************************
 
 		// --- Playlists ---
-
-		mettre_en_place_favoris();
-
-		mettre_en_place_playlists();
 
 		listeVisibilite = daoVisibilite.getTous();
 		listeNomVisibilite = new ArrayList<SelectItem>();
@@ -325,18 +322,24 @@ public class BeanMedia {
 				.getExternalContext().getRequest();
 		url = req.getRequestURL().toString();
 
-		/*if(codeIntegration.equals("")) {
+		if(codeIntegration.equals("")) {
 			codeIntegration = "<iframe width='320' height='180' src='" + url
 				+ "' frameborder='0' allowfullscreen></iframe>";
-		}*/
+		}
 		
-		if(largeur == 0) {
+		if(tailleLecteur.equals("")) {
+			System.out.println("Taille lecteur vide => petit");
+			tailleLecteur = "petit";
+		}
+		
+		/*if(largeur == 0) {
 			largeur = 320;
 		}
 		
-		if(hauteur == 0)
+		if(hauteur == 0) {
 			hauteur = 180;
-
+		}*/
+		
 		processMedia();
 	}
 	
@@ -344,7 +347,7 @@ public class BeanMedia {
 		return "/pages/detailMedia?faces-redirect=true&amp;includeViewParams=true"; //pour garder le paramètre ?v=...
 	}
 	
-	public String mettre_en_place_categories() {
+	public String mettreEnPlaceCategories() {
 		listeNomCategories = new ArrayList<String>();
 		setCategoriesMedia = mediaVisualise.getCategories();
 		
@@ -362,10 +365,10 @@ public class BeanMedia {
 		}
 		//System.out.println("Categories : " + listeNomCategories.toString());
 		
-		return "mettre_en_place_categories";
+		return "mettreEnPlaceCategories";
 	}
 	
-	public String mettre_en_place_tags() {
+	public String mettreEnPlaceTags() {
 		listeNomTags = new ArrayList<String>();
 		setTags = mediaVisualise.getTags();
 		tagCompteur = setTags.iterator();
@@ -377,10 +380,10 @@ public class BeanMedia {
 			tagCloud.addTag(new DefaultTagCloudItem(tagNext.getNomTag(), "recherche.jsf?", (int) Math.random() * 5)); //TODO lien
 		}
 		
-		return "mettre_en_place_tags";
+		return "mettreEnPlaceTags";
 	}
 	
-	public String mettre_en_place_aime_aime_pas() {
+	public String mettreEnPlaceAimeAimePas() {
 		resultatNbAime = daoMedia.nbAimeMedia(mediaVisualise.getIdMedia()).size();
 		resultatNbNAimePas = daoMedia.nbAimeNAimePas(mediaVisualise.getIdMedia()).size();
 		
@@ -407,14 +410,14 @@ public class BeanMedia {
 			}
 		}
 		
-		return "mettre_en_place_aime_aime_pas";
+		return "mettreEnPlaceAimeAimePas";
 	}
 	
 	/** 
 	 * Mise en place des favoris
 	 * @return
 	 */
-	public String mettre_en_place_favoris() {
+	public String mettreEnPlaceFavoris() {
 		//imgFavori = "add-star-award-icone-8518-16.png";
 		//System.out.println("Playlist utilisateur : " + playlistsUtilisateur);
 		playlistsUtilisateur = daoUtilisateur.getUn(1).getPlaylists();
@@ -427,6 +430,7 @@ public class BeanMedia {
 				if(pl.getType().equals(daoTypePlaylist.getUn(2))) {
 					for (Media mediaPl : pl.getMedias()) {
 						if(mediaPl.equals(mediaVisualise)) {
+							System.out.println("Retrait des favoris (pre)");
 							txtFavori = "Retirer des favoris";
 							existeFavori = true;
 							break;
@@ -444,35 +448,12 @@ public class BeanMedia {
 			}
 			
 			if(! existeFavori) {
+				System.out.println("Ajout aux favoris (pre)");
 				txtFavori = "Favori";
 			}
 		}
 		
-		return "mettre_en_place_favoris";
-	}
-	
-	/** 
-	 * Mise en place des playlists
-	 * @return
-	 */
-	public String mettre_en_place_playlists() {
-		listePlaylistUt = new ArrayList<Playlist>(daoUtilisateur.getUn(1).getPlaylists());
-		
-		setPlaylistUt = util.getPlaylists();
-		
-		for(Playlist playlistUt : setPlaylistUt) {
-				if(playlistUt.getMedias().contains(mediaVisualise)) {
-					imgAjoutPlaylist = "accepter-check-ok-oui-icone-4851-16.png";
-					estAjouteAPlaylist = true;
-					break;
-				}
-		}
-
-		if(!estAjouteAPlaylist) {
-			imgAjoutPlaylist = "fermer-croix-supprimer-erreurs-sortie-icone-4368-16.png";
-		}
-		
-		return "mettre_en_place_playlists";
+		return "mettreEnPlaceFavoris";
 	}
 	
 	/** 
@@ -742,12 +723,52 @@ public class BeanMedia {
 				}
 			}
 			
+			//Modification du texte affiché sur la vue
+			txtFavori = "Favori";
+			
 			//Affichage de la notification
 			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Favori : Retirée à Favoris"));
-			
 		}
 		
 		return "ajouterAFavori";
+	}
+	
+	/** 
+	 * Mise en place des playlists
+	 * @return
+	 */
+	public String mettreEnPlacePlaylists() {
+		System.out.println("méthode mettreEnPlacePlaylists"); 
+		listePlaylistUt = new ArrayList<Playlist>(daoUtilisateur.getUn(1).getPlaylists());
+		
+		setPlaylistUt = util.getPlaylists();
+		
+		for(Playlist playlistUt : setPlaylistUt) {
+				if(playlistUt.getMedias().contains(mediaVisualise)) {
+					//imgAjoutPlaylist = "fermer-croix-supprimer-erreurs-sortie-icone-4368-16.png";
+					estAjouteAPlaylist = true;
+					break;
+				}
+		}
+
+		if(! estAjouteAPlaylist) {
+			//imgAjoutPlaylist = "accepter-check-ok-oui-icone-4851-16.png";
+		}
+		
+		return "mettreEnPlacePlaylists";
+	}
+	
+	public boolean getEstAjouteAPlaylist(Playlist play) {
+		boolean estAjouterAPlaylistSelectionnee = false;
+		
+		for(Playlist playlistUt : setPlaylistUt) {
+			if(playlistUt.equals(play) && playlistUt.getMedias().contains(mediaVisualise)) {
+				estAjouterAPlaylistSelectionnee = true;
+				break;
+			}
+		}
+		
+		return estAjouterAPlaylistSelectionnee;
 	}
 	
 	/** 
@@ -755,9 +776,9 @@ public class BeanMedia {
 	 * @return
 	 */
 	public String ajouterMediaAPlaylist() {
-		System.out.println("ajouterMediaAPlaylist");	
+		//System.out.println("ajouterMediaAPlaylist");	
 
-		//System.out.println("Playlist sélectionnée : " + playlistSelectionnee);
+		System.out.println("Playlist sélectionnée : " + playlistSelectionnee);
 		
 		//Récupération de la liste des playlists de l'utilisateur connecté
 		setPlaylistUt = util.getPlaylists();
@@ -779,6 +800,15 @@ public class BeanMedia {
 					break;
 				}
 			}
+			
+			//Changement de l'image affichée sur la vue
+			//imgAjoutPlaylist = "fermer-croix-supprimer-erreurs-sortie-icone-4368-16.png";
+		
+			//Notification du retrait du média à la playlist sélectionnée
+			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Ajoutée à " + playlistSelectionnee.getNomPlaylist()));
+			
+			//Actualisation du booléen
+			estAjouteAPlaylist = true;
 		}
 		else { //Retrait d'un média à une playlist
 			System.out.println("Retirer un média à une playlist");
@@ -798,7 +828,13 @@ public class BeanMedia {
 			}
 
 			//Changement de l'image affichée sur la vue
-			imgAjoutPlaylist = "accepter-check-ok-oui-icone-4851-16.png";
+			//imgAjoutPlaylist = "accepter-check-ok-oui-icone-4851-16.png";
+		
+			//Notification du retrait du média à la playlist sélectionnée
+			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Retirée à " + playlistSelectionnee.getNomPlaylist()));
+			
+			//Actualisation du booléen
+			estAjouteAPlaylist = false;
 		}
 		
 		return "ajouterMediaAPlaylist";
@@ -833,7 +869,7 @@ public class BeanMedia {
 			
 			//Affichage de la notification
 			FacesContext.getCurrentInstance().addMessage(null,
-	                new FacesMessage("Mission accomplie ! : Ce média a été ajouté à votre playlist ..."));
+	                new FacesMessage("Mission accomplie ! : Ce média a été ajouté à votre playlist : " + nomPlaylistACreer));
 		}
 		else { //Si la playlist est déjà existante
 			
@@ -841,7 +877,7 @@ public class BeanMedia {
 			message = new FacesMessage("Attention ! La playlist existe déjà");
 			message.setSeverity(FacesMessage.SEVERITY_ERROR);
 			FacesContext.getCurrentInstance().addMessage(
-					"...", message);
+					null, message);
 		}
 		
 		return "creerPlaylist";
@@ -926,12 +962,12 @@ public class BeanMedia {
 	 * @return
 	 */
 	public void desactiverLecteurIframe(AjaxBehaviorEvent e) {
-		System.out.println("desactiverLecteurIframe");
+		//System.out.println("desactiverLecteurIframe");
 		
 		//Récupération de la valeur du checkbox (pour savoir s'il a été coché ou pas)
 		check = (HtmlSelectBooleanCheckbox)e.getSource();
 		Object checkvar = check.getValue();
-		System.out.println("Value : " + checkvar);
+		//System.out.println("Checké : " + checkvar);
 		
 		//Si ce n'est pas coché
 	    if(! Boolean.parseBoolean(checkvar.toString()))	{
@@ -968,7 +1004,17 @@ public class BeanMedia {
         }
 		System.out.println(tailleLecteur + " ==> " + largeur + "***" + hauteur);
 		
-		codeIntegration = "<object width='" + largeur + "' height='" + hauteur + "'><param name='movie' value='" + url + "'></param><param name='allowFullScreen' value='true'></param><param name='allowscriptaccess' value='always'></param><embed src='http://www.youtube.com/v/ZQ2nCGawrSY?version=3&amp;hl=fr_FR' type='application/x-shockwave-flash' width='" + largeur + "' height='" + hauteur + "' allowscriptaccess='always' allowfullscreen='true'></embed></object>";	
+		//Récupération de la valeur du checkbox (pour savoir s'il a été coché ou pas)
+		check = (HtmlSelectBooleanCheckbox)e.getSource();
+		Object checkvar = check.getValue();
+				
+		//Si ce n'est pas coché
+		if(! Boolean.parseBoolean(checkvar.toString()))	{
+			codeIntegration = "<iframe width='" + largeur + "' height='" + hauteur + "' src='" + url + "' frameborder='0' allowfullscreen></iframe>";
+		}
+		else {
+			codeIntegration = "<object width='" + largeur + "' height='" + hauteur + "'><param name='movie' value='" + url + "'></param><param name='allowFullScreen' value='true'></param><param name='allowscriptaccess' value='always'></param><embed src='http://www.youtube.com/v/ZQ2nCGawrSY?version=3&amp;hl=fr_FR' type='application/x-shockwave-flash' width='" + largeur + "' height='" + hauteur + "' allowscriptaccess='always' allowfullscreen='true'></embed></object>";	
+		}
 	}
 
 	/** 
@@ -1130,13 +1176,13 @@ public class BeanMedia {
 		this.listePlaylistUt = listePlaylistUt;
 	}
 	
-	public String getImgAjoutPlaylist() {
+	/*public String getImgAjoutPlaylist() {
 		return imgAjoutPlaylist;
 	}
 	
 	public void setImgAjoutPlaylist(String imgAjoutPlaylist) {
 		this.imgAjoutPlaylist = imgAjoutPlaylist;
-	}
+	}*/
 	
 	public List<SelectItem> getListeNomVisibilite() {
 		return listeNomVisibilite;
@@ -1368,9 +1414,17 @@ public class BeanMedia {
 	public void setCheminFichierMedia(String cheminFichierMedia) {
 		this.cheminFichierMedia = cheminFichierMedia;
 	}*/
-
+	
 	public StreamedContent getFile() {  
 		System.out.println("File : " + file);
         return file;  
     }
+
+	public boolean isEstAjouteAPlaylist() {
+		return estAjouteAPlaylist;
+	}
+
+	public void setEstAjouteAPlaylist(boolean estAjouteAPlaylist) {
+		this.estAjouteAPlaylist = estAjouteAPlaylist;
+	}
 }
