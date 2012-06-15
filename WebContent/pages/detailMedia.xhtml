@@ -45,8 +45,7 @@
 						
 			<!-- surrounding element with class - needed!! -->
 			<h:panelGroup rendered="#{beanMedia.nomTypeMedia == 'Video' }">
-				<!--<div onclick="incrementerNbVues()" class="leanback-player-video" style="z-index: 0;">-->
-			    
+				
 				<!-- Lecteur vidéo -->
 				
 			    <!-- this A tag is where your Flowplayer will be placed. it can be anywhere -->
@@ -54,19 +53,23 @@
 					 href="http://pseudo01.hddn.com/vod/demo.flowplayervod/flowplayer-700.flv"
 					 style="display:block;width:520px;height:330px"  
 					 id="player"> 
-				</a>-->
+				</a>-->				
 				<a  
-					 href="http://pseudo01.hddn.com/vod/demo.flowplayervod/flowplayer-700.flv"
+					 href="../resources/videos/#{beanMedia.mediaVisualise.fichier.nomFichier}"
 					 style="display:block;width:612px;height:404px"  
-					 id="player"> 
-				</a>
+					 id="player">
+				</a><!-- TODO incrementerNbVues() -->
 			
 				<!-- this will install flowplayer inside previous A- tag. -->
 				<script>
-					flowplayer("player", "../resources/flash/flowplayer/flowplayer-3.2.11.swf");
+					flowplayer("player", "../resources/flash/flowplayer/flowplayer-3.2.11.swf", {
+					      clip:  {
+					          autoPlay: false,
+					          autoBuffering: true
+					      }
+					  });
 				</script>
-			    
-			    
+				
 				<!--</div>-->
 			<!--<p:media value="http://www.youtube.com/v/KZnUr8lcqjo" width="425" height="344" player="flash"/>-->
 			</h:panelGroup>
@@ -74,6 +77,7 @@
 			
 		
 			<h:panelGroup rendered="#{beanMedia.nomTypeMedia == 'Son'}">
+				<!-- Lecteur audio -->
 				<!-- http://flowplayer.org/plugins/streaming/audio.html -->
 				
 				<!-- set up player container  -->
@@ -84,12 +88,15 @@
 				$f("player", "http://releases.flowplayer.org/swf/flowplayer-3.2.11.swf", {
  
 				    clip: {
-				       url: "http://releases.flowplayer.org/data/fake_empire.mp3",
+				       url: "../resources/audios/#{beanMedia.mediaVisualise.fichier.nomFichier}",
 				 
 				       // this style of configuring the cover image was added in audio
 				       // plugin version 3.2.3
 				       coverImage: { url: "http://releases.flowplayer.org/data/national.jpg",
-				                    scaling: 'orig' }
+				                    scaling: 'orig' },
+
+				                    
+				   	   autoPlay: false,
 				    }
 				 
 				});
@@ -164,7 +171,7 @@
     
     		<!-- Pop-up permettant l'ajout du média à une playlist -->			
 			<!--<rich:popupPanel id="popupPlaylist" modal="false" autosized="true" resizeable="false" style="z-index: 99999;">-->
-		    <p:dialog id="popupPlaylist" header="Ajouter à une playlist" widgetVar="dlgPlaylist" showEffect="explode" hideEffect="bounce">
+		    <p:dialog id="popupPlaylist" header="Ajouter à une playlist" widgetVar="dlgPlaylist" showEffect="explode">
 		        <h:form id="formPlaylist">
 		        <p>
 		        	<h:outputText value="Cliquez sur une playlist pour ajouter ou retirer ce média" />
@@ -178,15 +185,11 @@
 				                <h:outputText value="Nom" />  
 				            </f:facet>
 				            <h:graphicImage id="imgAjoutPlaylist" value="../resources/images/icones/#{beanMedia.imgAjoutPlaylist}" alt="Ajouter" />
-	        				<p:commandLink update="@form" actionListener="#{beanMedia.ajouterMediaAPlaylist}" style="margin-right:23px;">  
+	        				<p:commandLink update="@form" action="#{beanMedia.ajouterMediaAPlaylist}" style="margin-right:23px;">  
 						        <h:outputText value="#{play.nomPlaylist} (nb de média dans playlist TODO)" />
-						    	<f:setPropertyActionListener target="#{beanMedia.playlistSelectionne}" value="#{play.nomPlaylist}" />
+						    	<f:setPropertyActionListener target="#{beanMedia.playlistSelectionnee}" value="#{play}" />
 						    </p:commandLink>
 						    
-							
-							<p:commandButton value="test" update=":formPlaylist" actionListener="#{beanMedia.ajouterMediaAPlaylist}" style="margin-right:23px;">  
-						        <f:setPropertyActionListener target="#{beanMedia.playlistSelectionnee}" value="#{play}" />
-						    </p:commandButton>
 				        </p:column>
 				        
 				        <p:column id="visibilitePlaylist" sortBy="#{play.visibilite}">  
@@ -209,7 +212,7 @@
 		    <h:form>
 	        <!-- Pop-up permettant la création d'une nouvelle playlist -->
 	        <!--<rich:popupPanel id="popupCreerPlaylist" modal="false" autosized="true" resizeable="false" style="z-index: 99999;">-->
-			<p:dialog id="popupCreerPlaylist" header="Créer une nouvelle playlist" widgetVar="dlgCreerPlaylist" showEffect="explode" hideEffect="bounce">
+			<p:dialog id="popupCreerPlaylist" header="Créer une nouvelle playlist" widgetVar="dlgCreerPlaylist" showEffect="explode">
   				<p:panel id="panel" style="margin-bottom:10px;">
 			        <p:messages id="messages" />  
 			        <h:panelGrid columns="3">  
@@ -241,10 +244,12 @@
 	        
 	        
 	                
+    <p:growl id="msg" /> 
         	<!-- Pop-up permettant d'exporter le média --> 
         	   <!--<rich:popupPanel id="popupExporter" modal="false" autosized="true" resizeable="false" style="z-index: 99999;">-->
-			    <p:dialog id="popupExporter" header="Personnaliser le lecteur exportable" widgetVar="dlgExporter" showEffect="explode" hideEffect="bounce" width="480">
+			    <p:dialog id="popupExporter" header="Personnaliser le lecteur exportable" widgetVar="dlgExporter" showEffect="explode" width="480">
 			    	<h:form id="formExporter">
+			    		
 			        	<h:outputText value="Lien : " styleClass="bold"/>
 			        	<br />
 			        	<p:inputText id="lien" value="#{request.requestURL}" size="58" />
@@ -260,8 +265,9 @@
 			        	<h:outputText value="Après avoir sélectionné les options souhaitées plus bas, copiez-collez le code d'intégration ci-dessus. Ce dernier change en fonction des options choisies." />
 			        	<br />
 			        	<hr />
+			        	<p:inputText id="codeIntegration2" value="#{beanMedia.codeIntegration}" />
 			        	<p:selectBooleanCheckbox value="true">  
-				            <p:ajax event="change" update="formExporter codeIntegration" listener="#{beanMedia.desactiverLecteurIframe}"/>  
+				            <p:ajax update=":msg" listener="#{beanMedia.desactiverLecteurIframe}"/>  
 				        </p:selectBooleanCheckbox><!-- TODO update -->
 				        <h:outputText value="Utiliser l'ancien code d'intégration" />
 			        	<br />
@@ -290,7 +296,7 @@
 			    </p:dialog>
 			    
 			    <!-- Pop-up permettant d'envoyer un email -->
-			    <p:dialog id="popupEmail" header="Choisissez vos destinataires" widgetVar="dlgEmail" showEffect="explode" hideEffect="bounce"><!-- TODO -->
+			    <p:dialog id="popupEmail" header="Choisissez vos destinataires" widgetVar="dlgEmail" showEffect="explode"><!-- TODO -->
 			        
 					<h:form id="formNouveauMessage">
 					
@@ -403,19 +409,21 @@
         		<br />
         	<h:form>	
         		<div style="float:left;">
-        			<h:commandButton value="Exporter" image="/resources/images/icones/tag-icone-4783-32.png" alt="Exporter" onclick="dlgExporter.show();" title="Exporter ce média sur votre blog ou site" /><!-- TODO a4j -->
+        			<!--<p:commandButton value="Exporter" image="/resources/images/icones/tag-icone-4783-32.png" alt="Exporter" onclick="dlgExporter.show();" title="Exporter ce média sur votre blog ou site" />--><!-- TODO a4j -->
+        			<p:commandButton value="Exporter" icon="ui-icon-carat-2-e-w" alt="Exporter" onclick="dlgExporter.show();" title="Exporter ce média sur votre blog ou site" style="float: left;" />
         			<p:spacer width="20" />
         			<!-- Affichage des statistiques associés au média -->
-        			<p:commandButton value="Visualiser statistiques" image="/resources/images/icones/graphique-en-ligne-icone-4887-32.png" alt="Statistiques" onclick="dlgStatistiques.show();" title="Statistiques" />
+        			<p:commandButton value="Visualiser statistiques" image="ui-icon-signal" alt="Statistiques" onclick="dlgStatistiques.show();" title="Statistiques" style="float: left;" />
         			<p:spacer width="20" />
         			<!-- Signalement du média -->
-        			<p:commandButton value="Signaler" image="/resources/images/icones/drapeau-rouge-icone-6492-32.png" alt="Peut offenser" onclick="dlgSignaler.show();" title="Signaler ce média" />
+        			<p:commandButton value="Signaler" image="ui-icon-flag" alt="Peut offenser" onclick="dlgSignaler.show();" title="Signaler ce média" style="float: left;" />
 	            </div>
 	        </h:form>
 	            
 	            <!-- Pop-up permettant de visualiser les statistiques du média -->
-        		<h:form>	        		
-	        		<p:dialog id="popupStatistiques" header="Statistiques" widgetVar="dlgStatistiques" showEffect="explode" hideEffect="bounce">
+        			        		
+	        		<p:dialog id="popupStatistiques" header="Statistiques" widgetVar="dlgStatistiques" showEffect="explode">
+				    <h:form>
 				        <h:outputText value="#{beanMedia.resultatTotalVuesMedia} vue#{beanMedia.motVues} - "/> 
 				        <h:outputText value="#{beanMediaCommentaire.nbCommentaires} com. - " />
 				        <h:outputText value="TODO fav. - " />
@@ -426,19 +434,20 @@
 						<br />
 						<h:outputText value="Utilisateurs n'ayant pas aimé : " /><h:outputText value="#{beanMedia.resultatNbNAimePas}" />
 						<br />
-						<p:barChart id="graphiqueAimeNAimePas" value="#{beanMedia.graphiqueAimeNAimePas}" legendPosition="se" style="height:300px"  
-            				title="Avis des utilisateurs" orientation="horizontal" min="0" max="200"/><!-- TODO pq rechargement de la page qd ajout de barChart ? -->
+						<!--<p:barChart id="graphiqueAimeNAimePas" value="#{beanMedia.graphiqueAimeNAimePas}" legendPosition="se" style="height:300px"  
+            				title="Avis des utilisateurs" orientation="horizontal" min="0" max="200"/>--><!-- rechargement de la page qd ajout de barChart XXX -->
 						<br />
 						<h:panelGroup rendered="#{beanMedia.resultatTotalVuesMedia > 0 }">
 							<p:lineChart id="graphiqueStatVues" value="#{beanMedia.graphiqueStatVues}" legendPosition="e"  
 								title="Statistiques sur le nombre de vues" minY="0" maxY="#{beanMedia.maxY}" style="height:300px;margin-top:20px; width: 500px" /> 
 					        <!-- Audiences par nb de vues (dernière heure, dernier jour, dernier mois) par sexe et âge, par endroit XXX -->
 				        </h:panelGroup>
+				        
+					</h:form>
 				    </p:dialog>
-				</h:form>
 				
 				<!-- Pop-up permettant de signaler un média -->        		
-        		<p:dialog id="popupSignaler" header="Signaler ce média (contenu pouvant offenser)" widgetVar="dlgSignaler" showEffect="explode" hideEffect="bounce" width="480">
+        		<p:dialog id="popupSignaler" header="Signaler ce média (contenu pouvant offenser)" widgetVar="dlgSignaler" showEffect="explode" width="480">
 			    	<h:form id="formSignaler">
 			       	<p:messages id="messagesSignalementMedia" showDetail="true" autoUpdate="true"/>
 			        <p>
@@ -467,7 +476,7 @@
         		
         		<!-- Ajout au panier du média -->
         		<h:form>
-        			<p:commandButton value="Ajouter #{beanMedia.titreMedia} au panier" title="Ajouter #{beanMedia.titreMedia} au panier" actionListener="#{beanPanier.ajouterAuPanier}" image="/resources/images/icones/panier-ajouter-icone-5924-32.png" rendered="#{beanMedia.mediaVisualise.estTelechargementAutorise}" />
+        			<p:commandButton value="Ajouter #{beanMedia.titreMedia} au panier" title="Ajouter #{beanMedia.titreMedia} au panier" actionListener="#{beanPanier.ajouterAuPanier}" icon="ui-icon-cart" rendered="#{beanMedia.mediaVisualise.estTelechargementAutorise}" />
 					<!--<rich:notify id="notifyAjoutAuPanier" stayTime="1500" sticky="false" nonblocking="false"
 			        nonblockingOpacity="0.5" showShadow="false"
 			        showCloseButton="true" detail="#{beanPanier.detailNotifyAjoutAuPanier}">			 
@@ -479,13 +488,14 @@
         		
         		<!-- Téléchargement du média -->
         		<h:form>
-	        		<p:commandLink id="downloadLink" value="Télécharger ce média" ajax="false" actionListener="#{beanMedia.telechargerMedia}" rendered="#{beanMedia.mediaVisualise.estTelechargementAutorise}">  
+	        		<p:commandLink id="downloadLink" value="Télécharger ce média" ajax="false" rendered="#{beanMedia.mediaVisualise.estTelechargementAutorise}">  
 					    <p:fileDownload value="#{beanMedia.file}" />  
 					</p:commandLink>
 					<br />
-					<p:commandLink id="downloadLinké" value="Télécharger ce média" actionListener="#{beanMedia.telechargerMedia}" rendered="#{beanMedia.mediaVisualise.estTelechargementAutorise}">  
+					<p:commandLink id="downloadLinké" value="Télécharger ce média" rendered="#{beanMedia.mediaVisualise.estTelechargementAutorise}">  
 					    <p:fileDownload value="#{beanMedia.file}" />  
 					</p:commandLink>
+					<a href="../resources/videos/#{beanMedia.mediaVisualise.fichier.nomFichier}" > Télécharger ce Média </a>
         		</h:form>
 	         
 	         	

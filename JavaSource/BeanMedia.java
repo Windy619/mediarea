@@ -173,10 +173,8 @@ public class BeanMedia {
 		util = daoUtilisateur.getUn(1);
 		//mediaDansPanier = new ArrayList<Media>();
 		
-		
 		//estNotifieJAime = false;
 		if(utilisateurConnecte != null) {
-			System.out.println(mediaVisualise + "*******************" + daoVisibilite.getUn(2));
 			if(mediaVisualise.getVisibilite().equals(daoVisibilite.getUn(2))) { //si privé
 				 if(! utilisateurConnecte.getAmis().contains(mediaVisualise.getAuteurMedia())) {//et que l'utilisateur n'est pas un ami
 					 System.out.println("demande d'un mot de passe"); //demande d'un mot de passe
@@ -194,9 +192,6 @@ public class BeanMedia {
 			detailNotificationJAime = "Connectez-vous ou inscrivez-vous dès maintenant !";
 			detailNotificationJeNAimePas = "Connectez-vous ou inscrivez-vous dès maintenant !";
 		}
-		
-		InputStream stream = ((ServletContext)FacesContext.getCurrentInstance().getExternalContext().getContext()).getResourceAsStream("/images/optimusprime.jpg");  
-        file = new DefaultStreamedContent(stream, "image/jpg", "downloaded_optimus.jpg"); //TODO chemin vers média à télécharger
 	}
 	
 	
@@ -219,215 +214,259 @@ public class BeanMedia {
 		}
 		else {
 			mediaVisualise = daoMedia.getUn(Long.parseLong(idMediaVisualise));
-			if(mediaVisualise == null) { //id de media passé en paramètre GET n'existe pas
+			if (mediaVisualise == null) { // id de media passé en paramètre GET
+											// n'existe pas
 				System.out.println("redirection mediaVisualise null");
-				FacesContext.getCurrentInstance().getExternalContext().redirect("/MediArea/pages/erreur.jsf"); //redirection vers la page d'erreur
+				FacesContext.getCurrentInstance().getExternalContext()
+						.redirect("/MediArea/pages/erreur.jsf"); // redirection vers la page d'erreur
 			}
 		}
+
+		// --- Media ---
+
+		titreMedia = mediaVisualise.getTitreMedia();
+
+		auteur = mediaVisualise.getAuteurMedia().getNomUtilisateur();
+
+		dateFormat = new SimpleDateFormat("dd MMMM yyyy H:m");
+		datePublication = dateFormat
+				.format(mediaVisualise.getDatePublication());
+
+		description = mediaVisualise.getDescriptionMedia();
+
+		mettre_en_place_categories();
+
+		mettre_en_place_tags();
+
+		// System.out.println("type media : " + mediaVisualise.getType());
+		nomTypeMedia = mediaVisualise.getType().getNomTypeMedia();
+
+		listeMediasDeAuteur = new ArrayList<Media>(daoUtilisateur.getUn(1)
+				.getMedias());
+
+		listeTousPlaylist = daoPlaylist.getTous();
+		listePlaylistsAvecMedia = new ArrayList<Playlist>();
+		for (Playlist elPlaylist : listeTousPlaylist) {
+			if (elPlaylist.getMedias().contains(mediaVisualise))
+				listePlaylistsAvecMedia.add(elPlaylist);
+		}
+
+		// incrémentation du nombre de vues lorsque l'on accède à la page
+		incrNbVues();
+
+		InputStream stream = ((ServletContext) FacesContext
+				.getCurrentInstance().getExternalContext().getContext())
+				.getResourceAsStream("C:/Users/Public/Pictures/Sample Pictures/Hortensias.jpg");
+		System.out.println("Nom fichier : "
+				+ mediaVisualise.getFichier().getNomFichier());
+		file = new DefaultStreamedContent(stream, "images/jpg",
+				"downloaded_file.jpg"); // TODO chemin vers média à télécharger
+
+		resultatTotalTelechargementMedia = daoMedia
+				.totalTelechargement(mediaVisualise);
+
+		if (resultatTotalTelechargementMedia > 1) {
+			motTelechargement = "s"; // "telechargements" au pluriel
+		}
 		
-		System.out.println(idMediaVisualise + " ******* " + mediaVisualise);
 		
-				//Media
-						
-				titreMedia = mediaVisualise.getTitreMedia();
-								
-				auteur = mediaVisualise.getAuteurMedia().getNomUtilisateur();
-				
-				dateFormat = new SimpleDateFormat("dd MMMM yyyy H:m");
-				datePublication = dateFormat.format(mediaVisualise.getDatePublication());
-				
-				description = mediaVisualise.getDescriptionMedia();
-				
-				
-				listeNomCategories = new ArrayList<String>();
-				setCategoriesMedia = mediaVisualise.getCategories();
-				
-				setCategories = new HashSet<Categorie>();
-				
-				for (Categorie_Media categorie_Media : setCategoriesMedia) {
-					setCategories.add(daoCategorie.getUn(categorie_Media.getCategorie()));
-				}
-				
-			
-				categoriesCompteur = setCategories.iterator(); // on crée un Iterator pour parcourir notre Set
-				while(categoriesCompteur.hasNext()) { // tant qu'on a un suivant
-					//System.out.println(categoriesCompteur.next().getNomCategorie()); // on affiche le suivant
-					listeNomCategories.add(categoriesCompteur.next().getNomCategorie());
-				}
-				//System.out.println("Categories : " + listeNomCategories.toString());
-				
-				listeNomTags = new ArrayList<String>();
-				setTags = mediaVisualise.getTags();
-				tagCompteur = setTags.iterator();
-				tagCloud = new DefaultTagCloudModel();
-				Tag tagNext;
-				while(tagCompteur.hasNext()) {
-					tagNext = tagCompteur.next();
-					listeNomTags.add(tagNext.getNomTag());
-					tagCloud.addTag(new DefaultTagCloudItem(tagNext.getNomTag(), "recherche.jsf?", (int) Math.random() * 5)); //TODO lien
-				}
-				
-				//System.out.println("type media : " + mediaVisualise.getType());
-				nomTypeMedia = mediaVisualise.getType().getNomTypeMedia();
-				
-				listeMediasDeAuteur = new ArrayList<Media>(daoUtilisateur.getUn(1).getMedias());
-				
-				listeTousPlaylist = daoPlaylist.getTous();
-				listePlaylistsAvecMedia = new ArrayList<Playlist>();
-				for (Playlist elPlaylist : listeTousPlaylist) {
-					if(elPlaylist.getMedias().contains(mediaVisualise))
-						listePlaylistsAvecMedia.add(elPlaylist);
-				}
-				
-				/*nomFichierMedia = "elephants_dream_640x360_2.30.mp4";
-				cheminFichierMedia = "../resources/videos/";*/
-				
-				//***********************************************
-				
-				//Regarder
-				
-				resultatTotalVuesMedia = daoMedia.totalVues(mediaVisualise);
-				if(resultatTotalVuesMedia > 0) {
-					motVues = "s"; //"vues" au pluriel
-				}
-				
-				//***********************************************
-				
-				resultatTotalTelechargementMedia = daoMedia.totalTelechargement(mediaVisualise);
-				
-				if(resultatTotalTelechargementMedia > 1) {
-					motTelechargement = "s"; //"telechargements" au pluriel
-				}
-				
-				//***********************************************
+		// --- Regarder ---
 
-				//Aimer
-				resultatNbAime = daoMedia.nbAimeMedia(mediaVisualise.getIdMedia()).size();
-				resultatNbNAimePas = daoMedia.nbAimeNAimePas(mediaVisualise.getIdMedia()).size();
-				
-				//désactivation de "J'aime" si l'utilisateur aime déjà ce média
-				if (util.getAimeMedias().toString().equals("[]")) {
-					jAimeDisabled = false;
-					jeNAimePasDisabled = true;
-				}
-				else
-				{
-					for (Aimer aimerUt : util.getAimeMedias()) {
-						if(aimerUt.isaAime() && aimerUt.getMedia().equals(mediaVisualise)) {
-							//System.out.println("activer J'aime");
-							jAimeDisabled = true;
-							jeNAimePasDisabled = false;
-							break;
-						}
-						else  {
-							//System.out.println("activer Je n'aime pas");
-							jAimeDisabled = false;
-							jeNAimePasDisabled = true;
-							break;
-						}
-					}
-				}
-				
-				//***********************************************
-				
-				//Avatar
-				nomAvatar = util.getAvatar().getNomAvatar();
-				
-				//***********************************************
-								
-				//Playlist
-				//imgFavori = "add-star-award-icone-8518-16.png";
-				//System.out.println("Playlist utilisateur : " + playlistsUtilisateur);
-				playlistsUtilisateur = daoUtilisateur.getUn(1).getPlaylists();
-				if(playlistsUtilisateur.toString().equals("[]")) {
-					txtFavori = "Favori";
-				}
-				else {
-					boolean existeFavori = false;
-					for(Playlist pl : playlistsUtilisateur) {
-						if(pl.getType().equals(daoTypePlaylist.getUn(2))) {
-							for (Media mediaPl : pl.getMedias()) {
-								if(mediaPl.equals(mediaVisualise)) {
-									txtFavori = "Retirer des favoris";
-									existeFavori = true;
-									break;
-								}
-							}
-							/*if(pl.getMedias().contains(mediaVisualise)) {
-								txtFavori = "Retirer des favoris";
-								//imgFavori = "star-award-delete-icone-5901-16.png";
-							}*/
-							//else {
-							//	txtFavori = "Favori";
-							//	imgFavori = "add-star-award-icone-8518-16.png";
-							//}
-						}
-					}
-					
-					if(! existeFavori) {
-						txtFavori = "Favori";
-					}
-				}
-				
-				listePlaylistUt = new ArrayList<Playlist>(daoUtilisateur.getUn(1).getPlaylists());
-			
-				
-				setPlaylistUt = util.getPlaylists();
-				imgAjoutPlaylist = "accepter-check-ok-oui-icone-4851-16.png"; //TODO
-				
-				for(Playlist playlistUt : setPlaylistUt) {
-						if(playlistUt.getMedias().contains(mediaVisualise)) {
-							imgAjoutPlaylist = "fermer-croix-supprimer-erreurs-sortie-icone-4368-16.png";
-							estAjouteAPlaylist = true;
-							break;
-						}
-				}
+		resultatTotalVuesMedia = daoMedia.totalVues(mediaVisualise);
+		if (resultatTotalVuesMedia > 1) {
+			motVues = "s"; // "vues" au pluriel
+		}
 
-				if(!estAjouteAPlaylist) {
-					imgAjoutPlaylist = "accepter-check-ok-oui-icone-4851-16.png"; //TODO
-				}
-				
-				listeVisibilite = daoVisibilite.getTous();
-				listeNomVisibilite = new ArrayList<SelectItem>();
-				for(Visibilite visible : listeVisibilite) {
-					optionVisibilite = new SelectItem(visible.getIdVisibilite(), visible.getNomVisibilite(), visible.getNomVisibilite(), false);
-					//listeNomVisibilite.add(visible.getNomVisibilite());
-					listeNomVisibilite.add(optionVisibilite);
-				}
-				Collections.reverse(listeNomVisibilite); //inversion pour mettre "Prive" au début
-				
-				//***********************************************
-				
-				//Note
-				resultatTotalVotesMedia = daoMedia.totalVotes(mediaVisualise);
-				if(resultatTotalVotesMedia > 1)	{
-					motVotes = "s"; //"vues" au pluriel
-				}
-				
-				//moyenne des notes
-				note = daoMedia.moyenneVotes(mediaVisualise); //note initialement affichée
-				
-				//***********************************************
-				
-				//Autre
-				creerGraphiqueStatVues();
-				creerGraphiqueAimeNAimePas();
-				alimenterCarouselRecommendationMedias();
-		        
-		        req = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
-		        url = req.getRequestURL().toString();
-		        
-		        codeIntegration = "<iframe width='320' height='180' src='" + url + "' frameborder='0' allowfullscreen></iframe>";
-	
-	
+		
+		// --- Aimer ---
 
-				processMedia();
+		mettre_en_place_aime_aime_pas();
+
+		// ***********************************************
+
+		// Avatar
+		nomAvatar = util.getAvatar().getNomAvatar();
+
+		// ***********************************************
+
+		// --- Playlists ---
+
+		mettre_en_place_favoris();
+
+		mettre_en_place_playlists();
+
+		listeVisibilite = daoVisibilite.getTous();
+		listeNomVisibilite = new ArrayList<SelectItem>();
+		for (Visibilite visible : listeVisibilite) {
+			optionVisibilite = new SelectItem(visible.getIdVisibilite(),
+					visible.getNomVisibilite(), visible.getNomVisibilite(),
+					false);
+			// listeNomVisibilite.add(visible.getNomVisibilite());
+			listeNomVisibilite.add(optionVisibilite);
+		}
+		Collections.reverse(listeNomVisibilite); // inversion pour mettre "Prive" au début
+
+		
+		// --- Note ---
+		resultatTotalVotesMedia = daoMedia.totalVotes(mediaVisualise);
+		if (resultatTotalVotesMedia > 1) {
+			motVotes = "s"; // "vues" au pluriel
+		}
+
+		// moyenne des notes
+		note = daoMedia.moyenneVotes(mediaVisualise); // note initialement affichée
+
+		
+		// --- Autre ---
+		creerGraphiqueStatVues();
+		creerGraphiqueAimeNAimePas();
+		alimenterCarouselRecommendationMedias();
+
+		req = (HttpServletRequest) FacesContext.getCurrentInstance()
+				.getExternalContext().getRequest();
+		url = req.getRequestURL().toString();
+
+		/*codeIntegration = "<iframe width='320' height='180' src='" + url
+				+ "' frameborder='0' allowfullscreen></iframe>";*/
+
+		processMedia();
 	}
 	
 	public String processMedia() {
 		return "/pages/detailMedia?faces-redirect=true&amp;includeViewParams=true"; //pour garder le paramètre ?v=...
 	}
 	
+	public String mettre_en_place_categories() {
+		listeNomCategories = new ArrayList<String>();
+		setCategoriesMedia = mediaVisualise.getCategories();
+		
+		setCategories = new HashSet<Categorie>();
+		
+		for (Categorie_Media categorie_Media : setCategoriesMedia) {
+			setCategories.add(daoCategorie.getUn(categorie_Media.getCategorie()));
+		}
+		
+	
+		categoriesCompteur = setCategories.iterator(); // on crée un Iterator pour parcourir notre Set
+		while(categoriesCompteur.hasNext()) { // tant qu'on a un suivant
+			//System.out.println(categoriesCompteur.next().getNomCategorie()); // on affiche le suivant
+			listeNomCategories.add(categoriesCompteur.next().getNomCategorie());
+		}
+		//System.out.println("Categories : " + listeNomCategories.toString());
+		
+		return "mettre_en_place_categories";
+	}
+	
+	public String mettre_en_place_tags() {
+		listeNomTags = new ArrayList<String>();
+		setTags = mediaVisualise.getTags();
+		tagCompteur = setTags.iterator();
+		tagCloud = new DefaultTagCloudModel();
+		Tag tagNext;
+		while(tagCompteur.hasNext()) {
+			tagNext = tagCompteur.next();
+			listeNomTags.add(tagNext.getNomTag());
+			tagCloud.addTag(new DefaultTagCloudItem(tagNext.getNomTag(), "recherche.jsf?", (int) Math.random() * 5)); //TODO lien
+		}
+		
+		return "mettre_en_place_tags";
+	}
+	
+	public String mettre_en_place_aime_aime_pas() {
+		resultatNbAime = daoMedia.nbAimeMedia(mediaVisualise.getIdMedia()).size();
+		resultatNbNAimePas = daoMedia.nbAimeNAimePas(mediaVisualise.getIdMedia()).size();
+		
+		//désactivation de "J'aime" si l'utilisateur aime déjà ce média
+		if (util.getAimeMedias().toString().equals("[]")) {
+			jAimeDisabled = false;
+			jeNAimePasDisabled = true;
+		}
+		else
+		{
+			for (Aimer aimerUt : util.getAimeMedias()) {
+				if(aimerUt.isaAime() && aimerUt.getMedia().equals(mediaVisualise)) {
+					//System.out.println("activer J'aime");
+					jAimeDisabled = true;
+					jeNAimePasDisabled = false;
+					break;
+				}
+				else  {
+					//System.out.println("activer Je n'aime pas");
+					jAimeDisabled = false;
+					jeNAimePasDisabled = true;
+					break;
+				}
+			}
+		}
+		
+		return "mettre_en_place_aime_aime_pas";
+	}
+	
+	/** 
+	 * Mise en place des favoris
+	 * @return
+	 */
+	public String mettre_en_place_favoris() {
+		//imgFavori = "add-star-award-icone-8518-16.png";
+		//System.out.println("Playlist utilisateur : " + playlistsUtilisateur);
+		playlistsUtilisateur = daoUtilisateur.getUn(1).getPlaylists();
+		if(playlistsUtilisateur.toString().equals("[]")) {
+			txtFavori = "Favori";
+		}
+		else {
+			boolean existeFavori = false;
+			for(Playlist pl : playlistsUtilisateur) {
+				if(pl.getType().equals(daoTypePlaylist.getUn(2))) {
+					for (Media mediaPl : pl.getMedias()) {
+						if(mediaPl.equals(mediaVisualise)) {
+							txtFavori = "Retirer des favoris";
+							existeFavori = true;
+							break;
+						}
+					}
+					/*if(pl.getMedias().contains(mediaVisualise)) {
+						txtFavori = "Retirer des favoris";
+						//imgFavori = "star-award-delete-icone-5901-16.png";
+					}*/
+					//else {
+					//	txtFavori = "Favori";
+					//	imgFavori = "add-star-award-icone-8518-16.png";
+					//}
+				}
+			}
+			
+			if(! existeFavori) {
+				txtFavori = "Favori";
+			}
+		}
+		
+		return "mettre_en_place_favoris";
+	}
+	
+	/** 
+	 * Mise en place des playlists
+	 * @return
+	 */
+	public String mettre_en_place_playlists() {
+		listePlaylistUt = new ArrayList<Playlist>(daoUtilisateur.getUn(1).getPlaylists());
+		
+		setPlaylistUt = util.getPlaylists();
+		//imgAjoutPlaylist = "accepter-check-ok-oui-icone-4851-16.png"; //TODO
+		
+		for(Playlist playlistUt : setPlaylistUt) {
+				if(playlistUt.getMedias().contains(mediaVisualise)) {
+					imgAjoutPlaylist = "accepter-check-ok-oui-icone-4851-16.png";
+					estAjouteAPlaylist = true;
+					break;
+				}
+		}
+
+		if(!estAjouteAPlaylist) {
+			imgAjoutPlaylist = "fermer-croix-supprimer-erreurs-sortie-icone-4368-16.png"; //TODO
+		}
+		
+		return "mettre_en_place_playlists";
+	}
 	
 	/** 
 	 * J'aime
@@ -463,7 +502,7 @@ public class BeanMedia {
 		
 		//Affichage de la notification
 		//context.addMessage(null, new FacesMessage("J'aime ce contenu", detailNotificationJAime));
-		FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("J'aime ce contenu", detailNotificationJAime));
+		FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("J'aime ce contenu : " + detailNotificationJAime));
 		
 		//désactivation de "J'aime"
 		jAimeDisabled = true;
@@ -507,7 +546,7 @@ public class BeanMedia {
 		}
 		
 		//Affichage de la notification
-		FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Je n'aime pas ce contenu", detailNotificationJeNAimePas));
+		FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Je n'aime pas ce contenu : " + detailNotificationJeNAimePas));
 		
 		//désactivation de "Je n'aime pas"
 		jeNAimePasDisabled = true;
@@ -535,7 +574,7 @@ public class BeanMedia {
 		daoUtilisateur.sauvegarder(util);
 		
 		//Affichage de la notification
-		FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Signalement du média", "Votre rapport a été pris en compte.")); //TODO ne plus afficher ce message lorsque l'on revient sur la pop-up
+		FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Signalement du média : " , "Votre rapport a été pris en compte.")); //TODO ne plus afficher ce message lorsque l'on revient sur la pop-up
 		
 		return "signalerMedia";
 	}
@@ -598,7 +637,7 @@ public class BeanMedia {
 	 * @return
 	 */
 	public String incrNbVues() { //incrémenter seulement si clic sur Play et par utilisateur XXX
-		System.out.println("Incrémentation du nombre de vues");
+		//System.out.println("Incrémentation du nombre de vues");
 						
 		/*List<Regarder> listeRegarder = daoRegarder.getTous();
 		boolean existeRegMedia = false;
@@ -679,7 +718,7 @@ public class BeanMedia {
 			txtFavori = "Retirer des favoris";
 
 			//Affichage de la notification
-			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Favori", "Ajoutée à Favoris"));			
+			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Favori : Ajoutée à Favoris"));			
 		}
 		else { //Retrait au favori
 			System.out.println("Retrait au favori");
@@ -697,7 +736,7 @@ public class BeanMedia {
 			}
 			
 			//Affichage de la notification
-			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Favori", "Retirée à Favoris"));
+			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Favori : Retirée à Favoris"));
 			
 		}
 		
@@ -711,20 +750,20 @@ public class BeanMedia {
 	public String ajouterMediaAPlaylist() {
 		System.out.println("ajouterMediaAPlaylist");	
 
-		System.out.println("Playlist sélectionnée : " + playlistSelectionnee);
+		//System.out.println("Playlist sélectionnée : " + playlistSelectionnee);
 		
-		/*//Récupération de la liste des playlists de l'utilisateur connecté
+		//Récupération de la liste des playlists de l'utilisateur connecté
 		setPlaylistUt = util.getPlaylists();
 		
 		//Si la playlist ne contient pas le média
-		if(!estAjouteAPlaylist) {
+		if(! estAjouteAPlaylist) {
 			System.out.println("Ajouter un média à une playlist");
 			
 			//Parcours de la liste des playlists de l'utilisateur
 			for(Playlist playlistUt : setPlaylistUt) {
 				//Si la playlist courante parcourue correspond à la playlist à traiter
 				//if(playlistUt.getIdPlaylist() == Long.parseLong(FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("idPlaylist"))) {
-				if(playlistUt.getIdPlaylist() == playlistSelectionne.getIdPlaylist()) {
+				if(playlistUt.getIdPlaylist() == playlistSelectionnee.getIdPlaylist()) {
 					//Ajout du média à la liste des playlists de l'utilisateur
 					playlistUt.getMedias().add(mediaVisualise);
 					
@@ -740,7 +779,8 @@ public class BeanMedia {
 			//Parcours de la liste des playlists de l'utilisateur
 			for(Playlist playlistUt : setPlaylistUt) {
 				//Si la playlist courante parcourue correspond à la playlist à traiter
-				if(playlistUt.getIdPlaylist() == Long.parseLong(FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("idPlaylist"))) {
+				//if(playlistUt.getIdPlaylist() == Long.parseLong(FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("idPlaylist"))) {
+				if(playlistUt.getIdPlaylist() == playlistSelectionnee.getIdPlaylist()) {
 					//Suppression du média à la liste des playlists de l'utilisateur
 					playlistUt.getMedias().remove(mediaVisualise);
 					
@@ -751,8 +791,8 @@ public class BeanMedia {
 			}
 
 			//Changement de l'image affichée sur la vue
-			imgAjoutPlaylist = "accepter-check-ok-oui-icone-4851-16.png"; //TODO
-		}*/
+			imgAjoutPlaylist = "accepter-check-ok-oui-icone-4851-16.png";
+		}
 		
 		return "ajouterMediaAPlaylist";
 	}
@@ -786,7 +826,7 @@ public class BeanMedia {
 			
 			//Affichage de la notification
 			FacesContext.getCurrentInstance().addMessage(null,
-	                new FacesMessage("Mission accomplie !", "Ce média a été ajouté à votre playlist: ..."));
+	                new FacesMessage("Mission accomplie ! : Ce média a été ajouté à votre playlist ..."));
 		}
 		else { //Si la playlist est déjà existante
 			
@@ -880,6 +920,8 @@ public class BeanMedia {
 	 */
 	public void desactiverLecteurIframe(AjaxBehaviorEvent e) {
 		System.out.println("desactiverLecteurIframe");
+		
+		FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("test")); 
 		
 		//UIComponent source = (UIComponent)e.getSource();
 	    //System.out.println("Value:"+((HtmlSelectBooleanCheckbox)source).getValue());
@@ -1330,6 +1372,7 @@ public class BeanMedia {
 	}*/
 
 	public StreamedContent getFile() {  
+		System.out.println("File : " + file);
         return file;  
     }
 }

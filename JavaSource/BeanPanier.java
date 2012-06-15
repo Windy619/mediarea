@@ -71,12 +71,12 @@ public class BeanPanier {
 		//else {
 		if(! existeMediaDansPanier) {
 			//System.out.println("Media n'était pas présent dans panier");
-			mediaDansPanier.add(daoMedia.getUn(2));
+			mediaDansPanier.add(beanMedia.getMediaVisualise());
 			detailNotifyAjoutAuPanier = "Le média " + beanMedia.getMediaVisualise().getTitreMedia() + " a été ajouté au panier";
 		}
 
 		//Affichage de la notification
-		FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Panier", detailNotifyAjoutAuPanier));
+		FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Panier" + detailNotifyAjoutAuPanier));
 		
 		/*System.out.println("Panier : ");
 		for (Media mediaContenu : mediaDansPanier) {

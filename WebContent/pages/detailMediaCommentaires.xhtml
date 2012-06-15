@@ -165,6 +165,7 @@
 		    			<ui:repeat value="#{beanMedia.listeMediasDeAuteur}" var="mediaDeAuteur" id="repeatMediaDeAuteur" rows="10">
 				        	<div style="float: left;">
 				        	<h:graphicImage library="images" name="#{mediaDeAuteur.photo.cheminPhotoCouverture}"  width="120" alt="#{mediaDeAuteur.photo.nomPhotoCouverture}"/>
+				        	<br />
 				        	<h:outputLink value="detailMedia.jsf?v=#{mediaDeAuteur.idMedia}" title="#{mediaDeAuteur.titreMedia}">
 				        		<h:outputText value="#{mediaDeAuteur.titreMedia}" />
 				        	</h:outputLink>
@@ -183,14 +184,14 @@
 						<h:outputLink value="playlist.jsf?#{playlistsAvecMedia.idPlaylist}" title="#{playlistsAvecMedia.nomPlaylist}">
 					   		#{playlistsAvecMedia.nomPlaylist}
 					   	</h:outputLink>
-					</p:dataList><!-- TODO affichage disc -->
+					</p:dataList>
 		    	</p:tab>
 		    	
 				<br />
 				<br />
 			</p:tabView>
 			<!-- Regarder plus de vidéos de l'auteur XXX -->
-			
+					
 			<p:dialog id="dialogSignalementCommentaire" widgetVar="dlgSignalementCommentaire" modal="false" autosized="true"
 				resizeable="false" header="Signalement d'un commentaire - Attention">				
 				<h:form>
