@@ -26,12 +26,15 @@
 
 				<!-- Edition d'un commentaire -->
 				<h:form id="formCommentaire">
+					<p:messages id="messagesEditeurVide" />
 					<p:editor id="editor"
-						value="#{beanMediaCommentaire.commentaireSaisi}" width="565" />
+						value="#{beanMediaCommentaire.commentaireSaisi}" width="565" required="true">
+						<f:validateLength minimum="1" />
+					</p:editor>
 
 					<h:panelGrid columns="2" style="margin-top:10px">
 						<p:commandButton id="submitButton" value="Publier"
-							update="listeCommentairesReponses" icon="ui-icon-disk"
+							update="listeCommentairesReponses, messagesEditeurVide" icon="ui-icon-disk"
 							actionListener="#{beanMediaCommentaire.publierCommentaire}" />
 						<!-- <p:commandButton id="clearButton" type="button" value="Clear" onclick="editor.clear()"  
 			                        icon="ui-icon-close" /> XXX -->
@@ -209,7 +212,7 @@
 		</p:tab>
 
 		<!-- Liste des médias du même auteur que le média visualisé -->
-		<p:tab title="Médias de #{beanMedia.auteur}">
+		<p:tab title="Médias de #{beanMedia.auteur}" rendered="#{beanMedia.listeMediasDeAuteur.size() > 0}">
 			<p:outputPanel id="gallery">
 				<ui:repeat value="#{beanMedia.listeMediasDeAuteur}"
 					var="mediaDeAuteur" id="repeatMediaDeAuteur" rows="10">
@@ -232,7 +235,7 @@
 		</p:tab>
 
 		<!-- Liste des playlists qui contiennent le média visualisé -->
-		<p:tab title="Playlists">
+		<p:tab title="Playlists" rendered="#{beanMedia.listePlaylistsAvecMedia.size() > 0}">
 			<p:dataList value="#{beanMedia.listePlaylistsAvecMedia}"
 				var="playlistsAvecMedia" itemType="disc">
 				<h:outputLink value="playlist.jsf?#{playlistsAvecMedia.idPlaylist}"

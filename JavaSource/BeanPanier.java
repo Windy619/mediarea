@@ -12,37 +12,41 @@ import java.util.zip.ZipOutputStream;
 
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
-import javax.servlet.ServletContext;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 
 import dao.media.DaoMedia;
 
 import metier.media.Media;
+import metier.utilisateur.Utilisateur;
 
 
 public class BeanPanier {
-	
-	// DAO
- 	private static DaoMedia daoMedia;
  	
  	// Propriétés
 	private List<Media> mediaDansPanier;
- 	private String detailNotifyAjoutAuPanier;
  	private FacesMessage message;
  	
  	// Bean
  	private BeanMedia beanMedia;
-
+	private BeanConnexion beanConnexion;
+	
+	// Utilisateur connecté actuellement
+	private Utilisateur utilisateurConnecte;
+	
+	
 	public BeanPanier() {
 		// Chargement du média visualisé
 		beanMedia = (BeanMedia) FacesContext.getCurrentInstance().getCurrentInstance().getExternalContext().getSessionMap().get("beanMedia");
+		beanConnexion = (BeanConnexion) FacesContext.getCurrentInstance().getCurrentInstance().getExternalContext().getSessionMap().get("beanConnexion");
 		
-		//Instantiation des Dao
-		DaoMedia daoMedia = new DaoMedia();
-		
+		if (beanConnexion != null) {
+			// Récupération des informations de l'utilisateur connecté
+			utilisateurConnecte = beanConnexion.getUser();
+		}
+				
+		// Création de la liste qui contiendra tous les médias ajoutés au panier
 		mediaDansPanier = new ArrayList<Media>();
-		//mediaDansPanier.add(daoMedia.getUn(29));
 	}
 		
 	/** 
@@ -52,46 +56,54 @@ public class BeanPanier {
 	public String ajouterAuPanier() {
 		System.out.println("ajouterAuPanier");
 		
-		//Si le média est déjà ajouté au panier
-		//if(mediaDansPanier.contains(daoMedia.getUn(2))) {
-		boolean existeMediaDansPanier = false;
-		for (Media elMediaPanier : mediaDansPanier) {
-			if(elMediaPanier.equals(beanMedia.getMediaVisualise()))
-			{
-				System.out.println("Media était déjà présent dans panier");
-				detailNotifyAjoutAuPanier = "Le média " + beanMedia.getMediaVisualise().getTitreMedia() + " a déjà été ajouté au panier.";
-				existeMediaDansPanier = true;				
-
-				// Préparation du message de la notification
-				message = new FacesMessage("Panier : " + detailNotifyAjoutAuPanier);
-				message.setSeverity(FacesMessage.SEVERITY_WARN);
-				
-				break;
+		if(utilisateurConnecte != null) {
+			// Si le média est déjà ajouté au panier
+			//if(mediaDansPanier.contains(beanMedia.getMediaVisualise())) {
+			boolean existeMediaDansPanier = false;
+			for (Media elMediaPanier : mediaDansPanier) {
+				// Si le média était déjà contenu dans le panier
+				if(elMediaPanier.equals(beanMedia.getMediaVisualise()))
+				{
+					System.out.println("Media était déjà présent dans panier");
+					existeMediaDansPanier = true;				
+	
+					// Préparation du message de la notification
+					message = new FacesMessage("Panier : " + "Le média " + beanMedia.getMediaVisualise().getTitreMedia() + " a déjà été ajouté au panier.");
+					message.setSeverity(FacesMessage.SEVERITY_WARN);
+					
+					break;
+				}
 			}
-		}
-		//Si le média n'est pas encore ajouté au panier
-		//else {
-		if(! existeMediaDansPanier) {
-			//System.out.println("Media n'était pas présent dans panier");
-			mediaDansPanier.add(beanMedia.getMediaVisualise());
-			detailNotifyAjoutAuPanier = "Le média " + beanMedia.getMediaVisualise().getTitreMedia() + " a été ajouté au panier";
+			// Si le média n'est pas encore ajouté au panier
+			if(! existeMediaDansPanier) {
+				//System.out.println("Media n'était pas présent dans panier");
+				mediaDansPanier.add(beanMedia.getMediaVisualise());
+				
+				// Préparation du message de la notification
+				message = new FacesMessage("Panier : " + "Le média " + beanMedia.getMediaVisualise().getTitreMedia() + " a été ajouté au panier");
+			}
 			
-			// Préparation du message de la notification
-			message = new FacesMessage("Panier : " + detailNotifyAjoutAuPanier);
+			/*System.out.println("Panier : ");
+			for (Media mediaContenu : mediaDansPanier) {
+				System.out.println(mediaContenu.getTitreMedia() + " - ");
+			}*/
 		}
-
-		//Affichage de la notification
+		else {
+			// Préparation du message de la notification
+			message = new FacesMessage("Panier : Connectez-vous ou inscrivez-vous dès maintenant !");
+			message.setSeverity(FacesMessage.SEVERITY_WARN);
+		}
+		
+		// Affichage de la notification
 		FacesContext.getCurrentInstance().addMessage(null, message);
-		
-		/*System.out.println("Panier : ");
-		for (Media mediaContenu : mediaDansPanier) {
-			System.out.println(mediaContenu.getTitreMedia() + " - ");
-		}*/
-		
 		
 		return "ajouterAuPanier";
 	}
 	
+	/** 
+	 * Téléchargement du panier
+	 * @return
+	 */
 	public String downloadPanier() {
 		FileOutputStream fos;
         BufferedOutputStream bos;
@@ -196,13 +208,5 @@ public class BeanPanier {
 
 	public void setMediaDansPanier(List<Media> mediaDansPanier) {
 		this.mediaDansPanier = mediaDansPanier;
-	}
-	
-	public String getDetailNotifyAjoutAuPanier() {
-		return detailNotifyAjoutAuPanier;
-	}
-	
-	public void setDetailNotifyAjoutAuPanier(String detailNotifyAjoutAuPanier) {
-		this.detailNotifyAjoutAuPanier = detailNotifyAjoutAuPanier;
 	}
 }

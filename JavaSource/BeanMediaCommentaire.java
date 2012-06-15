@@ -3,7 +3,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
@@ -27,25 +26,27 @@ public class BeanMediaCommentaire {
 	private static DaoUtilisateur daoUtilisateur;
 	
 	// Propriétés
-	private Media mediaVisualise;
 	private long nbCommentaires;
 	private String commentaireSaisi;
 	private List<Commentaire> listeCommentaires;
-	private Utilisateur util;
 	private Query resultatReponses;
  	private HashMap<Commentaire, ArrayList<Commentaire>> hmReponses;
  	private Commentaire pere;
  	private ArrayList<Commentaire> lstFils;
- 	private FacesContext context;
 	private String reponseSaisie;
 	private String raisonCommentaire;
  	private boolean estCommentairesAutorise;
-	private int nbCaracteresRestants;
+	//private int nbCaracteresRestants;
 	private List<Commentaire> listeReponses;
 	private Commentaire commentaireAffiche;
+	private FacesMessage message;
 	
 	// Bean
 	private BeanMedia beanMedia;
+	private BeanConnexion beanConnexion;
+	
+	// Utilisateur connecté actuellement
+	private Utilisateur utilisateurConnecte;
 	 	
 	
 	/**
@@ -54,26 +55,28 @@ public class BeanMediaCommentaire {
 	public BeanMediaCommentaire() {
 		// Chargement du média visualisé
 		beanMedia = (BeanMedia) FacesContext.getCurrentInstance().getCurrentInstance().getExternalContext().getSessionMap().get("beanMedia");
+		beanConnexion = (BeanConnexion) FacesContext.getCurrentInstance().getCurrentInstance().getExternalContext().getSessionMap().get("beanConnexion");
 		
-		//Instantiation des Dao
+		if (beanConnexion != null) {
+			// Récupération des informations de l'utilisateur connecté
+			utilisateurConnecte = beanConnexion.getUser();
+		}		
+		
+		// Instantiation des Dao
 		daoMedia = new DaoMedia();
 		daoUtilisateur = new DaoUtilisateur();
 		daoCommentaire = new DaoCommentaire();
-		
-		util = daoUtilisateur.getUn(1);
-		context = FacesContext.getCurrentInstance();
-		
-		//nbCommentaires = String.valueOf(mediaVisualise.getCommentaires().size()); //toujours renseigné une chaîne de caractères pour un outputText
+				
 		nbCommentaires = beanMedia.getMediaVisualise().getCommentaires().size(); //Converter en JSF
 		
 		estCommentairesAutorise = beanMedia.getMediaVisualise().isaCommentairesOuverts();
 		
-		nbCaracteresRestants = 500;
+		//nbCaracteresRestants = 500;
 		
-		//Chargement des commentaires
+		// Chargement des commentaires
 		chargerCommentaires();
 		
-		//Chargement des réponses
+		// Chargement des réponses
 		chargerReponses();
 	}
 	
@@ -81,14 +84,14 @@ public class BeanMediaCommentaire {
 	 * Décrémentation du nombre de caractères restants (composition d'un commentaire)
 	 * @return
 	 */
-	public String decrementerNbCaracteresRestants() {
+	/*public String decrementerNbCaracteresRestants() {
 		System.out.println("decrementerNbCaracteresRestants");
 		
 		//Décrémentation du nombre de caractères restants pour la saisie du commentaire
 		nbCaracteresRestants--;
 		
 		return "decrementerNbCaracteresRestants";
-	}
+	}*/
 	
 	/** 
 	 * Publication du commentaire
@@ -97,20 +100,31 @@ public class BeanMediaCommentaire {
 	//public void publierCommentaire(AjaxBehaviorEvent e) {
 	public String publierCommentaire() {
 		System.out.println("publierCommentaire");
-		System.out.println("commentaire saisi : " + commentaireSaisi);
-		
-		//Création du commentaire
-		Commentaire c = new Commentaire(commentaireSaisi,daoUtilisateur.getUn(3));
-		
-		//Ajout du commentaire à la liste de commentaires du média
-		beanMedia.getMediaVisualise().getCommentaires().add(c);
-		
-		//Enregistrement de l'ajout
-		daoMedia.sauvegarder(beanMedia.getMediaVisualise());
-		
-		//Rechargement de la liste de commentaires
-		//commentaires.add(c);
-		chargerCommentaires();
+
+		if(utilisateurConnecte != null) {
+			System.out.println("commentaire saisi : " + commentaireSaisi);
+			
+			// Création du commentaire
+			Commentaire c = new Commentaire(commentaireSaisi,daoUtilisateur.getUn(3));
+			
+			// Ajout du commentaire à la liste de commentaires du média
+			beanMedia.getMediaVisualise().getCommentaires().add(c);
+			
+			// Enregistrement de l'ajout
+			daoMedia.sauvegarder(beanMedia.getMediaVisualise());
+			
+			// Rechargement de la liste de commentaires
+			//commentaires.add(c);
+			chargerCommentaires();
+		}
+		else {
+			// Préparation du message de la notification
+			message = new FacesMessage("Publication : Connectez-vous ou inscrivez-vous dès maintenant !");
+			message.setSeverity(FacesMessage.SEVERITY_WARN);
+			
+			// Affichage de la notification
+			FacesContext.getCurrentInstance().addMessage(null, message);
+		}
 		
 		return "publierCommentaire";
 	}
@@ -122,7 +136,7 @@ public class BeanMediaCommentaire {
 	public void chargerCommentaires() {
 		//System.out.println("chargerCommentaires");
 		
-		//Chargement de la liste des commentaires associé au média
+		// Chargement de la liste des commentaires associé au média
 		listeCommentaires = daoMedia.getCommentaires(beanMedia.getMediaVisualise());
 	}
 	
@@ -133,13 +147,13 @@ public class BeanMediaCommentaire {
 	public String chargerReponses() {
 		//System.out.println("chargerReponses");
 		
-		//Récupération de la liste des commentaires réponse du média
+		// Récupération de la liste des commentaires réponse du média
 		resultatReponses = daoMedia.getReponses(beanMedia.getMediaVisualise());
 		
-		//Création de la HashMap avec en clé le commentaire père et en valeur la liste des commentaires fils
+		// Création de la HashMap avec en clé le commentaire père et en valeur la liste des commentaires fils
 		hmReponses = new HashMap<Commentaire, ArrayList<Commentaire>>();
 		
-		//Remplissage de la HashMap ...
+		// Remplissage de la HashMap ...
 		pere = null;
 		lstFils = new ArrayList<Commentaire>();
 		Commentaire tmp = null;
@@ -209,27 +223,35 @@ public class BeanMediaCommentaire {
 	public String supprimerCommentaire() { //dateSuppression XXX
 		System.out.println("supprimerCommentaire");
 		
-		System.out.println("Commentaire affiché : " + commentaireAffiche);
-		
-		// Si celui qui tente de supprimer un commentaire est l'utilisateur connecté
-		//if (commSelectionne.getAuteur() == utilisateurConnecte) { //TODO
-			//Suppression du commentaire traité de la liste des commentaires du média
-			beanMedia.getMediaVisualise().getCommentaires().remove(commentaireAffiche);
+		if(utilisateurConnecte != null) {
+			System.out.println("Commentaire affiché : " + commentaireAffiche);
 			
-			//Enregistrement de la modification
-			daoMedia.sauvegarder(beanMedia.getMediaVisualise());
+			// Si celui qui tente de supprimer un commentaire est l'utilisateur connecté
+			//if (commSelectionne.getAuteur() == utilisateurConnecte) {
+				//Suppression du commentaire traité de la liste des commentaires du média
+				beanMedia.getMediaVisualise().getCommentaires().remove(commentaireAffiche);
+				
+				//Enregistrement de la modification
+				daoMedia.sauvegarder(beanMedia.getMediaVisualise());				
+			//}
 			
-		//}
+			// Rafraîchissement des listes
+			chargerCommentaires();
+			chargerReponses();		
+	
+			// Préparation du message de la notification
+			message = new FacesMessage("Suppression du commentaire : Message supprimé avec succès !");
+			
+			//2 min TODO
+		}
+		else {
+			// Préparation du message de la notification
+			message = new FacesMessage("Suppression du commentaire  : Connectez-vous ou inscrivez-vous dès maintenant !");
+			message.setSeverity(FacesMessage.SEVERITY_WARN);
+		}
 		
-		//Rafraîchissement des listes
-		chargerCommentaires();
-		chargerReponses();		
-
-		//Affichage de la notification
-		FacesMessage msg = new FacesMessage("Message supprimé avec succès !");  
-        FacesContext.getCurrentInstance().addMessage(null, msg);
-		
-		//2 min TODO
+		// Affichage de la notification
+		FacesContext.getCurrentInstance().addMessage(null, message);
 		
 		return "supprimerCommentaire";
 	}
@@ -241,23 +263,32 @@ public class BeanMediaCommentaire {
 	public String repondreCommentaire() {
 		System.out.println("repondreCommentaire");
 		
-		System.out.println("Commentaire affiché : " + commentaireAffiche);
+		if(utilisateurConnecte != null) {
+			System.out.println("Commentaire affiché : " + commentaireAffiche);
+			
+			// Création d'une nouvelle réponse
+			Commentaire c = new Commentaire(reponseSaisie, utilisateurConnecte);
+			
+			// Ajout aux réponses du commentaire père
+			commentaireAffiche.getCommentairesFils().add(c);
+			
+			// Sauvegarde de l'ajout
+			daoCommentaire.sauvegarder(commentaireAffiche);
+			
+			// Rechargement de la liste de réponses
+			chargerReponses();
+			
+			// Préparation du message de la notification
+			message = new FacesMessage("Réponse au commentaire : Réponse envoyé avec succès !");
+		}
+		else {
+			// Préparation du message de la notification
+			message = new FacesMessage("Réponse au commentaire : Connectez-vous ou inscrivez-vous dès maintenant !");
+			message.setSeverity(FacesMessage.SEVERITY_WARN);
+		}
 		
-		// Création d'une nouvelle réponse
-		Commentaire c = new Commentaire(reponseSaisie, util);
-		
-		// Ajout aux réponses du commentaire père
-		commentaireAffiche.getCommentairesFils().add(c);
-		
-		// Sauvegarde de l'ajout
-		daoCommentaire.sauvegarder(commentaireAffiche);
-		
-		// Rechargement de la liste de réponses
-		chargerReponses();
-		
-		// On affiche un message à l'utilisateur
-        FacesMessage msg = new FacesMessage("Réponse envoyé avec succès !");  
-        FacesContext.getCurrentInstance().addMessage(null, msg); 
+		// Affichage de la notification
+		FacesContext.getCurrentInstance().addMessage(null, message);
 		
 		return "repondreCommentaire";
 	}
@@ -269,34 +300,42 @@ public class BeanMediaCommentaire {
 	public String signalerCommentaire() {
 		System.out.println("signalerCommentaire");
 		
-		System.out.println("Commentaire affiché : " + commentaireAffiche);
-		
-		//interdiction de signaler soi-même
-		//if (commentaireSelectionne.getAuteur() != utilisateurConnecte) {
-			//Création du signalement
-			Signalement_Commentaire sc = new Signalement_Commentaire(raisonCommentaire, commentaireAffiche, daoUtilisateur.getUn(1));
-		
-			//Ajout du signalement aux signalements du commentaire existants
-			util.getSignalementsCommentaires().add(sc);
+		if(utilisateurConnecte != null) {
+			System.out.println("Commentaire affiché : " + commentaireAffiche);
 			
-			//Sauvegarde de l'ajout
-			daoUtilisateur.sauvegarder(util);
+			// Interdiction de signaler soi-même
+			//if (commentaireSelectionne.getAuteur() != utilisateurConnecte) {
+				// Création du signalement
+				Signalement_Commentaire sc = new Signalement_Commentaire(raisonCommentaire, commentaireAffiche, daoUtilisateur.getUn(1));
 			
-			//Création de la notification
-			Notification notification = new Notification("Votre message : \"" + commentaireAffiche.getContenuCommentaire() + "\" a fait l'objet d'un signalement !", commentaireAffiche.getAuteur());
-			notification.setDateEnvoiNotification(new Date());
-			// On l'ajoute à l'utilisateur concerné et on le sauvegarde
-			commentaireAffiche.getAuteur().getNotifications().add(notification);
-			daoUtilisateur.sauvegarder(commentaireAffiche.getAuteur());
-				        
-			//Rechargement des listes
-			chargerCommentaires();
-			chargerReponses();
-
-			//Affichage de la notification
-	        FacesMessage msg = new FacesMessage("Signalement du commentaire effectué avec succès !");  
-	        FacesContext.getCurrentInstance().addMessage(null, msg); 
-		//}
+				// Ajout du signalement aux signalements du commentaire existants
+				utilisateurConnecte.getSignalementsCommentaires().add(sc);
+				
+				// Sauvegarde de l'ajout
+				daoUtilisateur.sauvegarder(utilisateurConnecte);
+				
+				// Création de la notification
+				Notification notification = new Notification("Votre message : \"" + commentaireAffiche.getContenuCommentaire() + "\" a fait l'objet d'un signalement !", commentaireAffiche.getAuteur());
+				notification.setDateEnvoiNotification(new Date());
+				// Ajout de la notification à l'utilisateur concerné et sauvegarde de celui-ci
+				commentaireAffiche.getAuteur().getNotifications().add(notification);
+				daoUtilisateur.sauvegarder(commentaireAffiche.getAuteur());
+					        
+				// Rechargement des listes
+				chargerCommentaires();
+				chargerReponses();
+	
+				// Préparation du message de la notification
+		        message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Signalement d'un commentaire :", "Signalement du commentaire effectué avec succès !");
+			//}
+		}
+		else {
+			// Préparation du message de la notification
+			message = new FacesMessage(FacesMessage.SEVERITY_WARN, "Signalement d'un commentaire :", "Connectez-vous ou inscrivez-vous dès maintenant !");
+		}
+		
+		// Affichage de la notification
+		FacesContext.getCurrentInstance().addMessage(null, message);
 		
 		return "signalerCommentaire";
 	}
@@ -305,13 +344,13 @@ public class BeanMediaCommentaire {
 	
 	// GETTER / SETTER
 	
-	public int getNbCaracteresRestants() {
+	/*public int getNbCaracteresRestants() {
 		return nbCaracteresRestants;
 	}
 	
 	public void setNbCaracteresRestants(int nbCaracteresRestants) {
 		this.nbCaracteresRestants = nbCaracteresRestants;
-	}
+	}*/
 
 	public String getCommentaireSaisi() {
 		return commentaireSaisi;

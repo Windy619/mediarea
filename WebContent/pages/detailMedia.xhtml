@@ -136,49 +136,17 @@
 	        <p:menuitem id="jeNAimePas" value="Je n'aime pas" actionListener="#{beanMedia.jeNAimePas}" update=":messages, avis" icon="ui-icon-heart" disabled="#{beanMedia.jeNAimePasDisabled}" />  
 	    </p:splitButton>
 	    
-	    <p:splitButton id="ajouteA" value="Ajouter à" icon="ui-icon-plus" style="font-size: 11px;">  
+	    <p:splitButton id="ajouteA" value="Ajouter à" icon="ui-icon-plus" style="font-size: 11px;" rendered="#{not empty beanMedia.utilisateurConnecte}">  
 	        <p:menuitem id="favori" value="#{beanMedia.txtFavori}" actionListener="#{beanMedia.ajouterAFavori}" update=":messages, ajouteA" icon="ui-icon-star" />
 	        <p:menuitem value="Playlist" update=":messages" icon="ui-icon-video" onclick="dlgPlaylist.show();" />  
 	    </p:splitButton>
 		
 		<p:splitButton value="Partager" icon="ui-icon-home" style="font-size: 11px;">  
 	        <p:menuitem value="Exporter" update=":messages" icon="ui-icon-copy" onclick="dlgExporter.show();" />
-	        <p:menuitem value="Emails et amis" update=":messages" icon="ui-icon-mail-open" onclick="dlgEmail.show();" />  
+	        <p:menuitem value="Emails et amis" update=":messages" icon="ui-icon-mail-open" onclick="dlgEmail.show();" /><!-- show si utilisateurConnecte TODO -->
 	    </p:splitButton>
     </h:form>
     	
-		
-			
-			<!--<a4j:outputPanel ajaxRenderer="true">
-			<rich:notify id="notifyJAime" stayTime="1500" sticky="false" nonblocking="true"
-				nonblockingOpacity="0.5" showShadow="false"
-				showCloseButton="true" detail="#{beanMedia.detailNotificationJAime}" render="false"
-				>
-				<f:facet name="summary">
-					J'aime ce contenu
-				</f:facet>
-			</rich:notify>
-			</a4j:outputPanel>-->
-			
-			
-			
-				<!--<rich:notify id="notifyJeNAimePas" stayTime="1500" sticky="false" nonblocking="false"
-					nonblockingOpacity="0.5" showShadow="false"
-					showCloseButton="true" detail="#{beanMedia.detailNotificationJeNAimePas}">
-				 	<f:facet name="summary">
-						Je n'aime pas ce contenu
-					</f:facet>
-				</rich:notify>-->
-			
-			
-			<!--<rich:notify id="notifyFavori" stayTime="1500" sticky="false" nonblocking="false"
-					nonblockingOpacity="0.5" showShadow="false"
-					showCloseButton="true" detail="Média ajouté à vos favoris">
-				 
-					<f:facet name="summary">
-						Favori
-					</f:facet>
-				</rich:notify>-->
 				
 	
     <br />
@@ -427,7 +395,7 @@
         			<p:commandButton value="Visualiser statistiques" image="ui-icon-signal" alt="Statistiques" onclick="dlgStatistiques.show();" title="Statistiques" style="float: left;" />
         			<p:spacer width="20" />
         			<!-- Signalement du média -->
-        			<p:commandButton value="Signaler" image="ui-icon-flag" alt="Peut offenser" onclick="dlgSignaler.show();" title="Signaler ce média" style="float: left;" />
+        			<p:commandButton value="Signaler" image="ui-icon-flag" alt="Peut offenser" onclick="dlgSignaler.show();" title="Signaler ce média" style="float: left;" /><!-- TODO utilisateurConnecte -->
 	            </div>
 	        </h:form>
 	            
@@ -487,21 +455,14 @@
         		
         		<!-- Ajout au panier du média -->
         		<h:form>
-        			<p:commandButton value="Ajouter #{beanMedia.titreMedia} au panier" title="Ajouter #{beanMedia.titreMedia} au panier" actionListener="#{beanPanier.ajouterAuPanier}" icon="ui-icon-cart" rendered="#{beanMedia.mediaVisualise.estTelechargementAutorise}" update=":messages" />
-					<!--<rich:notify id="notifyAjoutAuPanier" stayTime="1500" sticky="false" nonblocking="false"
-			        nonblockingOpacity="0.5" showShadow="false"
-			        showCloseButton="true" detail="#{beanPanier.detailNotifyAjoutAuPanier}">			 
-				        <f:facet name="summary">
-				            Notification
-				        </f:facet>			        
-			        </rich:notify>-->
+        			<p:commandButton value="Ajouter #{beanMedia.titreMedia} au panier" title="Ajouter #{beanMedia.titreMedia} au panier" actionListener="#{beanPanier.ajouterAuPanier}" icon="ui-icon-cart" rendered="#{beanMedia.mediaVisualise.estTelechargementAutorise}" update=":messages" /><!-- TODO utilisateurConnecte -->
 		        </h:form>
         		
         		<!-- Téléchargement du média -->
         		<h:form>
 	        		<p:commandLink id="downloadLink" value="Télécharger ce média" ajax="false" rendered="#{beanMedia.mediaVisualise.estTelechargementAutorise}">  
 					    <p:fileDownload value="#{beanMedia.file}" />  
-					</p:commandLink>
+					</p:commandLink><!-- TODO utilisateurConnecte -->
 					<br />
 					<p:commandLink id="downloadLinké" value="Télécharger ce média" rendered="#{beanMedia.mediaVisualise.estTelechargementAutorise}">  
 					    <p:fileDownload value="#{beanMedia.file}" />  
