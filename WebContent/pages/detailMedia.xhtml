@@ -44,8 +44,8 @@
 			<br />
 						
 			<!-- surrounding element with class - needed!! -->
-			<h:panelGroup rendered="#{beanMedia.nomTypeMedia == 'Video' }">
-				
+			<h:panelGroup rendered="#{beanMedia.mediaVisualise.type.idTypeMedia == 2}">
+				Vidéo
 				<!-- Lecteur vidéo -->
 				
 			    <!-- this A tag is where your Flowplayer will be placed. it can be anywhere -->
@@ -71,7 +71,7 @@
 				</script>-->
 				<script>
 					flowplayer("player", {
-						  src:"../resources/flash/flowplayer/flowplayer-3.2.11.swf", 
+						  src:"/MediArea/resources/flash/flowplayer/flowplayer-3.2.11.swf", 
 						  wmode: "opaque" // This allows the HTML to hide the flash content
 					      }, {
 					      clip:  {
@@ -88,7 +88,8 @@
 			
 			
 		
-			<h:panelGroup rendered="#{beanMedia.nomTypeMedia == 'Son'}">
+			<h:panelGroup rendered="#{beanMedia.mediaVisualise.type.idTypeMedia == 1}">
+				Audio
 				<!-- Lecteur audio -->
 				<!-- http://flowplayer.org/plugins/streaming/audio.html -->
 				
@@ -100,13 +101,13 @@
 				$f("player", "http://releases.flowplayer.org/swf/flowplayer-3.2.11.swf", {
  
 				    clip: {
-				       url: "../resources/audios/#{beanMedia.mediaVisualise.fichier.nomFichier}",
+				       url: "/MediArea/resources/audios/#{beanMedia.mediaVisualise.fichier.nomFichier}",
 				 
 				       // this style of configuring the cover image was added in audio
 				       // plugin version 3.2.3
 				       coverImage: { url: "http://releases.flowplayer.org/data/national.jpg",
 				                    scaling: 'orig' },
-
+						//#{beanMedia.mediaVisualise.photo.cheminPhotoCouverture} TODO
 				                    
 				   	   autoPlay: false,
 				    }
@@ -263,7 +264,7 @@
 			    		
 			        	<h:outputText value="Lien : " styleClass="bold"/>
 			        	<br />
-			        	<p:inputText id="lien" value="#{request.requestURL}" size="58" />
+			        	<p:inputText id="lien" value="#{request.requestURL}?v=#{beanMedia.paramUrl}" size="58" />
 			        	<br />
 			        	<br />			        	
 			        	<hr />
@@ -376,13 +377,13 @@
 			
 	            
 	            <!-- Informations sur le média -->
+	            <h:form>
 	            <span class="bold">
 	            	<h:outputText value="Ajouté par " />
-	            	<h:outputLink value="" action="">
-						<h:outputText value="#{beanMedia.auteur}" />
-					</h:outputLink>
+	            	<h:commandLink value="#{beanMedia.auteur}" action="#{beanRecherche.clickOnPublisher(media.auteurMedia.pseudo)}" />
 	            	<h:outputText value=" le #{beanMedia.datePublication}" />
 	            </span>
+	            </h:form>
 	            <br />
 	            <h:outputText value="#{beanMedia.description}" />
         	<!-- </rich:panel> -->
@@ -593,19 +594,7 @@
 			<br />
 			<br />
 			
-			
-			
-			
-			
-			
 			<ui:include src="detailMediaCommentaires.xhtml" />
-			
-			
-			
-			
-			
-			
-			
 		</section>
 		
 		
@@ -657,3 +646,9 @@
 </ui:composition> 
 </html>
 <!-- multilangue XXX -->
+<!-- Remarque :
+- update de Primefaces :
+id => même form
+:id => autre form
+- action et actionListener
+ -->
