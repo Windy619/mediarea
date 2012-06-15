@@ -216,7 +216,7 @@ public class BeanMessagesPrives {
 	public String supprimerMessage() {
 					
 		System.out.println(mpSelectionne);
-		// En fonction de si on est emetteur ou destinnataire
+		// En fonction de si on est emetteur ou destinataire
 		if (mpSelectionne.getEmetteur() == utilisateurConnecte) {
 			mpSelectionne.setDateSuppressionMessage(new Date());
 		} else {

@@ -2,6 +2,7 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -124,8 +125,7 @@ public class BeanMedia {
  	private Playlist playlistSelectionnee;
  	private boolean jAimeDisabled;
  	private boolean jeNAimePasDisabled;
- 	/*private String nomFichierMedia;
- 	private String cheminFichierMedia;*/
+ 	private String paramUrl;
  	
  	// Compteur
  	
@@ -168,18 +168,13 @@ public class BeanMedia {
 		
 		//estNotifieJAime = false;
 		if(utilisateurConnecte != null) {
-			if(mediaVisualise.getVisibilite().equals(daoVisibilite.getUn(2))) { //si privé
-				 if(! utilisateurConnecte.getAmis().contains(mediaVisualise.getAuteurMedia())) {//et que l'utilisateur n'est pas un ami
-					 System.out.println("demande d'un mot de passe"); //demande d'un mot de passe
-				 }
-				 else { //mais que l'utilisateur est ami
-					 System.out.println("demande rien"); //demande rien
-				 }
+			/*if(mediaVisualise.getVisibilite().equals(daoVisibilite.getUn(2))) { //si privé
+
 			}
-			else {
+			else { TODO*/
 				detailNotificationJAime = "Merci !";
 				detailNotificationJeNAimePas = "Vous n'aimez pas ce média. Merci de votre commentaire !";
-			}
+			//}
 		}
 		else {
 			detailNotificationJAime = "Connectez-vous ou inscrivez-vous dès maintenant !";
@@ -266,6 +261,7 @@ public class BeanMedia {
 				.totalTelechargement(mediaVisualise);
 
 		if (resultatTotalTelechargementMedia > 1) {
+			System.out.println("Nb de téléchargements : " + resultatTotalTelechargementMedia);
 			motTelechargement = "s"; // "telechargements" au pluriel
 		}
 		
@@ -339,6 +335,9 @@ public class BeanMedia {
 		if(hauteur == 0) {
 			hauteur = 180;
 		}*/
+		
+		//FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("v");
+		paramUrl = ((HttpServletRequest)FacesContext.getCurrentInstance().getExternalContext().getRequest()).getParameter("v"); 
 		
 		processMedia();
 	}
@@ -563,6 +562,13 @@ public class BeanMedia {
 		
 		//Affichage de la notification
 		FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Signalement du média : " , "Votre rapport a été pris en compte.")); //TODO ne plus afficher ce message lorsque l'on revient sur la pop-up
+		
+		//Création de la notification
+		Notification notification = new Notification("Votre média : \"" + mediaVisualise.getTitreMedia() + "\" a fait l'objet d'un signalement !", mediaVisualise.getAuteurMedia());
+		notification.setDateEnvoiNotification(new Date());
+		// On l'ajoute à l'utilisateur concerné et on le sauvegarde
+		mediaVisualise.getAuteurMedia().getNotifications().add(notification);
+		daoUtilisateur.sauvegarder(mediaVisualise.getAuteurMedia());
 		
 		return "signalerMedia";
 	}
@@ -1035,7 +1041,6 @@ public class BeanMedia {
 		
 		return "modifierCategoriesTags";
 	}
-
 	
 	
 	
@@ -1232,10 +1237,6 @@ public class BeanMedia {
 		this.motVotes = motVotes;
 	}
 	
-	/*public CartesianChartModel getLinearModel() {  
-	    return linearModel;  
-	}*/
-	
 	public String getCodeIntegration() {
 		return codeIntegration;
 	}
@@ -1399,22 +1400,6 @@ public class BeanMedia {
 		this.jeNAimePasDisabled = jeNAimePasDisabled;
 	}
 	
-	/*public String getNomFichierMedia() {
-		return nomFichierMedia;
-	}
-
-	public void setNomFichierMedia(String nomFichierMedia) {
-		this.nomFichierMedia = nomFichierMedia;
-	}*/
-
-	/*public String getCheminFichierMedia() {
-		return cheminFichierMedia;
-	}
-
-	public void setCheminFichierMedia(String cheminFichierMedia) {
-		this.cheminFichierMedia = cheminFichierMedia;
-	}*/
-	
 	public StreamedContent getFile() {  
 		System.out.println("File : " + file);
         return file;  
@@ -1426,5 +1411,13 @@ public class BeanMedia {
 
 	public void setEstAjouteAPlaylist(boolean estAjouteAPlaylist) {
 		this.estAjouteAPlaylist = estAjouteAPlaylist;
+	}
+	
+	public String getParamUrl() {
+		return paramUrl;
+	}
+
+	public void setParamUrl(String paramUrl) {
+		this.paramUrl = paramUrl;
 	}
 }
