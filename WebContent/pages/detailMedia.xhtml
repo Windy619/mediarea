@@ -53,22 +53,34 @@
 					 href="http://pseudo01.hddn.com/vod/demo.flowplayervod/flowplayer-700.flv"
 					 style="display:block;width:520px;height:330px"  
 					 id="player"> 
-				</a>-->				
-				<a  
+				</a>-->
+				<a 
 					 href="../resources/videos/#{beanMedia.mediaVisualise.fichier.nomFichier}"
 					 style="display:block;width:612px;height:404px"  
 					 id="player">
 				</a>
 			
 				<!-- this will install flowplayer inside previous A- tag. -->
-				<script>
+				<!--<script>
 					flowplayer("player", "../resources/flash/flowplayer/flowplayer-3.2.11.swf", {
 					      clip:  {
 					          autoPlay: false,
 					          autoBuffering: true
 					      }
 					  });
+				</script>-->
+				<script>
+					flowplayer("player", {
+						  src:"../resources/flash/flowplayer/flowplayer-3.2.11.swf", 
+						  wmode: "opaque" // This allows the HTML to hide the flash content
+					      }, {
+					      clip:  {
+					          autoPlay: false,
+					          autoBuffering: true
+					      }
+					  });
 				</script>
+				
 				
 				<!--</div>-->
 			<!--<p:media value="http://www.youtube.com/v/KZnUr8lcqjo" width="425" height="344" player="flash"/>-->
@@ -110,26 +122,27 @@
 		<!-- S'abonner et Se désabonner XXX -->
 
 		
+		
+		<p:growl id="messages"/>
+		
 		<!-- Partie gauche -->
 		<p:fieldset styleClass="gauche">  
 		<h:form>
 		
-		<!-- Actions possibles -->
-		<p:growl id="messages"/>  
-  
+		<!-- Actions possibles -->  
 	    <p:splitButton id="avis" value="Avis" icon="ui-icon-person" style="font-size: 11px;">  
-	        <p:menuitem id="jAime" value="J'aime" actionListener="#{beanMedia.jAime}" update="messages, avis" icon="ui-icon-heart" disabled="#{beanMedia.jAimeDisabled}" />
-	        <p:menuitem id="jeNAimePas" value="Je n'aime pas" actionListener="#{beanMedia.jeNAimePas}" update="messages, avis" icon="ui-icon-heart" disabled="#{beanMedia.jeNAimePasDisabled}" />  
+	        <p:menuitem id="jAime" value="J'aime" actionListener="#{beanMedia.jAime}" update=":messages, avis" icon="ui-icon-heart" disabled="#{beanMedia.jAimeDisabled}" />
+	        <p:menuitem id="jeNAimePas" value="Je n'aime pas" actionListener="#{beanMedia.jeNAimePas}" update=":messages, avis" icon="ui-icon-heart" disabled="#{beanMedia.jeNAimePasDisabled}" />  
 	    </p:splitButton>
 	    
 	    <p:splitButton id="ajouteA" value="Ajouter à" icon="ui-icon-plus" style="font-size: 11px;">  
-	        <p:menuitem id="favori" value="#{beanMedia.txtFavori}" actionListener="#{beanMedia.ajouterAFavori}" update="messages, ajouteA" icon="ui-icon-star" />
-	        <p:menuitem value="Playlist" update="messages" icon="ui-icon-video" onclick="dlgPlaylist.show();" />  
+	        <p:menuitem id="favori" value="#{beanMedia.txtFavori}" actionListener="#{beanMedia.ajouterAFavori}" update=":messages, ajouteA" icon="ui-icon-star" />
+	        <p:menuitem value="Playlist" update=":messages" icon="ui-icon-video" onclick="dlgPlaylist.show();" />  
 	    </p:splitButton>
 		
 		<p:splitButton value="Partager" icon="ui-icon-home" style="font-size: 11px;">  
-	        <p:menuitem value="Exporter" update="messages" icon="ui-icon-copy" onclick="dlgExporter.show();" />
-	        <p:menuitem value="Emails et amis" update="messages" icon="ui-icon-mail-open" onclick="dlgEmail.show();" />  
+	        <p:menuitem value="Exporter" update=":messages" icon="ui-icon-copy" onclick="dlgExporter.show();" />
+	        <p:menuitem value="Emails et amis" update=":messages" icon="ui-icon-mail-open" onclick="dlgEmail.show();" />  
 	    </p:splitButton>
     </h:form>
     	
@@ -167,8 +180,8 @@
 				</rich:notify>-->
 				
 	
-    <br />    
-    
+    <br />
+    		
     		<!-- Pop-up permettant l'ajout du média à une playlist -->			
 			<!--<rich:popupPanel id="popupPlaylist" modal="false" autosized="true" resizeable="false" style="z-index: 99999;">-->
 		    <p:dialog id="popupPlaylist" header="Ajouter à une playlist" widgetVar="dlgPlaylist" showEffect="explode">
@@ -184,11 +197,12 @@
 				            <f:facet name="header">  
 				                <h:outputText value="Nom" />  
 				            </f:facet>
-				            <h:graphicImage id="imgAjoutPlaylist" value="../resources/images/icones/#{beanMedia.imgAjoutPlaylist}" alt="Ajouter" />
-	        				<p:commandLink update="@form" action="#{beanMedia.ajouterMediaAPlaylist}" style="margin-right:23px;">  
+				            <h:graphicImage id="imgAjoutPlaylist" value="../resources/images/icones/accepter-check-ok-oui-icone-4851-16.png" alt="Ajouter" rendered="#{! beanMedia.getEstAjouteAPlaylist(play)}" />
+				            <h:graphicImage id="imgRetirerPlaylist" value="../resources/images/icones/fermer-croix-supprimer-erreurs-sortie-icone-4368-16.png" alt="Retirer" rendered="#{beanMedia.getEstAjouteAPlaylist(play)}" />
+	        				<p:commandLink update=":messages, @form" action="#{beanMedia.ajouterMediaAPlaylist}" style="margin-right:23px;">  
 						        <h:outputText value="#{play.nomPlaylist} (nb de média dans playlist TODO)" />
 						    	<f:setPropertyActionListener target="#{beanMedia.playlistSelectionnee}" value="#{play}" />
-						    </p:commandLink>
+						    </p:commandLink><!-- TODO Hibernate playlist_media : medias_idMedia pas en PRIMARY -->
 						    
 				        </p:column>
 				        
@@ -200,7 +214,7 @@
 				        </p:column>
 				    </p:dataTable>
 		            <br />
-		            <p:commandButton value="Créer une playlist" onclick="dlgCreerPlaylist.show(); dlgPlaylist.hide();" type="button" />
+		            <p:commandButton value="Créer une playlist" onclick="dlgCreerPlaylist.show();" type="button" /><!-- dlgPlaylist.hide();  -->
 		            <!-- Collector XXX -->
 		            <br />
 		        </p>
@@ -209,12 +223,11 @@
 		    </p:dialog>
 		    
 		    
-		    <h:form>
 	        <!-- Pop-up permettant la création d'une nouvelle playlist -->
-	        <!--<rich:popupPanel id="popupCreerPlaylist" modal="false" autosized="true" resizeable="false" style="z-index: 99999;">-->
 			<p:dialog id="popupCreerPlaylist" header="Créer une nouvelle playlist" widgetVar="dlgCreerPlaylist" showEffect="explode">
+  				<h:form>
   				<p:panel id="panel" style="margin-bottom:10px;">
-			        <p:messages id="messages" />  
+			        <p:messages id="messages" />
 			        <h:panelGrid columns="3">  
 			            <h:outputLabel for="nomPlaylistACreer" value="Nom : *" />  
 			            <p:inputText id="nomPlaylistACreer"   
@@ -236,15 +249,13 @@
 			        </h:panelGrid>
 			  	</p:panel>
 			  	
-			    <p:commandButton value="Sauvegarder" id="Sauvegarder"  
-			    	actionListener="#{beanMedia.creerPlaylist}" oncomplete="dlgCreerPlaylist.hide(); dlgPlaylist.show();" />
-		    <!--</rich:popupPanel>-->
+			    <p:commandButton value="Sauvegarder" id="Sauvegarder" 
+			    	actionListener="#{beanMedia.creerPlaylist}" update=":popupPlaylist, messages" /><!--oncomplete="dlgCreerPlaylist.hide(); dlgPlaylist.show();"--><!-- prendre en compte ajout directement (BD) -->
+	        	</h:form>
 	        </p:dialog>
-	        </h:form>
 	        
 	        
-	                
-    <p:growl id="msg" /> 
+	        
         	<!-- Pop-up permettant d'exporter le média --> 
         	   <!--<rich:popupPanel id="popupExporter" modal="false" autosized="true" resizeable="false" style="z-index: 99999;">-->
 			    <p:dialog id="popupExporter" header="Personnaliser le lecteur exportable" widgetVar="dlgExporter" showEffect="explode" width="480">
@@ -265,7 +276,7 @@
 			        	<h:outputText value="Après avoir sélectionné les options souhaitées plus bas, copiez-collez le code d'intégration ci-dessus. Ce dernier change en fonction des options choisies." />
 			        	<br />
 			        	<hr />
-			        	<p:selectBooleanCheckbox value="true">  
+			        	<p:selectBooleanCheckbox value="false">  
 				            <p:ajax event="change" update="codeIntegration" listener="#{beanMedia.desactiverLecteurIframe}"/>  
 				        </p:selectBooleanCheckbox>
 				        <h:outputText value="Utiliser l'ancien code d'intégration" />
@@ -276,8 +287,8 @@
 			        	<br />
 			        	<p:selectOneRadio id="tailleLecteur" 
 							value="#{beanMedia.tailleLecteur}" layout="lineDirection">
-							<f:ajax event="change" upddate="formExporter codeIntegration" listener="#{beanMedia.changerTailleLecteur}"></f:ajax>
-							<f:selectItem id="petit" itemLabel="Petit (320x180)" itemValue="petit" />
+							<p:ajax event="change" upddate="codeIntegration" listener="#{beanMedia.changerTailleLecteur}" />
+							<f:selectItem id="petit" itemLabel="Petit (320x180)" itemValue="petit"  />
 							<f:selectItem id="moyen" itemLabel="Moyen (480x270)" itemValue="moyen" />
 							<f:selectItem id="grand" itemLabel="Grand (560x315)" itemValue="grand" />							
 			        	</p:selectOneRadio><!-- execute="@form"  -->
@@ -475,7 +486,7 @@
         		
         		<!-- Ajout au panier du média -->
         		<h:form>
-        			<p:commandButton value="Ajouter #{beanMedia.titreMedia} au panier" title="Ajouter #{beanMedia.titreMedia} au panier" actionListener="#{beanPanier.ajouterAuPanier}" icon="ui-icon-cart" rendered="#{beanMedia.mediaVisualise.estTelechargementAutorise}" />
+        			<p:commandButton value="Ajouter #{beanMedia.titreMedia} au panier" title="Ajouter #{beanMedia.titreMedia} au panier" actionListener="#{beanPanier.ajouterAuPanier}" icon="ui-icon-cart" rendered="#{beanMedia.mediaVisualise.estTelechargementAutorise}" update=":messages" />
 					<!--<rich:notify id="notifyAjoutAuPanier" stayTime="1500" sticky="false" nonblocking="false"
 			        nonblockingOpacity="0.5" showShadow="false"
 			        showCloseButton="true" detail="#{beanPanier.detailNotifyAjoutAuPanier}">			 

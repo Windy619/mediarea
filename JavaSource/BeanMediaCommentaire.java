@@ -101,14 +101,10 @@ public class BeanMediaCommentaire {
 		Commentaire c = new Commentaire(commentaireSaisi,util);
 		
 		//Ajout du commentaire à la liste de commentaires du média
-		beanMedia.getMediaVisualise().getCommentaires().add(c); //mediaVisualise. TODO
+		beanMedia.getMediaVisualise().getCommentaires().add(c);
 		
 		//Enregistrement de l'ajout
 		daoMedia.sauvegarder(beanMedia.getMediaVisualise());
-		
-		/*if(commentaires == null) {
-			System.out.println("c'est la liste de commentaires qui pose problème (null)");
-		}*/
 		
 		//Rechargement de la liste de commentaires
 		//commentaires.add(c);
