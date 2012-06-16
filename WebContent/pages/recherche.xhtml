@@ -87,7 +87,7 @@
 			<a4j:repeat rendered="#{beanRecherche.afficher_par == '1'}" value="#{beanRecherche.resRechMedia}" var="media">
 				<article class="holder_gallery">
 					<h:form>
-						<h:commandLink styleClass="photo_hover2" action="#{beanRecherche.accessMedia(media.idMedia)}"><h:graphicImage library="images" name="#{media.photo.cheminPhotoCouverture}"  width="150" height="99" alt="#{media.photo.nomPhotoCouverture}"/></h:commandLink>
+						<h:commandLink styleClass="photo_hover2" action="#{beanRecherche.accessMedia(media.idMedia)}"><h:graphicImage library="images" name="/resources/images/#{media.photo.nomPhotoCouverture}"  width="150" height="99" alt="#{media.photo.nomPhotoCouverture}"/></h:commandLink>
 						<h2 class="titre_liste_media"><h:commandLink value="#{media.titreMedia}" action="#{beanRecherche.accessMedia(media.idMedia)}" /> </h2> <p class="vues_liste_media">#{beanRecherche.l_mediaVues[media.idMedia]} vues<br /> #{beanRecherche.l_mediaComs[media.idMedia]} coms</p>
 						<p class="description_liste_media">#{media.descriptionMedia}</p>
 						<p class="infos_liste_media">
