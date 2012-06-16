@@ -12,10 +12,10 @@
 
 	<p:growl id="messagesCommentaires" showDetail="true" />
 
-	<p:tabView effect="fade" effectDuration="normal">
+	<p:tabView id="tabViewCommentaires" effect="fade" effectDuration="normal">
 
 		<!-- Commentaires -->
-		<p:tab title="Commentaires (#{beanMediaCommentaire.nbCommentaires})">
+		<p:tab id="tabCommentaires" title="Commentaires (#{beanMediaCommentaire.nbCommentaires})">
 
 			<h:panelGroup
 				rendered="#{! beanMediaCommentaire.estCommentairesAutorise}">
@@ -49,7 +49,7 @@
 						paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
 						rowsPerPageTemplate="5,10,15">
 
-						<f:facet name="header">  
+				<f:facet name="header">
 		             Commentaires
 		        </f:facet>
 
@@ -63,7 +63,7 @@
 
 
 						<p:column style="width:60px">
-							<f:facet name="header">  
+							<f:facet name="header">
 		                    Infos 
 		            </f:facet>
 							<div align="center">
@@ -91,10 +91,10 @@
 
 							<hr />
 							<!--<h:panelGroup rendered="#{commentaire.auteur == beanMedia.utilisateurConnecte}">-->
-							<p:commandButton id="suppressionCommentaire"
+							<p:commandButton id="suppressionCommentaire" process="@this"
 								action="#{beanMediaCommentaire.supprimerCommentaire}"
 								icon="ui-icon-trash" title="Supprimer"
-								update="listeCommentairesReponses, :messages">
+								update=":messages :tabViewCommentaires">
 								<!-- TODO update liste -->
 								<f:setPropertyActionListener
 									target="#{beanMediaCommentaire.commentaireAffiche}"
@@ -134,29 +134,49 @@
 
 				<!-- Affichage des réponses associées à chaque commentaire affiché -->
 				<p:rowExpansion>
-				
-		            test
-		            test
-		  
-		  
 				<!--<h:form id="formRepeatReponses">-->
 						<ui:repeat value="#{beanMediaCommentaire.mapValue(commentaire)}"
 							var="reponse" id="repeatReponses" rows="10">
 
 							<p:panel id="panelReponseCommentaire" header="Réponse :">
 								<!-- TODO -->
-								hehe
-
-
-
-
-
-
-
-
-
-
-
+								<table>
+									<tr>
+										<td style="width: 150px">
+											<div align="center">
+												<h:outputText value="#{reponse.auteur.pseudo}" />
+												<br />
+												<h:graphicImage value="#{reponse.auteur.avatar.nomAvatar}" />
+												<br /> Envoyé le : <br />
+												<h:outputText value="#{reponse.dateCommentaire}">
+													<f:convertDateTime type="date" pattern="dd/MM/yyyy HH:mm" />
+												</h:outputText>
+											</div>
+										</td>
+										<td>
+											<h:outputText escape="false"
+												value="#{reponse.contenuCommentaire}" /> 
+											<br />
+											<br />
+											<p:commandButton id="suppressionCommentaire"
+												action="#{beanMediaCommentaire.supprimerCommentaire}"
+												process="@this" icon="ui-icon-trash" title="Supprimer"
+												update=":messages">
+												<!-- TODO :formMessage:listeMessage  -->
+												<f:setPropertyActionListener
+													target="#{beanMediaCommentaire.commentaireAffiche}"
+													value="#{reponse}" />
+											</p:commandButton>
+											<p:commandButton id="signalerCommentaire" process="@this"
+												icon="ui-icon-alert" title="Signaler"
+												oncomplete="dlgDialogSignalement.show()">
+												<f:setPropertyActionListener
+													target="#{beanMediaCommentaire.commentaireAffiche}"
+													value="#{reponse}" />
+											</p:commandButton>
+										</td>
+									</tr>
+								</table>
 							</p:panel>
 
 							<br />
@@ -176,20 +196,19 @@
 						<br />
 						<br />
 						<p:commandButton value="Oui"
-							oncomplete="dlgSignalementCommentaire.hide()"
+							onclick="dlgSignalementCommentaire.hide()"
 							action="#{beanMediaCommentaire.signalerCommentaire}"
-							update=":messagesCommentaires">
-							<!-- TODO , :formCommentaire:listeCommentairesReponses -->
+							update=":messagesCommentaires :tabViewCommentaires">
+							<!-- TODO ,  -->
 						</p:commandButton>
 						<p:commandButton value="Annuler"
 							onclick="dlgSignalementCommentaire.hide()" />
 					</h:form>
 				</p:dialog>
 
-				<h:form id="formReponseCommentaire">
 					<p:dialog id="dialogReponseCommentaire"
 						widgetVar="dlgReponseCommentaire" header="Réponse Commentaire">
-
+						<h:form id="formReponseCommentaire">
 						<h:panelGrid columns="2" columnClasses="top,top">
 							<p:editor id="editorNouveauMessage"
 								value="#{beanMediaCommentaire.reponseSaisie}" width="500"
@@ -200,12 +219,11 @@
 
 						<p:commandButton value="Répondre"
 							action="#{beanMediaCommentaire.repondreCommentaire}"
-							oncomplete="dlgReponseMessage.hide()" update=":messages">
+							oncomplete="dlgReponseMessage.hide()" update=":messages :tabViewCommentaires">
 							<!-- TODO update :formMessage:listeMessage  -->
 						</p:commandButton>
-
+						</h:form>
 					</p:dialog>
-				</h:form>
 
 
 			</h:panelGroup>

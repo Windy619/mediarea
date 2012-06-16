@@ -678,7 +678,7 @@ public class DaoMedia extends Dao<Media> {
 	}*/
 	
 	public List<Commentaire> getCommentaires(Media media) {
-		Query query = session.createSQLQuery("" +
+		/*Query query = session.createSQLQuery("" +
 				"SELECT c.idCommentaire, c.contenuCommentaire, c.dateCommentaire, c.nbVotes, c.auteur_idUtilisateur " +
 				"FROM media_commentaire mc LEFT JOIN commentaire c " +
 				"ON mc.commentaires_idCommentaire = c.idCommentaire " +
@@ -690,6 +690,19 @@ public class DaoMedia extends Dao<Media> {
 				"AND m.aCommentairesOuverts = true " +
 				"AND c.idCommentaire NOT IN (SELECT commentaire_idCommentaire " +
 				                            "FROM signalement_commentaire) " +
+				"ORDER BY c.dateCommentaire DESC " +
+				""); //requête SQL (pour faire un join)*/
+		
+		Query query = session.createSQLQuery("" +
+				"SELECT c.idCommentaire, c.contenuCommentaire, c.dateCommentaire, c.nbVotes, c.auteur_idUtilisateur " +
+				"FROM media_commentaire mc LEFT JOIN commentaire c " +
+				"ON mc.commentaires_idCommentaire = c.idCommentaire " +
+				"LEFT JOIN media m " +
+				"ON mc.Media_idMedia = m.idMedia " +
+				"LEFT JOIN signalement_commentaire sc " +
+				"ON mc.commentaires_idCommentaire = sc.commentaire_idCommentaire " +
+				"WHERE mc.Media_idMedia = :media " +
+				"AND m.aCommentairesOuverts = true " +
 				"ORDER BY c.dateCommentaire DESC " +
 				""); //requête SQL (pour faire un join)
 
@@ -727,7 +740,7 @@ public class DaoMedia extends Dao<Media> {
 			"SELECT pere as PERE, fils as FILS, fils.dateCommentaire " +
 			"FROM Media as media JOIN media.commentaires as pere JOIN pere.commentairesFils as fils " +
 			"WHERE media.idMedia = :idMedia " +
-			"ORDER BY fils.dateCommentaire"); //et non signalé TODO
+			"ORDER BY fils.dateCommentaire"); //et non signalé XXX
 		
 		q.setParameter("idMedia", media.getIdMedia());
 		
