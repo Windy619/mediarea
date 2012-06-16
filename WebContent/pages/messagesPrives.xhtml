@@ -20,10 +20,15 @@
 
 			<p:growl id="messages" showDetail="true" />
 
-			<h:outputText
-				rendered="#{empty beanMessagesPrives.utilisateurConnecte}"
-				value="L'envoi de message privé est reservé aux utilisateurs inscrits" />
-
+			<h:form rendered="#{empty beanMessagesPrives.utilisateurConnecte}">
+				<h:outputText value="L'envoi de message privé est reservé aux utilisateurs inscrits" />
+				<h3>Inscription</h3>
+				<br/>
+				<p>Pour profiter de tout cela inscrivez-vous dès maintenant.</p>
+				<br/>
+				<p:button outcome="inscription" value="Créer mon compte" icon="ui-icon-person" />  			
+			</h:form>
+			
 
 			<p:dialog id="dialogNouveauMessage" widgetVar="dlgNouveauMessage"
 				header="Nouveau Message" resizable="false">
@@ -182,7 +187,7 @@
           										icon="ui-icon-trash" title="Supprimer" update=":formMessage:listeMessage :messages"> 
           										<f:setPropertyActionListener target="#{beanMessagesPrives.mpSelectionne}" value="#{message}" />          										
          								</p:commandButton>
-									    <p:commandButton id="repondreMessage" 
+									    <p:commandButton id="repondreMessage" action="#{beanMessagesPrives.afficherFormulaireReponseMessage}"
           										icon="ui-icon-mail-closed" title="Répondre" oncomplete="dlgReponseMessage.show()" update=":formReponseMessage:dialogReponseMessage"> 
           										<f:setPropertyActionListener target="#{beanMessagesPrives.mpSelectionne}" value="#{message}" />   										
           								</p:commandButton>
@@ -221,7 +226,7 @@
 		          										icon="ui-icon-trash" title="Supprimer" update=":formMessage:listeMessage :messages">          										
 		         										<f:setPropertyActionListener target="#{beanMessagesPrives.mpSelectionne}" value="#{reponse}" /> 
 		         								</p:commandButton>
-											    <p:commandButton id="repondreMessage" process="@this" 
+											    <p:commandButton id="repondreMessage" process="@this"  action="#{beanMessagesPrives.afficherFormulaireReponseMessage}"
 		          										icon="ui-icon-mail-closed" title="Répondre" oncomplete="dlgReponseMessage.show()" update=":formReponseMessage:dialogReponseMessage">       										
 		          										<f:setPropertyActionListener target="#{beanMessagesPrives.mpSelectionne}" value="#{message}" /> 
 		          								</p:commandButton>
