@@ -743,7 +743,7 @@ public class DaoMedia extends Dao<Media> {
 			"ORDER BY fils.dateCommentaire"); //et non signalé XXX
 		
 		q.setParameter("idMedia", media.getIdMedia());
-
+		
 		return q;
 	}
 }

@@ -16,8 +16,10 @@ import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 
 import dao.media.DaoMedia;
+import dao.media.DaoTelechargementMedia;
 
 import metier.media.Media;
+import metier.media.Telechargement_Media;
 import metier.utilisateur.Utilisateur;
 
 
@@ -34,6 +36,9 @@ public class BeanPanier {
 	// Utilisateur connecté actuellement
 	private Utilisateur utilisateurConnecte;
 	
+	// Dao
+	private DaoTelechargementMedia daoTelechargement;
+	
 	
 	public BeanPanier() {
 		// Chargement du média visualisé
@@ -44,7 +49,10 @@ public class BeanPanier {
 			// Récupération des informations de l'utilisateur connecté
 			utilisateurConnecte = beanConnexion.getUser();
 		}
-				
+		
+		// Initialisation DAO
+		daoTelechargement = new DaoTelechargementMedia();
+		
 		// Création de la liste qui contiendra tous les médias ajoutés au panier
 		mediaDansPanier = new ArrayList<Media>();
 	}
@@ -122,14 +130,27 @@ public class BeanPanier {
 
 
             for (int i = 0; i < mediaDansPanier.size(); i++) { // On boucle pour ajouter tout les fichier au rar
-           		File f = new File(mediaDansPanier.get(i).getFichier().getCheminFichier()); // on récupère le fichier
-           		System.out.println("Le media : " + mediaDansPanier.get(i).getFichier().getCheminFichier());
-                FileInputStream fis = new FileInputStream(f);
+           		// Stockage du fichier dans un File
+            	File f = new File(mediaDansPanier.get(i).getFichier().getCheminFichier()); // on récupère le fichier
+           		FileInputStream fis = new FileInputStream(f);
                 BufferedInputStream bus = new BufferedInputStream(fis,BUFFER);
-
-                ZipEntry entry = new ZipEntry(f.getName()); // nom du fichier dans l'archive
+                // Renommage du fichier
+                String nameMedia = Integer.toString(i+1) + "-" + mediaDansPanier.get(i).getTitreMedia() + "." + f.getName().split("\\.")[1];
+                ZipEntry entry = new ZipEntry(nameMedia); // nom du fichier dans l'archive
+                // Ajout dans le zip
                 zos.putNextEntry(entry);
-
+                
+                
+                // Gestion des stats de telechargement
+                Telechargement_Media dl_media = daoTelechargement.getByIdmedia(mediaDansPanier.get(i).getIdMedia());
+                if(dl_media != null) {
+                	dl_media.setNbTelechargement(dl_media.getNbTelechargement()+1);
+                }
+                else {
+                	dl_media = new Telechargement_Media(mediaDansPanier.get(i));
+                }
+                daoTelechargement.sauvegarder(dl_media);
+        
                 int count;
                 while ((count = bus.read(buffer,0,BUFFER)) != -1) { // On ajoute le fichier au rar
                     zos.write(buffer, 0, count);
@@ -138,6 +159,109 @@ public class BeanPanier {
                 bus.close();
                 fis.close();
             }
+
+            zos.flush();
+            zos.close();
+            fos.close();
+            bos.close();
+
+        } catch (Exception ex) {
+            System.out.println("Erreur pendant la compression");
+        }
+        
+        File panierCompresse = new File("monPanier.zip");
+        if (panierCompresse.isFile()) {
+        FacesContext context = FacesContext.getCurrentInstance();
+        HttpServletResponse response = (HttpServletResponse) context.getExternalContext().getResponse();
+        
+        ServletOutputStream os = null;
+        try {
+            int length = 0;
+            os = response.getOutputStream();
+
+            //String mimetype = null; // ???
+
+            response.setContentType("application/zip");
+            response.setContentLength((int) panierCompresse.length()); // taille du fichier
+            response.setHeader("Content-Disposition", "attachment; filename=\"" + "monPanier.zip" + "\"");
+            
+            byte[] buffer = new byte[4096]; //taille du buffer
+
+            DataInputStream in = new DataInputStream(new FileInputStream(panierCompresse));
+            while ((in != null) && ((length = in.read(buffer)) != -1)) {
+                os.write(buffer, 0, length);
+            }
+
+            in.close();
+            os.flush();
+            
+        } catch (IOException ex) {
+            System.out.println("erreur");
+        }
+        finally {
+            try {
+                if (os !=null){
+                    os.close();
+                }
+                FacesContext.getCurrentInstance().responseComplete();
+            } catch (IOException e) {
+                System.out.println("test");
+            }
+
+        }
+        }
+        return null;
+	}
+	
+	/** 
+	 * Téléchargement d'un media
+	 * @return
+	 */
+	public String downloadMedia(Media media) {
+		FileOutputStream fos;
+        BufferedOutputStream bos;
+        ZipOutputStream zos;
+
+        try {
+
+            final int BUFFER = 4096; // taille du buffer
+
+            byte[] buffer = new byte[BUFFER];
+
+            fos = new FileOutputStream(media.getTitreMedia()+".zip"); // nom de l'archive rar
+            
+            bos = new BufferedOutputStream(fos);
+            zos = new ZipOutputStream(bos);
+            	
+        	// Stockage du fichier dans un File
+        	File f = new File(media.getFichier().getCheminFichier()); // on récupère le fichier
+       		FileInputStream fis = new FileInputStream(f);
+            BufferedInputStream bus = new BufferedInputStream(fis,BUFFER);
+            // Renommage du fichier
+            String nameMedia = media.getTitreMedia() + "." + f.getName().split("\\.")[1];
+            ZipEntry entry = new ZipEntry(nameMedia); // nom du fichier dans l'archive
+            // Ajout dans le zip
+            zos.putNextEntry(entry);
+            
+            
+            // Gestion des stats de telechargement
+            Telechargement_Media dl_media = daoTelechargement.getByIdmedia(media.getIdMedia());
+            if(dl_media != null) {
+            	dl_media.setNbTelechargement(dl_media.getNbTelechargement()+1);
+            }
+            else {
+            	dl_media = new Telechargement_Media(media);
+            }
+            daoTelechargement.sauvegarder(dl_media);
+    
+            int count;
+            while ((count = bus.read(buffer,0,BUFFER)) != -1) { // On ajoute le fichier au rar
+                zos.write(buffer, 0, count);
+            }
+
+            bus.close();
+            fis.close();
+            
 
             zos.flush();
             zos.close();
