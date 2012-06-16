@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:a4j="http://richfaces.org/a4j"
+      xmlns:rich="http://richfaces.org/rich"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:c="http://java.sun.com/jsp/jstl/core"> 
+
+<f:metadata>
+	<f:viewParam name="v" value="#{beanRecherche.value}"/>
+	<f:viewParam name="ti" value="#{beanRecherche.titre}"/>
+	<f:viewParam name="au" value="#{beanRecherche.auteur}"/>
+	<f:viewParam name="ds" value="#{beanRecherche.description}"/>
+	<f:viewParam name="ta" value="#{beanRecherche.tag}"/>
+	<f:viewParam name="ct" value="#{beanRecherche.categorie}"/>
+	<f:viewParam name="tm" value="#{beanRecherche.typeMedia}"/>
+	<f:viewParam name="tr" value="#{beanRecherche.typeRecherche}"/>
+	<f:viewParam name="t" value="#{beanRecherche.tri}"/>
+	<f:viewParam name="to" value="#{beanRecherche.tri_ordre}"/>
+	<f:viewParam name="nb" value="#{beanRecherche.nb_par_pages}"/>
+	<f:viewParam name="af" value="#{beanRecherche.afficher_par}"/>
+	<f:viewParam name="dl" value="#{beanRecherche.seulementTelechargeable}"/>
+	<f:viewParam name="p" value="#{beanRecherche.page}"/>
+	<f:event type="preRenderView" listener="#{beanRecherche.processRecherchePre()}" onPostback="false"/>
+</f:metadata> 
+     
+<ui:composition template="/templates/standard.xhtml">
+	<ui:define name="pageTitle">Panier</ui:define>
+	<ui:define name="content">
+		 
+		<section class="group1">
+			<h:form>
+			<h3>Votre panier <h:commandLink rendered="#{not empty beanPanier.mediaDansPanier}" action="#{beanPanier.downloadPanier}" value="  [ DOWNLOAD ]  " /><h:commandLink rendered="#{not empty beanPanier.mediaDansPanier}"  action="#{beanPanier.vider}" value=" [ VIDER ]" /></h3>		
+			</h:form>
+			
+			<p:dataGrid var="media" value="#{beanPanier.mediaDansPanier}" columns="3"  
+		        rows="12" paginator="true"  
+		        paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"  
+		        rowsPerPageTemplate="9,12,15">  
+		          
+		        <p:column>  
+		            <article class="holder_gallery_min">
+						<h:form>
+							<h:commandLink styleClass="photo_hover2" action="#{beanRecherche.accessMedia(media.idMedia)}"><h:graphicImage value="/resources/images/#{media.photo.nomPhotoCouverture}"  width="150" height="99" alt="#{media.photo.nomPhotoCouverture}"/> <br /></h:commandLink>
+							<div class="clearfloat"></div>
+							<h2 class="titre_liste_media">
+								<h:graphicImage library="images" name="/icones/ico_audio.png" alt="Audio" rendered="#{media.type.nomTypeMedia == 'son'}" />
+								<h:graphicImage library="images" name="/icones/ico_video.png" alt="Video" rendered="#{media.type.nomTypeMedia == 'video'}"/>
+								<h:commandLink value="#{media.titreMedia}" action="#{beanRecherche.accessMedia(media.idMedia)}" /> 
+							</h2> 
+							<!-- <p class="vues_liste_media">1.000.000 vues</p> -->
+							<p class="infos_liste_media">
+							Par <h:commandLink value="#{media.auteurMedia.pseudo}" action="#{beanRecherche.clickOnPublisher(media.auteurMedia.pseudo)}" />, le <h:outputText value="#{media.datePublication}"><f:convertDateTime type="date" dateStyle="short" /></h:outputText> <br />		
+							<h:commandLink value="Supprimer de la liste" action="#{beanPanier.supprimer(media)}" />
+							</p>
+						</h:form>
+					</article>
+		        </p:column>  
+		    </p:dataGrid>
+	    </section>
+          
+           
+	    <aside class="group2">
+			<h3>Recommendations </h3>
+			<h:outputText value="Pour voir vos recommendations, veuillez vous connecter."  rendered="#{empty beanHome.utilisateurConnecte}"/>
+			
+			<h3>Vidéos </h3>			
+			<article class="holder_news">
+				<h:outputText value="Aucune vidéo n'a été trouvée."  rendered="#{empty beanHome.recommendationVideos}"/>
+				<a4j:repeat value="#{beanHome.recommendationVideos}" var="video" rows="3" id="listRecommendationVideos">
+					<h4>
+						<h:outputText value="#{video.titreMedia}" />
+						<span>
+							<h:outputText value="#{video.datePublication}">
+								<f:convertDateTime type="date" pattern="dd.MM.yyyy"/>
+							</h:outputText>		
+						</span>	
+					</h4>	
+					<p>
+						<h:outputText value="#{video.descriptionMedia}" />
+						<br />
+						<span class="readmore">				
+							<a href="#">Read more..</a>
+						</span>												
+					</p>
+				</a4j:repeat>
+			</article> 			
+ 
+			
+			
+			<h3>Sons</h3>
+			<article class="holder_news">
+				<h:outputText value="Aucun sons n'a été trouvée."  rendered="#{empty beanHome.recommendationSons}"/>
+				<a4j:repeat value="#{beanHome.recommendationSons}" var="son" rows="3" id="listRecommendationSons">
+					<h4>
+						<h:outputText value="#{son.titreMedia}" />
+						<span>
+						<h:outputText value="#{son.datePublication}">
+							<f:convertDateTime type="date" pattern="dd.MM.yyyy"/>
+						</h:outputText>							
+						</span>
+					</h4>
+					<p><h:outputText value="#{son.descriptionMedia}" /><span class="readmore">
+					<a href="#">Read more..</a></span></p>				
+				</a4j:repeat>
+			</article>			
+  
+		</aside>         
+	</ui:define>
+</ui:composition> 
+</html>

@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+        xmlns:h="http://java.sun.com/jsf/html"
+        xmlns:a4j="http://richfaces.org/a4j"
+        xmlns:rich="http://richfaces.org/rich"
+        xmlns:f="http://java.sun.com/jsf/core"
+        xmlns:ui="http://java.sun.com/jsf/facelets"
+        xmlns:p="http://primefaces.org/ui">
+
+<h:head>
+        <meta http-equiv="Content-Type"
+                content="application/xhtml+xml; charset=UTF-8" />
+        <h:outputStylesheet library="css" name="styles.css" />
+        <title>MediArea - <ui:insert name="pageTitle" /></title>
+
+        <!-- Lecteur audio/vidéo -->
+        <!-- first: the CSS layout of LeanBack Player -->
+        <!--<h:outputStylesheet library="css" name="leanbackPlayer.default.css" />-->
+        <!-- second: the Javascript file of LeanBack Player -->
+        <!--<h:outputScript library="js" name="leanbackPlayer.pack.js" />-->
+        <!-- third: additional language files of LeanBack Player; -->
+        <!--<h:outputScript library="js" name="leanbackPlayer.en.js" />-->
+        <!--<h:outputScript library="js" name="leanbackPlayer.de.js" />-->
+        <!--<h:outputScript library="js" name="LBPoption.js" />-->
+        
+        <!-- Flowplayer -->
+        <script type="text/javascript" src="../resources/flash/flowplayer/flowplayer-3.2.10.min.js"></script>
+        <!--<link rel="stylesheet" type="text/css" href="style.css">-->
+
+        <script type="text/javascript" src="https://apis.google.com/js/plusone.js"></script>
+        <h:outputScript library="js" name="redirection.js" />
+</h:head>
+
+<h:body>
+
+        <p:stack icon="/resources/images/menu/menu.png">
+                <p:menuitem rendered="#{beanConnexion.isConnected}" value="Amis" icon="/resources/images/menu/amis.png"
+                        url="amis.jsf" />
+                <p:menuitem rendered="#{beanConnexion.isConnected}" value="Notifications (#{beanNotification.nbNotifications})" icon="/resources/images/menu/notification.png"
+                        url="#" onclick="dlgNotification.show()" actionListener="#{beanNotification.lireNotifications}" />
+                <p:menuitem rendered="#{beanConnexion.isConnected}" value="Playlist"
+                        icon="/resources/images/menu/playlist.png" url="gestionPlaylist.jsf" />
+                <p:menuitem rendered="#{beanConnexion.isConnected}" value="Messagerie"
+                        icon="/resources/images/menu/messagerie.png" url="messagesPrives.jsf" />
+              	<p:menuitem rendered="#{beanConnexion.isConnected}" value="Upload"
+                        icon="/resources/images/menu/upload2.png" url="upload.jsf" />        
+              	<p:menuitem rendered="#{beanConnexion.isConnected}" value="Panier"
+                        icon="/resources/images/menu/panier.png" url="panier.jsf" />                                           
+                <p:menuitem value="Accueil" icon="/resources/images/menu/home.png"
+                        url="home.jsf" />
+        </p:stack>
+
+
+        <div id="container">
+                        
+                <header>
+                        <!--logo-->
+                        <a href="home.jsf" id="logo"><h:graphicImage library="images"
+                                        name="logo.png" alt="logo" /></a>
+
+                        <div id="nav">
+                                <h:form>
+                                        <h:outputLink rendered="#{beanConnexion.isConnected and beanConnexion.user.estAdministrateur==true}" onclick="document.location.href='homeAdmin.jsf'"
+                                                value="homeAdmin.jsf">
+                                                <h:outputText value="Administration" />
+                                        </h:outputLink>
+                                        <h:outputText rendered="#{beanConnexion.isConnected and beanConnexion.user.estAdministrateur==true}"  value=" | " />
+                                        <!--Inscription/Profil - Connexion/déconnexion-->
+                                        <h:outputLink rendered="#{!beanConnexion.isConnected}"
+                                                onclick="document.location.href='inscription.jsf'"
+                                                value="inscription.jsf">
+                                                <h:outputText value="Inscription" />
+                                        </h:outputLink>
+                                        <h:outputLink rendered="#{beanConnexion.isConnected}"
+                                                onclick="document.location.href='profil.jsf'" value="profil.jsf">
+                                                <h:outputText value="Mon Profil" />
+                                        </h:outputLink>
+
+                                        <h:outputText value=" | " />
+
+                                        <h:outputLink rendered="#{!beanConnexion.isConnected}"
+                                                id="connexion" value="javascript:void(0)" onclick="dlg.show()">
+                                                <h:outputText value="Connexion" />
+                                        </h:outputLink>
+
+                                        <h:commandLink rendered="#{beanConnexion.isConnected}"
+                                                id="deconnexion" action="#{beanConnexion.seDeconnecter}"
+                                                title="deconnexion" value="Déconnexion" />
+                                
+                                </h:form>
+                                <p:growl id="growl" showDetail="false" life="3000" />
+
+                                <script type="text/javascript">  
+                                            function handleLoginRequest(xhr, status, args) {  
+                                                if(args.validationFailed || !args.loggedIn) {  
+                                                    jQuery('#dialog').effect("shake", { times:3 }, 100);  
+                                                } else {  
+                                                    dlg.hide();  
+                                                    jQuery('#connexion').fadeOut();  
+                                                }  
+                                            }  
+                                        </script>
+
+                        </div>
+                                   
+                <!-- </header> -->
+
+                <!-- <header class="group_bannner_left"> -->
+                        <div id="recherche_simple">
+                                <h:form>
+                                 <h:inputText styleClass="inputRecherche" size="56" value="#{beanRecherche.value}" />
+                                 <p:selectOneButton styleClass="typeMedia" value="#{beanRecherche.typeMedia}">  
+                                    <f:selectItem itemLabel="All" itemValue="1" />  
+                                    <f:selectItem itemLabel="Video" itemValue="2" />  
+                                    <f:selectItem itemLabel="Audio" itemValue="3" />  
+                                </p:selectOneButton>
+                                        <div class="buttonSearch">
+                                                <h:commandLink action="#{beanRecherche.rechercher}" value="Rechercher" />
+                                        </div>
+                                        <div class="clearfloat"></div>  
+                                </h:form>
+                        </div>
+                        <div id="recherche_av_btn">
+                                <h:form>
+                                        <p:commandButton id="chartBtn" value="Avancée" type="button" />  
+  
+                                    <p:overlayPanel id="chartPanel" for="chartBtn" hideEffect="fade" my="right top" at="right bottom">  
+                                        <h:form>
+                                                <p:panelGrid columns="2"> 
+                                                        <h:outputText value="Titre : " /> <h:inputText value="#{beanRecherche.titre}" />
+                                                        <h:outputText value="Auteur : " /> <h:inputText value="#{beanRecherche.auteur}" /> 
+                                                        <h:outputText value="Description : " /> <h:inputText value="#{beanRecherche.description}" /> 
+                                                        <h:outputText value="Tag : " /> <h:inputText value="#{beanRecherche.tag}" /> 
+                                                        <h:outputText value="Catagorie : " /> 
+                                                        <p:selectOneMenu id="city" value="#{beanRecherche.categorie}">  
+                                                        <f:selectItem itemLabel="Sélectionnez" itemValue="" />  
+                                                        <f:selectItems value="#{beanRecherche.lstCategories}" var="categorie" itemLabel="#{categorie.nomCategorie}" itemValue="#{categorie.idCategorie}"/>   
+                                                    </p:selectOneMenu>  
+                                                        <p:column colspan="2"><h:commandButton action="#{beanRecherche.rechercherAvancee}" value="Rechercher" /></p:column>
+                                                </p:panelGrid>
+                                        </h:form>
+                                    </p:overlayPanel>
+                                </h:form>
+                        </div>
+                        <div class="clearfloat"></div>          
+
+                </header>
+
+				<p:dialog id="dialogNotification" header="Notification" widgetVar="dlgNotification">
+
+					<h:outputText rendered="#{empty beanNotification.listeNotifications}" value="Vous n'avez aucune notifications pour le moment !" />
+					
+				    <p:dataTable id="basic" rendered="#{beanNotification.listeNotifications.size() > 0}" value="#{beanNotification.listeNotifications}" paginator="true" rows="4" var="notification">  
+				        <p:column>  
+				            <f:facet name="header">  
+				                    Date  
+				            </f:facet>  
+					    	<h:outputText value="#{notification.dateEnvoiNotification}">
+					    		<f:convertDateTime type="date" pattern="dd/MM/yyyy HH:mm"/>
+					    	</h:outputText>
+				        </p:column>  	
+				        
+				        <p:column>  
+				            <f:facet name="header">  
+				                    Message  
+				            </f:facet>  
+				            <h:outputText value="#{notification.contenuNotification}" /> 
+				        </p:column>
+				          		        	    
+				    </p:dataTable>  
+
+				</p:dialog>	
+					
+                <p:dialog id="dialog" header="Connexion" widgetVar="dlg">
+                        <h:form>
+                                <h:panelGrid columns="2" cellpadding="5">
+                                        <h:outputLabel value="Adresse Mail :" />
+                                        <p:inputText value="#{beanConnexion.identifiant}" id="identifiant"
+                                                label="identifiant" required="true" />
+                                        <h:outputLabel value="Password :" />
+                                        <h:inputSecret value="#{beanConnexion.password}"
+                                                class="ui-inputfield ui-password ui-widget ui-state-default ui-corner-all"
+                                                id="password" label="password" required="true" />
+                                        <p:commandButton id="Login" value="Se connecter" update=":growl"
+                                                action="#{beanConnexion.getIsAccountOk}"
+                                                oncomplete="handleLoginRequest(xhr, status, args)" />
+                                        <br />
+                                        <h:link value="Mot de passe oublié ?" outcome="recuperationMDP" />
+                                </h:panelGrid>
+                        </h:form>
+                </p:dialog>
+
+                <div class="holder_content">
+                        <ui:insert name="content">
+                                Content is empty
+                        </ui:insert>
+                </div>
+        </div>
+
+        <footer>
+                <ui:insert name="footerContent">
+                        <ui:include src="../resources/includes/footer_basic.xhtml" />
+                </ui:insert>
+        </footer>
+
+
+
+</h:body>
+
+</html>

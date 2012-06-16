@@ -1,0 +1,620 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:f="http://java.sun.com/jsf/core" 
+    xmlns:ui="http://java.sun.com/jsf/facelets" 
+    xmlns:a4j="http://richfaces.org/a4j"
+    xmlns:rich="http://richfaces.org/rich"
+    xmlns:p="http://primefaces.org/ui">    
+    <!--xmlns:c="http://java.sun.com/jstl/core"-->
+    
+<f:metadata>
+	<f:viewParam name="v" value="#{beanMedia.idMediaVisualise}" />
+	<f:event type="preRenderView" listener="#{beanMedia.processMediaPre()}" onPostback="false" />
+</f:metadata>
+
+<ui:composition template="/templates/standard.xhtml">
+	<ui:define name="pageTitle">Détail d'un média</ui:define>
+	<ui:define name="content">
+		<section class="group1">
+			<div id="fb-root"></div>
+			<script>(function(d, s, id) {
+			  var js, fjs = d.getElementsByTagName(s)[0];
+			  if (d.getElementById(id)) return;
+			  js = d.createElement(s); js.id = id;
+			  js.src = "//connect.facebook.net/fr_FR/all.js#xfbml=1";
+			  fjs.parentNode.insertBefore(js, fjs);
+			}(document, 'script', 'facebook-jssdk'));
+			</script>
+		    
+			<h3>Détail d'un média</h3>
+			
+			<br />			
+					
+			<h:outputText value="#{beanMedia.titreMedia}" styleClass="titre" />
+						
+			<br />
+			<br />
+						
+			<!-- surrounding element with class - needed!! -->
+			<h:panelGroup rendered="#{beanMedia.mediaVisualise.type.idTypeMedia == 2}">
+				Vidéo
+				<!-- Lecteur vidéo -->
+				
+			    <!-- this A tag is where your Flowplayer will be placed. it can be anywhere -->
+				<!--<a  
+					 href="http://pseudo01.hddn.com/vod/demo.flowplayervod/flowplayer-700.flv"
+					 style="display:block;width:520px;height:330px"  
+					 id="player"> 
+				</a>-->
+				<a 
+					 href="/MediArea/resources/videos/#{beanMedia.mediaVisualise.fichier.nomFichier}"
+					 style="display:block;width:612px;height:404px"
+					 id="player">
+				</a>
+			
+				<!-- this will install flowplayer inside previous A- tag. -->
+				<!--<script>
+					flowplayer("player", "../resources/flash/flowplayer/flowplayer-3.2.11.swf", {
+					      clip:  {
+					          autoPlay: false,
+					          autoBuffering: true
+					      }
+					  });
+				</script>-->
+				<script>
+					flowplayer("player", {
+						  src:"/MediArea/resources/flash/flowplayer/flowplayer-3.2.11.swf", 
+						  wmode: "opaque" // This allows the HTML to hide the flash content
+					      }, {
+					      clip:  {
+					          autoPlay: false,
+					          autoBuffering: true
+					      }
+					  });
+				</script>
+				
+				
+				<!--</div>-->
+			<!--<p:media value="http://www.youtube.com/v/KZnUr8lcqjo" width="425" height="344" player="flash"/>-->
+			</h:panelGroup>
+			
+			
+		
+			<h:panelGroup rendered="#{beanMedia.mediaVisualise.type.idTypeMedia == 1}">
+				Audio
+				<!-- Lecteur audio -->
+				<!-- http://flowplayer.org/plugins/streaming/audio.html -->
+				
+				<!-- set up player container  -->
+				<!--<div id="player" style="display:block;width:640px;height:453px;"></div>-->
+				<div id="player" style="display:block;width:612px;height:425px;"></div>
+				
+				<script>
+				$f("player", "http://releases.flowplayer.org/swf/flowplayer-3.2.11.swf", {
+ 
+				    clip: {
+				       url: "/MediArea/resources/audios/#{beanMedia.mediaVisualise.fichier.nomFichier}",
+				 
+				       // this style of configuring the cover image was added in audio
+				       // plugin version 3.2.3
+				       coverImage: { url: "http://releases.flowplayer.org/data/national.jpg",
+				                    scaling: 'orig' },
+						//#{beanMedia.mediaVisualise.photo.cheminPhotoCouverture} TODO
+				                    
+				   	   autoPlay: false,
+				    }
+				 
+				});
+				</script>
+
+			</h:panelGroup>
+			
+			<br />
+			<br />
+		
+		<!-- S'abonner et Se désabonner XXX -->
+
+		
+		
+		<p:growl id="messages"/>
+		
+		<!-- Partie gauche -->
+		<p:fieldset styleClass="gauche">  
+		<h:form>
+		
+		<!-- Actions possibles -->  
+	    <p:splitButton id="avis" value="Avis" icon="ui-icon-person" style="font-size: 11px;">  
+	        <p:menuitem id="jAime" value="J'aime" actionListener="#{beanMedia.jAime}" update=":messages, avis" icon="ui-icon-heart" disabled="#{beanMedia.jAimeDisabled}" />
+	        <p:menuitem id="jeNAimePas" value="Je n'aime pas" actionListener="#{beanMedia.jeNAimePas}" update=":messages, avis" icon="ui-icon-heart" disabled="#{beanMedia.jeNAimePasDisabled}" />  
+	    </p:splitButton>
+	    
+	    <p:splitButton id="ajouteA" value="Ajouter à" icon="ui-icon-plus" style="font-size: 11px;" rendered="#{not empty beanMedia.utilisateurConnecte}">  
+	        <p:menuitem id="favori" value="#{beanMedia.txtFavori}" actionListener="#{beanMedia.ajouterAFavori}" update=":messages, ajouteA" icon="ui-icon-star" />
+	        <p:menuitem value="Playlist" update=":messages" icon="ui-icon-video" onclick="dlgPlaylist.show();" />  
+	    </p:splitButton>
+		
+		<p:splitButton value="Partager" icon="ui-icon-home" style="font-size: 11px;">  
+	        <p:menuitem value="Exporter" update=":messages" icon="ui-icon-copy" onclick="dlgExporter.show();" />
+	        <p:menuitem value="Emails et amis" update=":messages" icon="ui-icon-mail-open" onclick="dlgEmail.show();" /><!-- show si utilisateurConnecte TODO -->
+	    </p:splitButton>
+    </h:form>
+    	
+				
+	
+    <br />
+    		
+    		<!-- Pop-up permettant l'ajout du média à une playlist -->			
+			<!--<rich:popupPanel id="popupPlaylist" modal="false" autosized="true" resizeable="false" style="z-index: 99999;">-->
+		    <p:dialog id="popupPlaylist" header="Ajouter à une playlist" widgetVar="dlgPlaylist" showEffect="explode">
+		        <h:form id="formPlaylist">
+		        <p>
+		        	<h:outputText value="Cliquez sur une playlist pour ajouter ou retirer ce média" />
+		        	 <p:dataTable id="dataTable" var="play" value="#{beanMedia.listePlaylistUt}">  
+				        <f:facet name="header">
+				            <h:outputText value="Playlists" />
+				        </f:facet>  
+				  
+				        <p:column id="nomPlaylist" sortBy="#{play.nomPlaylist}"><!-- TODO sort -->
+				            <f:facet name="header">  
+				                <h:outputText value="Nom" />  
+				            </f:facet>
+				            <h:graphicImage id="imgAjoutPlaylist" value="../resources/images/icones/accepter-check-ok-oui-icone-4851-16.png" alt="Ajouter" rendered="#{! beanMedia.getEstAjouteAPlaylist(play)}" />
+				            <h:graphicImage id="imgRetirerPlaylist" value="../resources/images/icones/fermer-croix-supprimer-erreurs-sortie-icone-4368-16.png" alt="Retirer" rendered="#{beanMedia.getEstAjouteAPlaylist(play)}" />
+	        				<p:commandLink update=":messages, @form" action="#{beanMedia.ajouterMediaAPlaylist}" style="margin-right:23px;">  
+						        <h:outputText value="#{play.nomPlaylist} (nb de média dans playlist TODO)" />
+						    	<f:setPropertyActionListener target="#{beanMedia.playlistSelectionnee}" value="#{play}" />
+						    </p:commandLink><!-- TODO Hibernate playlist_media : medias_idMedia pas en PRIMARY -->
+						    
+				        </p:column>
+				        
+				        <p:column id="visibilitePlaylist" sortBy="#{play.visibilite}">  
+				            <f:facet name="header">
+				                <h:outputText value="Visibilité" />  
+				            </f:facet>
+				            <h:outputText value="#{play.visibilite.nomVisibilite}" />
+				        </p:column>
+				    </p:dataTable>
+		            <br />
+		            <p:commandButton value="Créer une playlist" onclick="dlgCreerPlaylist.show();" type="button" /><!-- dlgPlaylist.hide();  -->
+		            <!-- Collector XXX -->
+		            <br />
+		        </p>
+		        </h:form>
+		    <!--</rich:popupPanel>-->
+		    </p:dialog>
+		    
+		    
+	        <!-- Pop-up permettant la création d'une nouvelle playlist -->
+			<p:dialog id="popupCreerPlaylist" header="Créer une nouvelle playlist" widgetVar="dlgCreerPlaylist" showEffect="explode">
+  				<h:form>
+  				<p:panel id="panel" style="margin-bottom:10px;">
+			        <p:messages id="messages" />
+			        <h:panelGrid columns="3">  
+			            <h:outputLabel for="nomPlaylistACreer" value="Nom : *" />  
+			            <p:inputText id="nomPlaylistACreer"   
+			                value="#{beanMedia.nomPlaylistACreer}" required="true" label="Nom">  
+			                <f:validateLength minimum="1" />  
+			            </p:inputText>  
+			            <p:message for="nomPlaylistACreer" />  
+			              
+			            <h:outputLabel for="visibilitePlaylistACreer" value="Visibilité : *" />  
+			            <p:selectOneMenu id="visibilitePlaylistACreer" value="#{beanMedia.visibilitePlaylistACreer}">
+					    	<f:selectItems value="#{beanMedia.listeNomVisibilite}" />
+					    </p:selectOneMenu>
+					    <p:message for="visibilitePlaylistACreer" />
+			            
+			            <h:outputLabel for="descrPlaylistACreer" value="Description :" />  
+		           		<p:inputTextarea id="descrPlaylistACreer" rows="5" cols="30" counter="counter" maxlength="100"       
+						    counterTemplate="{0} caractères restants." autoResize="false" value="#{beanMedia.descriptionPlaylistACreer}" />
+						<h:outputText id="counter" /><!-- FIXME caractères restants -->
+			        </h:panelGrid>
+			  	</p:panel>
+			  	
+			    <p:commandButton value="Sauvegarder" id="Sauvegarder" 
+			    	actionListener="#{beanMedia.creerPlaylist}" update=":popupPlaylist, messages" /><!--oncomplete="dlgCreerPlaylist.hide(); dlgPlaylist.show();"--><!-- prendre en compte ajout directement (BD) -->
+	        	</h:form>
+	        </p:dialog>
+	        
+	        
+	        
+        	<!-- Pop-up permettant d'exporter le média --> 
+        	   <!--<rich:popupPanel id="popupExporter" modal="false" autosized="true" resizeable="false" style="z-index: 99999;">-->
+			    <p:dialog id="popupExporter" header="Personnaliser le lecteur exportable" widgetVar="dlgExporter" showEffect="explode" width="480">
+			    	<h:form id="formExporter">
+			    		
+			        	<h:outputText value="Lien : " styleClass="bold"/>
+			        	<br />
+			        	<p:inputText id="lien" value="#{request.requestURL}?v=#{beanMedia.paramUrl}" size="58" />
+			        	<br />
+			        	<br />			        	
+			        	<hr />
+			        	<br />
+			        	<h:outputText value="Copier le code d'intégration" styleClass="bold" />
+			        	<br />
+			        	<p:inputTextarea id="codeIntegration" value="#{beanMedia.codeIntegration}" cols="60" rows="9">
+			        	</p:inputTextarea>
+			        	<br />
+			        	<h:outputText value="Après avoir sélectionné les options souhaitées plus bas, copiez-collez le code d'intégration ci-dessus. Ce dernier change en fonction des options choisies." />
+			        	<br />
+			        	<hr />
+			        	<p:selectBooleanCheckbox value="false">  
+				            <p:ajax event="change" update="codeIntegration" listener="#{beanMedia.desactiverLecteurIframe}"/>  
+				        </p:selectBooleanCheckbox>
+				        <h:outputText value="Utiliser l'ancien code d'intégration" />
+			        	<br />
+			        	<hr />
+			        	<br />
+			        	<h:outputText value="Taille du lecteur" styleClass="bold"/>
+			        	<br />
+			        	<p:selectOneRadio id="tailleLecteur" 
+							value="#{beanMedia.tailleLecteur}" layout="lineDirection">
+							<p:ajax event="change" upddate="codeIntegration" listener="#{beanMedia.changerTailleLecteur}" />
+							<f:selectItem id="petit" itemLabel="Petit (320x180)" itemValue="petit"  />
+							<f:selectItem id="moyen" itemLabel="Moyen (480x270)" itemValue="moyen" />
+							<f:selectItem id="grand" itemLabel="Grand (560x315)" itemValue="grand" />							
+			        	</p:selectOneRadio><!-- execute="@form"  -->
+			        	<!--<f:selectItem id="personnalisee" itemLabel="Taille personnalisée" itemValue="taillePersonnalisee" /> XXX-->
+			        	<!--<p:selectManyCheckbox value="#{beanMedia.tailleLecteur}" update="codeIntegration">
+				            <f:selectItem itemLabel="Petit (320x180)" itemValue="petit" />
+				            <f:selectItem itemLabel="Moyen (480x270)" itemValue="moyen" />
+				            <f:selectItem itemLabel="Grand (560x315)" itemValue="grand" />
+				            <f:selectItem itemLabel="Taille personnalisée" itemValue="taillePersonnalisee" />
+				        </p:selectManyCheckbox>-->
+				        <!--Intro, Titre, Résumé XXX-->
+			        	<br />
+			   		</h:form>
+			    <!--</rich:popupPanel>-->
+			    </p:dialog>
+			    
+			    <!-- Pop-up permettant d'envoyer un email -->
+			    <p:dialog id="popupEmail" header="Choisissez vos destinataires" widgetVar="dlgEmail" showEffect="explode"><!-- TODO -->
+			        
+					<h:form id="formNouveauMessage">
+					
+						<h:panelGrid columns="2" columnClasses="top,top">
+							<h:outputText value="De : " />
+							<p:inputText
+								value="#{beanMessagesPrives.utilisateurConnecte.adrMail}"
+								style="width: 500px" disabled="true" />
+	
+							<h:outputText value=" A : " />
+							<p:autoComplete id="destinataire" maxResults="5"
+								value="#{beanMessagesPrives.destinataire}"
+								styleClass="message_automplete"
+								completeMethod="#{beanMessagesPrives.autoCompletion}"
+								style="width: 500px" />
+	
+							<h:outputText value=" Objet : " />
+							<p:inputText id="objet" value="#{beanMessagesPrives.objet}"
+								style="width: 500px" />
+	
+							<h:outputText value="Message :" />
+							<p:editor id="editorNouveauMessage"
+								value="#{beanMessagesPrives.contenu}" width="500" height="250" />
+	
+						</h:panelGrid>
+	
+						<br />
+	
+						<p:commandButton value="Envoyer le message"
+							action="#{beanMessagesPrives.envoyerEmail}"
+							onclick="dlgNouveauMessage.hide()">
+						</p:commandButton>
+					</h:form>
+			    </p:dialog>
+			    
+			    <!-- Indication si le média est aimé ou non -->
+			    
+			    
+				<br />
+        		<br />
+			    
+			    <!-- Réseaux sociaux -->
+	            <div style="float: left;">
+	            <!-- https://dev.twitter.com/docs/tweet-button : Tweet Button -->
+				<a href="https://twitter.com/share" class="twitter-share-button" data-via="twitterapi" data-lang="en">Tweet</a>
+				<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="//platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+				</div>
+				
+				<!-- Like Button - Facebook Developers -->
+				<!--<div style="float: left; max-width: 100px;" class="fb-like" data-send="false" data-layout="button_count" data-width="450" data-show-faces="true"></div>-->
+				<div style="float: left; max-width: 100px;" class="fb-like" data-href="http://88.191.133.150:8080/MediArea/" data-send="false" data-layout="button_count" data-width="450" data-show-faces="true"></div>
+				
+				<div style="float: left;">
+					<!-- https://developers.google.com/+/plugins/+1button/ ; http://www.google.com/intl/en/webmasters/+1/button/ : +1 Button -->
+					<div class="g-plusone" data-href="http://88.191.133.150:8080/MediArea/"></div>
+				</div>
+				
+				<div style="float: left;">
+					<!-- http://en.skyrock.com/developer/tools.php : Share on Skyrock -->
+					<a href="http://www.skyrock.com/m/blog/share.php?js=0" class="skysocial-s skyrocksocialshare_classic24" title="Share on Skyrock" style="display:inline-block;text-indent:-999em;overflow:hidden;width:57px;height:24px;background:url(http://share.static.skyrock.net/img/api/skyrocksocialshare_classic24.png) no-repeat 0 0 transparent;"><p style="display:none;">Share on Skyrock</p></a>
+					<script>(function(){var d=document,id='skyrock-fxlebpx'; if(d.getElementById(id)) return;var e=d.createElement('script');e.id=id;e.async=true;e.src='http://share.static.skyrock.net/js/skyrock_social.min.js';d.getElementsByTagName('body')[0].appendChild(e);}());</script>
+					<!-- FIXME -->
+				</div>
+				
+				<div style="clear: both;"></div>
+				<br />
+			
+	            
+	            <!-- Informations sur le média -->
+	            <h:form>
+	            <span class="bold">
+	            	<h:outputText value="Ajouté par " />
+	            	<h:commandLink value="#{beanMedia.auteur}" action="#{beanRecherche.clickOnPublisher(media.auteurMedia.pseudo)}" />
+	            	<h:outputText value=" le #{beanMedia.datePublication}" />
+	            </span>
+	            </h:form>
+	            <br />
+	            <h:outputText value="#{beanMedia.description}" />
+        	<!-- </rich:panel> -->
+        	</p:fieldset>
+        	
+        	<!-- Partie droite -->
+        	<p:fieldset styleClass="droite">
+        		<!-- Affichage du nombre de vues -->
+        		<h:outputText value="#{beanMedia.resultatTotalVuesMedia}">
+        			<f:convertNumber integerOnly="true" />
+        		</h:outputText>
+        		<h:outputText value=" vue#{beanMedia.motVues}" />
+        		
+				        
+				<br />   
+				<!-- Affichage du nombre de fois que le média a été téléchargé -->     		
+		        <h:outputText value="#{beanMedia.resultatTotalTelechargementMedia} téléchargement#{beanMedia.motTelechargement}" />
+		        <br />
+		        <br />  
+        		
+        	<!-- Notation par estimation étoile du média -->
+        	<h:form>
+        		<div style="float:left;">
+        		<p:growl id="messages" showDetail="true" />
+        	
+        		<h:panelGrid columns="2" cellpadding="5">
+			        <p:rating value="#{beanMedia.note}">  
+			            <p:ajax event="rate" listener="#{beanMedia.handleRate}" update="messages" />  
+			        </p:rating>
+			    </h:panelGrid>
+        		</div>
+        	</h:form>
+        		<br />
+        		<br />
+        	<h:form>	
+        		<div style="float:left;">
+        			<!--<p:commandButton value="Exporter" image="/resources/images/icones/tag-icone-4783-32.png" alt="Exporter" onclick="dlgExporter.show();" title="Exporter ce média sur votre blog ou site" />-->
+        			<p:commandButton value="Exporter" icon="ui-icon-carat-2-e-w" alt="Exporter" onclick="dlgExporter.show();" title="Exporter ce média sur votre blog ou site" style="float: left;" />
+        			<p:spacer width="20" />
+        			<!-- Affichage des statistiques associés au média -->
+        			<p:commandButton value="Visualiser statistiques" image="ui-icon-signal" alt="Statistiques" onclick="dlgStatistiques.show();" title="Statistiques" style="float: left;" />
+        			<p:spacer width="20" />
+        			<!-- Signalement du média -->
+        			<p:commandButton value="Signaler" image="ui-icon-flag" alt="Peut offenser" onclick="dlgSignaler.show();" title="Signaler ce média" style="float: left;" /><!-- TODO utilisateurConnecte -->
+	            </div>
+	        </h:form>
+	            
+	            <!-- Pop-up permettant de visualiser les statistiques du média -->
+        			        		
+	        		<p:dialog id="popupStatistiques" header="Statistiques" widgetVar="dlgStatistiques" showEffect="explode">
+				    <h:form>
+				        <h:outputText value="#{beanMedia.resultatTotalVuesMedia} vue#{beanMedia.motVues} - "/> 
+				        <h:outputText value="#{beanMediaCommentaire.nbCommentaires} com. - " />
+				        <h:outputText value="TODO fav. - " />
+				        <h:outputText value="#{beanMedia.resultatTotalVotesMedia} vote#{beanMedia.motVotes}"/>
+				        <br />  
+						<h:outputText value="Utilisateurs ayant aimé : " /><h:outputText value="#{beanMedia.resultatNbAime}" />
+						
+						<br />
+						<h:outputText value="Utilisateurs n'ayant pas aimé : " /><h:outputText value="#{beanMedia.resultatNbNAimePas}" />
+						<br />
+						<!--<p:barChart id="graphiqueAimeNAimePas" value="#{beanMedia.graphiqueAimeNAimePas}" legendPosition="se" style="height:300px"  
+            				title="Avis des utilisateurs" orientation="horizontal" min="0" max="200"/>--><!-- rechargement de la page qd ajout de barChart XXX -->
+						<br />
+						<h:panelGroup rendered="#{beanMedia.resultatTotalVuesMedia > 0 }">
+							<p:lineChart id="graphiqueStatVues" value="#{beanMedia.graphiqueStatVues}" legendPosition="e"  
+								title="Statistiques sur le nombre de vues" minY="0" maxY="#{beanMedia.maxY}" style="height:300px;margin-top:20px; width: 500px" /> 
+					        <!-- Audiences par nb de vues (dernière heure, dernier jour, dernier mois) par sexe et âge, par endroit XXX -->
+				        </h:panelGroup>
+				        
+					</h:form>
+				    </p:dialog>
+				
+				<!-- Pop-up permettant de signaler un média -->        		
+        		<p:dialog id="popupSignaler" header="Signaler ce média (contenu pouvant offenser)" widgetVar="dlgSignaler" showEffect="explode" width="480">
+			    	<h:form id="formSignaler">
+			       	<p:messages id="messagesSignalementMedia" showDetail="true" autoUpdate="true"/>
+			        <p>
+			        	<h:outputText value="Décrivez la raison qui décrit le mieux le problème lié au média. Nous procéderons à un examen afin de déterminer si celle-ci enfreint le Règlement de la communauté ou si elle risque d'offenser certaines personnes. L'usage abusif de cette fonctionnalité constitue également une violation du Règlement de la communauté. Ne l'utilisez pas de manière inadéquate." />
+			        </p>
+			        <p>
+						<h:outputText value="Raison du signalement : " styleClass="bold" />
+						<br />
+						<p:inputTextarea id="raisonSignalementMedia" rows="5" cols="60" counter="counter" maxlength="100"       
+						    counterTemplate="{0} caractères restants." autoResize="false" value="#{beanMedia.raisonMedia}" required="true"/>  
+						  
+						<h:outputText id="counter" />
+						<p:message for="raisonSignalementMedia" />
+						<!-- ou Motif du signalement (liste déroulante) -->
+			       	</p>
+			       	<p>
+	           			<p:commandButton value="Envoyer le rapport" update="formSignaler" actionListener="#{beanMedia.signalerMedia}"/>
+			       	</p>
+			       	<!-- Pouvoir signaler un média même si l'utilisateur n'est pas connecté (formulaire avec champs nom, prénom, ...) XXX -->
+			    	</h:form>
+			    </p:dialog>
+			    
+			    <br /><br />
+        		
+        		<!-- Artiste : <h:outputText value="" /><br /> XXX -->
+        		
+        		<!-- Ajout au panier du média -->
+        		<h:form>
+        			<p:commandButton value="Ajouter #{beanMedia.titreMedia} au panier" title="Ajouter #{beanMedia.titreMedia} au panier" actionListener="#{beanPanier.ajouterAuPanier}" icon="ui-icon-cart" rendered="#{beanMedia.mediaVisualise.estTelechargementAutorise}" update=":messages" /><!-- TODO utilisateurConnecte -->
+		        </h:form>
+        		
+        		<!-- Téléchargement du média -->
+        		<h:form>
+	        		<p:commandLink id="downloadLink" value="Télécharger ce média" ajax="false" rendered="#{beanMedia.mediaVisualise.estTelechargementAutorise}">  
+					    <p:fileDownload value="#{beanMedia.file}" />  
+					</p:commandLink><!-- TODO utilisateurConnecte -->
+					<br />
+					<!--<p:commandLink id="downloadLinké" value="Télécharger ce média" rendered="#{beanMedia.mediaVisualise.estTelechargementAutorise}">  
+					    <p:fileDownload value="#{beanMedia.file}" />  
+					</p:commandLink>
+					<a href="../resources/videos/#{beanMedia.mediaVisualise.fichier.nomFichier}" > Télécharger ce Média </a>-->
+        		</h:form>
+	         
+	         	
+        	</p:fieldset>
+        	
+        	<div style="clear: both;"></div>
+			
+			<div style="clear: both;"></div>
+
+			<!-- Plus -->
+			<p:fieldset legend="Plus" toggleable="true" toggleSpeed="500">
+				<h:panelGroup rendered="#{beanConnexion.user != beanMedia.mediaVisualise.auteurMedia}">
+					<!-- Affichage des catégories associées au média -->
+					<h:graphicImage value="/resources/images/icones/documents-tiroirs-classeurs-icone-6679-16.png" />
+                    <h:outputText value=" Catégories : " styleClass="bold" />
+					<br />
+					<ui:repeat value="#{beanMedia.listeCategories}" var="categ"
+						rows="20" id="repeatCategories">
+						<h:outputLink value="recherche.jsf?categ="
+							title="#{categ.nomCategorie}">
+							<h:outputText value="#{categ.nomCategorie}" />
+						</h:outputLink>
+					</ui:repeat>
+	
+					<br />
+					<br />
+	
+					<!-- Affichage des tags associés au média -->
+					<h:graphicImage value="/resources/images/icones/tag-pink-icone-4864-16.png" />
+					<h:outputText value=" Tags : " styleClass="bold" />
+					<br />
+					<p:tagCloud model="#{beanMedia.tagCloud}" />
+					
+					<br />
+					
+					<!--<p:commandButton value="Modifier" update="formTagsCategories" />
+					Champs deviennent éditables au clic sur le bouton Modifier TODO-->
+             				
+				</h:panelGroup>
+				
+				
+				<!-- Modification des catégories et tags si c'est le propriétaire du média qui visualise le média -->
+				<h:panelGroup rendered="#{beanConnexion.user == beanMedia.mediaVisualise.auteurMedia}">
+					<h:form id="formTagsCategories">
+						<h:graphicImage value="/resources/images/icones/documents-tiroirs-classeurs-icone-6679-16.png" />
+                    	<h:outputText value="Catégorie : " styleClass="bold" />
+						<br />
+						
+						<p:selectCheckboxMenu value="#{beanMedia.categoriesMedia}"
+							label="Catégories du média" style="width: 410px"
+							id="categorieMedia">
+							<f:selectItems value="#{beanMedia.listeCategories}" var="categorie"
+								itemLabel="#{categorie.nomCategorie}"
+								itemValue="#{categorie}" />
+						</p:selectCheckboxMenu>
+								
+						<br />
+						<br />
+						
+						<h:graphicImage value="/resources/images/icones/tag-pink-icone-4864-16.png" />
+				
+						<h:outputText value="Tags : " styleClass="bold" />
+						<br />
+						<p:inputTextarea value="#{beanMedia.listeNomTags}" cols="80" />
+						<!--<p:inputMask value="#{beanMedia.listeNomTags}" mask="a*-999-a999"/>-->
+						<br />
+						<br />
+						
+						<p:commandButton value="Enregistrer les modifications" update="formTagsCategories" id="enregistrerModif"  
+             				actionListener="#{beanMedia.modifierCategoriesTags}" />
+					</h:form>
+				</h:panelGroup>
+			</p:fieldset>
+		    
+			<br />
+			<br />
+			
+			<!-- Carousel des médias suggérés ayant le même artiste que le média visualisé -->
+			<h:panelGroup rendered="#{not empty beanMedia.carouselRecommendationMedias}">
+						<p:carousel value="#{beanMedia.carouselRecommendationMedias}" var="mediaRecommende" itemStyleClass="carItem"  
+			            			easing="easeOutBounce" style="min-width: 600px;">
+						    <h:panelGrid columns="1" style="width: 200px"  cellpadding="5">
+						        <p:graphicImage value="../resources/#{mediaRecommende.photo}"/> <!-- TODO bon chemin -->  
+						          
+						        <h:outputText value="#{mediaRecommende.titreMedia}" styleClass = "bold" />  
+						          
+						        <h:outputText value="de #{mediaRecommende.auteurMedia.nomUtilisateur}" />
+						          
+						        <!--<h:outputText value="Nb vues : " /> XXX-->
+						    </h:panelGrid>
+						</p:carousel>
+					</h:panelGroup>
+			
+			<br />
+			<br />
+			<br />
+			
+			<ui:include src="detailMediaCommentaires.xhtml" />
+		</section>
+		
+		
+		
+		
+		<!-- Suggestions de médias -->
+		<aside class="group2">
+			<h3>
+				<h:outputText value="Suggestions" />
+			</h3>
+			<article class="holder_news">
+				<h:form>
+			                <ui:repeat value="#{beanMediaSuggestions.listeMediasSuggeres}" var="mediaSuggere" rows="20"
+			                    id="repeat">
+			                        <p:panelGrid id="gridSuggestions" style="width: 274px;"> 
+			                        	<p:row>
+       										<p:column rowspan="3">
+       											<h:graphicImage library="images" name="#{mediaSuggere.photo.cheminPhotoCouverture}"  width="100" height="59" alt="#{mediaSuggere.photo.nomPhotoCouverture}" style="float: left;" />       											
+				                        	</p:column>
+			                        	</p:row>
+				                        <p:row>
+				                        	<p:column>
+				                        		<h:outputLink value="TODO">
+				                        			<h:outputText value="#{mediaSuggere.titreMedia}" />
+				                        		</h:outputLink>
+				                        		<br />
+						                        <h:outputText value="de " />
+						                        <h:outputLink value="TODO/#{mediaSuggere.auteurMedia.pseudo}">
+							                    	<h:outputText value="#{mediaSuggere.auteurMedia.pseudo}" style="font-weight:bold;" />
+												</h:outputLink>
+							                    <br />
+							                    <h:outputText value="... vues" /><!-- TODO -->
+						                    </p:column>
+					                    </p:row>
+        							</p:panelGrid>
+			                    <br />
+			                </ui:repeat>
+			            	<h:outputLink value="recherche.jsf?TODO">
+								<h:outputText value="" style="font-weight:bold;" />
+							</h:outputLink>
+							<h:panelGroup rendered="#{beanMediaSuggestions.listeMediasSuggeresTotal.size() > 20}">
+								<p:commandButton value="Afficher plus de suggestions" 
+            						ajax="false" /><!-- actionListener="" redirection vers recherche.jsf TODO -->
+			    			</h:panelGroup>
+			    </h:form>
+			</article> 
+		</aside>
+	</ui:define>
+</ui:composition> 
+</html>
+<!-- multilangue XXX -->
+<!-- Remarque :
+- update de Primefaces :
+id => même form
+:id => autre form
+- action et actionListener
+ -->

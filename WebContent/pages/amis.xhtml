@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+	  xmlns:a4j="http://richfaces.org/a4j"
+	  xmlns:rich="http://richfaces.org/rich"
+	  xmlns:p="http://primefaces.org/ui"> 
+      
+<ui:composition template="/templates/standard.xhtml">
+		
+	<ui:define name="pageTitle">Amis</ui:define>
+	<ui:define name="content">
+		<section class="group3">
+										
+			<h3>Amis</h3>  	
+			
+			<p:growl id="messages" showDetail="true" />
+		    
+			<script type="text/javascript">
+			function handleDrop(event, ui) {
+			      var droppedCar = ui.draggable;
+			      droppedCar.fadeOut('fast');
+			}
+			
+			</script>		    
+		    
+	    	<h:outputText rendered="#{empty beanAmis.utilisateurConnecte}" value="Vous devez être connecté pour accèder à ces informations" />
+		    
+			<h:form id="formGridUtilisateurs" rendered="#{not empty beanAmis.utilisateurConnecte}">
+				<br /><br />				
+								
+				<p:panelGrid columns="3" columnClasses="top,top"
+					styleClass="noBorders">
+					<h:outputLabel value="Recherche utilisateur : " />
+					<p:inputText value="#{beanAmis.rechercheUtilisateur}" id="rechercheUtilisateur" />
+					<p:commandButton id="btnRechercher" value="Recherche" update="datagrid_utilisateur"
+						action="#{beanAmis.rechercherUtilisateur}" icon="ui-icon-search"/>
+					<p:message for="btnRechercher" />						
+				</p:panelGrid>						
+
+				<br />
+				
+			    <p:dataGrid id="datagrid_utilisateur"  var="utilisateur" 
+			    	value="#{beanAmis.resultatsRechercheUtilisateur}" columns="3"  
+			        rows="12" paginator="true" rendered="#{beanAmis.resultatsRechercheUtilisateur.size() > 0}"
+			        paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"  
+			        rowsPerPageTemplate="9,12,15">	                
+		                
+		                <p:column>
+			                <p:panel id="pnl_utilisateur" header="#{utilisateur.pseudo}" width="100px">
+			                    <h:panelGrid columns="1">
+			                        <h:graphicImage value="#{utilisateur.avatar.nomAvatar}" />                        
+			                        <h:outputText value="#{utilisateur.adrMail}" />		                        		                        	                     		                        	
+			                    </h:panelGrid>
+			                </p:panel>	
+			                
+			                <p:draggable for="pnl_utilisateur" revert="true" handle=".ui-panel-titlebar" stack=".ui-panel"/>              
+		                </p:column>         
+	
+	            </p:dataGrid> 
+	            
+	        	<br />
+		        <h:outputText id="nbUtilisateurs" rendered="#{not empty beanAmis.utilisateurConnecte}" value="Utilisateurs trouvés : #{beanAmis.nombreUtilisateursTrouves} " />
+		        <br />			            
+		                       		        
+			    <p:fieldset id="utilisateur_selectionne1" legend="Ajouter" style="margin-top:20px" rendered="#{beanAmis.resultatsRechercheUtilisateur.size() > 0}">  
+			  
+			        <p:outputPanel id="dropArea">  
+			            <h:outputText value="Déposer un utilisateur ici pour l'ajouter à la liste d'amis "  style="font-size:24px;" />  
+			        </p:outputPanel>  
+			  
+			    </p:fieldset>  	
+			    
+			    <p:droppable for="utilisateur_selectionne1" tolerance="touch" activeStyleClass="ui-state-highlight" datasource="datagrid_utilisateur" onDrop="handleDrop">  
+			        <p:ajax listener="#{beanAmis.onUtilisateurDrop}" update=":formGridUtilisateurs:datagrid_utilisateur :messages" />  
+			    </p:droppable>  	
+			
+			</h:form>
+           		    
+			<br />
+			
+			<h3>Suggestion d'utilisateurs</h3>  	
+
+	    	<h:outputText rendered="#{empty beanAmis.utilisateurConnecte}" value="Vous devez être connecté pour accèder à ces informations" />
+		    <br />
+		    		
+			<h:form rendered="#{not empty beanAmis.utilisateurConnecte and beanAmis.panelSuggestionAffiche == false}">
+				<p:commandButton action="#{beanAmis.chargerSuggestion}" value="Afficher une suggestion d'utilisateur" update=":datagrid_suggestion" ajax="false"/>
+			</h:form>
+			<h:form rendered="#{not empty beanAmis.utilisateurConnecte and beanAmis.panelSuggestionAffiche}">
+				<p:commandButton action="#{beanAmis.cacherSuggestion}" value="Cacher les suggestions" rendered="#{beanAmis.panelSuggestionAffiche}" update=":datagrid_suggestion" ajax="false"/>
+			</h:form>		     				
+		    			
+	    	<h:form id="formSuggestion" rendered="#{beanAmis.panelSuggestionAffiche and not empty beanAmis.utilisateurConnecte}">
+	    	
+				<br />
+		        <h:outputText value="Nombre de suggestion trouvés : #{beanAmis.nombreSuggestions} " rendered="#{not empty beanAmis.utilisateurConnecte and beanAmis.panelSuggestionAffiche}"/>
+	        	<br />	   
+        		    	
+			    <p:dataGrid id="datagrid_suggestion" var="suggestion" 
+			    	value="#{beanAmis.suggestionUtilisateurs}" columns="#{beanAmis.nbColonneSuggestion}"  
+			        rows="12" paginator="true" rendered="#{beanAmis.suggestionUtilisateurs.size() > 0}"
+			        paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"  
+			        rowsPerPageTemplate="9,12,15">	                
+		                
+		                <p:column>
+			                <p:panel id="pnl_suggestion" header="#{suggestion.ami.pseudo}">
+		
+			                    <h:panelGrid columns="1">
+			                        <h:graphicImage value="#{suggestion.ami.avatar.nomAvatar}" />
+			                        <h:outputText value="#{suggestion.ami.adrMail}" />			                        		                        	                     		                        	
+			                    </h:panelGrid>
+			                </p:panel>    
+		                </p:column>
+		                
+		                <p:draggable for="pnl_suggestion" revert="true" handle=".ui-panel-titlebar" stack=".ui-panel"/>
+	
+	            </p:dataGrid> 		   
+	            
+			    <p:fieldset id="utilisateur_selectionne2" legend="Ajouter" style="margin-top:20px" rendered="#{beanAmis.suggestionUtilisateurs.size() > 0}">  
+			  
+			        <p:outputPanel id="dropArea">  
+			            <h:outputText value="Déposer un utilisateur ici pour l'ajouter à la liste d'amis "  style="font-size:24px;" />  
+			        </p:outputPanel>  
+			  
+			    </p:fieldset>  	
+			    
+			    <p:droppable for="utilisateur_selectionne2" tolerance="touch" activeStyleClass="ui-state-highlight" datasource="datagrid_suggestion" onDrop="handleDrop">  
+			        <p:ajax listener="#{beanAmis.onSuggestionDrop}" update="datagrid_suggestion :messages" />  
+			    </p:droppable>    		
+		            
+	    	</h:form>		                             			
+			    		
+			<h3>Ma liste d'amis</h3>
+			
+			<h:outputText rendered="#{empty beanAmis.utilisateurConnecte}" value="Vous devez être connecté pour avoir des amis !" />
+			
+			<br />
+						
+			<h:form id="formGridAmis" rendered="#{not empty beanAmis.utilisateurConnecte}">	
+					
+				<p:panelGrid columns="3" columnClasses="top,top"
+					styleClass="noBorders">
+					<h:outputLabel value="Recherche dans ma liste d'amis : " />
+					<p:inputText value="#{beanAmis.rechercheAmis}" id="rechercheAmis" />
+					<p:commandButton id="btnRechercherAmis" value="Recherche" update="datagrid_amis"
+						action="#{beanAmis.rechercherAmis}" icon="ui-icon-search"/>	
+					<p:message for="btnRechercherAmis" />							
+				</p:panelGrid>	
+
+				<br />
+            			
+			    <p:dataGrid id="datagrid_amis"  rendered="#{beanAmis.resultatsRechercheAmis.size() > 0}" var="amis" 
+			    	value="#{beanAmis.resultatsRechercheAmis}"  
+			        rows="12" paginator="true"  
+			        paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"  
+			        rowsPerPageTemplate="9,12,15">	
+		                <p:column>
+			                <p:panel header="#{amis.ami.pseudo}">
+		
+			                    <h:panelGrid columns="1">
+			                        <h:graphicImage value="#{amis.ami.avatar.nomAvatar}" />
+			                        
+			                       	<br />
+			                       	<h:outputText value="Depuis :" /> 
+			                        <h:outputText value="#{amis.dateAmitie}" >
+			                        	<f:convertDateTime locale="fr_FR" dateStyle="short" type="date"/>
+			                        </h:outputText>
+			                        
+			                        <br />
+		                       		<p:commandButton value="Supprimer" action="#{beanAmis.supprimerAmis}" update="datagrid_amis :messages" >
+		                       			<f:setPropertyActionListener target="#{beanAmis.ancienAmis}" value="#{amis}" />  
+		                       		</p:commandButton>	                        		                        	                     		                        	
+			                    </h:panelGrid>
+			                </p:panel>    
+		                </p:column>		        
+			        
+			    </p:dataGrid>	
+
+	            <br />
+	            <h:outputText value="Vous avez #{beanAmis.nombreAmis} amis" rendered="#{not empty beanAmis.utilisateurConnecte}" />
+				<br />
+				<br />
+				
+				<p:commandButton value="Afficher tous" action="#{beanAmis.chargerAmis}" update=":formGridAmis:datagrid_amis" />
+						    		
+			</h:form>
+
+            <br />  
+			  			    					
+		</section>
+			
+		
+	</ui:define>
+</ui:composition> 
+</html>
+ 
