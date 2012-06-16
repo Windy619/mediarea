@@ -791,9 +791,15 @@ public class BeanMedia {
 			for(Playlist pl : playlistsUtilisateur) {
 				// Si possède déjà une playlist de type Favori
 				if(pl.getType().equals(daoTypePlaylist.getUn(2))) {
+					System.out.println("fav");
 					// Suppression du média visualisé de la liste des favoris
-					pl.getMedias().remove(mediaVisualise);
-						
+					//pl.getMedias().remove(mediaVisualise.getIdMedia()); //TODO b
+					ArrayList<Media> listM = new ArrayList<Media>();
+					for (Playlist_Media m : pl.getMedias()) {
+						listM.add(daoMedia.getUn(m.getMedia()));
+					}
+					listM.remove(mediaVisualise);
+					
 					// Enregistrement de la suppression
 					daoPlaylist.sauvegarder(pl);
 				}
