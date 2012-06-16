@@ -102,7 +102,7 @@ public class BeanMediaCommentaire {
 		System.out.println("publierCommentaire");
 
 		if(utilisateurConnecte != null) {
-			System.out.println("commentaire saisi : " + commentaireSaisi);
+			System.out.println("Commentaire saisi : " + commentaireSaisi);
 			
 			// Création du commentaire
 			Commentaire c = new Commentaire(commentaireSaisi,daoUtilisateur.getUn(3));
@@ -194,11 +194,11 @@ public class BeanMediaCommentaire {
 	 * @return
 	 */
 	public ArrayList<Commentaire> mapValue(Commentaire c) {
-		System.out.println("méthode mapValue");
+		//System.out.println("méthode mapValue");
 		
 		System.out.println("Commentaire père : " + c);
 		
-		System.out.println("HashMap : " + hmReponses.get(c));
+		//System.out.println("HashMap : " + hmReponses.get(c));
 		
 		return hmReponses.get(c);
 	}

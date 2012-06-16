@@ -1,12 +1,14 @@
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+import java.util.TreeSet;
 import java.io.InputStream;
 
 import javax.faces.application.FacesMessage;
@@ -58,8 +60,8 @@ public class BeanMedia {
 	private String auteur;
 	private String datePublication;
 	private String description;
-	private List<String> listeNomCategories;
-	private List<String> listeNomTags;
+	private List<Categorie> listeCategories;
+	private String listeNomTags;
 	//private DataModel dataModel = new ListDataModel();
 	private double note;
 	private String nomTypeMedia;
@@ -74,10 +76,7 @@ public class BeanMedia {
 	private long resultatNbAime;
 	private long resultatNbNAimePas;
 	private String txtFavori;
-	//private String imgFavori;
 	private List<Playlist> listePlaylistUt;
-	//private String imgAjoutPlaylist;
-	private boolean estAjouteAPlaylist = false;
 	@Size(min = 0, message = "Ce champ est requis.")
     private String nomPlaylistACreer;
 	private String descriptionPlaylistACreer;
@@ -116,9 +115,13 @@ public class BeanMedia {
  	private StreamedContent file;
  	private TagCloudModel tagCloud;
  	private Playlist playlistSelectionnee;
+ 	private String paramUrl;
+ 	private ArrayList<Categorie_Media> categoriesMedia;
+ 	
+ 	// Boolean
+	private boolean estAjouteAPlaylist = false;
  	private boolean jAimeDisabled;
  	private boolean jeNAimePasDisabled;
- 	private String paramUrl;
  	
  	// Compteur
  	
@@ -153,6 +156,7 @@ public class BeanMedia {
 		else
 			txtFavori = "Favori";
 
+		System.out.println("Utilisateur connecté : " + utilisateurConnecte);
 		if(utilisateurConnecte != null)
 			mettreEnPlacePlaylists();
 	}
@@ -329,11 +333,12 @@ public class BeanMedia {
 	 * @return
 	 */
 	public String mettreEnPlaceCategories() {
-		listeNomCategories = new ArrayList<String>();
+		listeCategories = new ArrayList<Categorie>();
 		setCategoriesMedia = mediaVisualise.getCategories();
+		System.out.println("Média visualisé : " + mediaVisualise);
+		System.out.println("Catégories du média : " + mediaVisualise.getCategories()); //TODO retourne []
 		
 		setCategories = new HashSet<Categorie>();
-		
 		for (Categorie_Media categorie_Media : setCategoriesMedia) {
 			setCategories.add(daoCategorie.getUn(categorie_Media.getCategorie()));
 		}		
@@ -341,9 +346,13 @@ public class BeanMedia {
 		categoriesCompteur = setCategories.iterator(); // on crée un Iterator pour parcourir notre Set
 		while(categoriesCompteur.hasNext()) { // tant qu'on a un suivant
 			//System.out.println(categoriesCompteur.next().getNomCategorie()); // on affiche le suivant
-			listeNomCategories.add(categoriesCompteur.next().getNomCategorie());
+			//listeCategories.add(categoriesCompteur.next().getNomCategorie());
+			listeCategories.add(categoriesCompteur.next());
 		}
-		//System.out.println("Categories : " + listeNomCategories.toString());
+		//System.out.println("Categories : " + listeCategories.toString());
+		
+		// Liste contenant les catégories choisis par le propriétaire
+		categoriesMedia = new ArrayList<Categorie_Media>();
 		
 		return "mettreEnPlaceCategories";
 	}
@@ -353,16 +362,18 @@ public class BeanMedia {
 	 * @return
 	 */
 	public String mettreEnPlaceTags() {
-		listeNomTags = new ArrayList<String>();
+		listeNomTags = "";
 		setTags = mediaVisualise.getTags();
 		tagCompteur = setTags.iterator();
 		tagCloud = new DefaultTagCloudModel();
 		Tag tagNext;
 		while(tagCompteur.hasNext()) {
 			tagNext = tagCompteur.next();
-			listeNomTags.add(tagNext.getNomTag());
+			listeNomTags += tagNext.getNomTag() + "-";
 			tagCloud.addTag(new DefaultTagCloudItem(tagNext.getNomTag(), "recherche.jsf?", (int) Math.random() * 5)); //TODO lien
 		}
+		if(listeNomTags.length() > 0)
+			listeNomTags.substring(0, listeNomTags.length() - 1);
 		
 		return "mettreEnPlaceTags";
 	}
@@ -1042,17 +1053,40 @@ public class BeanMedia {
 	 * Modification des catégories et tags d'un média (si propriétaire)
 	 * @return
 	 */
-	public String modifierCategoriesTags() { //TODO
+	public String modifierCategoriesTags() {
 		System.out.println("méthode modifierCategoriesTags");
 		
-		//Set<Categorie> setCategorie = new HashSet<Categorie>();
-		/*for(String nomCateg : listeNomCategories)
-		{
-			setCategorie.add(new Categorie(nomCateg));
+		// - Catégories
+		Set<Categorie_Media> c = new HashSet<Categorie_Media>(categoriesMedia);
+		//mediaVisualise.setCategories(c);
+		
+		// - Tags
+		// Découpage de la chaîne de tags saisis suivant le caractère "-"
+		String[] words;
+		String delimiter = "-";		
+		words = listeNomTags.split(delimiter);
+		
+		// Conversion du tableau de string contenant les tags saisis en liste
+		List<String> wordList = Arrays.asList(words);
+		
+		// Suppression des tags doublons (du tableau) XXX
+		Set<String> set = new TreeSet<String>();
+		set.addAll(wordList);
+		
+		Tag t;
+		// Parcours des différents tags saisis
+		for(int i = 0; i < words.length; i++) {
+		    for(Tag e : setTags) {
+		    	if(! e.equals(words[i])) {
+				    t = new Tag(words[i]);
+				    System.out.println("Tag ajouté : " + t);
+				    //mediaVisualise.getTags().add(t); TODO
+		    	}
+		    }
 		}
-		mediaVisualise.setCategories(setCategorie);
-		*/
-		//sauvegarder
+		
+		// Sauvegarde de l'ajout
+		/////////////daoMedia.sauvegarder(mediaVisualise);
 		
 		return "modifierCategoriesTags";
 	}
@@ -1125,11 +1159,11 @@ public class BeanMedia {
 		this.note = note;
 	}
 	
-	public List<String> getListeNomCategories() {
-		return listeNomCategories;
+	public List<Categorie> getListeCategories() {
+		return listeCategories;
 	}
-	public void setListeNomCategories(List<String> listeNomCategories) {
-		this.listeNomCategories = listeNomCategories;
+	public void setListeCategories(List<Categorie> listeCategories) {
+		this.listeCategories = listeCategories;
 	}
 	
 	public long getResultatNbAime() {
@@ -1156,11 +1190,11 @@ public class BeanMedia {
 		this.nomTypeMedia = nomTypeMedia;
 	}
 	
-	public List<String> getListeNomTags() {
+	public String getListeNomTags() {
 		return listeNomTags;
 	}
 	
-	public void setListeNomTags(List<String> listeNomTags) {
+	public void setListeNomTags(String listeNomTags) {
 		this.listeNomTags = listeNomTags;
 	}
 	
@@ -1402,5 +1436,13 @@ public class BeanMedia {
 
 	public void setParamUrl(String paramUrl) {
 		this.paramUrl = paramUrl;
+	}
+	
+	public ArrayList<Categorie_Media> getCategoriesMedia() {
+		return categoriesMedia;
+	}
+
+	public void setCategoriesMedia(ArrayList<Categorie_Media> categoriesMedia) {
+		this.categoriesMedia = categoriesMedia;
 	}
 }
