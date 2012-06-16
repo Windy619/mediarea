@@ -31,15 +31,10 @@
 		    
 			<h3>Détail d'un média</h3>
 			
-			<br />
-			
-			<h:outputText rendered="#{empty beanMedia.utilisateurConnecte}" value="Vous devez être connecté pour accéder à cette page" />
-		    
-		    <br />
-		    		
+			<br />			
+					
 			<h:outputText value="#{beanMedia.titreMedia}" styleClass="titre" />
 						
-			<br />
 			<br />
 			<br />
 						
@@ -55,8 +50,8 @@
 					 id="player"> 
 				</a>-->
 				<a 
-					 href="../resources/videos/#{beanMedia.mediaVisualise.fichier.nomFichier}"
-					 style="display:block;width:612px;height:404px"  
+					 href="/MediArea/resources/videos/#{beanMedia.mediaVisualise.fichier.nomFichier}"
+					 style="display:block;width:612px;height:404px"
 					 id="player">
 				</a>
 			
@@ -464,10 +459,10 @@
 					    <p:fileDownload value="#{beanMedia.file}" />  
 					</p:commandLink><!-- TODO utilisateurConnecte -->
 					<br />
-					<p:commandLink id="downloadLinké" value="Télécharger ce média" rendered="#{beanMedia.mediaVisualise.estTelechargementAutorise}">  
+					<!--<p:commandLink id="downloadLinké" value="Télécharger ce média" rendered="#{beanMedia.mediaVisualise.estTelechargementAutorise}">  
 					    <p:fileDownload value="#{beanMedia.file}" />  
 					</p:commandLink>
-					<a href="../resources/videos/#{beanMedia.mediaVisualise.fichier.nomFichier}" > Télécharger ce Média </a>
+					<a href="../resources/videos/#{beanMedia.mediaVisualise.fichier.nomFichier}" > Télécharger ce Média </a>-->
         		</h:form>
 	         
 	         	
@@ -484,11 +479,11 @@
 					<h:graphicImage value="/resources/images/icones/documents-tiroirs-classeurs-icone-6679-16.png" />
                     <h:outputText value=" Catégories : " styleClass="bold" />
 					<br />
-					<ui:repeat value="#{beanMedia.listeNomCategories}" var="categ"
+					<ui:repeat value="#{beanMedia.listeCategories}" var="categ"
 						rows="20" id="repeatCategories">
-						<h:outputLink value="recherche.jsf?categ=#{categ}"
-							title="#{categ}">
-							<h:outputText value="#{categ}" />
+						<h:outputLink value="recherche.jsf?categ="
+							title="#{categ.nomCategorie}">
+							<h:outputText value="#{categ.nomCategorie}" />
 						</h:outputLink>
 					</ui:repeat>
 	
@@ -512,17 +507,27 @@
 				<!-- Modification des catégories et tags si c'est le propriétaire du média qui visualise le média -->
 				<h:panelGroup rendered="#{beanConnexion.user == beanMedia.mediaVisualise.auteurMedia}">
 					<h:form id="formTagsCategories">
-						<h:outputText value="Catégorie : " styleClass="bold" />
+						<h:graphicImage value="/resources/images/icones/documents-tiroirs-classeurs-icone-6679-16.png" />
+                    	<h:outputText value="Catégorie : " styleClass="bold" />
 						<br />
-						<p:inputTextarea value="#{beanMedia.listeNomCategories}" cols="80" />
 						
+						<p:selectCheckboxMenu value="#{beanMedia.categoriesMedia}"
+							label="Catégories du média" style="width: 410px"
+							id="categorieMedia">
+							<f:selectItems value="#{beanMedia.listeCategories}" var="categorie"
+								itemLabel="#{categorie.nomCategorie}"
+								itemValue="#{categorie}" />
+						</p:selectCheckboxMenu>
+								
 						<br />
 						<br />
-		
+						
+						<h:graphicImage value="/resources/images/icones/tag-pink-icone-4864-16.png" />
+				
 						<h:outputText value="Tags : " styleClass="bold" />
 						<br />
 						<p:inputTextarea value="#{beanMedia.listeNomTags}" cols="80" />
-					
+						<!--<p:inputMask value="#{beanMedia.listeNomTags}" mask="a*-999-a999"/>-->
 						<br />
 						<br />
 						
