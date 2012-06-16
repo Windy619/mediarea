@@ -3,6 +3,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
@@ -102,10 +103,10 @@ public class BeanMediaCommentaire {
 		System.out.println("publierCommentaire");
 
 		if(utilisateurConnecte != null) {
-			System.out.println("Commentaire saisi : " + commentaireSaisi);
+			System.out.println("Commentaire saisi : " + commentaireSaisi);			
 			
 			// Création du commentaire
-			Commentaire c = new Commentaire(commentaireSaisi,daoUtilisateur.getUn(3));
+			Commentaire c = new Commentaire(commentaireSaisi, utilisateurConnecte);
 			
 			// Ajout du commentaire à la liste de commentaires du média
 			beanMedia.getMediaVisualise().getCommentaires().add(c);
@@ -116,6 +117,8 @@ public class BeanMediaCommentaire {
 			// Rechargement de la liste de commentaires
 			//commentaires.add(c);
 			chargerCommentaires();
+			
+			commentaireSaisi = "";
 		}
 		else {
 			// Préparation du message de la notification
@@ -177,14 +180,14 @@ public class BeanMediaCommentaire {
         	hmReponses.put(tmp, lstFils);
         }
     	
-    	/*Set cles = hmReponses.keySet();
+    	Set cles = hmReponses.keySet();
     	Iterator itHm = cles.iterator();
     	while(itHm.hasNext()) {
     		Commentaire cle = (Commentaire)itHm.next();
     		Object valeur = hmReponses.get(cle); //parcourir l'Arraylist
     		System.out.println("Contenu comm père : " + cle.getContenuCommentaire());
     		System.out.println("Contenu comms fils : " + valeur);
-    	}*/
+    	}
 		
 		return "chargerReponses";
 	}
@@ -196,7 +199,7 @@ public class BeanMediaCommentaire {
 	public ArrayList<Commentaire> mapValue(Commentaire c) {
 		//System.out.println("méthode mapValue");
 		
-		System.out.println("Commentaire père : " + c);
+		//System.out.println("Commentaire père : " + c);
 		
 		//System.out.println("HashMap : " + hmReponses.get(c));
 		
@@ -242,7 +245,7 @@ public class BeanMediaCommentaire {
 			// Préparation du message de la notification
 			message = new FacesMessage("Suppression du commentaire : Message supprimé avec succès !");
 			
-			//2 min TODO
+			//2 min XXX
 		}
 		else {
 			// Préparation du message de la notification
@@ -263,7 +266,7 @@ public class BeanMediaCommentaire {
 	public String repondreCommentaire() {
 		System.out.println("repondreCommentaire");
 		
-		if(utilisateurConnecte != null) {
+		if(utilisateurConnecte == null) {
 			System.out.println("Commentaire affiché : " + commentaireAffiche);
 			
 			// Création d'une nouvelle réponse
@@ -280,6 +283,8 @@ public class BeanMediaCommentaire {
 			
 			// Préparation du message de la notification
 			message = new FacesMessage("Réponse au commentaire : Réponse envoyé avec succès !");
+			
+			commentaireSaisi = "";
 		}
 		else {
 			// Préparation du message de la notification
@@ -402,13 +407,13 @@ public class BeanMediaCommentaire {
 	}
 	
 	public Commentaire getCommentaireAffiche() {
-		System.out.println("SET Commentaire affiché : " + commentaireAffiche);
+		System.out.println("GET Commentaire affiché : " + commentaireAffiche);
 		return commentaireAffiche;
 	}
 	
 	public void setCommentaireAffiche(Commentaire commentaireAffiche) {
 		this.commentaireAffiche = commentaireAffiche;
-		System.out.println("GET Commentaire affiché : " + commentaireAffiche);
+		System.out.println("SET Commentaire affiché : " + commentaireAffiche);
 	}
 	
 	public List<Commentaire> getListeReponses() {

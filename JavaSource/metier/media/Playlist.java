@@ -47,13 +47,14 @@ public class Playlist {
 	private Visibilite visibilite;
 	
 	@OneToMany(cascade = {CascadeType.ALL})
-	private Set<Media> medias;
+	private Set<Playlist_Media> medias;
+	//private Set<Media> medias;
 
 	/**
 	 * Constructeur vide
 	 */
 	public Playlist(){
-		medias = new HashSet<Media>();
+		medias = new HashSet<Playlist_Media>();
 	}	
 	
 	/**
@@ -72,7 +73,7 @@ public class Playlist {
 		this.remarqueMedia = remarqueMedia;
 		this.type = type;
 		this.visibilite = visibilite;
-		medias = new HashSet<Media>();
+		medias = new HashSet<Playlist_Media>();
 	}
 	
 	public Playlist(String nomPlaylist,String descriptionPlaylist) {
@@ -153,11 +154,11 @@ public class Playlist {
 		this.visibilite = visibilite;
 	}
 
-	public Set<Media> getMedias() {
+	public Set<Playlist_Media> getMedias() {
 		return medias;
 	}
 
-	public void setMedias(Set<Media> medias) {
+	public void setMedias(Set<Playlist_Media> medias) {
 		this.medias = medias;
 	}
 	

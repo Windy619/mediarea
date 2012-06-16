@@ -727,7 +727,7 @@ public class DaoMedia extends Dao<Media> {
 			"SELECT pere as PERE, fils as FILS, fils.dateCommentaire " +
 			"FROM Media as media JOIN media.commentaires as pere JOIN pere.commentairesFils as fils " +
 			"WHERE media.idMedia = :idMedia " +
-			"ORDER BY fils.dateCommentaire"); //et non signalé TODO
+			"ORDER BY fils.dateCommentaire"); //et non signalé XXX
 		
 		q.setParameter("idMedia", media.getIdMedia());
 
