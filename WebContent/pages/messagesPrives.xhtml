@@ -1,0 +1,321 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:a4j="http://richfaces.org/a4j"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:p="http://primefaces.org/ui">
+
+
+<ui:composition template="/templates/standard.xhtml">
+
+	<ui:define name="pageTitle">Messages Privés</ui:define>
+	<ui:define name="content">
+		<section class="group1">
+			<h3>Messages Privés</h3>
+			<br />
+
+			<p:growl id="messages" showDetail="true" />
+
+			<h:form rendered="#{empty beanMessagesPrives.utilisateurConnecte}">
+				<h:outputText value="L'envoi de message privé est reservé aux utilisateurs inscrits" />
+				<h3>Inscription</h3>
+				<br/>
+				<p>Pour profiter de tout cela inscrivez-vous dès maintenant.</p>
+				<br/>
+				<p:button outcome="inscription" value="Créer mon compte" icon="ui-icon-person" />  			
+			</h:form>
+			
+
+			<p:dialog id="dialogNouveauMessage" widgetVar="dlgNouveauMessage"
+				header="Nouveau Message" resizable="false">
+				<h:form id="formNouveauMessage">
+					
+					<h:panelGrid columns="2" columnClasses="top,top">
+						<h:outputText value="De : " />
+						<p:inputText
+							value="#{beanMessagesPrives.utilisateurConnecte.adrMail}"
+							style="width: 500px" disabled="true" />
+
+						<h:outputText value=" A : " />
+						<p:autoComplete id="destinataire" maxResults="5"
+							value="#{beanMessagesPrives.destinataire}"
+							styleClass="message_automplete"
+							completeMethod="#{beanMessagesPrives.autoCompletion}"
+							style="width: 500px" />
+
+						<h:outputText value=" Objet : " />
+						<p:inputText id="objet" value="#{beanMessagesPrives.objet}"
+							style="width: 500px" />
+
+						<h:outputText value="Message :" />
+						<p:editor id="editorNouveauMessage"
+							value="#{beanMessagesPrives.contenu}" width="500" height="250" />
+
+					</h:panelGrid>
+
+					<br />
+
+					<p:commandButton value="Envoyer le message"
+						action="#{beanMessagesPrives.envoyerMessage}"
+						onclick="dlgNouveauMessage.hide()" update="formNouveauMessage :messages">
+					</p:commandButton>
+				</h:form>
+			</p:dialog>
+
+			
+			<h:form id="formReponseMessage">
+					
+				<p:dialog id="dialogReponseMessage" widgetVar="dlgReponseMessage" header="Réponse Message">					
+	
+					<h:panelGrid columns="2" columnClasses="top,top">
+						<h:outputText value="De : " />
+						<p:inputText
+							value="#{beanMessagesPrives.utilisateurConnecte.adrMail}"
+							style="width: 500px" disabled="true" />
+	
+						<h:outputText value=" A : " />
+						<p:autoComplete id="destinataire" maxResults="5"
+							value="#{beanMessagesPrives.destinataire}"
+							styleClass="message_automplete"
+							completeMethod="#{beanMessagesPrives.autoCompletion}"
+							style="width: 500px" />
+	
+						<h:outputText value=" Objet : " />
+						<p:inputText id="objet" value="#{beanMessagesPrives.objet}"
+							style="width: 500px" disabled="true" />
+	
+						<h:outputText value="Message :" />
+						<p:editor id="editorNouveauMessage"
+							value="#{beanMessagesPrives.contenu}" width="500" height="250" />
+	
+						<br />
+	
+					</h:panelGrid>
+	
+					<p:commandButton value="Envoyer le message"
+						action="#{beanMessagesPrives.repondreMessage}" update=":formMessage:listeMessage :messages" oncomplete="dlgReponseMessage.hide()">
+					</p:commandButton>
+	
+				</p:dialog>
+			</h:form>						
+
+
+			<h:form id="formMessage" rendered="#{not empty beanMessagesPrives.utilisateurConnecte}">
+
+				<p:message for="rechercheMessagePrive" />
+
+				<p:panelGrid columns="3" columnClasses="top,top"
+					styleClass="noBorders">
+					<h:outputLabel value="Recherche message : " />
+					<p:inputText value="#{beanMessagesPrives.rechercheMessage}"
+						id="rechercheMessagePrive" />
+					<p:commandButton value="Recherche" update="listeMessage"
+						action="#{beanMessagesPrives.rechercherMessages}" icon="ui-icon-search"/>
+				</p:panelGrid>
+				
+				<br /><br />
+
+				<p:dataTable id="listeMessage" value="#{beanMessagesPrives.messages}" var="message"
+					paginator="true" selectionMode="single" rows="20" rowKey="#{message.idMessage}"
+					rowStyleClass="#{beanMessagesPrives.getCouleurDataTable(message)}" >
+					
+			                    
+					<p:ajax event="rowSelect" listener="#{beanMessagesPrives.onRowSelect}" update="formRepeatReponses:repeatReponse" />
+			                    
+					<f:facet name="header">  
+			            Liste des messages 
+			        </f:facet>
+
+			        <p:column style="width:16px">  
+			            <p:rowToggler />  
+			        </p:column>  
+        
+					<p:column headerText="Emetteur" sortBy=" #{message.emetteur.pseudo} "
+						filterBy=" #{message.emetteur.pseudo} " id="emetteur">  
+			            #{message.emetteur.pseudo}  
+			        </p:column>
+
+					<p:column headerText="Destinataire"
+						sortBy="#{message.destinataire.pseudo} "
+						filterBy="#{message.destinataire.pseudo} " id="destinataire">  
+			            #{message.destinataire.pseudo}  
+			        </p:column>
+
+					<p:column headerText="Objet" sortBy="#{message.objet}"
+						filterBy="#{message.objet}" id="objet">  
+			            #{message.objet} 
+			        </p:column>
+			        
+					<p:column headerText="Date" sortBy="#{message.dateEnvoi}"
+						filterBy="#{message.dateEnvoi}" id="date">  
+						<h:outputText
+							value="#{message.dateEnvoi}">
+							<f:convertDateTime type="date" pattern="dd/MM/yyyy HH:mm" />
+						</h:outputText>
+			        </p:column>			              
+			        
+			        <p:rowExpansion id="detailMessage">  
+						<h4>Détails d'un message</h4>
+
+						<p:panel id="panelMessage" header="Messages :">
+
+							<table>
+								<tr>
+									<td style="width: 150px">
+										<div align="center">
+											<h:outputText
+												value="#{message.emetteur.pseudo}" />
+											<br />
+											<h:graphicImage
+												value="#{message.emetteur.avatar.nomAvatar}" />
+											<br /> Envoyé le : <br />
+											<h:outputText
+												value="#{message.dateEnvoi}">
+												<f:convertDateTime type="date" pattern="dd/MM/yyyy HH:mm" />
+											</h:outputText>
+										</div>
+									</td>
+									<td>
+										<h:outputText escape="false"
+											value="#{message.contenuMessage}" />
+										<br /><br />
+									    <p:commandButton id="suppressionMessage" action="#{beanMessagesPrives.supprimerMessage}"  
+          										icon="ui-icon-trash" title="Supprimer" update=":formMessage:listeMessage :messages"> 
+          										<f:setPropertyActionListener target="#{beanMessagesPrives.mpSelectionne}" value="#{message}" />          										
+         								</p:commandButton>
+									    <p:commandButton id="repondreMessage" action="#{beanMessagesPrives.afficherFormulaireReponseMessage}"
+          										icon="ui-icon-mail-closed" title="Répondre" oncomplete="dlgReponseMessage.show()" update=":formReponseMessage:dialogReponseMessage"> 
+          										<f:setPropertyActionListener target="#{beanMessagesPrives.mpSelectionne}" value="#{message}" />   										
+          								</p:commandButton>
+									    <p:commandButton id="signalerMessage" 
+          										icon="ui-icon-alert" title="Signaler" oncomplete="dlgDialogSignalement.show()"> 
+          										<f:setPropertyActionListener target="#{beanMessagesPrives.mpSelectionne}" value="#{message}" />         										
+         								</p:commandButton>           									           									
+									</td>
+								</tr>
+							</table>
+						</p:panel>
+		
+						<br />		
+
+						<h:form id="formRepeatReponses">
+							<a4j:repeat value="#{beanMessagesPrives.reponses}" var="reponse"
+								id="repeatReponse" rows="10">
+								<p:panel id="panelReponseMessage" header="Réponse :">
+									<table>
+										<tr>
+											<td style="width: 150px">
+												<div align="center">
+													<h:outputText value="#{reponse.emetteur.pseudo}" />
+													<br />
+													<h:graphicImage value="#{reponse.emetteur.avatar.nomAvatar}" />
+													<br /> Envoyé le : <br />
+													<h:outputText value="#{reponse.dateEnvoi}">
+														<f:convertDateTime type="date" pattern="dd/MM/yyyy HH:mm" />
+													</h:outputText>
+												</div>
+											</td>
+											<td><h:outputText escape="false"
+													value="#{reponse.contenuMessage}" />
+												<br /><br />
+											    <p:commandButton id="suppressionMessage" action="#{beanMessagesPrives.supprimerMessage}" process="@this"
+		          										icon="ui-icon-trash" title="Supprimer" update=":formMessage:listeMessage :messages">          										
+		         										<f:setPropertyActionListener target="#{beanMessagesPrives.mpSelectionne}" value="#{reponse}" /> 
+		         								</p:commandButton>
+											    <p:commandButton id="repondreMessage" process="@this"  action="#{beanMessagesPrives.afficherFormulaireReponseMessage}"
+		          										icon="ui-icon-mail-closed" title="Répondre" oncomplete="dlgReponseMessage.show()" update=":formReponseMessage:dialogReponseMessage">       										
+		          										<f:setPropertyActionListener target="#{beanMessagesPrives.mpSelectionne}" value="#{message}" /> 
+		          								</p:commandButton>
+											    <p:commandButton id="signalerMessage" process="@this"
+		          										icon="ui-icon-alert" title="Signaler" oncomplete="dlgDialogSignalement.show()">
+		          										<f:setPropertyActionListener target="#{beanMessagesPrives.mpSelectionne}" value="#{reponse}" />          											         								
+		         								</p:commandButton>  		         																				
+											</td>										
+										</tr>
+									</table>
+			
+								</p:panel>
+	
+								<br />
+							</a4j:repeat>						
+						</h:form>
+			
+			        </p:rowExpansion>
+
+			        <f:facet name="footer">  
+						<h:outputFormat	value="Messages trouvés : #{beanMessagesPrives.nbMessages}" />
+			        </f:facet>  
+        
+				</p:dataTable>
+
+				<br />
+				
+
+
+			</h:form>
+
+		</section>
+
+
+		<aside class="group2">
+
+			<h3>Contrôle</h3>
+
+			<br />
+			<h:outputFormat
+				value="Vous avez #{beanMessagesPrives.nbMessagesNonLus} messages non lus" />
+			<br /> <br />
+
+			<p:panel header="Actions" rendered="#{not empty beanMessagesPrives.utilisateurConnecte}">
+
+				<div align="center">
+					<h:form>
+						<p:commandButton value="Nouveau Message"
+							action="#{beanMessagesPrives.afficherFormulaireNouveauMessage}"
+							oncomplete="dlgNouveauMessage.show()" style="width:250px" />
+						<br />
+						<br />											
+						<p:commandButton value="Messages non lus" update=":formMessage:listeMessage"
+							action="#{beanMessagesPrives.chargerMessagesNonLus}"
+							style="width:250px" />
+						<br />
+						<br />
+						<p:commandButton value="Mes Messages" update=":formMessage:listeMessage"
+							action="#{beanMessagesPrives.chargerMessages}"
+							style="width:250px" />
+						<br />
+						<br />
+						<p:commandButton value="Messages envoyés" update=":formMessage:listeMessage"
+							action="#{beanMessagesPrives.chargerMessagesEnvoyes}"
+							style="width:250px" />
+						<br />
+						<br />
+						<p:commandButton value="Messages recus" update=":formMessage:listeMessage"
+							action="#{beanMessagesPrives.chargerMessagesRecus}"
+							style="width:250px" />
+					</h:form>
+				</div>
+
+			</p:panel>
+
+			<p:dialog id="dialogSignalement" widgetVar="dlgDialogSignalement" modal="false" autosized="true"
+				resizeable="false" header="Signalement d'un message - Attention">				
+				<h:form>
+					<h:outputText
+						value="Etes-vous sur de vouloir signaler ce message ?" />
+						<br /><br />
+					<p:commandButton value="Oui" oncomplete="dlgDialogSignalement.hide()"
+						action="#{beanMessagesPrives.signalerMessage}" update=":messages">
+					</p:commandButton>						
+					<p:commandButton value="Annuler" onclick="dlgDialogSignalement.hide()"/>
+				</h:form>
+			</p:dialog>
+		</aside>
+
+	</ui:define>
+</ui:composition>
+</html>

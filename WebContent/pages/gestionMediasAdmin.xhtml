@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:a4j="http://richfaces.org/a4j"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+<ui:composition template="/templates/standard.xhtml">
+	<ui:define name="pageTitle">Administration du site - Gestion des medias</ui:define>
+	<ui:define name="content">
+		<section class="group3">
+			<h3>Gestion des medias</h3>
+			<h:form id="form">
+				<p:dataTable id="dataTable" var="media"
+					value="#{beanGestionMediasAdmin.listMedia}" widgetVar="mediasTable"
+					rowKey="#{media.idMedia}" selectionMode="single"
+					selection="#{beanGestionMediasAdmin.selectedMedia}"
+					emptyMessage="Pas de media trouvé avec ces critères"
+					paginator="true" rows="10"
+					paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} {LastPageLink}"
+					rowsPerPageTemplate="5,10,15">
+
+					<f:facet name="header">
+						<p:outputPanel>
+							<h:outputText value="Recherche dans tous les champs :" />
+							<p:inputText id="globalFilter" onkeyup="mediasTable.filter()"
+								style="width:150px" />
+						</p:outputPanel>
+					</f:facet>
+
+					<p:column id="titreMediaColumn" filterBy="#{media.titreMedia}"
+						headerText="Titre" filterMatchMode="contains">
+						<h:outputText value="#{media.titreMedia}" />
+					</p:column>
+
+					<p:column id="descriptionColumn"
+						filterBy="#{media.descriptionMedia}" headerText="Description">
+						<h:outputText value="#{media.descriptionMedia}" />
+					</p:column>
+					
+					<p:column id="auteurColumn"
+						filterBy="#{media.auteurMedia.pseudo}" headerText="Auteur">
+						<h:outputText value="#{media.auteurMedia.pseudo}" />
+					</p:column>
+					
+					<p:column id="typeColumn"
+						filterBy="#{media.type.nomTypeMedia}" filterMatchMode="endsWith" headerText="Type">
+						<h:outputText value="#{media.type.nomTypeMedia}" />
+					</p:column>			
+
+					<f:facet name="footer">
+						<p:commandButton id="viewButton" value="Visualiser"
+							icon="ui-icon-search" update=":form:display"
+							oncomplete="mediaDialog.show()" />
+						<p:commandButton icon="ui-icon-trash" value="Supprimer"
+							onclick="confirmationDelMedia.show()" id="btnDel" />
+							
+						<p:confirmDialog id="confirmDialogDelMedia"
+							message="Etes-vous sûre de vouloir supprimer le média ?"
+							header="Supprimer Media" severity="alert"
+							widgetVar="confirmationDelMedia">
+
+							<p:commandButton id="confirmDelMedia" value="OUI"
+								update="dataTable" oncomplete="confirmationDelMedia.hide()"
+								actionListener="#{beanGestionMediasAdmin.delSelectedSingle}" />
+							<p:commandButton id="declineDelMedia" value="NON"
+								onclick="confirmationDelMedia.hide()" type="button" />
+
+						</p:confirmDialog>
+
+					</f:facet>
+				</p:dataTable>
+				<p:dialog id="dialog" header="Détails Media" widgetVar="mediaDialog"
+					resizable="false" showEffect="clip" hideEffect="fold">
+
+					<h:panelGrid id="display" columns="2" cellpadding="4">
+
+
+						<f:facet name="header">
+							<p:graphicImage
+								rendered="#{beanGestionMediasAdmin.selectedMedia.photo != null}"
+								value="#{beanGestionMediasAdmin.selectedMedia.photo.cheminPhotoCouverture}#{beanGestionMediasAdmin.selectedMedia.photo.nomPhotoCouverture}"
+								style="background-image:url('../resources/avatar/0.png');width:64px;height:64px;" />
+						</f:facet>
+						
+						<h:outputText value="Titre :" />
+						<h:outputText
+							value="#{beanGestionMediasAdmin.selectedMedia.titreMedia}" />
+						<h:outputText value="Description :" />
+						<h:outputText
+							value="#{beanGestionMediasAdmin.selectedMedia.descriptionMedia}" />
+						<h:outputText value="Auteur :" />
+						<h:outputText
+							value="#{beanGestionMediasAdmin.selectedMedia.auteurMedia.pseudo}" />
+						<h:outputText value="Type :" />
+						<h:outputText
+							value="#{beanGestionMediasAdmin.selectedMedia.type.nomTypeMedia}" />
+						<h:outputText value="Visibilité :" />
+						<h:outputText
+							value="#{beanGestionMediasAdmin.selectedMedia.visibilite.nomVisibilite}" />
+						<h:outputText value="Autorisation de téléchargement :" />
+						<h:outputText
+							value="#{beanGestionMediasAdmin.selectedMedia.estTelechargementAutorise}" />
+						<h:outputText value="Date de publication :" />
+						<h:outputText
+							value="#{beanGestionMediasAdmin.selectedMedia.datePublication}">
+							<f:convertDateTime pattern="dd.MM.yyyy" />
+						</h:outputText>
+
+					</h:panelGrid>
+				</p:dialog>
+			</h:form>
+
+
+		</section>
+	</ui:define>
+</ui:composition>
+</html>

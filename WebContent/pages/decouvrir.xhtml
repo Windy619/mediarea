@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:a4j="http://richfaces.org/a4j"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+<ui:composition template="/templates/standard.xhtml">
+	<ui:define name="pageTitle">Découvrir MediArea</ui:define>
+	<ui:define name="content">
+		<section class="group1">
+			<h3>Bienvenue sur MediArea</h3>
+			
+			<article class="holder_gallery">
+				<a class="photo_hover2" href="#"><h:graphicImage library="images" name="search.png" alt="search"/></a>
+				<h2>Rechercher</h2>
+				<p>Retrouvez vos musiques et vidéos préférées.</p> 
+			</article>
+			<article class="holder_gallery">
+				<a class="photo_hover2" href="#"><h:graphicImage library="images" name="listen.png" alt="listen"/></a>
+				<h2>Ecouter et visionner</h2>
+				<p>Créez, modifiez et supprimez à l'infini vos listes de lecture.</p> 
+			</article>
+			<article class="holder_gallery">
+				<a class="photo_hover2" href="#"><h:graphicImage library="images" name="share.png" alt="share"/></a>
+				<h2>Partager</h2>
+				<p>Parce que la musique et la vidéo se partage, faites découvrir vos créations à vos amis ou à tout le monde.</p> 
+			</article>
+			<article class="holder_gallery">
+				<a class="photo_hover2" href="#"><h:graphicImage library="images" name="download.png" alt="download"/></a>
+				<h2>Téléchargement</h2>
+				<p>Téléchargez vos coups de coeur et profitez en partout où vous allez.</p> 
+			</article>
+		</section>
+		<aside class="group2">
+			<h3>Inscription</h3>
+			<br/>
+			<p>Pour profiter de tout cela inscrivez-vous dès maintenant.</p>
+			<br/>
+			<p:button outcome="inscription" value="Créer mon compte" icon="ui-icon-person" />  
+		</aside>
+	</ui:define>
+</ui:composition>
+</html>
