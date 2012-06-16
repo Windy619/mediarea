@@ -17,26 +17,27 @@
 			<h3>Nouvelles Vidéos</h3>	
 			<h:outputText value="Aucune vidéo n'a été trouvée."  rendered="#{empty beanHome.nouvellesVideos}"/>
 	    	<a4j:repeat value="#{beanHome.nouvellesVideos}" var="video" rows="5" id="listNouvellesVideos">
-				<article class="holder_gallery">
+				<article>
 					<h:form>						
 						<a class="photo_hover2" href="#"><h:graphicImage value="/resources/images/#{video.photo.nomPhotoCouverture}"  width="150" height="150" alt="picture1"/></a>
 						<h2><h:outputText value="#{video.titreMedia}" /></h2>
 						<p><h:outputText value="#{video.descriptionMedia}" /></p> 
-						<span class="readmore"><h:commandLink value="Regarder" action="#{beanHome.accessMedia(video.idMedia)}" /></span>
+						<span class="readmore"><h:commandLink value="Regarder" action="#{beanHome.accessMedia(video.idMedia)}" /></span>						
+						<div style="clear: both;"></div>					
 					</h:form>						
-				</article>	
-								
+				</article>			
 	        </a4j:repeat>
 			
 			<h3>Nouveaux Sons</h3>		
 			<h:outputText value="Aucun sons n'a été trouvée."  rendered="#{empty beanHome.nouveauxSons}"/>
 			<a4j:repeat value="#{beanHome.nouveauxSons}" var="son" rows="5" id="listNouveauxSons">		
-				<article class="holder_gallery">
+				<article>
 					<h:form>
 						<a class="photo_hover2" href="#"><h:graphicImage value="/resources/images/#{son.photo.nomPhotoCouverture}"  width="150" height="150" alt="picture1"/></a>
 						<h2><h:outputText value="#{son.titreMedia}" /></h2>
 						<p><h:outputText value="#{son.descriptionMedia}" /></p> 
 						<span class="readmore"><h:commandLink value="Regarder" action="#{beanHome.accessMedia(son.idMedia)}" /></span>
+						<div style="clear: both;"></div>
 					</h:form>							
 				</article>
 			</a4j:repeat>
