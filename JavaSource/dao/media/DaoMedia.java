@@ -694,23 +694,31 @@ public class DaoMedia extends Dao<Media> {
 				""); //requête SQL (pour faire un join)
 
 		query.setParameter("media", media);
-		
+				
 		List result = query.list();
-		String listids = "";
-		Iterator it= result.iterator();
-		while (it.hasNext()) // tant que l'on a un élément non parcouru
+		if(! result.toString().equals("[]"))
 		{
-			Object[] o = (Object[]) it.next();
-            if(!listids.equals(""))
-                   listids += ", ";
-            listids += o[0].toString();
+			String listids = "";
+			Iterator it= result.iterator();
+			while (it.hasNext()) // tant que l'on a un élément non parcouru
+			{
+				Object[] o = (Object[]) it.next();
+	            if(!listids.equals(""))
+	                   listids += ", ";
+	            listids += o[0].toString();
+			}
+			
+			Query q = session.createQuery("" +
+					"FROM Commentaire as c " +
+					"WHERE c.idCommentaire IN (" + listids +") " + //identifiants des commentaires récupérés avec la requête SQL
+					"ORDER BY c.dateCommentaire DESC");
+			  
+			return q.list();
 		}
-		Query q = session.createQuery("" +
-				"FROM Commentaire as c " +
-				"WHERE c.idCommentaire IN (" + listids +") " + //identifiants des commentaires récupérés avec la requête SQL
-				"ORDER BY c.dateCommentaire DESC");
-		  
-		return q.list();
+		else
+		{
+			return null;
+		}
 	}
 	
 	public Query getReponses(Media media) {

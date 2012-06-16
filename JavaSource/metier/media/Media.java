@@ -105,7 +105,7 @@ public class Media {
 	 * @param photo
 	 */
 	public Media(boolean aCommentairesOuverts,Utilisateur auteurMedia,String descriptionMedia, boolean estTelechargementAutorise, String mdpMedia, 
-			String titreMedia, Visibilite visibilite,Photo_Couverture photo){
+			String titreMedia, Visibilite visibilite,Photo_Couverture photo, Type_Media type) {
 		this.aCommentairesOuverts = aCommentairesOuverts;
 		this.auteurMedia = auteurMedia;
 		this.datePublication = new Date();
@@ -115,6 +115,7 @@ public class Media {
 		this.titreMedia = titreMedia;
 		this.visibilite = visibilite;
 		this.photo = photo;
+		this.type = type;
 		categories = new HashSet<Categorie_Media>();
 		tags = new HashSet<Tag>();
 		commentaires = new HashSet<Commentaire>();

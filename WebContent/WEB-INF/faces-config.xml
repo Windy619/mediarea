@@ -21,7 +21,7 @@
 	<managed-bean>
 		<managed-bean-name>beanMedia</managed-bean-name>
 		<managed-bean-class>BeanMedia</managed-bean-class>
-		<managed-bean-scope>request</managed-bean-scope>
+		<managed-bean-scope>session</managed-bean-scope>
 	</managed-bean>
 	<managed-bean>
 		<managed-bean-name>beanMessagesPrives</managed-bean-name>
@@ -124,6 +124,26 @@
   	<property-class>java.lang.String</property-class>
   	<value>1</value>
   </managed-property>
+ </managed-bean>
+ <managed-bean>
+ 	<managed-bean-name>beanMediaCommentaire</managed-bean-name>
+ 	<managed-bean-class>BeanMediaCommentaire</managed-bean-class>
+ 	<managed-bean-scope>request</managed-bean-scope>
+ </managed-bean>
+ <managed-bean>
+ 	<managed-bean-name>beanMediaSuggestions</managed-bean-name>
+ 	<managed-bean-class>BeanMediaSuggestions</managed-bean-class>
+ 	<managed-bean-scope>request</managed-bean-scope>
+ </managed-bean>
+ <managed-bean>
+ 	<managed-bean-name>beanPanier</managed-bean-name>
+ 	<managed-bean-class>BeanPanier</managed-bean-class>
+ 	<managed-bean-scope>session</managed-bean-scope>
+ </managed-bean>
+ <managed-bean>
+ 	<managed-bean-name>beanPanier</managed-bean-name>
+ 	<managed-bean-class>BeanPanier</managed-bean-class>
+ 	<managed-bean-scope>session</managed-bean-scope>
  </managed-bean>
  <navigation-rule>
    <from-view-id>*</from-view-id> 
