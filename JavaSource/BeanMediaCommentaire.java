@@ -56,12 +56,16 @@ public class BeanMediaCommentaire {
 	public BeanMediaCommentaire() {
 		// Chargement du média visualisé
 		beanMedia = (BeanMedia) FacesContext.getCurrentInstance().getCurrentInstance().getExternalContext().getSessionMap().get("beanMedia");
-		beanConnexion = (BeanConnexion) FacesContext.getCurrentInstance().getCurrentInstance().getExternalContext().getSessionMap().get("beanConnexion");
+		/*beanConnexion = (BeanConnexion) FacesContext.getCurrentInstance().getCurrentInstance().getExternalContext().getSessionMap().get("beanConnexion");
 		
 		if (beanConnexion != null) {
 			// Récupération des informations de l'utilisateur connecté
 			utilisateurConnecte = beanConnexion.getUser();
-		}		
+		}*/
+		if(beanMedia.getUtilisateurConnecte() != null) {
+			utilisateurConnecte = beanMedia.getUtilisateurConnecte();
+			//System.out.println("Utilisateur connecté : " + utilisateurConnecte);
+		}
 		
 		// Instantiation des Dao
 		daoMedia = new DaoMedia();
@@ -79,6 +83,15 @@ public class BeanMediaCommentaire {
 		
 		// Chargement des réponses
 		chargerReponses();
+	}
+	
+	public void recupererUtilisateurConnecte() {
+		beanMedia = (BeanMedia) FacesContext.getCurrentInstance().getCurrentInstance().getExternalContext().getSessionMap().get("beanMedia");
+		
+		if(beanMedia.getUtilisateurConnecte() != null) {
+			utilisateurConnecte = beanMedia.getUtilisateurConnecte();
+			System.out.println("Utilisateur connecté : " + utilisateurConnecte);
+		}
 	}
 	
 	/** 
@@ -102,6 +115,8 @@ public class BeanMediaCommentaire {
 	public String publierCommentaire() {
 		System.out.println("publierCommentaire");
 
+		recupererUtilisateurConnecte();
+		
 		if(utilisateurConnecte != null) {
 			System.out.println("Commentaire saisi : " + commentaireSaisi);			
 			
@@ -140,7 +155,9 @@ public class BeanMediaCommentaire {
 		//System.out.println("chargerCommentaires");
 		
 		// Chargement de la liste des commentaires associé au média
+		//System.out.println("Media visualisé : " + beanMedia.getMediaVisualise());
 		listeCommentaires = daoMedia.getCommentaires(beanMedia.getMediaVisualise());
+		//System.out.println("Liste de commentaires : " + listeCommentaires);
 	}
 	
 	/** 
@@ -266,6 +283,8 @@ public class BeanMediaCommentaire {
 	public String repondreCommentaire() {
 		System.out.println("repondreCommentaire");
 		
+		recupererUtilisateurConnecte();
+		
 		if(utilisateurConnecte == null) {
 			System.out.println("Commentaire affiché : " + commentaireAffiche);
 			
@@ -304,6 +323,8 @@ public class BeanMediaCommentaire {
 	 */
 	public String signalerCommentaire() {
 		System.out.println("signalerCommentaire");
+		
+		recupererUtilisateurConnecte();
 		
 		if(utilisateurConnecte != null) {
 			System.out.println("Commentaire affiché : " + commentaireAffiche);

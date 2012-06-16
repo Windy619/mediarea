@@ -308,7 +308,7 @@
 	            <h:form>
 	            <span class="bold">
 	            	<h:outputText value="Ajouté par " />
-	            	<h:commandLink value="#{beanMedia.auteur}" action="#{beanRecherche.clickOnPublisher(media.auteurMedia.pseudo)}" />
+	            	<h:commandLink value="#{beanMedia.auteur}" action="#{beanRecherche.clickOnPublisher(beanMedia.auteur)}" />
 	            	<h:outputText value=" le #{beanMedia.datePublication}" />
 	            </span>
 	            </h:form>

@@ -128,7 +128,7 @@
  <managed-bean>
  	<managed-bean-name>beanMediaCommentaire</managed-bean-name>
  	<managed-bean-class>BeanMediaCommentaire</managed-bean-class>
- 	<managed-bean-scope>request</managed-bean-scope>
+ 	<managed-bean-scope>session</managed-bean-scope>
  </managed-bean>
  <managed-bean>
  	<managed-bean-name>beanMediaSuggestions</managed-bean-name>
