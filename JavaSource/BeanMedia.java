@@ -254,7 +254,7 @@ public class BeanMedia {
 		if(utilisateurConnecte != null)
 			mettreEnPlaceFavoris();
 		else
-			txtFavori = "Favori";
+			txtFavori = "rien";
 
 		//System.out.println("Utilisateur connecté : " + utilisateurConnecte);
 		if(utilisateurConnecte != null)
@@ -432,6 +432,7 @@ public class BeanMedia {
 		//System.out.println("Playlist utilisateur : " + playlistsUtilisateur);
 		playlistsUtilisateur = utilisateurConnecte.getPlaylists();
 		if(playlistsUtilisateur.toString().equals("[]")) {
+			System.out.println("Playlist utilisateur vide");
 			txtFavori = "Favori";
 		}
 		else {
@@ -440,7 +441,7 @@ public class BeanMedia {
 				if(pl.getType().equals(daoTypePlaylist.getUn(2))) {
 					//for (Media mediaPl : pl.getMedias()) {
 					for (Playlist_Media mediaPl : pl.getMedias()) {
-						if(mediaPl.equals(mediaVisualise)) {
+						if(mediaPl.getMedia() == mediaVisualise.getIdMedia()) {
 							System.out.println("Retrait des favoris (pre)");
 							txtFavori = "Retirer des favoris";
 							existeFavori = true;
@@ -450,8 +451,8 @@ public class BeanMedia {
 				}
 			}
 			
-			if(! existeFavori) {
-				//System.out.println("Ajout aux favoris (pre)");
+			if(! existeFavori) { //TODO
+				System.out.println("Ajout aux favoris (pre)");
 				txtFavori = "Favori";
 			}
 		}
@@ -755,7 +756,7 @@ public class BeanMedia {
 					break;
 				}
 			}
-				
+			
 			if(!possedeFavori) { // Si la playlist de type Favori n'existe pas
 				// Création d'une playlist de type Favoris pour l'utilisateur connecté
 				plFavoris = new Playlist("Mes favoris","Favoris","Description",daoTypePlaylist.typeFavoris(),daoVisibilite.typeVisible());
@@ -770,14 +771,16 @@ public class BeanMedia {
 			// Ajout du média visualisé à la playlist de type Favoris de l'utilisateur
 			//plFavoris.getMedias().add(mediaVisualise);
 			Playlist_Media pm = new Playlist_Media(mediaVisualise.getIdMedia(), plFavoris.getIdPlaylist());
+			plFavoris.getMedias().add(pm);
 			
 			// Sauvegarde de l'ajout
 			//daoPlaylist.sauvegarder(daoPlaylist.getUn(plFavoris.getIdPlaylist()));
-			daoPlaylistMedia.sauvegarder(pm);
+			daoPlaylist.sauvegarder(plFavoris);
 			
 			// Modification du texte affiché sur la vue
 			txtFavori = "Retirer des favoris";
-	
+			System.out.println("A retirer des favoris");
+			
 			// Préparation du message de la notification
 			message = new FacesMessage("Favori : Ajoutée à Favoris");			
 		}
@@ -818,7 +821,7 @@ public class BeanMedia {
 		
 		boolean estAjouterAPlaylistSelectionnee = false;
 		
-		for(Playlist playlistUt : setPlaylistUt) {
+		/*for(Playlist playlistUt : setPlaylistUt) {
 			System.out.println("Set playlist utilisateur : " + setPlaylistUt);
 			//if(playlistUt.equals(play) && playlistUt.getMedias().contains(mediaVisualise)) {
 			if(playlistUt.equals(play) && playlistUt.getMedias().contains(mediaVisualise)) {
@@ -826,6 +829,23 @@ public class BeanMedia {
 				// Le média visualisé appartient à la playlist sélectionnée
 				estAjouterAPlaylistSelectionnee = true;
 				break;
+			}
+		}*/
+		for(Playlist playlistUt : setPlaylistUt) {
+			//System.out.println("Set playlist utilisateur : " + setPlaylistUt);
+			//if(playlistUt.equals(play) && playlistUt.getMedias().contains(mediaVisualise)) { //TODO
+			for (Playlist_Media pm : playlistUt.getMedias()) {
+				if (pm.getMedia() == mediaVisualise.getIdMedia()) {
+					//return true;
+					if(playlistUt.equals(play) && playlistUt.getMedias().contains(mediaVisualise)) {
+						System.out.println("appartient à la playlist sélectionnée");
+						// Le média visualisé appartient à la playlist sélectionnée
+						estAjouterAPlaylistSelectionnee = true;
+						break;
+					}
+				} /*else {
+					return false;
+				}*/
 			}
 		}
 		

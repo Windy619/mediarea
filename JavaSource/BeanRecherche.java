@@ -157,7 +157,7 @@ public class BeanRecherche {
 		return "/pages/recherche?faces-redirect=true&amp;includeViewParams=true";
 	}
 	
-	public String recherheParTitre(String _titre) {
+	public String rechercheParTitre(String _titre) {
 		value = null;
 		titre = null;
 		auteur = null;
