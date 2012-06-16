@@ -30,12 +30,12 @@
 		    
 			<h:form id="formGridUtilisateurs" rendered="#{not empty beanAmis.utilisateurConnecte}">
 				<br /><br />				
-				
+								
 				<p:panelGrid columns="3" columnClasses="top,top"
 					styleClass="noBorders">
 					<h:outputLabel value="Recherche utilisateur : " />
 					<p:inputText value="#{beanAmis.rechercheUtilisateur}" id="rechercheUtilisateur" />
-					<p:commandButton id="btnRechercher" value="Recherche" update="datagrid_utilisateur nbUtilisateurs"
+					<p:commandButton id="btnRechercher" value="Recherche" update="datagrid_utilisateur"
 						action="#{beanAmis.rechercherUtilisateur}" icon="ui-icon-search"/>
 					<p:message for="btnRechercher" />						
 				</p:panelGrid>						

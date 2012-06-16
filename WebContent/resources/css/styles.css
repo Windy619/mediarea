@@ -304,7 +304,7 @@ header{
 	z-index:1000;
 }
 
-	 a.photo_hover2{
+a.photo_hover2 {
 	position:relative;
 	float: left;
 	margin:5px 13px 8px 0;
@@ -312,11 +312,10 @@ header{
 	-webkit-border-radius: .5em; 
 	-moz-border-radius: .5em;
 	border-radius: .5em;
+	background-color:white;
+	border: 1px solid #E1E1E1;	
 }
-	a.photo_hover2{ background-color:white;
-	border: 1px solid #E1E1E1;
 
-}
 	a.photo_hover2:hover {
 	border: 1px solid #E1E1E1;
 }
