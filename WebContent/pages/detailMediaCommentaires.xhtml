@@ -1,0 +1,273 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html>
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:a4j="http://richfaces.org/a4j"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:p="http://primefaces.org/ui">
+
+
+	<p:growl id="messagesCommentaires" showDetail="true" />
+
+	<p:tabView id="tabViewCommentaires" effect="fade" effectDuration="normal">
+
+		<!-- Commentaires -->
+		<p:tab id="tabCommentaires" title="Commentaires (#{beanMediaCommentaire.nbCommentaires})">
+
+			<h:panelGroup
+				rendered="#{! beanMediaCommentaire.estCommentairesAutorise}">
+				<h:outputText value="Commentaires non autorisés" />
+			</h:panelGroup>
+			<h:panelGroup
+				rendered="#{beanMediaCommentaire.estCommentairesAutorise}">
+
+				<!-- Edition d'un commentaire -->
+				<h:form id="formCommentaire">
+					<p:messages id="messagesEditeurVide" />
+					<p:editor id="editor"
+						value="#{beanMediaCommentaire.commentaireSaisi}" width="565" required="true">
+						<f:validateLength minimum="1" />
+					</p:editor>
+
+					<h:panelGrid columns="2" style="margin-top:10px">
+						<p:commandButton id="submitButton" value="Publier"
+							update="listeCommentairesReponses, messagesEditeurVide" icon="ui-icon-disk"
+							actionListener="#{beanMediaCommentaire.publierCommentaire}" />
+						<!-- <p:commandButton id="clearButton" type="button" value="Clear" onclick="editor.clear()"  
+			                        icon="ui-icon-close" /> XXX -->
+					</h:panelGrid>
+					<br />
+					<br />
+
+					<!-- Affichage des commentaires et actions possibles sur ceux-ci -->
+					<p:dataTable id="listeCommentairesReponses" var="commentaire"
+						value="#{beanMediaCommentaire.listeCommentaires}" paginator="true"
+						rows="10"
+						paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+						rowsPerPageTemplate="5,10,15">
+
+						<f:facet name="header">  
+		             Commentaires
+		        </f:facet>
+
+						<p:column style="width:16px">
+							<p:rowToggler />
+							<h:outputText
+								value="#{beanMediaCommentaire.nbReponses(commentaire)} réponse(s)"
+								style="font-size: 10px;" />
+						</p:column>
+
+
+
+						<p:column style="width:60px">
+							<f:facet name="header">  
+		                    Infos 
+		            </f:facet>
+							<div align="center">
+								<h:commandLink value="#{commentaire.auteur.pseudo}"
+									action="#{beanRecherche.clickOnPublisher(commentaire.auteur.pseudo)}" />
+								<br />
+								<h:graphicImage value="#{commentaire.auteur.avatar.nomAvatar}" />
+								<br />
+								<h:outputText value="Envoyé le :" />
+								<br />
+								<h:outputText value="#{commentaire.dateCommentaire}">
+									<f:convertDateTime type="both" dateStyle="short" />
+								</h:outputText>
+							</div>
+						</p:column>
+
+						<p:column style="width:250px">
+
+							<f:facet name="header">  
+			                    Contenu  
+			            </f:facet>
+
+							<h:outputText escape="false"
+								value="#{commentaire.contenuCommentaire}" />
+
+							<hr />
+							<!--<h:panelGroup rendered="#{commentaire.auteur == beanMedia.utilisateurConnecte}">-->
+							<p:commandButton id="suppressionCommentaire"
+								action="#{beanMediaCommentaire.supprimerCommentaire}"
+								icon="ui-icon-trash" title="Supprimer"
+								update=":messages :tabViewCommentaires">
+								<!-- TODO update liste -->
+								<f:setPropertyActionListener
+									target="#{beanMediaCommentaire.commentaireAffiche}"
+									value="#{commentaire}" />
+							</p:commandButton>
+							<!--</h:panelGroup> TODO-->
+							<p:commandButton id="repondreCommentaire"
+								icon="ui-icon-mail-closed" title="Répondre"
+								oncomplete="dlgReponseCommentaire.show()">
+								<f:setPropertyActionListener
+									target="#{beanMediaCommentaire.commentaireAffiche}"
+									value="{commentaire}" />
+							</p:commandButton>
+							<h:panelGroup
+								rendered="#{commentaire.auteur != beanMedia.utilisateurConnecte}">
+								<p:commandButton id="signalerCommentaire"
+									icon="ui-icon-alert" title="Signaler"
+									oncomplete="dlgSignalementCommentaire.show()">
+									<f:setPropertyActionListener
+										target="#{beanMediaCommentaire.commentaireAffiche}"
+										value="#{commentaire}" />
+								</p:commandButton>
+							</h:panelGroup>
+							<!-- Vote pour<br/>
+							Vote contre XXX -->
+
+							<!--<rich:notify id="notifySuppressionComm" stayTime="1500" sticky="false" nonblocking="false"
+								nonblockingOpacity="0.5" showShadow="false"
+								showCloseButton="true" detail="Le commentaire a été supprimé avec succès !" render="false">							 
+								<f:facet name="summary">
+									Suppression du commentaire
+								</f:facet>
+							</rich:notify>-->
+						</p:column>
+				
+
+
+				<!-- Affichage des réponses associées à chaque commentaire affiché -->
+				<p:rowExpansion>				
+		            test
+		  
+				<!--<h:form id="formRepeatReponses">-->
+						<ui:repeat value="#{beanMediaCommentaire.mapValue(commentaire)}"
+							var="reponse" id="repeatReponses" rows="10">
+
+							<p:panel id="panelReponseCommentaire" header="Réponse :">
+								<!-- TODO -->
+								<table>
+									<tr>
+										<td style="width: 150px">
+											<div align="center">
+												<h:outputText value="#{reponse.auteur.pseudo}" />
+												<br />
+												<h:graphicImage value="#{reponse.auteur.avatar.nomAvatar}" />
+												<br /> Envoyé le : <br />
+												<h:outputText value="#{reponse.dateCommentaire}">
+													<f:convertDateTime type="date" pattern="dd/MM/yyyy HH:mm" />
+												</h:outputText>
+											</div>
+										</td>
+										<td>
+											<h:outputText escape="false"
+												value="#{reponse.contenuCommentaire}" /> 
+											<br />
+											<br />
+											<p:commandButton id="suppressionCommentaire"
+												action="#{beanMediaCommentaire.supprimerCommentaire}"
+												process="@this" icon="ui-icon-trash" title="Supprimer"
+												update=":messages">
+												<!-- TODO :formMessage:listeMessage  -->
+												<f:setPropertyActionListener
+													target="#{beanMediaCommentaire.commentaireAffiche}"
+													value="#{reponse}" />
+											</p:commandButton>
+											<p:commandButton id="signalerCommentaire" process="@this"
+												icon="ui-icon-alert" title="Signaler"
+												oncomplete="dlgDialogSignalement.show()">
+												<f:setPropertyActionListener
+													target="#{beanMediaCommentaire.commentaireAffiche}"
+													value="#{reponse}" />
+											</p:commandButton>
+										</td>
+									</tr>
+								</table>
+							</p:panel>
+
+							<br />
+						</ui:repeat>
+					<!--</h:form>-->
+				</p:rowExpansion>
+				</p:dataTable>
+			</h:form>
+
+				<p:dialog id="dialogSignalementCommentaire"
+					widgetVar="dlgSignalementCommentaire" modal="false"
+					autosized="true" resizeable="false"
+					header="Signalement d'un commentaire - Attention">
+					<h:form>
+						<h:outputText
+							value="Etes-vous sûr de vouloir signaler ce commentaire ?" />
+						<br />
+						<br />
+						<p:commandButton value="Oui"
+							onclick="dlgSignalementCommentaire.hide()"
+							action="#{beanMediaCommentaire.signalerCommentaire}"
+							update=":messagesCommentaires :tabViewCommentaires">
+							<!-- TODO ,  -->
+						</p:commandButton>
+						<p:commandButton value="Annuler"
+							onclick="dlgSignalementCommentaire.hide()" />
+					</h:form>
+				</p:dialog>
+
+					<p:dialog id="dialogReponseCommentaire"
+						widgetVar="dlgReponseCommentaire" header="Réponse Commentaire">
+						<h:form id="formReponseCommentaire">
+						<h:panelGrid columns="2" columnClasses="top,top">
+							<p:editor id="editorNouveauMessage"
+								value="#{beanMediaCommentaire.reponseSaisie}" width="500"
+								height="250" />
+
+							<br />
+						</h:panelGrid>
+
+						<p:commandButton value="Répondre"
+							action="#{beanMediaCommentaire.repondreCommentaire}"
+							oncomplete="dlgReponseMessage.hide()" update=":messages :tabViewCommentaires">
+							<!-- TODO update :formMessage:listeMessage  -->
+						</p:commandButton>
+						</h:form>
+					</p:dialog>
+
+
+			</h:panelGroup>
+		</p:tab>
+
+		<!-- Liste des médias du même auteur que le média visualisé -->
+		<p:tab title="Médias de #{beanMedia.auteur}" rendered="#{beanMedia.listeMediasDeAuteur.size() > 0}">
+			<p:outputPanel id="gallery">
+				<ui:repeat value="#{beanMedia.listeMediasDeAuteur}"
+					var="mediaDeAuteur" id="repeatMediaDeAuteur" rows="10">
+					<div style="float: left;">
+						<h:graphicImage library="images"
+							name="#{mediaDeAuteur.photo.cheminPhotoCouverture}" width="120"
+							alt="#{mediaDeAuteur.photo.nomPhotoCouverture}" />
+						<br />
+						<h:outputLink value="detailMedia.jsf?v=#{mediaDeAuteur.idMedia}"
+							title="#{mediaDeAuteur.titreMedia}">
+							<h:outputText value="#{mediaDeAuteur.titreMedia}" />
+						</h:outputLink>
+					</div>
+				</ui:repeat>
+			</p:outputPanel>
+
+			<br style="clear: both" />
+
+			<!-- Voir les prochaines vidéos >> XXX -->
+		</p:tab>
+
+		<!-- Liste des playlists qui contiennent le média visualisé -->
+		<p:tab title="Playlists" rendered="#{beanMedia.listePlaylistsAvecMedia.size() > 0}">
+			<p:dataList value="#{beanMedia.listePlaylistsAvecMedia}"
+				var="playlistsAvecMedia" itemType="disc">
+				<h:outputLink value="playlist.jsf?#{playlistsAvecMedia.idPlaylist}"
+					title="#{playlistsAvecMedia.nomPlaylist}">
+					   		#{playlistsAvecMedia.nomPlaylist}
+					   	</h:outputLink>
+			</p:dataList>
+		</p:tab>
+
+		<br />
+		<br />
+	</p:tabView>
+	<!-- Regarder plus de vidéos de l'auteur XXX -->
+
+</ui:composition>

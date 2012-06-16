@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:a4j="http://richfaces.org/a4j"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+<ui:composition template="/templates/standard.xhtml">
+	<ui:define name="pageTitle">Récupération de Mot de Passe</ui:define>
+	<ui:define name="content">
+		<section class="group3">
+			<h3>Récupération de Mot de Passe</h3>
+			<h:form>
+				<p:growl id="growl" sticky="true" showDetail="true" />
+				<p:panel header="Informations connexion">
+					<h:messages class="ui-messages-error ui-corner-all"
+						errorClass="error" />
+					<h:outputText
+						value="Veuillez renseigner votre adresse mail. Un E-mail vous sera
+				envoyé avec un nouveau mot de passe à l'intérieur." />
+					<h:panelGrid columns="3" columnClasses="label, value"
+						styleClass="grid">
+						<h:outputText value="Email :" />
+						<p:inputText style="background: none repeat scroll 0 0 #DDD;"
+							required="true" label="Email"
+							value="#{beanRecuperationMDP.adrMail}" />
+						<p:commandButton value="Envoyer demande" update="growl"
+							action="#{beanRecuperationMDP.send}" />
+					</h:panelGrid>
+				</p:panel>
+			</h:form>
+		</section>
+	</ui:define>
+</ui:composition>
+</html>
