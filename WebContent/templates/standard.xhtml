@@ -37,14 +37,16 @@
         <p:stack icon="/resources/images/menu/menu.png">
                 <p:menuitem rendered="#{beanConnexion.isConnected}" value="Amis" icon="/resources/images/menu/amis.png"
                         url="amis.jsf" />
-                <p:menuitem value="Notifications (#{beanNotification.nbNotifications})" icon="/resources/images/menu/notification.png"
+                <p:menuitem rendered="#{beanConnexion.isConnected}" value="Notifications (#{beanNotification.nbNotifications})" icon="/resources/images/menu/notification.png"
                         url="#" onclick="dlgNotification.show()" actionListener="#{beanNotification.lireNotifications}" />
                 <p:menuitem rendered="#{beanConnexion.isConnected}" value="Playlist"
                         icon="/resources/images/menu/playlist.png" url="gestionPlaylist.jsf" />
                 <p:menuitem rendered="#{beanConnexion.isConnected}" value="Messagerie"
                         icon="/resources/images/menu/messagerie.png" url="messagesPrives.jsf" />
-              <p:menuitem rendered="#{beanConnexion.isConnected}" value="Upload"
-                        icon="/resources/images/menu/upload2.png" url="upload.jsf" />                        
+              	<p:menuitem rendered="#{beanConnexion.isConnected}" value="Upload"
+                        icon="/resources/images/menu/upload2.png" url="upload.jsf" />        
+              	<p:menuitem rendered="#{beanConnexion.isConnected}" value="Panier"
+                        icon="/resources/images/menu/panier.png" url="panier.jsf" />                                           
                 <p:menuitem value="Accueil" icon="/resources/images/menu/home.png"
                         url="home.jsf" />
         </p:stack>

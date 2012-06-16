@@ -356,9 +356,8 @@ public class BeanMessagesPrives {
 	 * Affichage du formulaire de réponse de message
 	 * @return
 	 */
-	public String afficherFormulaireReponseMessage(Message_Prive message) {
+	public String afficherFormulaireReponseMessage() {
 		
-		System.out.println("afficherFormulaireReponseMessage MPSelectionne : " + mpSelectionne);
 		if (mpSelectionne.getEmetteur() == utilisateurConnecte) {
 			destinataire = mpSelectionne.getDestinataire().getAdrMail();
 		} else {

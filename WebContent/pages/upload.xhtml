@@ -19,8 +19,14 @@
 
 			<br />
 
-			<h:outputText rendered="#{empty beanUpload.utilisateurConnecte}"
-				value="L'upload de Média est reservé aux utilisateurs inscrits ! Pour profiter de cette fonctionnalité, veuillez vous inscrire ou vous connecter." />
+			<h:form rendered="#{empty beanUpload.utilisateurConnecte}">
+				<h:outputText value="L'upload de Média est reservé aux utilisateurs inscrits ! Pour profiter de cette fonctionnalité, veuillez vous inscrire ou vous connecter." />
+				<h3>Inscription</h3>
+				<br/>
+				<p>Pour profiter de tout cela inscrivez-vous dès maintenant.</p>
+				<br/>
+				<p:button outcome="inscription" value="Créer mon compte" icon="ui-icon-person" />  			
+			</h:form>
 
 			<h:form enctype="multipart/form-data"
 				rendered="#{not empty beanUpload.utilisateurConnecte}">
