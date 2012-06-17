@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:a4j="http://richfaces.org/a4j"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+<ui:composition template="/templates/standard.xhtml">
+	<ui:define name="pageTitle">Administration du site - Gestion des utilisateurs</ui:define>
+	<ui:define name="content">
+		<section class="group3">
+			<h3>Gestion des utilisateurs</h3>
+			<h:form id="form">
+				<p:commandButton value="Utilisateurs Valides" update="dataTable"
+					actionListener="#{beanGestionUtilisateursAdmin.chargerUtilisateur}" />
+				<p:commandButton value="Utilisateurs Bannis" update="dataTable"
+					actionListener="#{beanGestionUtilisateursAdmin.chargerUtilisateurBannis}" />
+				<p:commandButton value="Utilisateurs Supprimés" update="dataTable"
+					actionListener="#{beanGestionUtilisateursAdmin.chargerUtilisateurSupprimes}" />
+				<br />
+				<br />
+				<p:dataTable id="dataTable" var="user"
+					value="#{beanGestionUtilisateursAdmin.listUtilisateur}"
+					widgetVar="usersTable" rowKey="#{user.adrMail}"
+					selectionMode="single"
+					selection="#{beanGestionUtilisateursAdmin.selectedUser}"
+					emptyMessage="Pas d'utilisateur trouvé avec ces critères"
+					paginator="true" rows="10"
+					paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} {LastPageLink}"
+					rowsPerPageTemplate="5,10,15">
+
+					<f:facet name="header">
+						<p:outputPanel>
+							<h:outputText value="Recherche dans tous les champs :" />
+							<p:inputText id="globalFilter" onkeyup="usersTable.filter()"
+								style="width:150px" />
+						</p:outputPanel>
+					</f:facet>
+
+					<p:column id="adrMailColumn" filterBy="#{user.adrMail}"
+						headerText="Adresse Mail" filterMatchMode="contains">
+						<h:outputText value="#{user.adrMail}" />
+					</p:column>
+
+					<p:column id="pseudoColumn" filterBy="#{user.pseudo}"
+						headerText="Pseudo">
+						<h:outputText value="#{user.pseudo}" />
+					</p:column>
+
+					<p:column id="nomColumn" filterBy="#{user.nomUtilisateur}"
+						headerText="Nom">
+						<h:outputText value="#{user.nomUtilisateur}" />
+					</p:column>
+
+					<p:column id="prenomColumn" filterBy="#{user.prenomUtilisateur}"
+						headerText="Prénom">
+						<h:outputText value="#{user.prenomUtilisateur}" />
+					</p:column>
+
+					<p:column id="autreAdrMailColumn" filterBy="#{user.autreAdrMail}"
+						headerText="Autre Adresse Mail" filterMatchMode="endsWith">
+						<h:outputText value="#{user.autreAdrMail}" />
+					</p:column>
+
+					<f:facet name="footer">
+						<p:commandButton id="viewButton" value="Visualiser"
+							icon="ui-icon-search" update=":form:display"
+							oncomplete="userDialog.show()" />
+
+						<p:commandButton icon="ui-icon-trash" value="Supprimer"
+							onclick="confirmationDelUser.show()" id="btnDel" />
+						<p:commandButton icon="ui-icon-trash" value="Bannir"
+							onclick="confirmationBanUser.show()" id="btnBan" />
+
+						<p:confirmDialog id="confirmDialogDelUser"
+							message="Etes-vous sûre de vouloir supprimer l'utilisateur ?"
+							header="Supprimer Utilisateur" severity="alert"
+							widgetVar="confirmationDelUser">
+
+							<p:commandButton id="confirmDelUser" value="OUI"
+								update="dataTable" oncomplete="confirmationDelUser.hide()"
+								actionListener="#{beanGestionUtilisateursAdmin.delSelectedSingle}" />
+							<p:commandButton id="declineDelUser" value="NON"
+								onclick="confirmationDelUser.hide()" type="button" />
+
+						</p:confirmDialog>
+
+
+						<p:confirmDialog id="confirmDialogBanUser"
+							message="Etes-vous sûre de vouloir bannir l'utilisateur ?"
+							header="Bannir Utilisateur" severity="alert"
+							widgetVar="confirmationBanUser">
+
+							<p:commandButton id="confirmBanUser" value="OUI"
+								update="dataTable" oncomplete="confirmationBanUser.hide()"
+								actionListener="#{beanGestionUtilisateursAdmin.banSelectedSingle}" />
+							<p:commandButton id="declineBanUser" value="NON"
+								onclick="confirmationBanUser.hide()" type="button" />
+
+						</p:confirmDialog>
+					</f:facet>
+				</p:dataTable>
+				<p:dialog id="dialog" header="Détails Utilisateur"
+					widgetVar="userDialog" resizable="false" showEffect="clip"
+					hideEffect="fold">
+
+					<h:panelGrid id="display" columns="2" cellpadding="4">
+
+						<f:facet name="header">
+							<p:graphicImage
+								rendered="#{beanGestionUtilisateursAdmin.selectedUser.avatar!=null}"
+								value="#{beanGestionUtilisateursAdmin.selectedUser.avatar.cheminAvatar}#{beanGestionUtilisateursAdmin.selectedUser.avatar.nomAvatar}"
+								style="background-image:url('../resources/avatar/0.png');width:64px;height:64px;" />
+						</f:facet>
+
+						<h:outputText value="Pseudo :" />
+						<h:outputText
+							value="#{beanGestionUtilisateursAdmin.selectedUser.pseudo}" />
+						<h:outputText value="Adresse Mail :" />
+						<h:outputText
+							value="#{beanGestionUtilisateursAdmin.selectedUser.adrMail}" />
+						<h:outputText value="Autre Adresse Mail :" />
+						<h:outputText
+							value="#{beanGestionUtilisateursAdmin.selectedUser.autreAdrMail}" />
+						<h:outputText value="Date de naissance :" />
+						<h:outputText
+							value="#{beanGestionUtilisateursAdmin.selectedUser.dateNaissance}">
+							<f:convertDateTime pattern="dd.MM.yyyy" />
+						</h:outputText>
+						<h:outputText value="Profession :" />
+						<h:outputText
+							value="#{beanGestionUtilisateursAdmin.selectedUser.profession}" />
+						<h:outputText value="Adresse :" />
+						<h:panelGrid columns="3">
+							<h:outputText
+								value="#{beanGestionUtilisateursAdmin.selectedUser.rue} " />
+							<h:outputText
+								rendered="#{beanGestionUtilisateursAdmin.selectedUser.cp!=0}"
+								value="#{beanGestionUtilisateursAdmin.selectedUser.cp} " />
+							<h:outputText
+								value="#{beanGestionUtilisateursAdmin.selectedUser.ville} #{beanGestionUtilisateursAdmin.selectedUser.pays}" />
+						</h:panelGrid>
+						<h:outputText value="Numéro de mobile :" />
+						<h:outputText
+							value="#{beanGestionUtilisateursAdmin.selectedUser.numTelMobile}" />
+						<h:outputText value="Intérêts :" />
+						<h:outputText
+							value="#{beanGestionUtilisateursAdmin.selectedUser.interets}" />
+
+						<h:outputText
+							rendered="#{beanGestionUtilisateursAdmin.selectedUser.dateBanissement!=null}"
+							value="Date Bannissement :" />
+						<h:outputText
+							rendered="#{beanGestionUtilisateursAdmin.selectedUser.dateBanissement!=null}"
+							value="#{beanGestionUtilisateursAdmin.selectedUser.dateBanissement}">
+							<f:convertDateTime pattern="dd.MM.yyyy" />
+						</h:outputText>
+
+						<h:outputText
+							rendered="#{beanGestionUtilisateursAdmin.selectedUser.dateSuppressionUtilisateur!=null}"
+							value="Date Suppression :" />
+						<h:outputText
+							rendered="#{beanGestionUtilisateursAdmin.selectedUser.dateSuppressionUtilisateur!=null}"
+							value="#{beanGestionUtilisateursAdmin.selectedUser.dateSuppressionUtilisateur}">
+							<f:convertDateTime pattern="dd.MM.yyyy" />
+						</h:outputText>
+
+
+					</h:panelGrid>
+				</p:dialog>
+			</h:form>
+		</section>
+	</ui:define>
+</ui:composition>
+</html>

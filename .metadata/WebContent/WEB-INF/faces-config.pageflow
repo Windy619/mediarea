@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<pageflow:Pageflow xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:pageflow="http://www.sybase.com/suade/pageflow" id="pf13349388593620" configfile="/MediArea/WebContent/WEB-INF/faces-config.xml">
+  <nodes xsi:type="pageflow:PFPage" name="pages/home.xhtml" x="338" y="562" id="pf13354298275783" referenceLink="//@navigationRule.1/@navigationCase.0/@toViewId|" inlinks="pf13367735792811 pf13385767264480" path="/pages/home.xhtml"/>
+  <nodes xsi:type="pageflow:PFPage" name="pages/suiteInscription.xhtml" x="122" y="178" id="pf13354298275784" referenceLink="//@navigationRule.3/@fromViewId|" path="/pages/suiteInscription.xhtml"/>
+  <nodes xsi:type="pageflow:PFPage" name="*" x="122" y="562" id="pf13367735792813" referenceLink="//@navigationRule.1/@fromViewId|" outlinks="pf13367735792811 pf13385767264480" path="/*"/>
+  <links id="pf13367735792811" target="pf13354298275783" source="pf13367735792813" outcome="isConnected" redirect="true"/>
+  <links id="pf13385767264480" target="pf13354298275783" source="pf13367735792813" outcome="isNotConnected" redirect="true"/>
+</pageflow:Pageflow>

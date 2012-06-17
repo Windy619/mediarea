@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:a4j="http://richfaces.org/a4j"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:p="http://primefaces.org/ui">
+
+<ui:composition template="/templates/standard.xhtml">
+
+	<ui:define name="pageTitle">Upload de média</ui:define>
+
+	<ui:define name="content">
+
+		<section class="group3">
+			<h3>Upload de média</h3>
+
+			<br />
+
+			<h:form rendered="#{empty beanUpload.utilisateurConnecte}">
+				<h:outputText value="L'upload de Média est reservé aux utilisateurs inscrits ! Pour profiter de cette fonctionnalité, veuillez vous inscrire ou vous connecter." />
+				<h3>Inscription</h3>
+				<br/>
+				<p>Pour profiter de tout cela inscrivez-vous dès maintenant.</p>
+				<br/>
+				<p:button outcome="inscription" value="Créer mon compte" icon="ui-icon-person" />  			
+			</h:form>
+
+			<h:form enctype="multipart/form-data"
+				rendered="#{not empty beanUpload.utilisateurConnecte}">
+				<h4>Module d'upload</h4>
+				<p:fileUpload fileUploadListener="#{beanUpload.handleFileUpload}"
+					mode="advanced" update="messages, afficherUpload"
+					sizeLimit="1000000000"
+					allowTypes="/(\.|\/)(mp3|MP3|mp4|mp4|oga|ogv|avi|AVI|wmv|WMV|webm)$/" showButtons="false"/>
+
+			    <br />
+		    	<p:commandButton id="afficherUpload" value="Afficher fichier uploade" ajax="false" rendered="#{beanUpload.fichierUploade == null}">
+                 	<f:setPropertyActionListener target="#{beanUpload.afficherFichierUploade}" value="true" />
+		    	</p:commandButton>
+		    	
+				<p:commandButton value="Supprimer"	action="#{beanUpload.supprimerFichierUploade}" update=":form_upload" ajax="false" rendered="#{beanUpload.fichierUploade != null}" />	    	
+
+				<p:growl id="messages" showDetail="true" />
+				<br />
+
+			</h:form>
+			
+		
+
+			<br />
+
+			<h:form id="form_upload" enctype="multipart/form-data">
+
+				<p:panel id="panel_upload" header="Formulaire d'upload"
+					rendered="#{not empty beanUpload.utilisateurConnecte and beanUpload.fichierUploade != null }">
+					
+					<h:panelGrid columns="2" cellpadding="10">
+						<h:panelGrid columns="2" cellpadding="10">
+							<h:outputText value="Nom : " />
+							<h:outputText value="#{beanUpload.fichierUploade.nom}"
+								style="font-weight: bold" />
+
+							<h:outputText value="Format : " />
+							<h:outputText value="#{beanUpload.fichierUploade.extension}"
+								style="font-weight: bold" />
+
+							<h:outputText value="Taille : " />
+							<h:outputText
+								value="#{beanUpload.fichierUploade.taille}  #{beanUpload.fichierUploade.uniteTaille}"
+								style="font-weight: bold" />
+								
+						</h:panelGrid>
+						<p:graphicImage value="/resources/images/media.png" />
+					</h:panelGrid>
+					
+					<p:tabView id="tabView" effect="fade">
+
+						<p:tab title="Informations générales">
+							<h:panelGrid columns="3" columnClasses="top,top">
+
+								<h:outputText value="Nom :" />
+								<p:inputText value="#{beanUpload.nomMedia}" style="width: 400px"
+									id="nomMedia" />
+								<p:message for="nomMedia" />
+
+								<h:outputText value="Catégorie :" />
+								<p:selectCheckboxMenu value="#{beanUpload.categoriesMedia}"
+									label="Categories du Media" style="width: 410px"
+									id="categorieMedia">
+									<f:selectItems value="#{beanUpload.lstCategories}" var="categorie"
+										itemLabel="#{categorie.nomCategorie}"
+										itemValue="#{categorie}" />
+								</p:selectCheckboxMenu>
+								<p:message for="categorieMedia" />
+
+								<h:outputText value="Tags :" />
+								<p:inputText value="#{beanUpload.tagsMedia}"
+									style="width: 400px" id="tagMedia" />
+								<p:message for="tagMedia" />
+
+								<h:outputText value="Description :" />
+								<p:inputTextarea value="#{beanUpload.descriptionMedia}"
+									style="margin-bottom: 1em" id="descriptionMedia" cols="52"
+									rows="5" />
+								<p:message for="descriptionMedia" />
+					            		
+								<p:commandButton value="Valider !" id="btnValider" onclick="dlg_captcha.show()" actionListener="#{beanUpload.handlePictureUpload}"/>
+								<p:message for="btnValider">
+									En cliquant sur "Valider" vous vous engagez à respecter la charte et les règles du site :
+									<h:outputLink value="charte.jsf">
+										<h:outputText value="Charte" styleClass="menuLink"></h:outputText>
+									</h:outputLink>
+									et
+									<h:outputLink value="charte.jsf">
+										<h:outputText value="Règles" styleClass="menuLink"></h:outputText>
+									</h:outputLink>																			 
+								</p:message>		
+													
+																						
+							</h:panelGrid>
+
+						</p:tab>
+
+						<p:tab title="Informations complémentaires">
+							<h:panelGrid columns="3" columnClasses="top,top">
+								
+								<h:outputText value="Autoriser le téléchargement du Média ?"
+									id="autoriserTelechargmentMedia" />
+								<p:selectBooleanButton  value="#{beanUpload.autoriserTelechargementMedia}" onLabel="Oui" offLabel="Non" 
+									onIcon="ui-icon-check" offIcon="ui-icon-close"/>  															
+								<p:message for="autoriserTelechargmentMedia" />
+
+								<h:outputText value="Autoriser l'ajout de commentaires ?"
+									id="autoriserCommentairesMedia" />
+								<p:selectBooleanButton  value="#{beanUpload.autoriserCommentairesMedia}" onLabel="Oui" offLabel="Non" 
+									onIcon="ui-icon-check" offIcon="ui-icon-close"/>  								
+								<p:message for="autoriserCommentairesMedia" />
+															
+								<h:outputText value="Mot de passe:" />
+								<p:password value="#{beanUpload.motdepasseMedia}"
+									style="width: 400px" id="motdepasseMedia" feedback="true"
+									promptLabel="Veuillez entrer un mot de passe"
+									weakLabel="Mot de passe faible !"
+									goodLabel="Mot de passe valide"
+									strongLabel="Mot de passe trés sécurisé !" />
+								<p:message for="motdepasseMedia" />					
+								
+								<h:outputText value="Photo :" />
+								<p:fileUpload mode="simple" value="#{beanUpload.photoMedia}"
+									id="photoMedia" style="width: 410px" />	
+								<p:message for="photoMedia" />		
+																
+								<h:outputText value="Recherche automatique d'image" />
+								<p:selectBooleanButton id="rechercheAuto" value="#{beanUpload.rechercheAutomatique}" onLabel="Oui" offLabel="Non" 
+									onIcon="ui-icon-check" offIcon="ui-icon-close" />							
+								<p:message for="rechercheAuto" />
+								
+							</h:panelGrid>
+						</p:tab>
+
+					</p:tabView>
+
+  		   			<p:dialog id="dialog_captcha" widgetVar="dlg_captcha" header="Prouve un peu que tu n'est pas un robot !">
+					    <h:outputText value="Captcha"/>
+					    <p:captcha id="captcha" theme="white"/>  
+					    <p:message for="captcha" />	
+					    
+ 	  		   					<br /> <br />
+				        					        
+		            	<p:commandButton id="btnValiderDialog" value="Valider !"  action="#{beanUpload.uploader}" ajax="false" />
+			            	
+		   			</p:dialog>
+
+					<p:growl id="messages" showDetail="true" />
+
+				</p:panel>
+
+				<br />
+
+			</h:form>
+		
+							
+		</section>
+	</ui:define>
+
+</ui:composition>
+</html>
