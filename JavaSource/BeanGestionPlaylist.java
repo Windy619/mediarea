@@ -5,6 +5,7 @@ import java.util.Set;
 
 import metier.media.Media;
 import metier.media.Playlist;
+import metier.media.Playlist_Media;
 import metier.utilisateur.Utilisateur;
 import javax.faces.event.ActionEvent;
 import javax.faces.application.FacesMessage;
@@ -54,8 +55,15 @@ public class BeanGestionPlaylist implements Serializable {
 
 		for (Playlist playlist : playlists) {
 			playlistTreeNode = new DefaultTreeNode(playlist, root);
-			ArrayList<Media> medialists = new ArrayList<Media>(
-					playlist.getMedias());
+			/*ArrayList<Media> medialists = new ArrayList<Media>(
+					playlist.getMedias());*/
+			//Playlist_Media pm = new Playlist_Media(mediaVisualise.getIdMedia(), plFavoris.getIdPlaylist());
+			ArrayList<Media> medialists = new ArrayList<Media>();
+			
+			for(Playlist_Media media : playlist.getMedias()) {
+				medialists.add(daoMedia.getUn(media.getMedia()));
+			}			
+
 			for (Media media : medialists) {
 				mediaTreeNode = new DefaultTreeNode(media, playlistTreeNode);
 			}

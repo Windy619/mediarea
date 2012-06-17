@@ -11,6 +11,7 @@ import metier.media.Media;
 import metier.media.Note;
 import metier.media.Photo_Couverture;
 import metier.media.Playlist;
+import metier.media.Playlist_Media;
 import metier.media.Regarder;
 import metier.media.Signalement_Commentaire;
 import metier.media.Signalement_Media;
@@ -28,6 +29,7 @@ import dao.media.DaoCommentaire;
 import dao.media.DaoMedia;
 import dao.media.DaoPhotoCouverture;
 import dao.media.DaoPlaylist;
+import dao.media.DaoPlaylistMedia;
 import dao.media.DaoTypeMedia;
 import dao.media.DaoTypePlaylist;
 import dao.media.DaoVisibilite;
@@ -46,7 +48,7 @@ public class Main {
 	public static DaoPlaylist daoPlaylist = new DaoPlaylist();
 	public static DaoCommentaire daoCommentaire = new DaoCommentaire();
 	public static DaoMessagePrive daoMessagePive = new DaoMessagePrive();
-    
+	public static DaoPlaylistMedia daoPlaylistMedia = new DaoPlaylistMedia();
 	
 	
 	public static void init_types() {
@@ -146,11 +148,17 @@ public class Main {
 	public static void ajouter_objets_playlist() {
 		Playlist playlist = daoPlaylist.getUn(2);
 		
-		playlist.getMedias().add(daoMedia.getUn(1));
+		/*playlist.getMedias().add(daoMedia.getUn(1));
 		playlist.getMedias().add(daoMedia.getUn(2));
-		playlist.getMedias().add(daoMedia.getUn(3));
+		playlist.getMedias().add(daoMedia.getUn(3));*/
+		Playlist_Media pm1 = new Playlist_Media(daoMedia.getUn(1).getIdMedia(), playlist.getIdPlaylist());
+		Playlist_Media pm2 = new Playlist_Media(daoMedia.getUn(2).getIdMedia(), playlist.getIdPlaylist());
+		Playlist_Media pm3 = new Playlist_Media(daoMedia.getUn(3).getIdMedia(), playlist.getIdPlaylist());
 		
-		daoPlaylist.sauvegarder(playlist);
+		//daoPlaylist.sauvegarder(playlist);
+		daoPlaylistMedia.sauvegarder(pm1);
+		daoPlaylistMedia.sauvegarder(pm2);
+		daoPlaylistMedia.sauvegarder(pm3);
 	}
 	
 	public static void ajouter_objets_utilisateur() {

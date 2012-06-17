@@ -36,5 +36,6 @@
   <mapping class="metier.media.Categorie_Media"/>
   <mapping class="metier.media.Fichier"/>
   <mapping class="metier.media.Telechargement_Media"/>
+  <mapping class="metier.media.Playlist_Media"/>
  </session-factory>
 </hibernate-configuration>

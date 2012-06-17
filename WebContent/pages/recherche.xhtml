@@ -87,8 +87,20 @@
 			<a4j:repeat rendered="#{beanRecherche.afficher_par == '1'}" value="#{beanRecherche.resRechMedia}" var="media">
 				<article class="holder_gallery">
 					<h:form>
-						<h:commandLink styleClass="photo_hover2" action="#{beanRecherche.accessMedia(media.idMedia)}"><h:graphicImage library="images" name="/resources/images/#{media.photo.nomPhotoCouverture}"  width="150" height="99" alt="#{media.photo.nomPhotoCouverture}"/></h:commandLink>
-						<h2 class="titre_liste_media"><h:commandLink value="#{media.titreMedia}" action="#{beanRecherche.accessMedia(media.idMedia)}" /> </h2> <p class="vues_liste_media">#{beanRecherche.l_mediaVues[media.idMedia]} vues<br /> #{beanRecherche.l_mediaComs[media.idMedia]} coms</p>
+						<h:commandLink styleClass="photo_hover2" action="#{beanRecherche.accessMedia(media.idMedia)}">
+							<h:graphicImage value="/resources/images/#{media.photo.nomPhotoCouverture}"  width="150" height="99" alt="#{media.photo.nomPhotoCouverture}"/>
+						</h:commandLink>
+						<h2 class="titre_liste_media">
+							<h:graphicImage library="images" name="/icones/ico_mdp.png" alt="Media privée" rendered="#{media.visibilite.nomVisibilite == 'prive'}" />
+							<h:graphicImage library="images" name="/icones/ico_save.png" alt="Telechargeable" rendered="#{media.estTelechargementAutorise}" />
+							<h:graphicImage library="images" name="/icones/ico_audio.png" alt="Audio" rendered="#{media.type.nomTypeMedia == 'son'}" />
+							<h:graphicImage library="images" name="/icones/ico_video.png" alt="Video" rendered="#{media.type.nomTypeMedia == 'video'}"/>
+							<h:commandLink value="#{media.titreMedia}" action="#{beanRecherche.accessMedia(media.idMedia)}" /> 
+							</h2> 
+						<p class="vues_liste_media">
+							#{beanRecherche.l_mediaVues[media.idMedia]} vues<br /> 
+							#{beanRecherche.l_mediaComs[media.idMedia]} coms
+						</p>
 						<p class="description_liste_media">#{media.descriptionMedia}</p>
 						<p class="infos_liste_media">
 						<span class="readmore"><h:commandLink value="Regarder" action="#{beanRecherche.accessMedia(media.idMedia)}" /></span>
@@ -102,9 +114,13 @@
 			<a4j:repeat rendered="#{beanRecherche.afficher_par == '2'}" value="#{beanRecherche.resRechMedia}" var="media">
 				<article class="holder_gallery_min">
 					<h:form>
-						<h:commandLink styleClass="photo_hover2" action="#{beanRecherche.accessMedia(media.idMedia)}"><h:graphicImage library="images" name="#{media.photo.cheminPhotoCouverture}"  width="150" height="99" alt="#{media.photo.nomPhotoCouverture}"/> <br /></h:commandLink>
+						<h:commandLink styleClass="photo_hover2" action="#{beanRecherche.accessMedia(media.idMedia)}"><h:graphicImage value="/resources/images/#{media.photo.nomPhotoCouverture}"  width="150" height="99" alt="#{media.photo.nomPhotoCouverture}"/> <br /></h:commandLink>
 						<div class="clearfloat"></div>
-						<h2 class="titre_liste_media"><h:commandLink value="#{media.titreMedia}" action="#{beanRecherche.accessMedia(media.idMedia)}" /> </h2> 
+						<h2 class="titre_liste_media">
+							<h:graphicImage library="images" name="/icones/ico_audio.png" alt="Audio" rendered="#{media.type.nomTypeMedia == 'son'}" />
+							<h:graphicImage library="images" name="/icones/ico_video.png" alt="Video" rendered="#{media.type.nomTypeMedia == 'video'}"/>
+							<h:commandLink value="#{media.titreMedia}" action="#{beanRecherche.accessMedia(media.idMedia)}" /> 
+						</h2> 
 						<!-- <p class="vues_liste_media">1.000.000 vues</p> -->
 						<p class="infos_liste_media">
 						Par <h:commandLink value="#{media.auteurMedia.pseudo}" action="#{beanRecherche.clickOnPublisher(media.auteurMedia.pseudo)}" />, le <h:outputText value="#{media.datePublication}"><f:convertDateTime type="date" dateStyle="short" /></h:outputText> <br />		
