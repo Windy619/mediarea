@@ -32,7 +32,17 @@
 			<h3>Détail d'un média</h3>
 			
 			<br />			
-					
+			
+	<h:panelGroup id="panelMdp" rendered="#{beanMedia.mediaVisualise.auteurMedia != beanConnexion.user and beanMedia.estAmi == false and beanMedia.mediaVisualise.mdpMedia != beanMedia.password}">
+		<h:form>
+			<p>Ce média est privée. Veuillez saisir le mot de passe :</p>
+			<h:outputLabel for="name" value="Mot de passe:" style="font-weight:bold"/>  
+        	<p:password id="password" value="#{beanMedia.password}" />  
+			<p:commandButton value="Valider" action="#{beanMedia.mdpSaisie}"/>
+		</h:form>
+		
+	</h:panelGroup>
+  	<h:panelGroup id="panelMedia" rendered="#{beanMedia.mediaVisualise.auteurMedia == beanConnexion.user or beanMedia.estAmi == true or beanMedia.mediaVisualise.mdpMedia == beanMedia.password}">		
 			<h:outputText value="#{beanMedia.titreMedia}" styleClass="titre" />
 						
 			<br />
@@ -420,14 +430,7 @@
         		
         		<!-- Téléchargement du média -->
         		<h:form>
-	        		<p:commandLink id="downloadLink" value="Télécharger ce média" ajax="false" rendered="#{beanMedia.mediaVisualise.estTelechargementAutorise}">  
-					    <p:fileDownload value="#{beanMedia.file}" />  
-					</p:commandLink><!-- TODO utilisateurConnecte -->
-					<br />
-					<p:commandLink id="downloadLinké" value="Télécharger ce média" rendered="#{beanMedia.mediaVisualise.estTelechargementAutorise}">  
-					    <p:fileDownload value="#{beanMedia.file}" />  
-					</p:commandLink>
-					<a href="../resources/videos/#{beanMedia.mediaVisualise.fichier.nomFichier}" > Télécharger ce Média </a>
+        			<h:commandLink action="#{beanPanier.downloadMedia(beanMedia.mediaVisualise)}" value="Télécharger ce média" />
         		</h:form>
 	         
 	         	
@@ -526,6 +529,8 @@
 			<br />
 			
 			<ui:include src="detailMediaCommentaires.xhtml" />
+			
+		</h:panelGroup>
 		</section>
 		
 		

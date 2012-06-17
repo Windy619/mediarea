@@ -31,6 +31,8 @@ import org.primefaces.model.tagcloud.DefaultTagCloudItem;
 import org.primefaces.model.tagcloud.DefaultTagCloudModel;  
 import org.primefaces.model.tagcloud.TagCloudModel;
 
+import outil.Md5;
+
 import metier.media.*;
 import dao.media.*;
 
@@ -136,7 +138,9 @@ public class BeanMedia {
  	// Utilisateur connecté actuellement
  	private Utilisateur utilisateurConnecte;
  		
- 	
+ 	String password;
+ 	String idPrecedentMedia;
+ 	Boolean estAmi;
  	/**
 	 * Constructeur du Bean
 	 */
@@ -155,7 +159,10 @@ public class BeanMedia {
 		daoPlaylistMedia = new DaoPlaylistMedia();
 		
 		codeIntegration = "";
-		tailleLecteur = "";		
+		tailleLecteur = "";
+		password = null;
+		idPrecedentMedia = "";
+		estAmi = false;
 	}
 		
 	/** 
@@ -320,6 +327,15 @@ public class BeanMedia {
 			signalerMediaDisabled = false;
 			ajouterMediaAuPanierDisabled = false;
 		}
+		
+		// Gestion media privee
+		if(idPrecedentMedia == null || idPrecedentMedia.equals("") || !idPrecedentMedia.equals(idMediaVisualise)) {
+			idPrecedentMedia = idMediaVisualise;
+			password = null;
+		}
+		
+		estAmi = estAmiDeAuteur();
+		
 		
 		processMedia();
 	}
@@ -1149,6 +1165,22 @@ public class BeanMedia {
 		return "modifierCategoriesTags";
 	}
 	
+	public String mdpSaisie() {
+		password = Md5.getHash(password);
+		return "/pages/detailMedia?faces-redirect=true&amp;includeViewParams=true";
+	}
+	
+	public Boolean estAmiDeAuteur() {
+		Boolean estAmi = false;
+		Set<Amitie> liste_amis_auteur = mediaVisualise.getAuteurMedia().getAmis();
+		for(Amitie amitie : liste_amis_auteur) // tant qu'on a un suivant
+		{
+			if(amitie.getAmi().equals(utilisateurConnecte))
+				estAmi = true;
+		}
+		return estAmi;
+	}
+	
 	
 	
 	// GETTER / SETTER
@@ -1520,4 +1552,24 @@ public class BeanMedia {
 	public void setAjouterMediaAuPanierDisabled(boolean ajouterMediaAuPanierDisabled) {
 		this.ajouterMediaAuPanierDisabled = ajouterMediaAuPanierDisabled;
 	}
+
+	public String getPassword() {
+		return password;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
+	}
+
+	public Boolean getEstAmi() {
+		return estAmi;
+	}
+
+	public void setEstAmi(Boolean estAmi) {
+		this.estAmi = estAmi;
+	}
+	
+	
+	
+	
 }

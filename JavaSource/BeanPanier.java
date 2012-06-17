@@ -228,7 +228,7 @@ public class BeanPanier {
 
             byte[] buffer = new byte[BUFFER];
 
-            fos = new FileOutputStream(media.getTitreMedia()+".zip"); // nom de l'archive rar
+            fos = new FileOutputStream("mediarea.zip"); // nom de l'archive rar
             
             bos = new BufferedOutputStream(fos);
             zos = new ZipOutputStream(bos);
@@ -269,10 +269,10 @@ public class BeanPanier {
             bos.close();
 
         } catch (Exception ex) {
-            System.out.println("Erreur pendant la compression");
+            System.out.println("Erreur pendant la compression du media");
         }
         
-        File panierCompresse = new File("monPanier.zip");
+        File panierCompresse = new File("mediarea.zip");
         if (panierCompresse.isFile()) {
         FacesContext context = FacesContext.getCurrentInstance();
         HttpServletResponse response = (HttpServletResponse) context.getExternalContext().getResponse();
@@ -286,7 +286,7 @@ public class BeanPanier {
 
             response.setContentType("application/zip");
             response.setContentLength((int) panierCompresse.length()); // taille du fichier
-            response.setHeader("Content-Disposition", "attachment; filename=\"" + "monPanier.zip" + "\"");
+            response.setHeader("Content-Disposition", "attachment; filename=\"" + "mediarea.zip" + "\"");
             
             byte[] buffer = new byte[4096]; //taille du buffer
 
