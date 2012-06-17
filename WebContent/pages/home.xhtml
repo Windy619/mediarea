@@ -73,11 +73,11 @@
 	    </section>
               
 	    <aside class="group2">
-			<h3>Recommendations </h3>
+			<h3>Recommandations </h3>
 			<h:outputText value="Pour voir vos recommendations, veuillez vous connecter."  rendered="#{empty beanHome.utilisateurConnecte}"/>
 			
 			<h3>Vidéos </h3>			
-			<article class="holder_news">
+			<article>
 				<h:outputText value="Aucune vidéo n'a été trouvée."  rendered="#{empty beanHome.recommendationVideos}"/>
 				<a4j:repeat value="#{beanHome.recommendationVideos}" var="video" rows="3" id="listRecommendationVideos">
 					<h:form>				
@@ -101,7 +101,7 @@
 			
 			
 			<h3>Sons</h3>
-			<article class="holder_news">
+			<article>
 				<h:outputText value="Aucun sons n'a été trouvée."  rendered="#{empty beanHome.recommendationSons}"/>
 				<a4j:repeat value="#{beanHome.recommendationSons}" var="son" rows="3" id="listRecommendationSons">
 					<h:form>

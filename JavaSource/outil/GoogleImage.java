@@ -51,7 +51,7 @@ public class GoogleImage {
 		
 		// Split de la page
 		String[] tableau = page.split("\"");
-		System.out.println("Nombre d'éléments : " + tableau.length);
+		//System.out.println("Nombre d'éléments : " + tableau.length);
 		
 		// On rempli un tableau de resultat avec les string qui nous interessent (celles qui contiennent '.jpg')
 		ArrayList<String> lstRes = new ArrayList<String>();

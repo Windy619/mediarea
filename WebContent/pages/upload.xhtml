@@ -107,9 +107,7 @@
 									rows="5" />
 								<p:message for="descriptionMedia" />
 					            		
-								<p:commandButton value="Valider !"
-									action="#{beanUpload.uploader}"	actionListener="#{beanUpload.handlePictureUpload}" 
-									id="btnValider" onclick="dlg_captcha.show()"/>
+								<p:commandButton value="Valider !" id="btnValider" onclick="dlg_captcha.show()" actionListener="#{beanUpload.handlePictureUpload}"/>
 								<p:message for="btnValider">
 									En cliquant sur "Valider" vous vous engagez à respecter la charte et les règles du site :
 									<h:outputLink value="charte.jsf">
@@ -172,7 +170,7 @@
 					    
  	  		   					<br /> <br />
 				        					        
-		            	<p:commandButton id="btnValiderDialog" value="Valider !"  action="#{beanUpload.uploader}" actionListener="#{beanUpload.handlePictureUpload}" ajax="false" />
+		            	<p:commandButton id="btnValiderDialog" value="Valider !"  action="#{beanUpload.uploader}" ajax="false" />
 			            	
 		   			</p:dialog>
 

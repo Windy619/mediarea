@@ -56,7 +56,7 @@ public class BeanUpload {
     private ArrayList<Categorie> categoriesMedia;
     private UploadedFile photoMedia = null;
     private String tagsMedia;
-    private String motdepasseMedia;
+    private String motdepasseMedia = null;
     private boolean autoriserTelechargementMedia = true;
     private boolean autoriserCommentaireMedia = true;
     private boolean rechercheAutomatique = false;
@@ -154,7 +154,7 @@ public class BeanUpload {
 				// Maj du media
 				media.setPhoto(pc);	
 	
-	    		System.out.println(photoCree.getAbsolutePath());				
+	    		//System.out.println(photoCree.getAbsolutePath());				
 				
 				
 			} else { // Sinon on prend une image par défaut
@@ -194,7 +194,7 @@ public class BeanUpload {
 	    		pc.setCheminPhotoCouverture(photoCree.getAbsolutePath());
 	    		pc.setNomPhotoCouverture(photoCree.getName());
 	    		
-	    		System.out.println(photoCree.getAbsolutePath());
+	    		//System.out.println(photoCree.getAbsolutePath());
 	    		
 	    		// Maj du media
 	    		media.setPhoto(pc);
@@ -238,15 +238,19 @@ public class BeanUpload {
 			media.getCategories().addAll(categories);	
 		}
 
-		if (motdepasseMedia != null) {
-			// Si un mot de passe a été renseigné, on le crypte et on l'enregistre dans la base
-			media.setMdpMedia(Md5.getHash(motdepasseMedia));
-			// Type non visible
-			media.setVisibilite(daoVisibilite.typeNonVisible());
-		} else {
+		if (motdepasseMedia.equals("")) {
+			System.out.println("On met pas de mot de passe");
 			// Type visible
 			media.setVisibilite(daoVisibilite.typeVisible());
+		} else {
+			System.out.println("On met un mot de passe");
+			// Si un mot de passe a été renseigné, on le crypte et on l'enregistre dans la base
+			media.setMdpMedia(motdepasseMedia);
+			// Type non visible
+			media.setVisibilite(daoVisibilite.typeNonVisible());			
 		}
+		
+		media.setMdpMedia(null); // la c théoriquement sur qu'il sera null
 		
 		media.setDescriptionMedia(descriptionMedia);
 		media.setDatePublication(new Date());
@@ -279,7 +283,7 @@ public class BeanUpload {
 		// On remet les valeurs par défaut
 	    nomMedia = "";
 	    tagsMedia = "";
-	    motdepasseMedia = "";
+	    motdepasseMedia = null;
 	    autoriserTelechargementMedia = true;
 	    autoriserCommentaireMedia = true;
 	    rechercheAutomatique = false;
@@ -349,7 +353,7 @@ public class BeanUpload {
 			fichierSortie.flush(); 
 			fichierSortie.close();	    				
 				        
-			System.out.println("Fichier : " + fichier);
+			//System.out.println("Fichier : " + fichier);
 		
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -371,7 +375,7 @@ public class BeanUpload {
         // On crée un File physique sur le seveur d'application avec pour nom le timestamp
     	
     	String chemin = ((ServletContext) FacesContext.getCurrentInstance().getExternalContext().getContext()).getRealPath("resources");
-    	System.out.println("Chemin : " + chemin);
+    	//System.out.println("Chemin : " + chemin);
     	
     	if (isAudio(file)) {
     		chemin += "/audios/";
@@ -405,7 +409,7 @@ public class BeanUpload {
 			// TODO: handle exception
 		}    
         
-		System.out.println(fileUploaded.getAbsolutePath());
+		//System.out.println(fileUploaded.getAbsolutePath());
 		
         return fileUploaded;
     }
@@ -435,7 +439,7 @@ public class BeanUpload {
         // Par défaut on peut dire que le nom du média est le nom du fichier !
         nomMedia = fichierUpload.getNom();
         tagsMedia = fichierUpload.getNom();
-        motdepasseMedia = "";
+        motdepasseMedia = null;
         descriptionMedia = fichierUpload.getNom();      
         
         if (isAudio(fichierUpload)) {
@@ -570,10 +574,12 @@ public class BeanUpload {
 	}
 
 	public String getMotdepasseMedia() {
+		System.out.println("Mdp : " + motdepasseMedia);
 		return motdepasseMedia;
 	}
 
 	public void setMotdepasseMedia(String motdepasseMedia) {
+		System.out.println("Mdp : " + motdepasseMedia);
 		this.motdepasseMedia = motdepasseMedia;
 	}
 

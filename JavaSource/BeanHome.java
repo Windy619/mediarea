@@ -53,7 +53,7 @@ public class BeanHome {
 			if (utilisateurConnecte != null) {
 				// Si l'utilisateur n'est pas null, on charge des recommendations
 				recommendationVideos = new ArrayList(daoMedia.recommendationVideos(utilisateurConnecte));
-				recommendationSons = new ArrayList(daoMedia.recommendationVideos(utilisateurConnecte));				
+				recommendationSons = new ArrayList(daoMedia.recommendationAudios(utilisateurConnecte));				
 			}
 		}			
 	}	
