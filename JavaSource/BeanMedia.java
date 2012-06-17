@@ -12,6 +12,7 @@ import java.util.TreeSet;
 import java.io.InputStream;
 
 import javax.faces.application.FacesMessage;
+import javax.faces.component.UIInput;
 import javax.faces.component.html.HtmlSelectBooleanCheckbox;
 import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpServletRequest;
@@ -24,10 +25,13 @@ import org.hibernate.Query;
 import org.primefaces.event.*;
 import org.primefaces.model.chart.CartesianChartModel;
 import org.primefaces.model.chart.ChartSeries;
+import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.StreamedContent;
 import org.primefaces.model.tagcloud.DefaultTagCloudItem;  
 import org.primefaces.model.tagcloud.DefaultTagCloudModel;  
 import org.primefaces.model.tagcloud.TagCloudModel;
+
+import outil.Md5;
 
 import metier.media.*;
 import dao.media.*;
@@ -52,6 +56,7 @@ public class BeanMedia {
  	private static DaoCategorie daoCategorie;
  	private static DaoAimer daoAimer;
  	private static DaoRegarder daoRegarder;
+ 	private static DaoPlaylistMedia daoPlaylistMedia;
  	
  	// Propriétés
 	private String idMediaVisualise;
@@ -122,6 +127,8 @@ public class BeanMedia {
 	private boolean estAjouteAPlaylist = false;
  	private boolean jAimeDisabled;
  	private boolean jeNAimePasDisabled;
+ 	private boolean signalerMediaDisabled;
+ 	private boolean ajouterMediaAuPanierDisabled;
  	
  	// Compteur
  	
@@ -131,7 +138,9 @@ public class BeanMedia {
  	// Utilisateur connecté actuellement
  	private Utilisateur utilisateurConnecte;
  		
- 	
+ 	String password;
+ 	String idPrecedentMedia;
+ 	Boolean estAmi;
  	/**
 	 * Constructeur du Bean
 	 */
@@ -147,18 +156,13 @@ public class BeanMedia {
 		daoPlaylist = new DaoPlaylist();
 		daoVisibilite = new DaoVisibilite();
 		daoTelechargementMedia = new DaoTelechargementMedia();
+		daoPlaylistMedia = new DaoPlaylistMedia();
 		
 		codeIntegration = "";
 		tailleLecteur = "";
-		
-		if(utilisateurConnecte != null)
-			mettreEnPlaceFavoris();
-		else
-			txtFavori = "Favori";
-
-		System.out.println("Utilisateur connecté : " + utilisateurConnecte);
-		if(utilisateurConnecte != null)
-			mettreEnPlacePlaylists();
+		password = null;
+		idPrecedentMedia = "";
+		estAmi = false;
 	}
 		
 	/** 
@@ -170,7 +174,6 @@ public class BeanMedia {
 		if(idMediaVisualise == null) {
 			System.out.println("redirection idMediaVisualise null");
 			FacesContext.getCurrentInstance().getExternalContext().redirect("/MediArea/pages/erreur.jsf"); //redirection vers la page d'erreur
-			redirigerErreur(); //TODO
 			//redirection vers page media indisponible XXX
 		}
 		else {
@@ -179,8 +182,7 @@ public class BeanMedia {
 			if (mediaVisualise == null) {
 				System.out.println("redirection mediaVisualise null");
 				// Redirection vers la page d'erreur
-				FacesContext.getCurrentInstance().getExternalContext()
-						.redirect("/MediArea/pages/erreur.jsf");
+				FacesContext.getCurrentInstance().getExternalContext().redirect("/MediArea/pages/erreur.jsf");
 			}
 		}
 		
@@ -231,10 +233,9 @@ public class BeanMedia {
 				.getCurrentInstance().getExternalContext().getContext())
 				.getResourceAsStream("C:/Users/Public/Pictures/Sample Pictures/Hortensias.jpg");
 		/*System.out.println("Nom fichier : "
-				+ mediaVisualise.getFichier().getNomFichier());
-		file = new DefaultStreamedContent(stream, "images/jpg",
-				"downloaded_file.jpg"); // TODO chemin vers média à télécharger
-		*/
+				+ mediaVisualise.getFichier().getNomFichier());*/
+		file = new DefaultStreamedContent(stream, "images/jpg", "Hortensias.jpg"); // TODO chemin vers média à télécharger
+		
 		
 		resultatTotalTelechargementMedia = daoMedia.totalTelechargement(mediaVisualise);
 		if (resultatTotalTelechargementMedia > 1) {
@@ -257,6 +258,15 @@ public class BeanMedia {
 
 		// --- Playlists ---
 
+		if(utilisateurConnecte != null)
+			mettreEnPlaceFavoris();
+		else
+			txtFavori = "rien";
+
+		//System.out.println("Utilisateur connecté : " + utilisateurConnecte);
+		if(utilisateurConnecte != null)
+			mettreEnPlacePlaylists();
+		
 		listeVisibilite = daoVisibilite.getTous();
 		listeNomVisibilite = new ArrayList<SelectItem>();
 		for (Visibilite visible : listeVisibilite) {
@@ -297,17 +307,35 @@ public class BeanMedia {
 		if(tailleLecteur.equals("")) {
 			System.out.println("Taille lecteur vide => petit");
 			tailleLecteur = "petit";
+			largeur = 320;
+			hauteur = 180;
 		}
 		
 		/*if(largeur == 0) {
-			largeur = 320;
 		}
 		
 		if(hauteur == 0) {
-			hauteur = 180;
 		}*/
 		
 		paramUrl = ((HttpServletRequest)FacesContext.getCurrentInstance().getExternalContext().getRequest()).getParameter("v"); 
+		
+		if(utilisateurConnecte == null) {
+			signalerMediaDisabled = true;
+			ajouterMediaAuPanierDisabled = true;
+		}
+		else {
+			signalerMediaDisabled = false;
+			ajouterMediaAuPanierDisabled = false;
+		}
+		
+		// Gestion media privee
+		if(idPrecedentMedia == null || idPrecedentMedia.equals("") || !idPrecedentMedia.equals(idMediaVisualise)) {
+			idPrecedentMedia = idMediaVisualise;
+			password = null;
+		}
+		
+		estAmi = estAmiDeAuteur();
+		
 		
 		processMedia();
 	}
@@ -335,8 +363,7 @@ public class BeanMedia {
 	public String mettreEnPlaceCategories() {
 		listeCategories = new ArrayList<Categorie>();
 		setCategoriesMedia = mediaVisualise.getCategories();
-		System.out.println("Média visualisé : " + mediaVisualise);
-		System.out.println("Catégories du média : " + mediaVisualise.getCategories()); //TODO retourne []
+		//System.out.println("Média visualisé : " + mediaVisualise);
 		
 		setCategories = new HashSet<Categorie>();
 		for (Categorie_Media categorie_Media : setCategoriesMedia) {
@@ -421,14 +448,16 @@ public class BeanMedia {
 		//System.out.println("Playlist utilisateur : " + playlistsUtilisateur);
 		playlistsUtilisateur = utilisateurConnecte.getPlaylists();
 		if(playlistsUtilisateur.toString().equals("[]")) {
+			System.out.println("Playlist utilisateur vide");
 			txtFavori = "Favori";
 		}
 		else {
 			boolean existeFavori = false;
 			for(Playlist pl : playlistsUtilisateur) {
 				if(pl.getType().equals(daoTypePlaylist.getUn(2))) {
-					for (Media mediaPl : pl.getMedias()) {
-						if(mediaPl.equals(mediaVisualise)) {
+					//for (Media mediaPl : pl.getMedias()) {
+					for (Playlist_Media mediaPl : pl.getMedias()) {
+						if(mediaPl.getMedia() == mediaVisualise.getIdMedia()) {
 							System.out.println("Retrait des favoris (pre)");
 							txtFavori = "Retirer des favoris";
 							existeFavori = true;
@@ -438,7 +467,7 @@ public class BeanMedia {
 				}
 			}
 			
-			if(! existeFavori) {
+			if(! existeFavori) { //TODO
 				System.out.println("Ajout aux favoris (pre)");
 				txtFavori = "Favori";
 			}
@@ -452,7 +481,8 @@ public class BeanMedia {
 	 * @return
 	 */
 	public String mettreEnPlacePlaylists() {
-		System.out.println("méthode mettreEnPlacePlaylists"); 
+		//System.out.println("méthode mettreEnPlacePlaylists");
+		
 		listePlaylistUt = new ArrayList<Playlist>(utilisateurConnecte.getPlaylists());
 		
 		setPlaylistUt = utilisateurConnecte.getPlaylists();
@@ -600,13 +630,16 @@ public class BeanMedia {
 			
 		// Affichage de la notification
 		message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Signalement du média :" , "Votre rapport a été pris en compte.");
-			
+        FacesContext.getCurrentInstance().addMessage(null, message);
+		
 		// Création de la notification
 		Notification notification = new Notification("Votre média : \"" + mediaVisualise.getTitreMedia() + "\" a fait l'objet d'un signalement !", mediaVisualise.getAuteurMedia());
 		notification.setDateEnvoiNotification(new Date());
 		// On l'ajoute à l'utilisateur concerné et on le sauvegarde
 		mediaVisualise.getAuteurMedia().getNotifications().add(notification);
 		daoUtilisateur.sauvegarder(mediaVisualise.getAuteurMedia());
+		
+		raisonMedia = "";
 		
 		return "signalerMedia";
 	}
@@ -664,7 +697,7 @@ public class BeanMedia {
 		Note n = new Note((int) note, mediaVisualise);
 		
 		// Ajout à la liste des notes
-		utilisateurConnecte.getNoteMedias().add(n); //media_idMedia + interdire de noter plusieurs fois TODO
+		utilisateurConnecte.getNoteMedias().add(n); //interdire de noter plusieurs fois XXX
 		
 		// Sauvegarde de l'ajout
 		daoUtilisateur.sauvegarder(utilisateurConnecte);
@@ -739,7 +772,7 @@ public class BeanMedia {
 					break;
 				}
 			}
-				
+			
 			if(!possedeFavori) { // Si la playlist de type Favori n'existe pas
 				// Création d'une playlist de type Favoris pour l'utilisateur connecté
 				plFavoris = new Playlist("Mes favoris","Favoris","Description",daoTypePlaylist.typeFavoris(),daoVisibilite.typeVisible());
@@ -752,14 +785,18 @@ public class BeanMedia {
 			}
 				
 			// Ajout du média visualisé à la playlist de type Favoris de l'utilisateur
-			plFavoris.getMedias().add(mediaVisualise);
-				
+			//plFavoris.getMedias().add(mediaVisualise);
+			Playlist_Media pm = new Playlist_Media(mediaVisualise.getIdMedia(), plFavoris.getIdPlaylist());
+			plFavoris.getMedias().add(pm);
+			
 			// Sauvegarde de l'ajout
-			daoPlaylist.sauvegarder(daoPlaylist.getUn(plFavoris.getIdPlaylist()));			
+			//daoPlaylist.sauvegarder(daoPlaylist.getUn(plFavoris.getIdPlaylist()));
+			daoPlaylist.sauvegarder(plFavoris);
 			
 			// Modification du texte affiché sur la vue
 			txtFavori = "Retirer des favoris";
-	
+			System.out.println("A retirer des favoris");
+			
 			// Préparation du message de la notification
 			message = new FacesMessage("Favori : Ajoutée à Favoris");			
 		}
@@ -770,9 +807,15 @@ public class BeanMedia {
 			for(Playlist pl : playlistsUtilisateur) {
 				// Si possède déjà une playlist de type Favori
 				if(pl.getType().equals(daoTypePlaylist.getUn(2))) {
+					System.out.println("fav");
 					// Suppression du média visualisé de la liste des favoris
-					pl.getMedias().remove(mediaVisualise);
-						
+					//pl.getMedias().remove(mediaVisualise.getIdMedia()); //TODO b
+					ArrayList<Media> listM = new ArrayList<Media>();
+					for (Playlist_Media m : pl.getMedias()) {
+						listM.add(daoMedia.getUn(m.getMedia()));
+					}
+					listM.remove(mediaVisualise);
+					
 					// Enregistrement de la suppression
 					daoPlaylist.sauvegarder(pl);
 				}
@@ -796,13 +839,35 @@ public class BeanMedia {
 	 * @return
 	 */	
 	public boolean getEstAjouteAPlaylist(Playlist play) {
+		System.out.println("méthode getEstAjouteAPlaylist");
+		
 		boolean estAjouterAPlaylistSelectionnee = false;
 		
-		for(Playlist playlistUt : setPlaylistUt) {
+		/*for(Playlist playlistUt : setPlaylistUt) {
+			System.out.println("Set playlist utilisateur : " + setPlaylistUt);
+			//if(playlistUt.equals(play) && playlistUt.getMedias().contains(mediaVisualise)) {
 			if(playlistUt.equals(play) && playlistUt.getMedias().contains(mediaVisualise)) {
+				System.out.println("appartient à la playlist sélectionnée");
 				// Le média visualisé appartient à la playlist sélectionnée
 				estAjouterAPlaylistSelectionnee = true;
 				break;
+			}
+		}*/
+		for(Playlist playlistUt : setPlaylistUt) {
+			//System.out.println("Set playlist utilisateur : " + setPlaylistUt);
+			//if(playlistUt.equals(play) && playlistUt.getMedias().contains(mediaVisualise)) { //TODO
+			for (Playlist_Media pm : playlistUt.getMedias()) {
+				if (pm.getMedia() == mediaVisualise.getIdMedia()) {
+					//return true;
+					if(playlistUt.equals(play) && playlistUt.getMedias().contains(mediaVisualise)) {
+						System.out.println("appartient à la playlist sélectionnée");
+						// Le média visualisé appartient à la playlist sélectionnée
+						estAjouterAPlaylistSelectionnee = true;
+						break;
+					}
+				} /*else {
+					return false;
+				}*/
 			}
 		}
 		
@@ -831,10 +896,12 @@ public class BeanMedia {
 				//if(playlistUt.getIdPlaylist() == Long.parseLong(FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("idPlaylist"))) {
 				if(playlistUt.getIdPlaylist() == playlistSelectionnee.getIdPlaylist()) {
 					// Ajout du média à la liste des playlists de l'utilisateur
-					playlistUt.getMedias().add(mediaVisualise);
+					//playlistUt.getMedias().add(mediaVisualise); !!!
+					Playlist_Media pm = new Playlist_Media(mediaVisualise.getIdMedia(), playlistUt.getIdPlaylist());
 					
 					// Enregistrement de l'ajout
-					daoPlaylist.sauvegarder(playlistUt);
+					daoPlaylistMedia.sauvegarder(pm);
+					
 					break;
 				}
 			}
@@ -850,6 +917,7 @@ public class BeanMedia {
 			
 			// Parcours de la liste des playlists de l'utilisateur
 			for(Playlist playlistUt : setPlaylistUt) {
+				System.out.println("Parcours liste playlists de l'utilisateur");
 				// Si la playlist courante parcourue correspond à la playlist à traiter
 				//if(playlistUt.getIdPlaylist() == Long.parseLong(FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("idPlaylist"))) {
 				if(playlistUt.getIdPlaylist() == playlistSelectionnee.getIdPlaylist()) {
@@ -879,8 +947,14 @@ public class BeanMedia {
 	public String creerPlaylist() {
 		System.out.println("Création d'une playlist");
 		
+		Visibilite typeVisibilite = null;
 		// Création de la nouvelle playlist
-		nvlPlaylist = new Playlist(nomPlaylistACreer, descriptionPlaylistACreer, "", daoTypePlaylist.typeAutre(), daoVisibilite.typeVisible()); //visibilité TODO
+		System.out.println("Visibilité pour playlist à créer : " + visibilitePlaylistACreer);
+		if (visibilitePlaylistACreer.equals("2")) //2 : Privé
+			typeVisibilite = daoVisibilite.typeNonVisible();
+		else // 1 : Public
+			typeVisibilite = daoVisibilite.typeVisible();
+		nvlPlaylist = new Playlist(nomPlaylistACreer, descriptionPlaylistACreer, "", daoTypePlaylist.typeAutre(), typeVisibilite); //daoVisibilite.typeNonVisible() visibilité TODO
 		
 		boolean existePlaylistUt = false;
 		for(Playlist playlistUt : utilisateurConnecte.getPlaylists()) {
@@ -901,7 +975,7 @@ public class BeanMedia {
 			
 			// Affichage de la notification
 			FacesContext.getCurrentInstance().addMessage(null,
-	                new FacesMessage("Mission accomplie ! : Ce média a été ajouté à votre playlist : " + nomPlaylistACreer));
+	                new FacesMessage("Mission accomplie ! Ce média a été ajouté à votre playlist : " + nomPlaylistACreer));
 		}
 		else { // Si la playlist est déjà existante
 			
@@ -994,12 +1068,12 @@ public class BeanMedia {
 	 * @return
 	 */
 	public void desactiverLecteurIframe(AjaxBehaviorEvent e) {
-		//System.out.println("desactiverLecteurIframe");
+		System.out.println("desactiverLecteurIframe");
 		
 		// Récupération de la valeur du checkbox (pour savoir s'il a été coché ou pas)
 		check = (HtmlSelectBooleanCheckbox)e.getSource();
 		Object checkvar = check.getValue();
-		//System.out.println("Checké : " + checkvar);
+		System.out.println("Checké : " + checkvar);
 		
 		// Si ce n'est pas coché
 	    if(! Boolean.parseBoolean(checkvar.toString()))	{
@@ -1020,7 +1094,7 @@ public class BeanMedia {
 		System.out.println("changerTailleLecteur");
 		
 		// Si choix d'un lecteur petit coché
-		if(tailleLecteur.equals("petit")) { //TODO tailleLecteur
+		if(tailleLecteur.equals("petit")) {
         	largeur = 320; //changement de la largeur (code d'intégration)
         	hauteur = 180; //changement de la hauteur (code d'intégration)
         }
@@ -1037,16 +1111,16 @@ public class BeanMedia {
 		System.out.println(tailleLecteur + " ==> " + largeur + "***" + hauteur);
 		
 		// Récupération de la valeur du checkbox (pour savoir s'il a été coché ou pas)
-		check = (HtmlSelectBooleanCheckbox)e.getSource();
+		/*check = (HtmlSelectBooleanCheckbox)e.getSource();
 		Object checkvar = check.getValue();
 				
 		// Si ce n'est pas coché
-		if(! Boolean.parseBoolean(checkvar.toString()))	{
+		if(! Boolean.parseBoolean(checkvar.toString()))	{ XXX*/
 			codeIntegration = "<iframe width='" + largeur + "' height='" + hauteur + "' src='" + url + "' frameborder='0' allowfullscreen></iframe>";
-		}
-		else {
-			codeIntegration = "<object width='" + largeur + "' height='" + hauteur + "'><param name='movie' value='" + url + "'></param><param name='allowFullScreen' value='true'></param><param name='allowscriptaccess' value='always'></param><embed src='http://www.youtube.com/v/ZQ2nCGawrSY?version=3&amp;hl=fr_FR' type='application/x-shockwave-flash' width='" + largeur + "' height='" + hauteur + "' allowscriptaccess='always' allowfullscreen='true'></embed></object>";	
-		}
+		/*}
+		else {*/
+		//	codeIntegration = "<object width='" + largeur + "' height='" + hauteur + "'><param name='movie' value='" + url + "'></param><param name='allowFullScreen' value='true'></param><param name='allowscriptaccess' value='always'></param><embed src='http://www.youtube.com/v/ZQ2nCGawrSY?version=3&amp;hl=fr_FR' type='application/x-shockwave-flash' width='" + largeur + "' height='" + hauteur + "' allowscriptaccess='always' allowfullscreen='true'></embed></object>";	
+		//}
 	}
 
 	/** 
@@ -1089,6 +1163,22 @@ public class BeanMedia {
 		/////////////daoMedia.sauvegarder(mediaVisualise);
 		
 		return "modifierCategoriesTags";
+	}
+	
+	public String mdpSaisie() {
+		password = Md5.getHash(password);
+		return "/pages/detailMedia?faces-redirect=true&amp;includeViewParams=true";
+	}
+	
+	public Boolean estAmiDeAuteur() {
+		Boolean estAmi = false;
+		Set<Amitie> liste_amis_auteur = mediaVisualise.getAuteurMedia().getAmis();
+		for(Amitie amitie : liste_amis_auteur) // tant qu'on a un suivant
+		{
+			if(amitie.getAmi().equals(utilisateurConnecte))
+				estAmi = true;
+		}
+		return estAmi;
 	}
 	
 	
@@ -1303,6 +1393,7 @@ public class BeanMedia {
 	}
 	
 	public Utilisateur getUtilisateurConnecte() {
+		//utilisateurConnecte = beanConnexion.getUser();
 		return utilisateurConnecte;
 	}
 	
@@ -1445,4 +1536,40 @@ public class BeanMedia {
 	public void setCategoriesMedia(ArrayList<Categorie_Media> categoriesMedia) {
 		this.categoriesMedia = categoriesMedia;
 	}
+
+	public boolean isSignalerMediaDisabled() {
+		return signalerMediaDisabled;
+	}
+
+	public void setSignalerMediaDisabled(boolean signalerMediaDisabled) {
+		this.signalerMediaDisabled = signalerMediaDisabled;
+	}
+
+	public boolean isAjouterMediaAuPanierDisabled() {
+		return ajouterMediaAuPanierDisabled;
+	}
+
+	public void setAjouterMediaAuPanierDisabled(boolean ajouterMediaAuPanierDisabled) {
+		this.ajouterMediaAuPanierDisabled = ajouterMediaAuPanierDisabled;
+	}
+
+	public String getPassword() {
+		return password;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
+	}
+
+	public Boolean getEstAmi() {
+		return estAmi;
+	}
+
+	public void setEstAmi(Boolean estAmi) {
+		this.estAmi = estAmi;
+	}
+	
+	
+	
+	
 }

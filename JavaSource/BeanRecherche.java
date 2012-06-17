@@ -151,8 +151,22 @@ public class BeanRecherche {
 		description = null;
 		tag = null;
 		categorie = null;
-		page = "2";
+		typeRecherche = "2";
+		page = "1";
 		auteur = pseudo;
+		return "/pages/recherche?faces-redirect=true&amp;includeViewParams=true";
+	}
+	
+	public String rechercheParTitre(String _titre) {
+		value = null;
+		titre = null;
+		auteur = null;
+		description = null;
+		tag = null;
+		categorie = null;
+		typeRecherche = "2";
+		page = "1";
+		titre = _titre;
 		return "/pages/recherche?faces-redirect=true&amp;includeViewParams=true";
 	}
 	
